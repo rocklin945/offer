@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.rocklin.offer.common.constants.Constants.SUCCESS;
+
 /**
  * @ClassName HealthCheckController
  * @Description 健康检查
@@ -21,6 +23,6 @@ public class HealthCheckController {
     @Operation(summary = "健康检查", description = "检查服务是否正常运行")
     @GetMapping("/check")
     public String healthCheck() {
-        return "OK";
+        return SUCCESS;
     }
 }
