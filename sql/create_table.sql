@@ -18,7 +18,7 @@ create table if not exists user
     user_name     varchar(256)                           null comment '用户昵称',
     user_avatar   varchar(1024)                          null comment '用户头像',
     user_profile  varchar(512)                           null comment '用户简介',
-    user_role     int          default 1                 not null comment '用户角色：0:管理员 1:普通用户',
+    user_role     int          default 1                 not null comment '用户角色：0:管理员 1:普通用户 2:会员',
     create_time   datetime     default CURRENT_TIMESTAMP not null comment '创建时间',
     update_time   datetime     default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     is_delete     tinyint      default 0                 not null comment '是否删除',
@@ -40,8 +40,7 @@ CREATE TABLE if not exists job_info (
      position_name      VARCHAR(255) COMMENT '岗位(专业/岗位名称)',
      application_status VARCHAR(100) COMMENT '投递进度',
 
-     update_time        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-         ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+     start_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '开始时间',
      deadline           VARCHAR(100) COMMENT '投递截止(尽快投递/x.x截止)',
 
      related_link       VARCHAR(500) COMMENT '相关链接',
