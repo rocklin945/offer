@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rocklin.offer.mapper.JobInfoMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.rocklin.offer.model.entity.JobInfo">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="company_name" property="companyName" jdbcType="VARCHAR"/>
+        <result column="company_type" property="companyType" jdbcType="VARCHAR"/>
+        <result column="industry" property="industry" jdbcType="VARCHAR"/>
+        <result column="recruit_type" property="recruitType" jdbcType="VARCHAR"/>
+        <result column="work_location" property="workLocation" jdbcType="VARCHAR"/>
+        <result column="recruit_target" property="recruitTarget" jdbcType="VARCHAR"/>
+        <result column="position_name" property="positionName" jdbcType="VARCHAR"/>
+        <result column="application_status" property="applicationStatus" jdbcType="VARCHAR"/>
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP"/>
+        <result column="deadline" property="deadline" jdbcType="VARCHAR"/>
+        <result column="related_link" property="relatedLink" jdbcType="VARCHAR"/>
+        <result column="announcement" property="announcement" jdbcType="LONGVARCHAR"/>
+        <result column="referral_code" property="referralCode" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+
+    <!-- 基础字段 -->
+    <sql id="Base_Column_List">
+        id, company_name, company_type, industry, recruit_type, work_location,
+        recruit_target, position_name, application_status, start_time, deadline,
+        related_link, announcement, referral_code, remark
+    </sql>
+
+    <!-- 插入 -->
+    <insert id="insert" parameterType="com.rocklin.offer.model.entity.JobInfo">
+        INSERT INTO job_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            id,
+            <if test="companyName != null">company_name,</if>
+            <if test="companyType != null">company_type,</if>
+            <if test="industry != null">industry,</if>
+            <if test="recruitType != null">recruit_type,</if>
+            <if test="workLocation != null">work_location,</if>
+            <if test="recruitTarget != null">recruit_target,</if>
+            <if test="positionName != null">position_name,</if>
+            <if test="applicationStatus != null">application_status,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="deadline != null">deadline,</if>
+            <if test="relatedLink != null">related_link,</if>
+            <if test="announcement != null">announcement,</if>
+            <if test="referralCode != null">referral_code,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            UUID_SHORT(),
+            <if test="companyName != null">#{companyName,jdbcType=VARCHAR},</if>
+            <if test="companyType != null">#{companyType,jdbcType=VARCHAR},</if>
+            <if test="industry != null">#{industry,jdbcType=VARCHAR},</if>
+            <if test="recruitType != null">#{recruitType,jdbcType=VARCHAR},</if>
+            <if test="workLocation != null">#{workLocation,jdbcType=VARCHAR},</if>
+            <if test="recruitTarget != null">#{recruitTarget,jdbcType=VARCHAR},</if>
+            <if test="positionName != null">#{positionName,jdbcType=VARCHAR},</if>
+            <if test="applicationStatus != null">#{applicationStatus,jdbcType=VARCHAR},</if>
+            <if test="startTime != null">#{startTime,jdbcType=TIMESTAMP},</if>
+            <if test="deadline != null">#{deadline,jdbcType=VARCHAR},</if>
+            <if test="relatedLink != null">#{relatedLink,jdbcType=VARCHAR},</if>
+            <if test="announcement != null">#{announcement,jdbcType=LONGVARCHAR},</if>
+            <if test="referralCode != null">#{referralCode,jdbcType=VARCHAR},</if>
+            <if test="remark != null">#{remark,jdbcType=LONGVARCHAR},</if>
+        </trim>
+    </insert>
+
+    <!-- 根据ID删除 -->
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM job_info WHERE id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <!-- 更新 -->
+    <update id="updateById" parameterType="com.rocklin.offer.model.entity.JobInfo">
+        UPDATE job_info
+        <set>
+            <if test="companyName != null">company_name = #{companyName,jdbcType=VARCHAR},</if>
+            <if test="companyType != null">company_type = #{companyType,jdbcType=VARCHAR},</if>
+            <if test="industry != null">industry = #{industry,jdbcType=VARCHAR},</if>
+            <if test="recruitType != null">recruit_type = #{recruitType,jdbcType=VARCHAR},</if>
+            <if test="workLocation != null">work_location = #{workLocation,jdbcType=VARCHAR},</if>
+            <if test="recruitTarget != null">recruit_target = #{recruitTarget,jdbcType=VARCHAR},</if>
+            <if test="positionName != null">position_name = #{positionName,jdbcType=VARCHAR},</if>
+            <if test="applicationStatus != null">application_status = #{applicationStatus,jdbcType=VARCHAR},</if>
+            <if test="startTime != null">start_time = #{startTime,jdbcType=TIMESTAMP},</if>
+            <if test="deadline != null">deadline = #{deadline,jdbcType=VARCHAR},</if>
+            <if test="relatedLink != null">related_link = #{relatedLink,jdbcType=VARCHAR},</if>
+            <if test="announcement != null">announcement = #{announcement,jdbcType=LONGVARCHAR},</if>
+            <if test="referralCode != null">referral_code = #{referralCode,jdbcType=VARCHAR},</if>
+            <if test="remark != null">remark = #{remark,jdbcType=LONGVARCHAR},</if>
+        </set>
+        WHERE id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <!-- 根据ID查询 -->
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM job_info
+        WHERE id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <!-- 查询列表 -->
+    <select id="selectList" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM job_info
+        <where>
+            <if test="query.companyName != null and query.companyName != ''">
+                AND company_name LIKE CONCAT('%', #{query.companyName}, '%')
+            </if>
+            <if test="query.recruitType != null and query.recruitType != ''">
+                AND recruit_type = #{query.recruitType}
+            </if>
+            <if test="query.workLocation != null and query.workLocation != ''">
+                AND work_location LIKE CONCAT('%', #{query.workLocation}, '%')
+            </if>
+            <if test="query.positionName != null and query.positionName != ''">
+                AND position_name LIKE CONCAT('%', #{query.positionName}, '%')
+            </if>
+            <if test="query.applicationStatus != null and query.applicationStatus != ''">
+                AND application_status = #{query.applicationStatus}
+            </if>
+            <if test="query.startTime != null">
+                AND start_time &gt;= #{query.startTime}
+            </if>
+            <if test="query.deadline != null and query.deadline != ''">
+                AND deadline LIKE CONCAT('%', #{query.deadline}, '%')
+            </if>
+        </where>
+        <choose>
+            <when test="query.sortField != null and query.sortField != ''">
+                ORDER BY
+                <choose>
+                    <when test="query.sortField == 'companyName'">company_name</when>
+                    <when test="query.sortField == 'recruitType'">recruit_type</when>
+                    <when test="query.sortField == 'workLocation'">work_location</when>
+                    <when test="query.sortField == 'positionName'">position_name</when>
+                    <when test="query.sortField == 'applicationStatus'">application_status</when>
+                    <when test="query.sortField == 'startTime'">start_time</when>
+                    <when test="query.sortField == 'deadline'">deadline</when>
+                    <when test="query.sortField == 'id'">id</when>
+                    <otherwise>start_time</otherwise>
+                </choose>
+                <choose>
+                    <when test="query.sortOrder != null and query.sortOrder.toLowerCase() == 'asc'">ASC</when>
+                    <otherwise>DESC</otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                ORDER BY start_time DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <!-- 查询总数 -->
+    <select id="selectCount" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM job_info
+        <where>
+            <if test="query.companyName != null and query.companyName != ''">
+                AND company_name LIKE CONCAT('%', #{query.companyName}, '%')
+            </if>
+            <if test="query.recruitType != null and query.recruitType != ''">
+                AND recruit_type = #{query.recruitType}
+            </if>
+            <if test="query.workLocation != null and query.workLocation != ''">
+                AND work_location LIKE CONCAT('%', #{query.workLocation}, '%')
+            </if>
+            <if test="query.positionName != null and query.positionName != ''">
+                AND position_name LIKE CONCAT('%', #{query.positionName}, '%')
+            </if>
+            <if test="query.applicationStatus != null and query.applicationStatus != ''">
+                AND application_status = #{query.applicationStatus}
+            </if>
+            <if test="query.startTime != null">
+                AND start_time &gt;= #{query.startTime}
+            </if>
+            <if test="query.deadline != null and query.deadline != ''">
+                AND deadline LIKE CONCAT('%', #{query.deadline}, '%')
+            </if>
+        </where>
+    </select>
+
+</mapper>
