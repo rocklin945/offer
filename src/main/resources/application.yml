@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: offer
+  # mysql
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/offer
+    username: root
+    password: root
+  profiles:
+    active: local
+server:
+  port: 8081
+  servlet:
+    context-path: /api
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.rocklin.offer.model.entity
+
+# springdoc-openapi
+springdoc:
+  group-configs:
+    - group: "default"
+      paths-to-match: "/**"
+      packages-to-scan: com.rocklin.offer.controller
+
+# knife4j
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
