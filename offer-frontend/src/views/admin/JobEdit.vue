@@ -187,6 +187,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { jobInfoApi } from '@/api/jobInfo'
 import type { JobInfoUpdateRequest } from '@/api/types'
+import Message from '@/components/Message'
 
 const router = useRouter()
 const route = useRoute()
@@ -246,12 +247,12 @@ const fetchJobInfo = async () => {
       })
 
     } else {
-      alert('未找到对应的招聘信息')
+      Message.error('未找到对应的招聘信息')
       router.push('/admin/job-management')
     }
   } catch (error) {
     console.error('获取招聘信息失败:', error)
-    alert('获取招聘信息失败: ' + (error as any).message)
+    Message.error('获取招聘信息失败: ' + (error as any).message)
     router.push('/admin/job-management')
   } finally {
     pageLoading.value = false
@@ -283,12 +284,12 @@ const handleSubmit = async () => {
     const response = await jobInfoApi.update(submitData)
 
     if (response.data) {
-      alert('更新成功')
+      Message.success('更新成功')
       router.push('/admin/job-management')
     }
   } catch (error) {
     console.error('更新失败:', error)
-    alert('更新失败，请重试')
+    Message.error('更新失败，请重试')
   } finally {
     loading.value = false
   }

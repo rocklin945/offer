@@ -215,6 +215,8 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { jobInfoApi } from '@/api/jobInfo'
 import type { JobInfoQueryRequest, JobInfo } from '@/api/types'
+import Message from '@/components/Message'
+import Confirm from '@/components/Confirm'
 
 // 响应式数据
 const currentPage = ref(1)
@@ -355,23 +357,25 @@ const fetchData = async () => {
     total.value = response.data.total || 0
   } catch (error) {
     console.error('获取招聘信息列表失败:', error)
-    alert('获取数据失败，请重试')
+    Message.error('获取数据失败，请重试')
   } finally {
     loading.value = false
   }
 }
 
 const handleDelete = async (id: string) => {
-  if (confirm('确定要删除这条招聘信息吗？')) {
+  const confirmed = await Confirm.danger('确定要删除这条招聘信息吗？删除后无法恢复。', '删除确认')
+  
+  if (confirmed) {
     try {
       const response = await jobInfoApi.delete(id)
       if (response.data) {
-        alert('删除成功')
+        Message.success('删除成功')
         await fetchData()
       }
     } catch (error) {
       console.error('删除失败:', error)
-      alert('删除失败')
+      Message.error('删除失败')
     }
   }
 }

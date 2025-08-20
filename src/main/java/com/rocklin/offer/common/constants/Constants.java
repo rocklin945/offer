@@ -9,5 +9,15 @@ package com.rocklin.offer.common.constants;
  */
 public final class Constants {
     public static final String SUCCESS = "success";
+
+
+    /**
+     * JWT
+     */
     public static final String USERNAME = "username";
+    public static final String AUTHORIZATION = "Authorization";
+    public static final String TOKEN = "token";
+    public static final String BEARER = "Bearer ";
+    public static final String USER_ID = "userId";
+    public static final int TOKEN_START_INDEX = 7;
 }

@@ -181,6 +181,7 @@ import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { jobInfoApi } from '@/api/jobInfo'
 import type { JobInfoAddRequest } from '@/api/types'
+import Message from '@/components/Message'
 
 const router = useRouter()
 const loading = ref(false)
@@ -227,12 +228,12 @@ const handleSubmit = async () => {
     const response = await jobInfoApi.add(submitData)
     
     if (response.data) {
-      alert('添加成功')
+      Message.success('添加成功')
       router.push('/admin/job-management')
     }
   } catch (error) {
     console.error('添加失败:', error)
-    alert('添加失败，请重试')
+    Message.error('添加失败，请重试')
   } finally {
     loading.value = false
   }
