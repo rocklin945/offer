@@ -110,88 +110,108 @@
       </div>
 
       <div v-else class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
+        <table class="min-w-full table-fixed divide-y divide-gray-200">
           <thead class="bg-gray-50">
             <tr>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-48 whitespace-nowrap">
                 公司信息
               </th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-40 whitespace-nowrap">
                 招聘对象
               </th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-48 whitespace-nowrap">
+                工作地点
+              </th>
+              <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-64 whitespace-nowrap">
                 岗位信息
               </th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
                 招聘类型
               </th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
                 投递进度
               </th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-36 whitespace-nowrap">
                 开始时间
               </th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-36 whitespace-nowrap">
                 截止时间
               </th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
                 相关链接
               </th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
                 招聘公告
               </th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-28 whitespace-nowrap">
                 内推码
               </th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-44 whitespace-nowrap">
                 备注
               </th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
             <tr v-for="job in jobList" :key="job.id" class="hover:bg-gray-50">
-              <td class="px-4 py-4 whitespace-nowrap">
+              <td class="px-2 py-2 whitespace-nowrap text-center">
                 <div>
                   <div class="text-sm font-medium text-gray-900">{{ job.companyName }}</div>
                   <div class="text-sm text-gray-500">{{ job.companyType || '-' }}</div>
                   <div class="text-sm text-gray-500">{{ job.industry || '-' }}</div>
                 </div>
               </td>
-              <td class="px-4 py-4 whitespace-nowrap">
+              <td class="px-2 py-2 whitespace-nowrap text-center">
                 <div class="text-sm font-medium text-gray-900">{{ job.recruitTarget || '-' }}</div>
               </td>
-              <td class="px-4 py-4">
-                <div class="space-y-2">
-                  <div class="text-sm font-medium text-gray-900">{{ job.positionName || '-' }}</div>
-                  <div class="text-sm text-gray-500">{{ job.workLocation || '-' }}</div>
-                  <div v-if="job.positionInfo" class="flex flex-wrap gap-1">
-                    <span v-for="(tag, index) in getPositionTags(job.positionInfo)" :key="index"
-                      class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help transition-all duration-200 hover:shadow-md"
-                      :class="getPositionTagClass(tag, index)" :title="tag.length > 15 ? tag : ''">
-                      {{ truncateText(tag, 15) }}
-                    </span>
-                  </div>
+              <td class="px-2 py-2 text-center">
+                <div v-if="job.workLocation && job.workLocation !== '-'" class="flex flex-wrap gap-1 items-center justify-center">
+                  <span v-for="(tag, index) in getDisplayTags(job.workLocation).visible" :key="index"
+                    class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help transition-all duration-200 hover:shadow-md"
+                    :class="getPositionTagClass(tag, index)" :title="tag.length > 15 ? tag : ''">
+                    {{ truncateText(tag, 15) }}
+                  </span>
+                  <span v-if="getDisplayTags(job.workLocation).hasMore" 
+                    class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help bg-gray-200 text-gray-600 hover:bg-gray-300"
+                    :title="getDisplayTags(job.workLocation).remaining.join(', ')">
+                    ...
+                  </span>
                 </div>
+                <div v-else class="text-sm font-medium text-gray-900">{{ job.workLocation || '-' }}</div>
               </td>
-              <td class="px-4 py-4 whitespace-nowrap">
+              <td class="px-2 py-2 text-center">
+                <div v-if="job.positionName && job.positionName !== '-'" class="flex flex-wrap gap-1 items-center justify-center">
+                  <span v-for="(tag, index) in getDisplayTags(job.positionName).visible" :key="index"
+                    class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help transition-all duration-200 hover:shadow-md"
+                    :class="getPositionTagClass(tag, index)" :title="tag.length > 15 ? tag : ''">
+                    {{ truncateText(tag, 15) }}
+                  </span>
+                  <span v-if="getDisplayTags(job.positionName).hasMore" 
+                    class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help bg-gray-200 text-gray-600 hover:bg-gray-300"
+                    :title="getDisplayTags(job.positionName).remaining.join(', ')">
+                    ...
+                  </span>
+                </div>
+                <div v-else class="text-sm font-medium text-gray-900">{{ job.positionName || '-' }}</div>
+              </td>
+              <td class="px-2 py-2 whitespace-nowrap text-center">
                 <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
                   :class="getRecruitTypeClass(job.recruitType)">
                   {{ job.recruitType || '-' }}
                 </span>
               </td>
-              <td class="px-4 py-4 whitespace-nowrap">
+              <td class="px-2 py-2 whitespace-nowrap text-center">
                 <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
                   :class="getStatusClass(job.applicationStatus)">
                   {{ job.applicationStatus || '-' }}
                 </span>
               </td>
-              <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+              <td class="px-2 py-2 whitespace-nowrap text-center text-sm text-gray-900">
                 {{ formatDate(job.startTime) || '-' }}
               </td>
-              <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+              <td class="px-2 py-2 whitespace-nowrap text-center text-sm text-gray-900">
                 {{ job.deadline || '-' }}
               </td>
-              <td class="px-4 py-4 whitespace-nowrap">
+              <td class="px-2 py-2 whitespace-nowrap text-center">
                 <a v-if="job.relatedLink" :href="job.relatedLink" target="_blank"
                   class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-600 bg-blue-100 rounded-full hover:bg-blue-200 transition-colors">
                   <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -202,7 +222,7 @@
                 </a>
                 <span v-else class="text-gray-400">-</span>
               </td>
-              <td class="px-4 py-4 whitespace-nowrap">
+              <td class="px-2 py-2 whitespace-nowrap text-center">
                 <a v-if="job.announcement" :href="job.announcement" target="_blank"
                   class="inline-flex items-center px-2 py-1 text-xs font-medium text-green-600 bg-green-100 rounded-full hover:bg-green-200 transition-colors">
                   <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -214,14 +234,14 @@
                 </a>
                 <span v-else class="text-gray-400">-</span>
               </td>
-              <td class="px-4 py-4 whitespace-nowrap">
+              <td class="px-2 py-2 whitespace-nowrap text-center">
                 <span v-if="job.referralCode && job.referralCode !== '-'"
                   class="inline-flex items-center px-2 py-1 text-xs font-medium text-purple-600 bg-purple-100 rounded-full font-mono">
                   {{ job.referralCode }}
                 </span>
                 <span v-else class="text-gray-400">-</span>
               </td>
-              <td class="px-4 py-4 max-w-xs">
+              <td class="px-2 py-2 max-w-xs text-center">
                 <div v-if="job.remark && job.remark !== '-'" class="text-sm text-gray-900 truncate" :title="job.remark">
                   {{ job.remark }}
                 </div>
@@ -381,32 +401,36 @@ const formatDate = (dateString?: string) => {
 const getPositionTags = (positionInfo?: string) => {
   if (!positionInfo) return []
 
-  console.log('原始岗位信息:', positionInfo) // 调试日志
-
-  // 使用正则表达式匹配以"类"结尾的词组
-  // 匹配模式：一个或多个中文、英文、数字、符号 + "类"
-  const regex = /[\u4e00-\u9fa5a-zA-Z0-9&（）()与]+类/g
-  const matches = positionInfo.match(regex)
-
-  console.log('正则匹配结果:', matches) // 调试日志
-
-  if (matches && matches.length > 0) {
-    const tags = matches
-      .map(tag => tag.trim())
-      .filter(tag => tag.length > 0)
-    
-    console.log('处理后的标签:', tags) // 调试日志
-    return tags
-  }
-
-  // 如果没有找到"类"字符，则按分号、逗号等分割
-  const fallbackTags = positionInfo
-    .split(/[;；,，\n\r\s]+/)
+  // 按空格分割岗位信息
+  const tags = positionInfo
+    .split(/\s+/) // 按空格分割
     .map(tag => tag.trim())
     .filter(tag => tag.length > 0)
-  
-  console.log('备用分割结果:', fallbackTags) // 调试日志
-  return fallbackTags
+
+  return tags
+}
+
+// 获取显示标签（限制显示数量）
+const getDisplayTags = (text?: string) => {
+  if (!text) return { visible: [], remaining: [], hasMore: false }
+
+  const allTags = getPositionTags(text)
+
+  // 如果只有一个标签且不包含空格，也要显示为标签
+  if (allTags.length === 0 && text.trim()) {
+    allTags.push(text.trim())
+  }
+
+  const maxVisible = 3
+  const visible = allTags.slice(0, maxVisible)
+  const remaining = allTags.slice(maxVisible)
+  const hasMore = remaining.length > 0
+
+  return {
+    visible,
+    remaining,
+    hasMore
+  }
 }
 
 const truncateText = (text: string, maxLength: number) => {
@@ -415,31 +439,38 @@ const truncateText = (text: string, maxLength: number) => {
 }
 
 const getPositionTagClass = (tag: string, index: number) => {
-  // 根据"类"的类型选择不同颜色
-  if (tag.includes('产品') && tag.includes('类')) {
-    return 'bg-blue-100 text-blue-800 border border-blue-200'
-  } else if (tag.includes('技术') && tag.includes('类')) {
-    return 'bg-green-100 text-green-800 border border-green-200'
-  } else if (tag.includes('发行') && tag.includes('类')) {
-    return 'bg-yellow-100 text-yellow-800 border border-yellow-200'
-  } else if (tag.includes('美术') && tag.includes('类')) {
-    return 'bg-purple-100 text-purple-800 border border-purple-200'
-  } else if (tag.includes('职能') && tag.includes('类')) {
-    return 'bg-pink-100 text-pink-800 border border-pink-200'
-  } else if (tag.includes('运营') && tag.includes('类')) {
-    return 'bg-indigo-100 text-indigo-800 border border-indigo-200'
-  } else if (tag.includes('市场') && tag.includes('类')) {
-    return 'bg-red-100 text-red-800 border border-red-200'
-  } else if (tag.includes('设计') && tag.includes('类')) {
-    return 'bg-orange-100 text-orange-800 border border-orange-200'
-  } else if (tag.includes('供应链') && tag.includes('类')) {
-    return 'bg-teal-100 text-teal-800 border border-teal-200'
-  } else if (tag.includes('操作') && tag.includes('类')) {
-    return 'bg-cyan-100 text-cyan-800 border border-cyan-200'
-  } else {
-    // 其他情况使用灰色
-    return 'bg-gray-100 text-gray-800 border border-gray-200'
+  // 预定义的颜色数组
+  const colors = [
+    'bg-blue-100 text-blue-800 border border-blue-200',
+    'bg-green-100 text-green-800 border border-green-200',
+    'bg-yellow-100 text-yellow-800 border border-yellow-200',
+    'bg-purple-100 text-purple-800 border border-purple-200',
+    'bg-pink-100 text-pink-800 border border-pink-200',
+    'bg-indigo-100 text-indigo-800 border border-indigo-200',
+    'bg-red-100 text-red-800 border border-red-200',
+    'bg-orange-100 text-orange-800 border border-orange-200',
+    'bg-teal-100 text-teal-800 border border-teal-200',
+    'bg-cyan-100 text-cyan-800 border border-cyan-200',
+    'bg-emerald-100 text-emerald-800 border border-emerald-200',
+    'bg-lime-100 text-lime-800 border border-lime-200',
+    'bg-amber-100 text-amber-800 border border-amber-200',
+    'bg-rose-100 text-rose-800 border border-rose-200',
+    'bg-violet-100 text-violet-800 border border-violet-200',
+    'bg-sky-100 text-sky-800 border border-sky-200'
+  ]
+
+  // 根据标签内容生成一个稳定的索引（同样的标签总是相同颜色）
+  let hash = 0
+  for (let i = 0; i < tag.length; i++) {
+    const char = tag.charCodeAt(i)
+    hash = ((hash << 5) - hash) + char
+    hash = hash & hash // 转换为32位整数
   }
+
+  // 使用绝对值确保索引为正数
+  const colorIndex = Math.abs(hash) % colors.length
+
+  return colors[colorIndex]
 }
 
 // 样式类方法
