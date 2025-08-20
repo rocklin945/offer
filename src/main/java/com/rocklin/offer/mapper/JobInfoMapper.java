@@ -50,7 +50,7 @@ public interface JobInfoMapper {
      * @param queryRequest 查询请求参数
      * @return 招聘信息列表
      */
-    List<JobInfo> selectList(@Param("query") JobInfoQueryRequest queryRequest);
+    List<JobInfo> selectList(@Param("offset") int offset, @Param("query") JobInfoQueryRequest queryRequest);
 
     /**
      * 查询招聘信息总数

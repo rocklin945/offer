@@ -97,7 +97,7 @@
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-              <tr v-for="job in jobList" :key="job.id" class="hover:bg-gray-50">
+              <tr v-for="(job, index) in jobList" :key="job.id" class="hover:bg-gray-50">
                 <td class="px-4 py-4 text-center">
                   <div>
                     <div class="text-sm font-medium text-gray-900">{{ job.companyName }}</div>
@@ -361,7 +361,7 @@ const fetchData = async () => {
   }
 }
 
-const handleDelete = async (id: number) => {
+const handleDelete = async (id: string) => {
   if (confirm('确定要删除这条招聘信息吗？')) {
     try {
       const response = await jobInfoApi.delete(id)

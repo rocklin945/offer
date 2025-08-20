@@ -17,8 +17,8 @@ export const jobInfoApi = {
   },
 
   // 删除招聘信息
-  delete: (id: number): Promise<BaseResponse<boolean>> => {
-    const data: DeleteRequest = { id }
+  delete: (id: string): Promise<BaseResponse<boolean>> => {
+    const data: DeleteRequest = { id: id as any }
     return request.post('/jobInfo/delete', data).then(res => res.data)
   },
 
@@ -28,7 +28,7 @@ export const jobInfoApi = {
   },
 
   // 根据ID获取招聘信息
-  getById: (id: number): Promise<BaseResponse<JobInfo>> => {
+  getById: (id: string): Promise<BaseResponse<JobInfo>> => {
     return request.get(`/jobInfo/get/${id}`).then(res => res.data)
   },
 

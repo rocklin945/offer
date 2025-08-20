@@ -194,7 +194,7 @@ const loading = ref(false)
 const pageLoading = ref(true)
 
 const form = reactive<JobInfoUpdateRequest>({
-  id: 0,
+  id: '',
   companyName: '',
   companyType: '',
   industry: '',
@@ -213,7 +213,8 @@ const form = reactive<JobInfoUpdateRequest>({
 
 // 获取招聘信息详情
 const fetchJobInfo = async () => {
-  const id = Number(route.params.id)
+  const id = route.params.id as string
+
   if (!id) {
     alert('参数错误')
     router.push('/admin/job-management')
@@ -222,8 +223,10 @@ const fetchJobInfo = async () => {
 
   try {
     const response = await jobInfoApi.getById(id)
+
     if (response.data) {
       const data = response.data
+
       Object.assign(form, {
         id: data.id,
         companyName: data.companyName || '',
@@ -241,10 +244,14 @@ const fetchJobInfo = async () => {
         referralCode: data.referralCode || '',
         remark: data.remark || ''
       })
+
+    } else {
+      alert('未找到对应的招聘信息')
+      router.push('/admin/job-management')
     }
   } catch (error) {
     console.error('获取招聘信息失败:', error)
-    alert('获取招聘信息失败')
+    alert('获取招聘信息失败: ' + (error as any).message)
     router.push('/admin/job-management')
   } finally {
     pageLoading.value = false
@@ -260,7 +267,7 @@ const handleSubmit = async () => {
   loading.value = true
   try {
     const submitData = { ...form }
-    
+
     // 处理日期格式
     if (submitData.startTime) {
       submitData.startTime = new Date(submitData.startTime).toISOString()
@@ -274,7 +281,7 @@ const handleSubmit = async () => {
     })
 
     const response = await jobInfoApi.update(submitData)
-    
+
     if (response.data) {
       alert('更新成功')
       router.push('/admin/job-management')

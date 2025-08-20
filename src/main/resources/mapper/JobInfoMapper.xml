@@ -151,7 +151,7 @@
                 ORDER BY start_time DESC
             </otherwise>
         </choose>
-        limit #{query.pageNum}, #{query.pageSize}
+        limit #{offset}, #{query.pageSize}
     </select>
 
     <!-- 查询总数 -->

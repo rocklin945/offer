@@ -17,7 +17,7 @@ export interface PageResponse<T> {
 
 // 招聘信息相关类型
 export interface JobInfo {
-  id?: number
+  id?: string  // 修改为字符串类型避免Long精度丢失
   companyName: string
   companyType?: string
   industry?: string
@@ -52,7 +52,7 @@ export interface JobInfoAddRequest {
 }
 
 export interface JobInfoUpdateRequest extends JobInfoAddRequest {
-  id: number
+  id: string | number  // 前端使用字符串，API层转换为数字
 }
 
 export interface JobInfoQueryRequest {
@@ -73,5 +73,5 @@ export interface JobInfoQueryRequest {
 }
 
 export interface DeleteRequest {
-  id: number
+  id: string  // 修改为字符串类型避免Long精度丢失
 }

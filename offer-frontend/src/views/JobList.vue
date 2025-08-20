@@ -479,7 +479,7 @@ const fetchData = async () => {
   }
 }
 
-const handleDelete = async (id: number) => {
+const handleDelete = async (id: string) => {
   if (confirm('确定要删除这条招聘信息吗？')) {
     try {
       const response = await jobInfoApi.delete(id)

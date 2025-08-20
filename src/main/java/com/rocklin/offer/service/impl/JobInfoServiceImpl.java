@@ -44,7 +44,8 @@ public class JobInfoServiceImpl implements JobInfoService {
 
     @Override
     public List<JobInfo> getJobInfoList(JobInfoQueryRequest queryRequest) {
-        return jobInfoMapper.selectList(queryRequest);
+        int offset = (queryRequest.getPageNum() - 1) * queryRequest.getPageSize();
+        return jobInfoMapper.selectList(offset, queryRequest);
     }
 
     @Override
