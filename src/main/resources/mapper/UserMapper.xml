@@ -3,6 +3,24 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.rocklin.offer.mapper.UserMapper">
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.rocklin.offer.model.entity.User">
+        <id property="id" column="id"/>
+        <result property="userAccount" column="user_account"/>
+        <result property="userPassword" column="user_password"/>
+        <result property="userName" column="user_name"/>
+        <result property="userAvatar" column="user_avatar"/>
+        <result property="userProfile" column="user_profile"/>
+        <result property="userRole" column="user_role"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="isDelete" column="is_delete"/>
+    </resultMap>
+    
+    <!-- 基础字段 -->
+    <sql id="Base_Column_List">
+        id, user_account, user_password, user_name, user_avatar, user_profile, user_role, create_time, update_time, is_delete
+    </sql>
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         insert into user
         (id,
@@ -46,20 +64,20 @@
         delete from user where id = #{id}
     </delete>
 
-    <select id="query" resultType="com.rocklin.offer.model.entity.User">
-        select * from user where user_account = #{userAccount}
+    <select id="query" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from user where user_account = #{userAccount}
     </select>
 
-    <select id="queryByPassword" resultType="com.rocklin.offer.model.entity.User">
-        select * from user where user_account = #{userAccount} and user_password = #{userPassword}
+    <select id="queryByPassword" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from user where user_account = #{userAccount} and user_password = #{userPassword}
     </select>
 
-    <select id="selectById" resultType="com.rocklin.offer.model.entity.User">
-        select * from user where id = #{id}
+    <select id="selectById" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from user where id = #{id}
     </select>
 
-    <select id="selectListWithLimit" resultType="com.rocklin.offer.model.entity.User">
-        select * from user
+    <select id="selectListWithLimit" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from user
         <where>
             <if test="req != null">
                 <if test="req.id != null">
