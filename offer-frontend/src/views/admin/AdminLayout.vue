@@ -115,6 +115,11 @@ const menuItems = [
     name: 'job-management',
     path: '/admin/job-management',
     label: '招聘信息管理'
+  },
+  {
+    name: 'user-management',
+    path: '/admin/user-management',
+    label: '用户管理'
   }
 ]
 </script>

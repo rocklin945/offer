@@ -41,6 +41,12 @@ const router = createRouter({
           component: () => import('@/views/admin/JobEdit.vue'),
           meta: { title: '编辑招聘信息', icon: 'edit' },
           props: true
+        },
+        {
+          path: 'user-management',
+          name: 'UserManagement',
+          component: () => import('@/views/admin/UserManagement.vue'),
+          meta: { title: '用户管理', icon: 'user' }
         }
       ]
     }
