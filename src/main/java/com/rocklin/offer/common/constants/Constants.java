@@ -9,4 +9,5 @@ package com.rocklin.offer.common.constants;
  */
 public final class Constants {
     public static final String SUCCESS = "success";
+    public static final String USERNAME = "username";
 }

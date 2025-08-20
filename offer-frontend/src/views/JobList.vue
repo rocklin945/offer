@@ -1,11 +1,9 @@
 <template>
   <div class="space-y-6">
-    <!-- 页面标题和操作按钮 -->
-    <div class="flex justify-between items-center">
-      <h2 class="text-2xl font-bold text-gray-900">招聘信息列表</h2>
-      <router-link to="/add" class="btn-primary">
-        添加招聘信息
-      </router-link>
+    <!-- 页面标题 -->
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold text-gray-900 mb-2">全网最全招聘信息</h1>
+      <p class="text-gray-600">最新招聘信息汇总</p>
     </div>
 
     <!-- 搜索筛选区域 -->
@@ -110,166 +108,214 @@
       </div>
 
       <div v-else class="overflow-x-auto">
-        <table class="min-w-full table-fixed divide-y divide-gray-200">
-          <thead class="bg-gray-50">
-            <tr>
-              <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-48 whitespace-nowrap">
-                公司信息
-              </th>
-              <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-40 whitespace-nowrap">
-                招聘对象
-              </th>
-              <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-48 whitespace-nowrap">
-                工作地点
-              </th>
-              <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-64 whitespace-nowrap">
-                岗位信息
-              </th>
-              <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
-                招聘类型
-              </th>
-              <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
-                投递进度
-              </th>
-              <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-36 whitespace-nowrap">
-                开始时间
-              </th>
-              <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-36 whitespace-nowrap">
-                截止时间
-              </th>
-              <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
-                相关链接
-              </th>
-              <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
-                招聘公告
-              </th>
-              <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-28 whitespace-nowrap">
-                内推码
-              </th>
-              <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-44 whitespace-nowrap">
-                备注
-              </th>
-            </tr>
-          </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="job in jobList" :key="job.id" class="hover:bg-gray-50">
-              <td class="px-2 py-2 whitespace-nowrap text-center">
-                <div>
-                  <div class="text-sm font-medium text-gray-900">{{ job.companyName }}</div>
-                  <div class="text-sm text-gray-500">{{ job.companyType || '-' }}</div>
-                  <div class="text-sm text-gray-500">{{ job.industry || '-' }}</div>
-                </div>
-              </td>
-              <td class="px-2 py-2 whitespace-nowrap text-center">
-                <div class="text-sm font-medium text-gray-900">{{ job.recruitTarget || '-' }}</div>
-              </td>
-              <td class="px-2 py-2 text-center">
-                <div v-if="job.workLocation && job.workLocation !== '-'" class="flex flex-wrap gap-1 items-center justify-center">
-                  <span v-for="(tag, index) in getDisplayTags(job.workLocation).visible" :key="index"
-                    class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help transition-all duration-200 hover:shadow-md"
-                    :class="getPositionTagClass(tag, index)" :title="tag.length > 15 ? tag : ''">
-                    {{ truncateText(tag, 15) }}
+        <div class="table-container" :class="{ 'table-loading': isChangingPage }">
+          <table class="min-w-full table-fixed divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th
+                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-48 whitespace-nowrap">
+                  公司信息
+                </th>
+                <th
+                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-40 whitespace-nowrap">
+                  招聘对象
+                </th>
+                <th
+                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-48 whitespace-nowrap">
+                  工作地点
+                </th>
+                <th
+                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-64 whitespace-nowrap">
+                  岗位信息
+                </th>
+                <th
+                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
+                  招聘类型
+                </th>
+                <th
+                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
+                  投递进度
+                </th>
+                <th
+                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-36 whitespace-nowrap">
+                  开始时间
+                </th>
+                <th
+                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-36 whitespace-nowrap">
+                  截止时间
+                </th>
+                <th
+                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
+                  相关链接
+                </th>
+                <th
+                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
+                  招聘公告
+                </th>
+                <th
+                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-28 whitespace-nowrap">
+                  内推码
+                </th>
+                <th
+                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-44 whitespace-nowrap">
+                  备注
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr v-for="job in jobList" :key="job.id" class="hover:bg-gray-50">
+                <td class="px-2 py-2 whitespace-nowrap text-center">
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">{{ job.companyName }}</div>
+                    <div class="text-sm text-gray-500">{{ job.companyType || '-' }}</div>
+                    <div class="text-sm text-gray-500">{{ job.industry || '-' }}</div>
+                  </div>
+                </td>
+                <td class="px-2 py-2 whitespace-nowrap text-center">
+                  <div class="text-sm font-medium text-gray-900">{{ job.recruitTarget || '-' }}</div>
+                </td>
+                <td class="px-2 py-2 text-center">
+                  <div v-if="job.workLocation && job.workLocation !== '-'"
+                    class="flex flex-wrap gap-1 items-center justify-center">
+                    <span v-for="(tag, index) in getDisplayTags(job.workLocation).visible" :key="index"
+                      class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help transition-all duration-200 hover:shadow-md"
+                      :class="getPositionTagClass(tag, index)" :title="tag.length > 15 ? tag : ''">
+                      {{ truncateText(tag, 15) }}
+                    </span>
+                    <span v-if="getDisplayTags(job.workLocation).hasMore"
+                      class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help bg-gray-200 text-gray-600 hover:bg-gray-300"
+                      :title="getDisplayTags(job.workLocation).remaining.join(', ')">
+                      ...
+                    </span>
+                  </div>
+                  <div v-else class="text-sm font-medium text-gray-900">{{ job.workLocation || '-' }}</div>
+                </td>
+                <td class="px-2 py-2 text-center">
+                  <div v-if="job.positionName && job.positionName !== '-'"
+                    class="flex flex-wrap gap-1 items-center justify-center">
+                    <span v-for="(tag, index) in getDisplayTags(job.positionName).visible" :key="index"
+                      class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help transition-all duration-200 hover:shadow-md"
+                      :class="getPositionTagClass(tag, index)" :title="tag.length > 15 ? tag : ''">
+                      {{ truncateText(tag, 15) }}
+                    </span>
+                    <span v-if="getDisplayTags(job.positionName).hasMore"
+                      class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help bg-gray-200 text-gray-600 hover:bg-gray-300"
+                      :title="getDisplayTags(job.positionName).remaining.join(', ')">
+                      ...
+                    </span>
+                  </div>
+                  <div v-else class="text-sm font-medium text-gray-900">{{ job.positionName || '-' }}</div>
+                </td>
+                <td class="px-2 py-2 whitespace-nowrap text-center">
+                  <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
+                    :class="getRecruitTypeClass(job.recruitType)">
+                    {{ job.recruitType || '-' }}
                   </span>
-                  <span v-if="getDisplayTags(job.workLocation).hasMore" 
-                    class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help bg-gray-200 text-gray-600 hover:bg-gray-300"
-                    :title="getDisplayTags(job.workLocation).remaining.join(', ')">
-                    ...
+                </td>
+                <td class="px-2 py-2 whitespace-nowrap text-center">
+                  <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
+                    :class="getStatusClass(job.applicationStatus)">
+                    {{ job.applicationStatus || '-' }}
                   </span>
-                </div>
-                <div v-else class="text-sm font-medium text-gray-900">{{ job.workLocation || '-' }}</div>
-              </td>
-              <td class="px-2 py-2 text-center">
-                <div v-if="job.positionName && job.positionName !== '-'" class="flex flex-wrap gap-1 items-center justify-center">
-                  <span v-for="(tag, index) in getDisplayTags(job.positionName).visible" :key="index"
-                    class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help transition-all duration-200 hover:shadow-md"
-                    :class="getPositionTagClass(tag, index)" :title="tag.length > 15 ? tag : ''">
-                    {{ truncateText(tag, 15) }}
+                </td>
+                <td class="px-2 py-2 whitespace-nowrap text-center text-sm text-gray-900">
+                  {{ formatDate(job.startTime) || '-' }}
+                </td>
+                <td class="px-2 py-2 whitespace-nowrap text-center text-sm text-gray-900">
+                  {{ job.deadline || '-' }}
+                </td>
+                <td class="px-2 py-2 whitespace-nowrap text-center">
+                  <a v-if="job.relatedLink" :href="job.relatedLink" target="_blank"
+                    class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-600 bg-blue-100 rounded-full hover:bg-blue-200 transition-colors">
+                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                    </svg>
+                    投递链接
+                  </a>
+                  <span v-else class="text-gray-400">-</span>
+                </td>
+                <td class="px-2 py-2 whitespace-nowrap text-center">
+                  <a v-if="job.announcement" :href="job.announcement" target="_blank"
+                    class="inline-flex items-center px-2 py-1 text-xs font-medium text-green-600 bg-green-100 rounded-full hover:bg-green-200 transition-colors">
+                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                      </path>
+                    </svg>
+                    查看公告
+                  </a>
+                  <span v-else class="text-gray-400">-</span>
+                </td>
+                <td class="px-2 py-2 whitespace-nowrap text-center">
+                  <span v-if="job.referralCode && job.referralCode !== '-'"
+                    class="inline-flex items-center px-2 py-1 text-xs font-medium text-purple-600 bg-purple-100 rounded-full font-mono">
+                    {{ job.referralCode }}
                   </span>
-                  <span v-if="getDisplayTags(job.positionName).hasMore" 
-                    class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help bg-gray-200 text-gray-600 hover:bg-gray-300"
-                    :title="getDisplayTags(job.positionName).remaining.join(', ')">
-                    ...
-                  </span>
-                </div>
-                <div v-else class="text-sm font-medium text-gray-900">{{ job.positionName || '-' }}</div>
-              </td>
-              <td class="px-2 py-2 whitespace-nowrap text-center">
-                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
-                  :class="getRecruitTypeClass(job.recruitType)">
-                  {{ job.recruitType || '-' }}
-                </span>
-              </td>
-              <td class="px-2 py-2 whitespace-nowrap text-center">
-                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
-                  :class="getStatusClass(job.applicationStatus)">
-                  {{ job.applicationStatus || '-' }}
-                </span>
-              </td>
-              <td class="px-2 py-2 whitespace-nowrap text-center text-sm text-gray-900">
-                {{ formatDate(job.startTime) || '-' }}
-              </td>
-              <td class="px-2 py-2 whitespace-nowrap text-center text-sm text-gray-900">
-                {{ job.deadline || '-' }}
-              </td>
-              <td class="px-2 py-2 whitespace-nowrap text-center">
-                <a v-if="job.relatedLink" :href="job.relatedLink" target="_blank"
-                  class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-600 bg-blue-100 rounded-full hover:bg-blue-200 transition-colors">
-                  <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                  </svg>
-                  投递链接
-                </a>
-                <span v-else class="text-gray-400">-</span>
-              </td>
-              <td class="px-2 py-2 whitespace-nowrap text-center">
-                <a v-if="job.announcement" :href="job.announcement" target="_blank"
-                  class="inline-flex items-center px-2 py-1 text-xs font-medium text-green-600 bg-green-100 rounded-full hover:bg-green-200 transition-colors">
-                  <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                    </path>
-                  </svg>
-                  查看公告
-                </a>
-                <span v-else class="text-gray-400">-</span>
-              </td>
-              <td class="px-2 py-2 whitespace-nowrap text-center">
-                <span v-if="job.referralCode && job.referralCode !== '-'"
-                  class="inline-flex items-center px-2 py-1 text-xs font-medium text-purple-600 bg-purple-100 rounded-full font-mono">
-                  {{ job.referralCode }}
-                </span>
-                <span v-else class="text-gray-400">-</span>
-              </td>
-              <td class="px-2 py-2 max-w-xs text-center">
-                <div v-if="job.remark && job.remark !== '-'" class="text-sm text-gray-900 truncate" :title="job.remark">
-                  {{ job.remark }}
-                </div>
-                <span v-else class="text-gray-400">-</span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                  <span v-else class="text-gray-400">-</span>
+                </td>
+                <td class="px-2 py-2 max-w-xs text-center">
+                  <div v-if="job.remark && job.remark !== '-'" class="text-sm text-gray-900 truncate" :title="job.remark">
+                    {{ job.remark }}
+                  </div>
+                  <span v-else class="text-gray-400">-</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
     <!-- 分页 -->
-    <div v-if="hasJobs" class="flex justify-between items-center">
+    <div v-if="hasJobs && totalPages > 1" class="flex justify-between items-center">
       <div class="text-sm text-gray-700">
         共 {{ total }} 条记录
       </div>
-      <div class="flex space-x-2">
+      <div class="flex items-center space-x-2">
+        <!-- 上一页 -->
         <button @click="handlePageChange(currentPage - 1)" :disabled="currentPage <= 1"
-          class="px-3 py-1 text-sm border rounded-md disabled:opacity-50 disabled:cursor-not-allowed">
-          上一页
+          class="px-3 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
         </button>
-        <span class="px-3 py-1 text-sm">
-          第 {{ currentPage }} 页，共 {{ totalPages }} 页
-        </span>
+
+        <!-- 页码按钮 -->
+        <template v-for="page in getPageNumbers()" :key="page">
+          <button v-if="page === '...'" disabled class="px-3 py-2 text-sm text-gray-400 cursor-default">
+            ...
+          </button>
+          <button v-else @click="handlePageChange(page as number)" :class="[
+            'px-3 py-2 text-sm border rounded transition-colors',
+            currentPage === page
+              ? 'bg-blue-600 text-white border-blue-600'
+              : 'border-gray-300 hover:bg-gray-50'
+          ]">
+            {{ page }}
+          </button>
+        </template>
+
+        <!-- 下一页 -->
         <button @click="handlePageChange(currentPage + 1)" :disabled="currentPage >= totalPages"
-          class="px-3 py-1 text-sm border rounded-md disabled:opacity-50 disabled:cursor-not-allowed">
-          下一页
+          class="px-3 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
         </button>
+
+        <!-- 跳转到指定页 -->
+        <div class="flex items-center space-x-2 ml-4">
+          <span class="text-sm text-gray-700">跳至</span>
+          <input v-model="jumpPage" @keyup.enter="handleJumpPage" type="number" min="1" :max="totalPages"
+            class="w-16 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          <span class="text-sm text-gray-700">页</span>
+          <button @click="handleJumpPage" :disabled="!jumpPage || jumpPage < 1 || jumpPage > totalPages"
+            class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600 transition-colors">
+            跳转
+          </button>
+        </div>
+
       </div>
     </div>
   </div>
@@ -286,6 +332,8 @@ const pageSize = ref(10)
 const jobList = ref<JobInfo[]>([])
 const total = ref(0)
 const loading = ref(false)
+const jumpPage = ref<number | string>('')
+const isChangingPage = ref(false)
 
 const searchForm = reactive<JobInfoQueryRequest>({
   companyName: '',
@@ -320,10 +368,81 @@ const resetSearch = () => {
 }
 
 const handlePageChange = async (page: number) => {
-  if (page >= 1 && page <= totalPages.value) {
+  if (page >= 1 && page <= totalPages.value && !isChangingPage.value) {
+    isChangingPage.value = true
     currentPage.value = page
+    
+    // 添加动画延迟
+    await new Promise(resolve => setTimeout(resolve, 300))
+    
     await fetchData()
+    isChangingPage.value = false
   }
+}
+
+const handleJumpPage = async () => {
+  const page = Number(jumpPage.value)
+  if (page >= 1 && page <= totalPages.value && !isChangingPage.value) {
+    isChangingPage.value = true
+    currentPage.value = page
+    jumpPage.value = ''
+    
+    // 添加动画延迟
+    await new Promise(resolve => setTimeout(resolve, 300))
+    
+    await fetchData()
+    isChangingPage.value = false
+  }
+}
+
+const handlePageSizeChange = async () => {
+  if (!isChangingPage.value) {
+    isChangingPage.value = true
+    currentPage.value = 1
+    await fetchData()
+    isChangingPage.value = false
+  }
+}
+
+const getPageNumbers = () => {
+  const pages: (number | string)[] = []
+  const total = totalPages.value
+  const current = currentPage.value
+
+  if (total <= 7) {
+    // 总页数小于等于7，显示所有页码
+    for (let i = 1; i <= total; i++) {
+      pages.push(i)
+    }
+  } else {
+    // 总页数大于7，需要省略
+    if (current <= 4) {
+      // 当前页在前面
+      for (let i = 1; i <= 5; i++) {
+        pages.push(i)
+      }
+      pages.push('...')
+      pages.push(total)
+    } else if (current >= total - 3) {
+      // 当前页在后面
+      pages.push(1)
+      pages.push('...')
+      for (let i = total - 4; i <= total; i++) {
+        pages.push(i)
+      }
+    } else {
+      // 当前页在中间
+      pages.push(1)
+      pages.push('...')
+      for (let i = current - 1; i <= current + 1; i++) {
+        pages.push(i)
+      }
+      pages.push('...')
+      pages.push(total)
+    }
+  }
+
+  return pages
 }
 
 const fetchData = async () => {
@@ -347,16 +466,11 @@ const fetchData = async () => {
       }
     })
 
-    console.log('请求参数:', params) // 调试日志
-
     const response = await jobInfoApi.getList(params)
-
-    console.log('API响应:', response) // 调试日志
 
     jobList.value = response.data.list || []
     total.value = response.data.total || 0
 
-    console.log('设置的数据:', { jobList: jobList.value, total: total.value }) // 调试日志
   } catch (error) {
     console.error('获取招聘信息列表失败:', error)
     alert('获取数据失败，请重试')
@@ -510,3 +624,28 @@ onMounted(() => {
   fetchData()
 })
 </script>
+
+<style scoped>
+/* 表格容器动画 - 和后台管理页面一样的简单动画 */
+.table-container {
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.table-container.table-loading {
+  opacity: 0.3;
+  transform: translateY(10px);
+  pointer-events: none;
+}
+
+/* 表格行动画 */
+.table-container tbody tr {
+  transition: all 0.3s ease;
+}
+
+.table-container.table-loading tbody tr {
+  opacity: 0.5;
+  transform: translateX(-5px);
+}
+</style>
