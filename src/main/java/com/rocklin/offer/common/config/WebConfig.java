@@ -21,8 +21,10 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(jwtInterceptor)
                 // 拦截的路径
                 .addPathPatterns("/**")
-                // 排除登录、注册、首页精选应用接口
+                // 排除登录、注册
                 .excludePathPatterns(
+                        "/user/login",
+                        "/user/register",
                         "/health/**",
                         "/doc.html",
                         "/swagger-ui/**",

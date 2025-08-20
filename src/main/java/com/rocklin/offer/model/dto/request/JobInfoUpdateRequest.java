@@ -1,4 +1,4 @@
-package com.rocklin.offer.model.dto;
+package com.rocklin.offer.model.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

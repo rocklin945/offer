@@ -1,6 +1,6 @@
 package com.rocklin.offer.service;
 
-import com.rocklin.offer.model.dto.JobInfoQueryRequest;
+import com.rocklin.offer.model.dto.request.JobInfoQueryRequest;
 import com.rocklin.offer.model.entity.JobInfo;
 
 import java.util.List;

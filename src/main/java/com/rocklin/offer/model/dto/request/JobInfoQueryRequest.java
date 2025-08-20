@@ -1,27 +1,28 @@
-package com.rocklin.offer.model.dto;
+package com.rocklin.offer.model.dto.request;
 
+import com.rocklin.offer.common.request.PageRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import jakarta.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @ClassName JobInfoAddRequest
- * @Description 招聘信息添加请求
+ * @ClassName JobInfoQueryRequest
+ * @Description 招聘信息查询请求
  * @Author: rocklin
- * @Date 2025/8/19 21:50
+ * @Date 2025/8/19 21:15
  * @Version 1.0
  */
 @Data
-@Schema(description = "招聘信息添加请求")
-public class JobInfoAddRequest implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+@Schema(description = "招聘信息查询请求")
+public class JobInfoQueryRequest extends PageRequest implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Schema(description = "公司名称", required = true)
-    @NotBlank(message = "公司名称不能为空")
+    @Schema(description = "公司名称")
     private String companyName;
 
     @Schema(description = "公司类型")
@@ -41,25 +42,13 @@ public class JobInfoAddRequest implements Serializable {
 
     @Schema(description = "岗位(专业/岗位名称)")
     private String positionName;
-
+    
     @Schema(description = "投递进度")
     private String applicationStatus;
 
     @Schema(description = "开始时间")
     private Date startTime;
 
-    @Schema(description = "投递截止(尽快投递/x.x截止)")
+    @Schema(description = "投递截止")
     private String deadline;
-
-    @Schema(description = "相关链接")
-    private String relatedLink;
-
-    @Schema(description = "招聘公告")
-    private String announcement;
-
-    @Schema(description = "内推码")
-    private String referralCode;
-
-    @Schema(description = "备注")
-    private String remark;
 }

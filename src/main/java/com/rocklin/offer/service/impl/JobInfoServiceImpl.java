@@ -1,7 +1,7 @@
 package com.rocklin.offer.service.impl;
 
 import com.rocklin.offer.mapper.JobInfoMapper;
-import com.rocklin.offer.model.dto.JobInfoQueryRequest;
+import com.rocklin.offer.model.dto.request.JobInfoQueryRequest;
 import com.rocklin.offer.model.entity.JobInfo;
 import com.rocklin.offer.service.JobInfoService;
 import lombok.RequiredArgsConstructor;

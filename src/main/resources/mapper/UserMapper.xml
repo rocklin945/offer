@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rocklin.offer.mapper.UserMapper">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into user
+        (id,
+        user_account,
+        user_password,
+        user_name,
+        user_avatar,
+        user_profile,
+        user_role)
+        values
+        (UUID_SHORT(),
+        #{userAccount},
+        #{userPassword},
+        #{userName},
+        #{userAvatar},
+        #{userProfile},
+        #{userRole})
+    </insert>
+
+    <update id="updateById">
+        update user set
+        <if test="userPassword !=null">
+            user_password = #{userPassword},
+        </if>
+        <if test="userName != null">
+            user_name = #{userName},
+        </if>
+        <if test="userAvatar != null">
+            user_avatar = #{userAvatar},
+        </if>
+        <if test="userProfile != null">
+            user_profile = #{userProfile},
+        </if>
+        <if test="userRole != null">
+            user_role = #{userRole}
+        </if>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        delete from user where id = #{id}
+    </delete>
+
+    <select id="query" resultType="com.rocklin.offer.model.entity.User">
+        select * from user where user_account = #{userAccount}
+    </select>
+
+    <select id="queryByPassword" resultType="com.rocklin.offer.model.entity.User">
+        select * from user where user_account = #{userAccount} and user_password = #{userPassword}
+    </select>
+
+    <select id="selectById" resultType="com.rocklin.offer.model.entity.User">
+        select * from user where id = #{id}
+    </select>
+
+    <select id="selectListWithLimit" resultType="com.rocklin.offer.model.entity.User">
+        select * from user
+        <where>
+            <if test="req != null">
+                <if test="req.id != null">
+                    and id = #{req.id}
+                </if>
+                <if test="req.userRole != null">
+                    and user_role = #{req.userRole}
+                </if>
+                <if test="req.userName != null and req.userName != ''">
+                    and user_name like concat('%', #{req.userName}, '%')
+                </if>
+                <if test="req.userAccount != null and req.userAccount != ''">
+                    and user_account like concat('%', #{req.userAccount}, '%')
+                </if>
+                <if test="req.userProfile != null and req.userProfile != ''">
+                    and user_profile like concat('%', #{req.userProfile}, '%')
+                </if>
+            </if>
+        </where>
+        <choose>
+            <when test="req != null and req.sortField != null and req.sortField != ''">
+                order by
+                <choose>
+                    <when test="req.sortField == 'userId'">id</when>
+                    <when test="req.sortField == 'userName'">user_name</when>
+                    <when test="req.sortField == 'userAccount'">user_account</when>
+                    <when test="req.sortField == 'userRole'">user_role</when>
+                    <when test="req.sortField == 'createTime'">create_time</when>
+                    <when test="req.sortField == 'updateTime'">update_time</when>
+                    <otherwise>update_time</otherwise>
+                </choose>
+                <choose>
+                    <when test="req.sortOrder == 'asc'">ASC</when>
+                    <otherwise>DESC</otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                order by update_time DESC
+            </otherwise>
+        </choose>
+        limit #{offset}, #{limit}
+    </select>
+    <select id="countTotal" resultType="long">
+        select count(*) from user
+        <where>
+            <if test="req != null">
+                <if test="req.id != null">
+                    and id = #{req.id}
+                </if>
+                <if test="req.userRole != null">
+                    and user_role = #{req.userRole}
+                </if>
+                <if test="req.userName != null and req.userName != ''">
+                    and user_name like concat('%', #{req.userName}, '%')
+                </if>
+                <if test="req.userAccount != null and req.userAccount != ''">
+                    and user_account like concat('%', #{req.userAccount}, '%')
+                </if>
+                <if test="req.userProfile != null and req.userProfile != ''">
+                    and user_profile like concat('%', #{req.userProfile}, '%')
+                </if>
+            </if>
+        </where>
+    </select>
+</mapper>

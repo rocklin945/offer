@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
-import static com.rocklin.offer.common.constants.Constants.USERNAME;
+import static com.rocklin.offer.common.constants.Constants.USERACCOUNT;
 
 
 /**
@@ -32,13 +32,13 @@ public class JwtUtils {
     /**
      * 生成JWT token
      */
-    public String generateToken(String userId, String username) {
+    public String generateToken(String userId, String userAccount) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration);
 
         return Jwts.builder()
                 .setSubject(userId)
-                .claim(USERNAME, username)
+                .claim(USERACCOUNT, userAccount)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -55,18 +55,6 @@ public class JwtUtils {
                 .parseClaimsJws(token)
                 .getBody();
         return claims.getSubject();
-    }
-
-    /**
-     * 从token中获取用户名
-     */
-    public String getUsernameFromToken(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-        return (String) claims.get(USERNAME);
     }
 
     /**
@@ -91,21 +79,5 @@ public class JwtUtils {
             log.error("JWT claims string is empty");
         }
         return false;
-    }
-
-    /**
-     * 检查token是否过期
-     */
-    public boolean isTokenExpired(String token) {
-        try {
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-            return claims.getExpiration().before(new Date());
-        } catch (Exception e) {
-            return true;
-        }
     }
 }

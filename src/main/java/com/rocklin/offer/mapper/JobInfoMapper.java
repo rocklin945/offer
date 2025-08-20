@@ -1,6 +1,6 @@
 package com.rocklin.offer.mapper;
 
-import com.rocklin.offer.model.dto.JobInfoQueryRequest;
+import com.rocklin.offer.model.dto.request.JobInfoQueryRequest;
 import com.rocklin.offer.model.entity.JobInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

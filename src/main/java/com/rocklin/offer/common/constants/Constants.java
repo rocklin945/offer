@@ -10,14 +10,24 @@ package com.rocklin.offer.common.constants;
 public final class Constants {
     public static final String SUCCESS = "success";
 
-
     /**
      * JWT
      */
-    public static final String USERNAME = "username";
+    public static final String USERACCOUNT = "userAccount";
     public static final String AUTHORIZATION = "Authorization";
-    public static final String TOKEN = "token";
     public static final String BEARER = "Bearer ";
     public static final String USER_ID = "userId";
     public static final int TOKEN_START_INDEX = 7;
+
+    public static final String USER_PREFIX ="用户_";
+
+    /**
+     * 滑动窗口限流
+     */
+    public static final String SLIDING_RATE_LIMIT_KEY_PREFIX ="sliding_rate_limit:";
+    public static final String COLON =":";
+    public static final long ONE_SECOND =1000L;
+    public static final int ZERO =0;
+    public static final String X_FORWARDED_FOR ="X-Forwarded-For";
+    public static final String COMMA =",";
 }
