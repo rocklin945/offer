@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import type { UserLoginResponse } from '../api/userTypes'
 import { login, logout, getCurrentUser } from '../api/user'
 import { useRouter } from 'vue-router'
+import Message from '../components/Message'
 
 // JWT Token存储的key
 const TOKEN_KEY = 'user_token'
@@ -24,10 +25,11 @@ export const useUserStore = defineStore('user', () => {
         currentUser.value = res.data
         return res.data
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('获取用户信息失败', error)
       // 获取用户信息失败，清除token
       removeToken()
+      Message.error(error.response?.data?.message || '获取用户信息失败')
       return null
     } finally {
       loading.value = false
@@ -45,8 +47,9 @@ export const useUserStore = defineStore('user', () => {
         setToken(res.data.token)
         return res.data
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('登录失败', error)
+      Message.error(error.response?.data?.message || '登录失败')
       throw error
     } finally {
       loading.value = false
@@ -59,8 +62,9 @@ export const useUserStore = defineStore('user', () => {
       if (token.value) {
         await logout()
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('登出失败', error)
+      // 登出失败不显示错误消息，因为无论如何都会清除本地数据
     } finally {
       // 无论成功失败，都清除本地token和用户信息
       removeToken()

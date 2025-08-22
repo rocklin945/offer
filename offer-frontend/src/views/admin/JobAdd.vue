@@ -177,7 +177,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { jobInfoApi } from '@/api/jobInfo'
 import type { JobInfoAddRequest } from '@/api/types'
@@ -205,7 +205,7 @@ const form = reactive<JobInfoAddRequest>({
 
 const handleSubmit = async () => {
   if (!form.companyName.trim()) {
-    alert('请输入公司名称')
+    Message.error('请输入公司名称')
     return
   }
 
@@ -228,12 +228,13 @@ const handleSubmit = async () => {
     const response = await jobInfoApi.add(submitData)
     
     if (response.data) {
-      Message.success('添加成功')
+      Message.success(response.message || '添加成功')
       router.push('/admin/job-management')
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('添加失败:', error)
-    Message.error('添加失败，请重试')
+    const errorMessage = error.message || error.response?.data?.message || '添加失败，请重试'
+    Message.error(errorMessage)
   } finally {
     loading.value = false
   }

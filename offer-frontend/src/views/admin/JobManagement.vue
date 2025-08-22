@@ -20,6 +20,24 @@
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
         </div>
         <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">公司类型</label>
+          <select v-model="searchForm.companyType" 
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="">全部</option>
+            <option value="国企">国企</option>
+            <option value="外企">外企</option>
+            <option value="民企">民企</option>
+            <option value="合资">合资</option>
+            <option value="事业单位">事业单位</option>
+            <option value="其他">其他</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">所属行业</label>
+          <input v-model="searchForm.industry" type="text" placeholder="请输入所属行业" 
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+        </div>
+        <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">招聘类型</label>
           <select v-model="searchForm.recruitType" 
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
@@ -28,6 +46,21 @@
             <option value="社招">社招</option>
             <option value="实习">实习</option>
           </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">工作地点</label>
+          <input v-model="searchForm.workLocation" type="text" placeholder="请输入工作地点" 
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">招聘对象</label>
+          <input v-model="searchForm.recruitTarget" type="text" placeholder="如：2025年毕业" 
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">岗位名称</label>
+          <input v-model="searchForm.positionName" type="text" placeholder="请输入岗位名称" 
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">投递进度</label>
@@ -42,9 +75,36 @@
           </select>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">工作地点</label>
-          <input v-model="searchForm.workLocation" type="text" placeholder="请输入工作地点" 
+          <label class="block text-sm font-medium text-gray-700 mb-1">开始时间</label>
+          <input v-model="searchForm.startTime" type="date" 
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">投递截止</label>
+          <input v-model="searchForm.deadline" type="text" placeholder="请输入截止时间" 
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">排序字段</label>
+          <select v-model="searchForm.sortField" 
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="">默认排序</option>
+            <option value="companyName">公司名称</option>
+            <option value="recruitType">招聘类型</option>
+            <option value="workLocation">工作地点</option>
+            <option value="positionName">岗位名称</option>
+            <option value="applicationStatus">投递进度</option>
+            <option value="startTime">开始时间</option>
+            <option value="deadline">投递截止</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">排序方式</label>
+          <select v-model="searchForm.sortOrder" 
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="desc">从大到小</option>
+            <option value="asc">从小到大</option>
+          </select>
         </div>
       </div>
       <div class="flex justify-end space-x-2">
@@ -83,6 +143,9 @@
                   岗位信息
                 </th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  招聘对象
+                </th>
+                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                   招聘类型
                 </th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -90,6 +153,9 @@
                 </th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                   开始时间
+                </th>
+                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  投递截止
                 </th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                   操作
@@ -109,8 +175,10 @@
                   <div>
                     <div class="text-sm font-medium text-gray-900">{{ job.positionName || '-' }}</div>
                     <div class="text-sm text-gray-500">{{ job.workLocation || '-' }}</div>
-                    <div class="text-sm text-gray-500">{{ job.recruitTarget || '-' }}</div>
                   </div>
+                </td>
+                <td class="px-4 py-4 text-center text-sm text-gray-900">
+                  {{ job.recruitTarget || '-' }}
                 </td>
                 <td class="px-4 py-4 text-center">
                   <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
@@ -126,6 +194,9 @@
                 </td>
                 <td class="px-4 py-4 text-center text-sm text-gray-900">
                   {{ formatDate(job.startTime) || '-' }}
+                </td>
+                <td class="px-4 py-4 text-center text-sm text-gray-900">
+                  {{ job.deadline || '-' }}
                 </td>
                 <td class="px-4 py-4 text-center">
                   <div class="flex justify-center space-x-2">
@@ -229,9 +300,15 @@ const isChangingPage = ref(false)
 
 const searchForm = reactive<JobInfoQueryRequest>({
   companyName: '',
+  companyType: '',
+  industry: '',
   recruitType: '',
-  applicationStatus: '',
   workLocation: '',
+  recruitTarget: '',
+  positionName: '',
+  applicationStatus: '',
+  startTime: '',
+  deadline: '',
   sortField: '',
   sortOrder: 'desc'
 })
@@ -355,9 +432,10 @@ const fetchData = async () => {
     const response = await jobInfoApi.getList(params)
     jobList.value = response.data.list || []
     total.value = response.data.total || 0
-  } catch (error) {
+  } catch (error: any) {
     console.error('获取招聘信息列表失败:', error)
-    Message.error('获取数据失败，请重试')
+    const errorMessage = error.message || error.response?.data?.message || '获取数据失败，请重试'
+    Message.error(errorMessage)
   } finally {
     loading.value = false
   }
@@ -370,12 +448,12 @@ const handleDelete = async (id: string) => {
     try {
       const response = await jobInfoApi.delete(id)
       if (response.data) {
-        Message.success('删除成功')
+        Message.success(response.message || '删除成功')
         await fetchData()
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('删除失败:', error)
-      Message.error('删除失败')
+      Message.error(error.response?.data?.message || error.message || '删除失败')
     }
   }
 }

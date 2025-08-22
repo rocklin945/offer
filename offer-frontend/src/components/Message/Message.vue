@@ -48,15 +48,23 @@ const badgeClass = computed(() => {
 })
 
 const close = () => {
-  visible.value = false
-  emit('close')
+  try {
+    visible.value = false
+    emit('close')
+  } catch (error) {
+    console.error('Message close error:', error)
+  }
 }
 
 onMounted(() => {
-  if (props.duration > 0) {
-    setTimeout(() => {
-      close()
-    }, props.duration)
+  try {
+    if (props.duration > 0) {
+      setTimeout(() => {
+        close()
+      }, props.duration)
+    }
+  } catch (error) {
+    console.error('Message mount error:', error)
   }
 })
 </script>
