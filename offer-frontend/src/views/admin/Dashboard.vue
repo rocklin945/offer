@@ -1,11 +1,8 @@
 <template>
   <div class="space-y-6">
     <!-- 页面标题 -->
-    <div class="flex items-center justify-between">
+    <div class="mb-6">
       <h2 class="text-2xl font-bold text-gray-900">仪表盘</h2>
-      <div class="text-sm text-gray-500">
-        {{ currentTime }}
-      </div>
     </div>
 
     <!-- 统计卡片 -->
@@ -97,16 +94,15 @@
             </div>
           </router-link>
 
-          <router-link to="/" class="flex items-center p-3 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors">
+          <router-link to="/admin/user-job-apply-management" class="flex items-center p-3 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors">
             <div class="bg-purple-500 rounded-full p-2 mr-3">
               <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V7a2 2 0 012-2h5l2 2h6a2 2 0 012 2v6.5M7 7v10l4-2 4 2V7M7 7l4-2 4 2"></path>
               </svg>
             </div>
             <div>
-              <p class="font-medium text-gray-900">查看前台页面</p>
-              <p class="text-sm text-gray-500">预览用户看到的页面</p>
+              <p class="font-medium text-gray-900">管理用户投递记录</p>
+              <p class="text-sm text-gray-500">查看和管理所有投递记录</p>
             </div>
           </router-link>
         </div>
@@ -184,16 +180,16 @@ const fetchStats = async () => {
   try {
     // 获取招聘信息数量
     const jobResponse = await jobInfoApi.getList({ pageSize: 1000 })
-    const jobs = jobResponse.data.list || []
+    const jobs = jobResponse.data.records || jobResponse.data.list || []
     stats.value.jobCount = jobs.length
     
     // 获取用户数量
     const userResponse = await listUserByPage({ pageSize: 1000 })
-    const users = userResponse.data.list || []
+    const users = userResponse.data?.list || []
     stats.value.userCount = users.length
     
     // 计算会员数量（userRole为0或2的用户为会员）
-    stats.value.memberCount = users.filter(user => user.userRole === 0 || user.userRole === 2).length
+    stats.value.memberCount = users.filter((user: any) => user.userRole === 0 || user.userRole === 2).length
     
     // 模拟浏览量增长
     stats.value.totalViews = 12580 + Math.floor(Math.random() * 100)

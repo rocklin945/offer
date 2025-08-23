@@ -1,0 +1,467 @@
+<template>
+  <div class="space-y-6">
+    <!-- 页面标题 -->
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold text-gray-900 mb-2">我的投递记录</h1>
+      <p class="text-gray-600">查看和管理您的职位投递记录</p>
+    </div>
+
+    <!-- 搜索筛选区域 -->
+    <div class="card">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">公司名称</label>
+          <input v-model="searchForm.companyName" type="text" placeholder="请输入公司名称" class="input-field" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">岗位名称</label>
+          <input v-model="searchForm.positionName" type="text" placeholder="请输入岗位名称" class="input-field" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">投递状态</label>
+          <select v-model="searchForm.applicationStatus" class="input-field">
+            <option value="">全部状态</option>
+            <option value="已投递">已投递</option>
+            <option value="简历筛选">简历筛选</option>
+            <option value="笔试">笔试</option>
+            <option value="面试">面试</option>
+            <option value="终面">终面</option>
+            <option value="已通过">已通过</option>
+            <option value="已拒绝">已拒绝</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex justify-end space-x-2">
+        <button @click="resetSearch" class="btn-secondary">重置</button>
+        <button @click="handleSearch" class="btn-primary">搜索</button>
+      </div>
+    </div>
+
+    <!-- 数据表格 -->
+    <div class="card">
+      <div v-if="loading" class="text-center py-8">
+        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+        <p class="mt-2 text-gray-500">加载中...</p>
+      </div>
+
+      <div v-else-if="!hasData" class="text-center py-8">
+        <p class="text-gray-500">暂无投递记录</p>
+        <router-link to="/" class="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+          去投递职位
+        </router-link>
+      </div>
+
+      <div v-else class="overflow-x-auto">
+        <div class="table-container" :class="{ 'table-loading': isChangingPage }">
+          <table class="min-w-full table-fixed divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-48 whitespace-nowrap">
+                  公司信息
+                </th>
+                <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-48 whitespace-nowrap">
+                  岗位名称
+                </th>
+                <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
+                  投递状态
+                </th>
+                <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-36 whitespace-nowrap">
+                  投递时间
+                </th>
+                <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
+                  操作
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr v-for="item in tableData" :key="item.id" class="hover:bg-gray-50">
+                <td class="px-2 py-2 whitespace-nowrap text-center">
+                  <div class="text-sm font-medium text-gray-900">{{ item.companyName }}</div>
+                </td>
+                <td class="px-2 py-2 whitespace-nowrap text-center">
+                  <div class="text-sm text-gray-900">{{ item.positionName }}</div>
+                </td>
+                <td class="px-2 py-2 whitespace-nowrap text-center">
+                  <span :class="getStatusClass(item.applicationStatus)" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
+                    {{ item.applicationStatus }}
+                  </span>
+                </td>
+                <td class="px-2 py-2 whitespace-nowrap text-center text-sm text-gray-500">
+                  {{ formatDate(item.createTime) }}
+                </td>
+                <td class="px-2 py-2 whitespace-nowrap text-center">
+                  <div class="flex justify-center space-x-2">
+                    <button @click="handleUpdateStatus(item)" class="text-blue-600 hover:text-blue-900 text-xs">
+                      更新状态
+                    </button>
+                    <button @click="handleDelete(item)" class="text-red-600 hover:text-red-900 text-xs">
+                      删除
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 分页 -->
+    <div v-if="hasData && totalPages > 1" class="flex justify-between items-center">
+      <div class="text-sm text-gray-700">
+        共 {{ total }} 条记录
+      </div>
+      <div class="flex items-center space-x-2">
+        <!-- 上一页 -->
+        <button @click="handlePageChange(currentPage - 1)" :disabled="currentPage <= 1"
+          class="px-3 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </button>
+
+        <!-- 页码按钮 -->
+        <template v-for="page in getPageNumbers()" :key="page">
+          <button v-if="page === '...'" disabled class="px-3 py-2 text-sm text-gray-400 cursor-default">
+            ...
+          </button>
+          <button v-else @click="handlePageChange(page as number)" :class="[
+            'px-3 py-2 text-sm border rounded transition-colors',
+            currentPage === page
+              ? 'bg-blue-600 text-white border-blue-600'
+              : 'border-gray-300 hover:bg-gray-50'
+          ]">
+            {{ page }}
+          </button>
+        </template>
+
+        <!-- 下一页 -->
+        <button @click="handlePageChange(currentPage + 1)" :disabled="currentPage >= totalPages"
+          class="px-3 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+
+        <!-- 跳转到指定页 -->
+        <div class="flex items-center space-x-2 ml-4">
+          <span class="text-sm text-gray-700">跳至</span>
+          <input v-model="jumpPage" @keyup.enter="handleJumpPage" type="number" min="1" :max="totalPages"
+            class="w-16 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          <span class="text-sm text-gray-700">页</span>
+          <button @click="handleJumpPage" :disabled="!jumpPage || jumpPage < 1 || jumpPage > totalPages"
+            class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600 transition-colors">
+            跳转
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 更新状态弹窗 -->
+    <div v-if="showUpdateModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-6 w-96">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">更新投递状态</h3>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">选择状态</label>
+          <select v-model="updateForm.applicationStatus" class="input-field">
+            <option value="已投递">已投递</option>
+            <option value="简历筛选">简历筛选</option>
+            <option value="笔试">笔试</option>
+            <option value="面试">面试</option>
+            <option value="终面">终面</option>
+            <option value="已通过">已通过</option>
+            <option value="已拒绝">已拒绝</option>
+          </select>
+        </div>
+        <div class="flex justify-end space-x-2">
+          <button @click="showUpdateModal = false" class="btn-secondary">
+            取消
+          </button>
+          <button @click="confirmUpdate" class="btn-primary">
+            确认
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, reactive, computed, onMounted } from 'vue'
+import { userJobApplyApi, type UserJobApplyDTO, type UserJobApplyQueryRequest } from '../api/userJobApply'
+import Message from '../components/Message'
+import Confirm from '../components/Confirm'
+
+// 响应式数据
+const currentPage = ref(1)
+const pageSize = ref(10)
+const tableData = ref<UserJobApplyDTO[]>([])
+const total = ref(0)
+const loading = ref(false)
+const jumpPage = ref<number | string>('')
+const isChangingPage = ref(false)
+
+// 搜索表单
+const searchForm = reactive<UserJobApplyQueryRequest>({
+  companyName: '',
+  positionName: '',
+  applicationStatus: ''
+})
+
+// 更新状态相关
+const showUpdateModal = ref(false)
+const updateForm = reactive({
+  id: 0,
+  applicationStatus: ''
+})
+
+// 计算属性
+const hasData = computed(() => tableData.value.length > 0)
+const totalPages = computed(() => Math.ceil(total.value / pageSize.value))
+
+// 获取数据
+const fetchData = async () => {
+  loading.value = true
+  try {
+    const params: UserJobApplyQueryRequest = {
+      pageNum: currentPage.value,
+      pageSize: pageSize.value,
+      ...searchForm
+    }
+    
+    // 过滤空值
+    Object.keys(params).forEach(key => {
+      if (params[key as keyof UserJobApplyQueryRequest] === '') {
+        delete params[key as keyof UserJobApplyQueryRequest]
+      }
+    })
+
+    const response = await userJobApplyApi.getPage(params)
+    
+    // axios响应拦截器返回response对象，实际数据在response.data中
+    if (response && response.data && response.data.data) {
+      const pageData = response.data.data
+      tableData.value = pageData.list || pageData.records || []
+      total.value = Number(pageData.total) || 0
+    } else {
+      Message.error('响应格式错误')
+    }
+  } catch (error: any) {
+    console.error('获取投递记录失败:', error)
+    Message.error(error.message || '获取数据失败')
+  } finally {
+    loading.value = false
+  }
+}
+
+// 搜索
+const handleSearch = async () => {
+  currentPage.value = 1
+  await fetchData()
+}
+
+// 重置搜索
+const resetSearch = () => {
+  Object.assign(searchForm, {
+    companyName: '',
+    positionName: '',
+    applicationStatus: ''
+  })
+  handleSearch()
+}
+
+// 分页处理
+const handlePageChange = async (page: number) => {
+  if (page >= 1 && page <= totalPages.value && !isChangingPage.value) {
+    isChangingPage.value = true
+    currentPage.value = page
+    
+    // 添加动画延迟
+    await new Promise(resolve => setTimeout(resolve, 300))
+    
+    await fetchData()
+    isChangingPage.value = false
+  }
+}
+
+const handleJumpPage = async () => {
+  const page = Number(jumpPage.value)
+  if (page >= 1 && page <= totalPages.value && !isChangingPage.value) {
+    isChangingPage.value = true
+    currentPage.value = page
+    jumpPage.value = ''
+    
+    // 添加动画延迟
+    await new Promise(resolve => setTimeout(resolve, 300))
+    
+    await fetchData()
+    isChangingPage.value = false
+  }
+}
+
+const getPageNumbers = () => {
+  const pages: (number | string)[] = []
+  const total = totalPages.value
+  const current = currentPage.value
+
+  if (total <= 7) {
+    // 总页数小于等于7，显示所有页码
+    for (let i = 1; i <= total; i++) {
+      pages.push(i)
+    }
+  } else {
+    // 总页数大于7，需要省略
+    if (current <= 4) {
+      // 当前页在前面
+      for (let i = 1; i <= 5; i++) {
+        pages.push(i)
+      }
+      pages.push('...')
+      pages.push(total)
+    } else if (current >= total - 3) {
+      // 当前页在后面
+      pages.push(1)
+      pages.push('...')
+      for (let i = total - 4; i <= total; i++) {
+        pages.push(i)
+      }
+    } else {
+      // 当前页在中间
+      pages.push(1)
+      pages.push('...')
+      for (let i = current - 1; i <= current + 1; i++) {
+        pages.push(i)
+      }
+      pages.push('...')
+      pages.push(total)
+    }
+  }
+
+  return pages
+}
+
+// 更新状态
+const handleUpdateStatus = (item: UserJobApplyDTO) => {
+  updateForm.id = item.id
+  updateForm.applicationStatus = item.applicationStatus
+  showUpdateModal.value = true
+}
+
+// 确认更新
+const confirmUpdate = async () => {
+  try {
+    const response = await userJobApplyApi.update(updateForm)
+    // axios拦截器返回response对象，实际数据在response.data中
+    if (response.data.statusCode === 200) {
+      // 更新本地数据
+      const index = tableData.value.findIndex(item => item.id === updateForm.id)
+      if (index !== -1) {
+        tableData.value[index].applicationStatus = updateForm.applicationStatus
+      }
+      
+      Message.success('状态更新成功')
+      showUpdateModal.value = false
+    } else {
+      Message.error(response.data.message || '更新失败')
+    }
+  } catch (error: any) {
+    console.error('更新状态失败:', error)
+    Message.error(error.message || '更新失败')
+  }
+}
+
+// 删除
+const handleDelete = async (item: UserJobApplyDTO) => {
+  const confirmed = await Confirm.show({
+    title: '确认删除',
+    message: `确定要删除对 ${item.companyName} - ${item.positionName} 的投递记录吗？`,
+    confirmText: '删除',
+    cancelText: '取消',
+    type: 'danger'
+  })
+  
+  if (confirmed) {
+    try {
+      const response = await userJobApplyApi.delete(item.id)
+      // 修复响应格式判断
+      if (response.data.statusCode === 200) {
+        Message.success('删除成功')
+        fetchData()
+      } else {
+        Message.error(response.data.message || '删除失败')
+      }
+    } catch (error: any) {
+      console.error('删除失败:', error)
+      Message.error(error.message || '删除失败')
+    }
+  }
+}
+
+// 获取状态样式
+const getStatusClass = (status: string) => {
+  switch (status) {
+    case '已投递':
+      return 'bg-blue-100 text-blue-800'
+    case '简历筛选':
+      return 'bg-yellow-100 text-yellow-800'
+    case '笔试':
+      return 'bg-purple-100 text-purple-800'
+    case '面试':
+      return 'bg-indigo-100 text-indigo-800'
+    case '终面':
+      return 'bg-pink-100 text-pink-800'
+    case '已通过':
+      return 'bg-green-100 text-green-800'
+    case '已拒绝':
+      return 'bg-red-100 text-red-800'
+    default:
+      return 'bg-gray-100 text-gray-800'
+  }
+}
+
+// 格式化日期
+const formatDate = (dateString?: string) => {
+  if (!dateString) return ''
+
+  try {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('zh-CN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    })
+  } catch (error) {
+    return dateString
+  }
+}
+
+// 页面加载时获取数据
+onMounted(() => {
+  fetchData()
+})
+</script>
+
+<style scoped>
+/* 表格容器动画 - 和JobList页面一样的简单动画 */
+.table-container {
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.table-container.table-loading {
+  opacity: 0.3;
+  transform: translateY(10px);
+  pointer-events: none;
+}
+
+/* 表格行动画 */
+.table-container tbody tr {
+  transition: all 0.3s ease;
+}
+
+.table-container.table-loading tbody tr {
+  opacity: 0.5;
+  transform: translateX(-5px);
+}
+</style>

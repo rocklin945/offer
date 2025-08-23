@@ -19,13 +19,14 @@ class MessageManager {
     container.id = id
     document.body.appendChild(container)
 
+    const self = this
     const app = createApp({
       render() {
         return h(MessageComponent, {
           ...opts,
           id,
-          onClose: () => this.close(id),
-          onDestroy: () => this.destroy(id)
+          onClose: () => self.close(id),
+          onDestroy: () => self.destroy(id)
         })
       }
     })

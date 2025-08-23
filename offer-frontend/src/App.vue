@@ -21,6 +21,11 @@
                 active-class="text-primary-600 bg-primary-50">
                 招聘列表
               </router-link>
+              <router-link v-if="userStore.currentUser" to="/my-apply"
+                class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                active-class="text-primary-600 bg-primary-50">
+                我的投递记录
+              </router-link>
             </nav>
           </div>
 

@@ -11,6 +11,12 @@ const router = createRouter({
       name: 'JobList',
       component: JobList
     },
+    {
+      path: '/my-apply',
+      name: 'MyJobApply',
+      component: () => import('@/views/MyJobApply.vue'),
+      meta: { requiresAuth: true }
+    },
     // 后台管理路由
     {
       path: '/admin',
@@ -49,6 +55,12 @@ const router = createRouter({
           name: 'UserManagement',
           component: () => import('@/views/admin/UserManagement.vue'),
           meta: { title: '用户管理', icon: 'user', requiresAuth: true, requiresAdmin: true }
+        },
+        {
+          path: 'user-job-apply-management',
+          name: 'UserJobApplyManagement',
+          component: () => import('@/views/admin/UserJobApplyManagement.vue'),
+          meta: { title: '投递记录管理', icon: 'apply', requiresAuth: true, requiresAdmin: true }
         }
       ]
     }

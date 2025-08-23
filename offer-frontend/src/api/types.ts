@@ -1,37 +1,57 @@
-// API响应类型定义
+// 基础响应类型
 export interface BaseResponse<T = any> {
   statusCode: number
-  message: string
   data: T
+  message: string
 }
 
+// 分页响应类型
 export interface PageResponse<T> {
-  list: T[]
+  records: T[]
   total: number
-  pageNum: number
-  pageSize: number
+  size: number
+  current: number
   pages: number
-  hasNext: boolean
-  hasPrevious: boolean
+}
+
+// 删除请求类型
+export interface DeleteRequest {
+  id: string | number
 }
 
 // 招聘信息相关类型
 export interface JobInfo {
-  id?: string  // 修改为字符串类型避免Long精度丢失
+  id: number
   companyName: string
-  companyType?: string
-  industry?: string
-  recruitType?: string
-  workLocation?: string
-  recruitTarget?: string
-  positionName?: string
-  applicationStatus?: string
-  startTime?: string
-  deadline?: string
-  relatedLink?: string
-  announcement?: string
-  referralCode?: string
-  remark?: string
+  companyType: string
+  industry: string
+  recruitType: string
+  workLocation: string
+  recruitTarget: string
+  positionName: string
+  startTime: string
+  deadline: string
+  relatedLink: string
+  announcement: string
+  referralCode: string
+  remark: string
+}
+
+export interface JobInfoDTO {
+  id: number
+  companyName: string
+  companyType: string
+  industry: string
+  recruitType: string
+  workLocation: string
+  recruitTarget: string
+  positionName: string
+  startTime: string
+  deadline: string
+  relatedLink: string
+  announcement: string
+  referralCode: string
+  remark: string
 }
 
 export interface JobInfoAddRequest {
@@ -41,8 +61,7 @@ export interface JobInfoAddRequest {
   recruitType?: string
   workLocation?: string
   recruitTarget?: string
-  positionName?: string
-  applicationStatus?: string
+  positionName: string
   startTime?: string
   deadline?: string
   relatedLink?: string
@@ -51,13 +70,8 @@ export interface JobInfoAddRequest {
   remark?: string
 }
 
-export interface JobInfoUpdateRequest extends JobInfoAddRequest {
-  id: string | number  // 前端使用字符串，API层转换为数字
-}
-
-export interface JobInfoQueryRequest {
-  pageNum?: number
-  pageSize?: number
+export interface JobInfoUpdateRequest {
+  id: number
   companyName?: string
   companyType?: string
   industry?: string
@@ -65,13 +79,21 @@ export interface JobInfoQueryRequest {
   workLocation?: string
   recruitTarget?: string
   positionName?: string
-  applicationStatus?: string
   startTime?: string
   deadline?: string
-  sortField?: string
-  sortOrder?: string
+  relatedLink?: string
+  announcement?: string
+  referralCode?: string
+  remark?: string
 }
 
-export interface DeleteRequest {
-  id: string  // 修改为字符串类型避免Long精度丢失
+export interface JobInfoQueryRequest {
+  companyName?: string
+  positionName?: string
+  recruitType?: string
+  workLocation?: string
+  pageNum?: number
+  pageSize?: number
+  sortField?: string
+  sortOrder?: string
 }

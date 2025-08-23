@@ -39,6 +39,7 @@
                 <path v-if="item.name === 'dashboard'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"></path>
                 <path v-else-if="item.name === 'job-management'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                 <path v-else-if="item.name === 'user-management'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                <path v-else-if="item.name === 'user-job-apply-management'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
               </svg>
             </div>
             <div v-if="!sidebarCollapsed" class="ml-3 overflow-hidden">
@@ -53,24 +54,38 @@
     <main class="flex-1 flex flex-col">
       <!-- 面包屑导航 -->
       <div class="bg-white border-b border-gray-200 px-6 py-4">
-        <div class="flex items-center">
-          <!-- 汉堡菜单按钮 -->
-          <button @click="toggleSidebar" class="p-2 rounded-md hover:bg-gray-100 transition-colors mr-4">
-            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-          </button>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <!-- 汉堡菜单按钮 -->
+            <button @click="toggleSidebar" class="p-2 rounded-md hover:bg-gray-100 transition-colors mr-4">
+              <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+            </button>
+            
+            <!-- 面包屑 -->
+            <nav class="flex items-center text-sm text-gray-500">
+              <router-link to="/admin/dashboard" class="hover:text-blue-600 transition-colors">
+                首页
+              </router-link>
+              <svg class="mx-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+              <span class="text-gray-900 font-medium">{{ getCurrentPageTitle() }}</span>
+            </nav>
+          </div>
           
-          <!-- 面包屑 -->
-          <nav class="flex items-center text-sm text-gray-500">
-            <router-link to="/admin/dashboard" class="hover:text-blue-600 transition-colors">
-              首页
-            </router-link>
-            <svg class="mx-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          <!-- 查看前台页面按钮 -->
+          <router-link 
+            to="/" 
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors text-sm"
+          >
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
             </svg>
-            <span class="text-gray-900 font-medium">{{ getCurrentPageTitle() }}</span>
-          </nav>
+            查看前台页面
+          </router-link>
         </div>
       </div>
 
@@ -121,6 +136,11 @@ const menuItems = [
     name: 'user-management',
     path: '/admin/user-management',
     label: '用户管理'
+  },
+  {
+    name: 'user-job-apply-management',
+    path: '/admin/user-job-apply-management',
+    label: '投递记录管理'
   }
 ]
 </script>

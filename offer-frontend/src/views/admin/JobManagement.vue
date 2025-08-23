@@ -261,6 +261,10 @@
               <input v-model="jumpPage" @keyup.enter="handleJumpPage" type="number" min="1" :max="totalPages"
                 class="w-16 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
               <span class="text-sm text-gray-700">页</span>
+              <button @click="handleJumpPage" :disabled="!jumpPage || Number(jumpPage) < 1 || Number(jumpPage) > totalPages"
+                class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600">
+                跳转
+              </button>
             </div>
             
             <!-- 每页显示条数 -->

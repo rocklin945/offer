@@ -51,17 +51,6 @@
           <input v-model="searchForm.positionName" type="text" placeholder="请输入岗位名称" class="input-field" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">投递进度</label>
-          <select v-model="searchForm.applicationStatus" class="input-field">
-            <option value="">全部</option>
-            <option value="未投递">未投递</option>
-            <option value="已投递">已投递</option>
-            <option value="面试中">面试中</option>
-            <option value="已通过">已通过</option>
-            <option value="已拒绝">已拒绝</option>
-          </select>
-        </div>
-        <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">开始时间</label>
           <input v-model="searchForm.startTime" type="date" class="input-field" />
         </div>
@@ -133,10 +122,6 @@
                   招聘类型
                 </th>
                 <th
-                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
-                  投递进度
-                </th>
-                <th
                   class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-36 whitespace-nowrap">
                   开始时间
                 </th>
@@ -159,6 +144,10 @@
                 <th
                   class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-44 whitespace-nowrap">
                   备注
+                </th>
+                <th
+                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
+                  加入我的投递
                 </th>
               </tr>
             </thead>
@@ -212,12 +201,6 @@
                     {{ job.recruitType || '-' }}
                   </span>
                 </td>
-                <td class="px-2 py-2 whitespace-nowrap text-center">
-                  <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
-                    :class="getStatusClass(job.applicationStatus)">
-                    {{ job.applicationStatus || '-' }}
-                  </span>
-                </td>
                 <td class="px-2 py-2 whitespace-nowrap text-center text-sm text-gray-900">
                   {{ formatDate(job.startTime) || '-' }}
                 </td>
@@ -259,6 +242,17 @@
                     {{ job.remark }}
                   </div>
                   <span v-else class="text-gray-400">-</span>
+                </td>
+                <td class="px-2 py-2 whitespace-nowrap text-center">
+                  <button
+                    @click="handleApply(job)"
+                    class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-600 bg-blue-100 rounded-full hover:bg-blue-200 transition-colors"
+                  >
+                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    加入我的投递
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -324,8 +318,12 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue'
 import { jobInfoApi } from '@/api/jobInfo'
+import { userJobApplyApi } from '@/api/userJobApply'
 import type { JobInfoQueryRequest, JobInfo } from '@/api/types'
 import Message from '@/components/Message'
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
 
 // 响应式数据
 const currentPage = ref(1)
@@ -498,6 +496,41 @@ const handleDelete = async (id: string) => {
   }
 }
 
+// 处理投递
+const handleApply = async (job: JobInfo) => {
+  // 检查用户是否已登录
+  if (!userStore.currentUser) {
+    Message.warning('请先登录后再投递职位')
+    return
+  }
+
+  try {
+    const response = await userJobApplyApi.add({
+      jobId: job.id,
+      applicationStatus: '已投递'
+    })
+    
+    if (response.code === 0) {
+      Message.success('投递成功！')
+    } else {
+      Message.error(response.message || '投递失败')
+    }
+  } catch (error: any) {
+    console.error('投递失败:', error)
+    const errorMessage = error.message || error.response?.data?.message || '投递失败'
+    
+    // 如果是重复投递的错误，给出友好提示
+    if (errorMessage.includes('已经投递过')) {
+      Message.warning('您已经投递过该职位了')
+    } else if (errorMessage.includes('登录信息失效')) {
+      Message.warning('登录信息已失效，请重新登录')
+      userStore.removeToken()
+    } else {
+      Message.error(errorMessage)
+    }
+  }
+}
+
 // 格式化日期
 const formatDate = (dateString?: string) => {
   if (!dateString) return ''
@@ -623,7 +656,10 @@ const getStatusClass = (status?: string) => {
 }
 
 // 生命周期
-onMounted(() => {
+onMounted(async () => {
+  // 初始化用户信息
+  await userStore.initUserInfo()
+  // 获取招聘信息
   fetchData()
 })
 </script>

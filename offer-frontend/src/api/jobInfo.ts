@@ -3,6 +3,7 @@ import type {
   BaseResponse,
   PageResponse,
   JobInfo,
+  JobInfoDTO,
   JobInfoAddRequest,
   JobInfoUpdateRequest,
   JobInfoQueryRequest,
@@ -34,6 +35,11 @@ export const jobInfoApi = {
 
   // 获取招聘信息列表
   getList: (params: JobInfoQueryRequest): Promise<BaseResponse<PageResponse<JobInfo>>> => {
+    return request.post('/jobInfo/list', params).then(res => res.data)
+  },
+
+  // 分页获取招聘信息（别名方法，兼容JobList.vue）
+  getPage: (params: JobInfoQueryRequest): Promise<BaseResponse<PageResponse<JobInfo>>> => {
     return request.post('/jobInfo/list', params).then(res => res.data)
   }
 }

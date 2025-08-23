@@ -43,9 +43,6 @@ public class JobInfoDTO implements Serializable {
     @Schema(description = "岗位(专业/岗位名称)")
     private String positionName;
 
-    @Schema(description = "投递进度")
-    private String applicationStatus;
-
     @Schema(description = "开始时间")
     private Date startTime;
 

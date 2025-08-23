@@ -58,11 +58,6 @@ public class JobInfo implements Serializable {
     private String positionName;
 
     /**
-     * 投递进度
-     */
-    private String applicationStatus;
-
-    /**
      * 开始时间
      */
     private Date startTime;

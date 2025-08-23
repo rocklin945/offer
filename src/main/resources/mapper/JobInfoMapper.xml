@@ -12,7 +12,6 @@
         <result column="work_location" property="workLocation" jdbcType="VARCHAR"/>
         <result column="recruit_target" property="recruitTarget" jdbcType="VARCHAR"/>
         <result column="position_name" property="positionName" jdbcType="VARCHAR"/>
-        <result column="application_status" property="applicationStatus" jdbcType="VARCHAR"/>
         <result column="start_time" property="startTime" jdbcType="TIMESTAMP"/>
         <result column="deadline" property="deadline" jdbcType="VARCHAR"/>
         <result column="related_link" property="relatedLink" jdbcType="VARCHAR"/>
