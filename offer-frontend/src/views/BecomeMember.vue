@@ -72,6 +72,38 @@
               </svg>
               <span class="text-gray-700">基础投递功能</span>
             </li>
+            <li class="flex items-center">
+              <svg class="w-5 h-5 text-red-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              <span class="text-gray-700">无法查看全部职位</span>
+            </li>
+            <li class="flex items-center">
+              <svg class="w-5 h-5 text-red-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              <span class="text-gray-700">无优先内推机会</span>
+            </li>
+            <li class="flex items-center">
+              <svg class="w-5 h-5 text-red-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              <span class="text-gray-700">无投递数据分析</span>
+            </li>
+            <li class="flex items-center">
+              <svg class="w-5 h-5 text-red-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              <span class="text-gray-700">无专属客服支持</span>
+            </li>
           </ul>
 
           <button disabled class="w-full py-3 px-6 rounded-xl bg-gray-100 text-gray-400 font-semibold cursor-not-allowed">
@@ -104,6 +136,14 @@
                   clip-rule="evenodd" />
               </svg>
               <span class="text-gray-700">无限制浏览所有职位</span>
+            </li>
+            <li class="flex items-center">
+              <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+              <span class="text-gray-700">享受投递记录功能</span>
             </li>
             <li class="flex items-center">
               <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
@@ -147,7 +187,7 @@
             <div class="mb-4">
               <span class="text-lg text-gray-600">入群限时享特惠</span>
             </div>
-            <p class="text-gray-600">专业的售后+就业咨询</p>
+            <p class="text-gray-600">专业售后+就业咨询</p>
           </div>
 
           <div class="text-center mb-8">
@@ -244,7 +284,7 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <!-- 评价卡片 1 -->
+          <!-- 评价卡片 1 - 校招 -->
           <div
             class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
             <div class="flex items-center mb-4">
@@ -254,18 +294,18 @@
               </div>
               <div class="ml-4">
                 <h4 class="font-semibold text-gray-900">张同学</h4>
-                <p class="text-sm text-gray-500">前端开发工程师</p>
+                <p class="text-sm text-gray-500">清华大学 · 现就职于字节跳动</p>
               </div>
             </div>
             <div class="flex mb-3">
               <span class="text-yellow-400">★★★★★</span>
             </div>
             <p class="text-gray-700 leading-relaxed">
-              "MyOffer真的帮了我大忙！作为会员可以查看所有职位信息，投递记录管理也很方便。最终拿到了心仪公司的offer！"
+              "通过MyOffer会员功能，我能够查看到字节跳动的内推职位，投递记录管理很方便。最终顺利拿到了抖音前端开发的offer！"
             </p>
           </div>
 
-          <!-- 评价卡片 2 -->
+          <!-- 评价卡片 2 - 社招跳槽 -->
           <div
             class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
             <div class="flex items-center mb-4">
@@ -275,18 +315,18 @@
               </div>
               <div class="ml-4">
                 <h4 class="font-semibold text-gray-900">李女士</h4>
-                <p class="text-sm text-gray-500">产品经理</p>
+                <p class="text-sm text-gray-500">3年经验 · 从阿里跳槽至腾讯</p>
               </div>
             </div>
             <div class="flex mb-3">
               <span class="text-yellow-400">★★★★★</span>
             </div>
             <p class="text-gray-700 leading-relaxed">
-              "界面简洁易用，职位信息很全面。会员功能让我能够深度搜索，找到了很多优质岗位。强烈推荐！"
+              "工作3年想跳槽涨薪，MyOffer会员功能让我看到了腾讯高级产品经理的内推机会。薪资涨了40%，非常满意！"
             </p>
           </div>
 
-          <!-- 评价卡片 3 -->
+          <!-- 评价卡片 3 - 技术转管理 -->
           <div
             class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
             <div class="flex items-center mb-4">
@@ -296,18 +336,18 @@
               </div>
               <div class="ml-4">
                 <h4 class="font-semibold text-gray-900">王先生</h4>
-                <p class="text-sm text-gray-500">Java开发工程师</p>
+                <p class="text-sm text-gray-500">5年经验 · 现任美团技术总监</p>
               </div>
             </div>
             <div class="flex mb-3">
               <span class="text-yellow-400">★★★★★</span>
             </div>
             <p class="text-gray-700 leading-relaxed">
-              "作为技术人员，我很看重平台的专业性。MyOffer的职位质量很高，投递流程也很顺畅。值得信赖！"
+              "从Java开发转技术管理，MyOffer帮我找到了美团技术总监岗位。平台的高端职位资源很丰富，投递流程专业！"
             </p>
           </div>
 
-          <!-- 评价卡片 4 -->
+          <!-- 评价卡片 4 - 校招 -->
           <div
             class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
             <div class="flex items-center mb-4">
@@ -317,18 +357,18 @@
               </div>
               <div class="ml-4">
                 <h4 class="font-semibold text-gray-900">陈同学</h4>
-                <p class="text-sm text-gray-500">应届毕业生</p>
+                <p class="text-sm text-gray-500">上海交通大学 · 现就职于小红书</p>
               </div>
             </div>
             <div class="flex mb-3">
               <span class="text-yellow-400">★★★★★</span>
             </div>
             <p class="text-gray-700 leading-relaxed">
-              "刚毕业找工作很迷茫，MyOffer帮我整理了投递记录，还能看到更多职位。现在已经成功入职了！"
+              "应届毕业找工作很迷茫，MyOffer的投递记录管理和数据分析功能帮了大忙。现在已经成功入职小红书算法工程师！"
             </p>
           </div>
 
-          <!-- 评价卡片 5 -->
+          <!-- 评价卡片 5 - 转行 -->
           <div
             class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
             <div class="flex items-center mb-4">
@@ -338,18 +378,18 @@
               </div>
               <div class="ml-4">
                 <h4 class="font-semibold text-gray-900">刘女士</h4>
-                <p class="text-sm text-gray-500">UI设计师</p>
+                <p class="text-sm text-gray-500">转行成功 · 从传统行业到网易</p>
               </div>
             </div>
             <div class="flex mb-3">
               <span class="text-yellow-400">★★★★★</span>
             </div>
             <p class="text-gray-700 leading-relaxed">
-              "设计很棒，用户体验很好！会员功能让我能够查看更多设计类职位，找到了理想的工作环境。"
+              "从传统制造业转行互联网，MyOffer会员功能让我看到了网易的UI设计师岗位。转行成功，薪资翻倍！"
             </p>
           </div>
 
-          <!-- 评价卡片 6 -->
+          <!-- 评价卡片 6 - 职业发展 -->
           <div
             class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
             <div class="flex items-center mb-4">
@@ -359,14 +399,77 @@
               </div>
               <div class="ml-4">
                 <h4 class="font-semibold text-gray-900">赵先生</h4>
-                <p class="text-sm text-gray-500">运营总监</p>
+                <p class="text-sm text-gray-500">7年经验 · 现任滴滴运营总监</p>
               </div>
             </div>
             <div class="flex mb-3">
               <span class="text-yellow-400">★★★★★</span>
             </div>
             <p class="text-gray-700 leading-relaxed">
-              "平台很专业，职位信息准确及时。会员服务物超所值，帮我快速找到了合适的管理岗位。"
+              "从运营专员到运营总监，MyOffer陪伴了我的职业成长。现在在滴滴负责用户增长，平台的职位信息准确及时！"
+            </p>
+          </div>
+
+          <!-- 评价卡片 7 - 海归求职 -->
+          <div
+            class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+            <div class="flex items-center mb-4">
+              <div
+                class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                周
+              </div>
+              <div class="ml-4">
+                <h4 class="font-semibold text-gray-900">周女士</h4>
+                <p class="text-sm text-gray-500">海归硕士 · 现就职于蚂蚁金服</p>
+              </div>
+            </div>
+            <div class="flex mb-3">
+              <span class="text-yellow-400">★★★★★</span>
+            </div>
+            <p class="text-gray-700 leading-relaxed">
+              "英国留学回国求职，MyOffer帮我快速了解国内互联网行情。成功拿到蚂蚁金服风控算法工程师offer，待遇很满意！"
+            </p>
+          </div>
+
+          <!-- 评价卡片 8 - 中年跳槽 -->
+          <div
+            class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+            <div class="flex items-center mb-4">
+              <div
+                class="w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                吴
+              </div>
+              <div class="ml-4">
+                <h4 class="font-semibold text-gray-900">吴先生</h4>
+                <p class="text-sm text-gray-500">10年经验 · 现任京东架构师</p>
+              </div>
+            </div>
+            <div class="flex mb-3">
+              <span class="text-yellow-400">★★★★★</span>
+            </div>
+            <p class="text-gray-700 leading-relaxed">
+              "35岁跳槽压力很大，MyOffer的高级会员功能让我看到了京东架构师岗位。年龄不是问题，技术实力才是王道！"
+            </p>
+          </div>
+
+          <!-- 评价卡片 9 - 创业回归 -->
+          <div
+            class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+            <div class="flex items-center mb-4">
+              <div
+                class="w-12 h-12 bg-gradient-to-r from-red-500 to-pink-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                孙
+              </div>
+              <div class="ml-4">
+                <h4 class="font-semibold text-gray-900">孙女士</h4>
+                <p class="text-sm text-gray-500">前创业者 · 现任拼多多产品总监</p>
+              </div>
+            </div>
+            <div class="flex mb-3">
+              <span class="text-yellow-400">★★★★★</span>
+            </div>
+            <p class="text-gray-700 leading-relaxed">
+              "创业失败后重新求职，MyOffer帮我重新规划职业方向。现在在拼多多做产品总监，创业经历反而成了加分项！"
             </p>
           </div>
         </div>
@@ -423,18 +526,18 @@ const faqs = ref([
     open: false
   },
   {
-    question: '如何取消会员？',
-    answer: '您可以随时在个人中心取消自动续费，已购买的会员时长仍然有效。',
+    question: '会员能否共享账号，或者二次售卖？',
+    answer: 'MyOffer拥有共号检测，如果发现有违规情况，会自动取消会员。',
     open: false
   },
   {
     question: '支持哪些支付方式？',
-    answer: '支持微信支付、支付宝、银行卡等多种支付方式。',
+    answer: '支持微信支付、支付宝等多种支付方式。',
     open: false
   },
   {
     question: '会员可以退款吗？',
-    answer: '支持7天无理由退款，超过7天的会员费用将按比例退还。',
+    answer: '支持7天无理由退款。',
     open: false
   }
 ])

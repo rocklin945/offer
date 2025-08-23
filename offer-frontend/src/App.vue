@@ -26,10 +26,15 @@
                 active-class="text-primary-600 bg-primary-50">
                 我的投递记录
               </router-link>
-              <router-link v-if="userStore.currentUser?.userRole === 1" to="/become-member"
-                class="text-orange-500 hover:text-orange-700 px-3 py-2 rounded-md text-sm font-medium transition-colors bg-orange-50 hover:bg-orange-100"
+              <router-link v-if="userStore.currentUser && userStore.currentUser.userRole !== 0" to="/become-member"
+                :class="[
+                  'px-3 py-2 rounded-md text-sm font-medium transition-colors',
+                  userStore.currentUser.userRole === 1 
+                    ? 'text-orange-500 hover:text-orange-700 bg-orange-50 hover:bg-orange-100' 
+                    : 'text-blue-500 hover:text-blue-700 bg-blue-50 hover:bg-blue-100'
+                ]"
                 active-class="text-orange-600 bg-orange-100">
-                成为会员 ⭐
+                {{ userStore.currentUser.userRole === 1 ? '成为会员 ⭐' : '会员中心 💎' }}
               </router-link>
             </nav>
           </div>
@@ -39,6 +44,20 @@
             <!-- 已登录状态 -->
             <div v-if="userStore.currentUser" class="flex items-center space-x-4">
               <div class="flex items-center space-x-2">
+                <!-- 用户身份标识 -->
+                <span v-if="userStore.currentUser.userRole === 0" 
+                  class="text-xs px-2 py-1 bg-red-100 text-red-700 rounded-full font-medium">
+                  管理员
+                </span>
+                <span v-else-if="userStore.currentUser.userRole === 2" 
+                  class="text-xs px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full font-medium">
+                  尊贵会员
+                </span>
+                <span v-else 
+                  class="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded-full font-medium">
+                  普通用户
+                </span>
+                
                 <img :src="userStore.currentUser.userAvatar" alt="用户头像" class="w-8 h-8 rounded-full" />
                 <span class="text-sm font-medium text-gray-700">{{ userStore.currentUser.userName }}</span>
               </div>
