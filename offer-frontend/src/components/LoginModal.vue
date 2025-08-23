@@ -1,87 +1,90 @@
 <template>
-  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" @click.self="$emit('close')">
-    <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
-      <!-- 标题 -->
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-semibold text-gray-800">{{ isLogin ? '用户登录' : '用户注册' }}</h2>
-        <button @click="$emit('close')" class="text-gray-500 hover:text-gray-700">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
-        </button>
+  <teleport to="body">
+    <div class="modal-backdrop fixed inset-0 bg-black bg-opacity-60" style="z-index: 99999;"></div>
+    <div class="modal-container fixed inset-0 flex items-center justify-center" style="z-index: 100000;" @click.self="$emit('close')">
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative">
+        <!-- 标题 -->
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-semibold text-gray-800">{{ isLogin ? '用户登录' : '用户注册' }}</h2>
+          <button @click="$emit('close')" class="text-gray-500 hover:text-gray-700">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- 表单 -->
+        <form @submit.prevent="isLogin ? handleLogin() : handleRegister()">
+          <!-- 账号 -->
+          <div class="mb-4">
+            <label for="userAccount" class="block text-sm font-medium text-gray-700 mb-1">账号</label>
+            <input
+              type="text"
+              id="userAccount"
+              v-model="formData.userAccount"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="请输入账号（3-12位）"
+              required
+              minlength="3"
+              maxlength="12"
+            />
+          </div>
+
+          <!-- 密码 -->
+          <div class="mb-4">
+            <label for="userPassword" class="block text-sm font-medium text-gray-700 mb-1">密码</label>
+            <input
+              type="password"
+              id="userPassword"
+              v-model="formData.userPassword"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="请输入密码（8-16位）"
+              required
+              minlength="8"
+              maxlength="16"
+            />
+          </div>
+
+          <!-- 确认密码（仅注册时显示） -->
+          <div v-if="!isLogin" class="mb-4">
+            <label for="checkPassword" class="block text-sm font-medium text-gray-700 mb-1">确认密码</label>
+            <input
+              type="password"
+              id="checkPassword"
+              v-model="formData.checkPassword"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="请再次输入密码"
+              required
+              minlength="8"
+              maxlength="16"
+            />
+          </div>
+
+          <!-- 错误信息 -->
+          <div v-if="errorMessage" class="mb-4 text-red-500 text-sm">{{ errorMessage }}</div>
+
+          <!-- 提交按钮 -->
+          <div class="flex justify-between items-center">
+            <button
+              type="submit"
+              class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              :disabled="loading"
+            >
+              {{ isLogin ? '登录' : '注册' }}
+              <span v-if="loading" class="ml-2">...</span>
+            </button>
+            <button
+              type="button"
+              class="text-blue-600 hover:text-blue-800 text-sm"
+              @click="toggleMode"
+            >
+              {{ isLogin ? '没有账号？去注册' : '已有账号？去登录' }}
+            </button>
+          </div>
+        </form>
       </div>
-
-      <!-- 表单 -->
-      <form @submit.prevent="isLogin ? handleLogin() : handleRegister()">
-        <!-- 账号 -->
-        <div class="mb-4">
-          <label for="userAccount" class="block text-sm font-medium text-gray-700 mb-1">账号</label>
-          <input
-            type="text"
-            id="userAccount"
-            v-model="formData.userAccount"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="请输入账号（3-12位）"
-            required
-            minlength="3"
-            maxlength="12"
-          />
-        </div>
-
-        <!-- 密码 -->
-        <div class="mb-4">
-          <label for="userPassword" class="block text-sm font-medium text-gray-700 mb-1">密码</label>
-          <input
-            type="password"
-            id="userPassword"
-            v-model="formData.userPassword"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="请输入密码（8-16位）"
-            required
-            minlength="8"
-            maxlength="16"
-          />
-        </div>
-
-        <!-- 确认密码（仅注册时显示） -->
-        <div v-if="!isLogin" class="mb-4">
-          <label for="checkPassword" class="block text-sm font-medium text-gray-700 mb-1">确认密码</label>
-          <input
-            type="password"
-            id="checkPassword"
-            v-model="formData.checkPassword"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="请再次输入密码"
-            required
-            minlength="8"
-            maxlength="16"
-          />
-        </div>
-
-        <!-- 错误信息 -->
-        <div v-if="errorMessage" class="mb-4 text-red-500 text-sm">{{ errorMessage }}</div>
-
-        <!-- 提交按钮 -->
-        <div class="flex justify-between items-center">
-          <button
-            type="submit"
-            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            :disabled="loading"
-          >
-            {{ isLogin ? '登录' : '注册' }}
-            <span v-if="loading" class="ml-2">...</span>
-          </button>
-          <button
-            type="button"
-            class="text-blue-600 hover:text-blue-800 text-sm"
-            @click="toggleMode"
-          >
-            {{ isLogin ? '没有账号？去注册' : '已有账号？去登录' }}
-          </button>
-        </div>
-      </form>
     </div>
-  </div>
+  </teleport>
 </template>
 
 <script setup lang="ts">
@@ -161,3 +164,21 @@ const handleRegister = async () => {
   }
 }
 </script>
+
+<style scoped>
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+</style>

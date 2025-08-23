@@ -11,7 +11,8 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">公司名称</label>
-          <input v-model="searchForm.companyName" @keyup.enter="handleSearch" type="text" placeholder="请输入公司名称" class="input-field" />
+          <input v-model="searchForm.companyName" @keyup.enter="handleSearch" type="text" placeholder="请输入公司名称"
+            class="input-field" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">公司类型</label>
@@ -27,7 +28,8 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">所属行业</label>
-          <input v-model="searchForm.industry" @keyup.enter="handleSearch" type="text" placeholder="请输入所属行业" class="input-field" />
+          <input v-model="searchForm.industry" @keyup.enter="handleSearch" type="text" placeholder="请输入所属行业"
+            class="input-field" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">招聘类型</label>
@@ -40,15 +42,18 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">工作地点</label>
-          <input v-model="searchForm.workLocation" @keyup.enter="handleSearch" type="text" placeholder="请输入工作地点" class="input-field" />
+          <input v-model="searchForm.workLocation" @keyup.enter="handleSearch" type="text" placeholder="请输入工作地点"
+            class="input-field" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">招聘对象</label>
-          <input v-model="searchForm.recruitTarget" @keyup.enter="handleSearch" type="text" placeholder="如：2025年毕业" class="input-field" />
+          <input v-model="searchForm.recruitTarget" @keyup.enter="handleSearch" type="text" placeholder="如：2025年毕业"
+            class="input-field" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">岗位名称</label>
-          <input v-model="searchForm.positionName" @keyup.enter="handleSearch" type="text" placeholder="请输入岗位名称" class="input-field" />
+          <input v-model="searchForm.positionName" @keyup.enter="handleSearch" type="text" placeholder="请输入岗位名称"
+            class="input-field" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">开始时间</label>
@@ -56,7 +61,8 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">投递截止</label>
-          <input v-model="searchForm.deadline" @keyup.enter="handleSearch" type="text" placeholder="请输入截止时间" class="input-field" />
+          <input v-model="searchForm.deadline" @keyup.enter="handleSearch" type="text" placeholder="请输入截止时间"
+            class="input-field" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">排序字段</label>
@@ -257,32 +263,50 @@
             </tbody>
           </table>
         </div>
-        
-        <!-- 会员限制覆盖层 -->
+
+        <!-- 限制覆盖层 -->
         <transition name="member-overlay" appear>
-          <div v-if="showMemberOverlay" class="absolute inset-0 bg-white bg-opacity-95 flex items-center justify-center z-10">
+          <div v-if="showMemberOverlay"
+            class="absolute inset-0 bg-white bg-opacity-95 flex items-center justify-center" style="z-index: 50;">
             <div class="text-center p-8 max-w-md mx-auto">
               <div class="mb-6">
                 <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                  <svg v-if="!userStore.currentUser" class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                  </svg>
+                  <svg v-else class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                    </path>
                   </svg>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-2">会员专享内容</h3>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">
+                  {{ !userStore.currentUser ? '需要登录' : '会员专享内容' }}
+                </h3>
                 <p class="text-gray-600 leading-relaxed">{{ memberLimitMessage }}</p>
               </div>
-              
+
               <div class="space-y-3">
-                <button 
-                  @click="goToBecomeMember" 
-                  class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl"
-                >
-                  前往开通会员
-                </button>
-                <button 
-                  @click="closeMemberOverlay" 
-                  class="w-full bg-gray-100 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-200"
-                >
+                <!-- 未登录用户显示登录按钮 -->
+                <template v-if="!userStore.currentUser">
+                  <button @click="showLoginModal"
+                    class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl">
+                    立即登录
+                  </button>
+                </template>
+
+                <!-- 已登录用户显示会员按钮 -->
+                <template v-else>
+                  <button @click="goToBecomeMember"
+                    class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl">
+                    前往开通会员
+                  </button>
+                </template>
+
+                <button @click="goBackToPreviousPage"
+                  class="w-full bg-gray-100 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-200">
                   我知道了
                 </button>
               </div>
@@ -340,9 +364,11 @@
             跳转
           </button>
         </div>
-
       </div>
     </div>
+
+    <!-- 登录模态框 -->
+    <LoginModal v-if="showLoginModalRef" @close="handleLoginModalClose" @login-success="handleLoginSuccess" />
   </div>
 </template>
 
@@ -354,6 +380,7 @@ import { userJobApplyApi } from '@/api/userJobApply'
 import type { JobInfoQueryRequest, JobInfo } from '@/api/types'
 import Message from '@/components/Message'
 import { useUserStore } from '@/stores/user'
+import LoginModal from '@/components/LoginModal.vue'
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -361,6 +388,7 @@ const router = useRouter()
 // 响应式数据
 const currentPage = ref(1)
 const pageSize = ref(10)
+const showLoginModalRef = ref(false)
 
 // 检查用户是否可以设置更大的pageSize
 const getMaxPageSize = () => {
@@ -444,7 +472,7 @@ const handleJumpPage = async () => {
       jumpPage.value = ''
       return
     }
-    
+
     isChangingPage.value = true
     currentPage.value = page
     jumpPage.value = ''
@@ -511,15 +539,11 @@ const fetchData = async () => {
   loading.value = true
   // 先关闭覆盖层，避免闪现
   showMemberOverlay.value = false
-  
+
   try {
-    console.log('当前用户角色:', userStore.currentUser?.userRole)
-    console.log('当前页码:', currentPage.value)
-    console.log('页面大小:', pageSize.value)
-    
     // 验证pageSize
     validatePageSize()
-    
+
     const params: JobInfoQueryRequest = {
       ...searchForm,
       pageNum: currentPage.value,
@@ -538,7 +562,6 @@ const fetchData = async () => {
       }
     })
 
-    console.log('发送请求参数:', params)
     const response = await jobInfoApi.getList(params)
 
     jobList.value = response.data.list || []
@@ -547,14 +570,15 @@ const fetchData = async () => {
   } catch (error: any) {
     console.error('获取招聘信息列表失败:', error)
     console.log('错误详情:', error.response)
-    
-    // 检查是否是会员限制错误
+
+    // 检查是否是会员限制错误或未登录用户限制
     const errorMessage = error.message || error.response?.data?.message || '获取数据失败，请重试'
     console.log('错误信息:', errorMessage)
-    
-    if (errorMessage.includes('普通用户') || errorMessage.includes('成为会员') || errorMessage.includes('会员查看')) {
-      // 显示会员限制覆盖层
-      console.log('显示会员限制覆盖层')
+
+    if (errorMessage.includes('普通用户') || errorMessage.includes('成为会员') || errorMessage.includes('会员查看') ||
+      errorMessage.includes('未登录用户') || errorMessage.includes('请登录')) {
+      // 显示限制覆盖层
+      console.log('显示限制覆盖层')
       memberLimitMessage.value = errorMessage
       showMemberOverlay.value = true
     } else {
@@ -573,6 +597,48 @@ const goToBecomeMember = () => {
 // 关闭会员覆盖层
 const closeMemberOverlay = () => {
   showMemberOverlay.value = false
+}
+
+// 记录是否从会员覆盖层点击登录
+const isFromMemberOverlay = ref(false)
+
+// 显示登录模态框
+const showLoginModal = () => {
+  // 记录是从会员覆盖层点击登录
+  isFromMemberOverlay.value = true
+  // 先关闭会员覆盖层，避免层级冲突
+  showMemberOverlay.value = false
+  showLoginModalRef.value = true
+}
+
+// 处理登录成功
+const handleLoginSuccess = async () => {
+  showLoginModalRef.value = false
+  // 重新获取用户信息
+  await userStore.initUserInfo()
+  // 重新加载数据
+  await fetchData()
+  Message.success('登录成功！')
+}
+
+// 处理登录模态框关闭
+const handleLoginModalClose = () => {
+  showLoginModalRef.value = false
+  // 如果是从会员覆盖层点击登录按钮打开的登录框，关闭时返回前一页
+  if (isFromMemberOverlay.value && currentPage.value > 1) {
+    // 直接调用handlePageChange而不是goBackToPreviousPage，确保页码高亮正确更新
+    handlePageChange(currentPage.value - 1)
+    // 重置标记
+    isFromMemberOverlay.value = false
+  }
+}
+
+// 返回前一页
+const goBackToPreviousPage = () => {
+  showMemberOverlay.value = false
+  if (currentPage.value > 1) {
+    handlePageChange(currentPage.value - 1)
+  }
 }
 
 const handleDelete = async (id: string) => {
@@ -804,5 +870,4 @@ onMounted(async () => {
 .member-overlay-leave-from {
   opacity: 1;
   transform: scale(1);
-}
-</style>
+}</style>

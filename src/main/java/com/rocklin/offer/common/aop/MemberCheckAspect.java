@@ -6,17 +6,15 @@ import com.rocklin.offer.common.exception.BusinessException;
 import com.rocklin.offer.common.utils.JwtUtils;
 import com.rocklin.offer.model.entity.User;
 import com.rocklin.offer.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 import java.lang.reflect.Field;
 
@@ -48,11 +46,41 @@ public class MemberCheckAspect {
         
         // 获取当前用户
         String token = request.getHeader(AUTHORIZATION);
+        
+        // 处理未登录用户
         if (token == null || !token.startsWith(BEARER)) {
-            log.warn("用户未登录或token格式错误");
-            throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
+            log.info("未登录用户访问，检查匿名访问限制");
+            return handleAnonymousUser(request, joinPoint, memberCheck);
         }
         
+        // 处理已登录用户
+        return handleLoggedInUser(request, joinPoint, memberCheck, token);
+    }
+    
+    /**
+     * 处理未登录用户访问
+     */
+    private Object handleAnonymousUser(HttpServletRequest request, ProceedingJoinPoint joinPoint, MemberCheck memberCheck) throws Throwable {
+        log.info("处理未登录用户访问");
+        
+        String httpMethod = request.getMethod();
+        
+        if (GET.equalsIgnoreCase(httpMethod)) {
+            // GET请求：从URL参数中获取
+            checkAnonymousGetRequestParams(request, memberCheck);
+        } else if (POST.equalsIgnoreCase(httpMethod)) {
+            // POST请求：从请求体DTO中获取
+            checkAnonymousPostRequestParams(joinPoint.getArgs(), memberCheck);
+        }
+        
+        log.info("未登录用户访问检查通过，继续执行方法");
+        return joinPoint.proceed();
+    }
+    
+    /**
+     * 处理已登录用户访问
+     */
+    private Object handleLoggedInUser(HttpServletRequest request, ProceedingJoinPoint joinPoint, MemberCheck memberCheck, String token) throws Throwable {
         token = token.substring(TOKEN_START_INDEX);
         String userIdStr = jwtUtils.getUserIdFromToken(token);
         if (userIdStr == null) {
@@ -87,6 +115,76 @@ public class MemberCheckAspect {
         
         log.info("会员检查通过，继续执行方法");
         return joinPoint.proceed();
+    }
+    
+    /**
+     * 检查未登录用户的GET请求参数
+     */
+    private void checkAnonymousGetRequestParams(HttpServletRequest request, MemberCheck memberCheck) {
+        String pageNumStr = request.getParameter(PAGE_NUM);
+        String pageSizeStr = request.getParameter(PAGE_SIZE);
+        
+        if (pageNumStr != null) {
+            try {
+                int pageNum = Integer.parseInt(pageNumStr);
+                // 未登录用户只能看前2页
+                if (pageNum > 2) {
+                    throw new BusinessException(ErrorCode.UNAUTHORIZED, "未登录用户只能查看前2页，请登录查看更多职位");
+                }
+            } catch (NumberFormatException e) {
+                log.warn("GET请求页码参数格式错误: {}", pageNumStr);
+            }
+        }
+        
+        if (pageSizeStr != null) {
+            try {
+                int pageSize = Integer.parseInt(pageSizeStr);
+                // 未登录用户每页最多10条
+                if (pageSize > 10) {
+                    throw new BusinessException(ErrorCode.UNAUTHORIZED, "未登录用户每页最多只能查看10条记录，请登录查看更多");
+                }
+            } catch (NumberFormatException e) {
+                log.warn("GET请求页面大小参数格式错误: {}", pageSizeStr);
+            }
+        }
+    }
+    
+    /**
+     * 检查未登录用户的POST请求参数
+     */
+    private void checkAnonymousPostRequestParams(Object[] args, MemberCheck memberCheck) {
+        log.info("开始检查未登录用户POST请求参数，参数个数: {}", args.length);
+        
+        for (int i = 0; i < args.length; i++) {
+            Object arg = args[i];
+            if (arg == null) {
+                continue;
+            }
+            try {
+                // 检查 pageNum
+                Field pageNumField = findFieldInClassHierarchy(arg.getClass(), PAGE_NUM);
+                if (pageNumField != null) {
+                    pageNumField.setAccessible(true);
+                    Integer pageNum = (Integer) pageNumField.get(arg);
+
+                    if (pageNum != null && pageNum > 1) {
+                        throw new BusinessException(ErrorCode.UNAUTHORIZED, "未登录用户只能查看前2页，请登录查看更多职位");
+                    }
+                }
+
+                // 检查 pageSize
+                Field pageSizeField = findFieldInClassHierarchy(arg.getClass(), PAGE_SIZE);
+                if (pageSizeField != null) {
+                    pageSizeField.setAccessible(true);
+                    Integer pageSize = (Integer) pageSizeField.get(arg);
+                    if (pageSize != null && pageSize > 10) {
+                        throw new BusinessException(ErrorCode.UNAUTHORIZED, "未登录用户每页最多只能查看10条记录，请登录查看更多");
+                    }
+                }
+            } catch (IllegalAccessException e) {
+                log.warn("POST请求获取分页参数字段失败: {}", arg.getClass().getName(), e);
+            }
+        }
     }
     
     /**
