@@ -38,7 +38,6 @@ CREATE TABLE if not exists job_info (
      recruit_target     VARCHAR(100) COMMENT '招聘对象(20xx年毕业)',
 
      position_name      VARCHAR(255) COMMENT '岗位(专业/岗位名称)',
-     application_status VARCHAR(100) COMMENT '投递进度',
 
      start_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '开始时间',
      deadline           VARCHAR(100) COMMENT '投递截止(尽快投递/x.x截止)',
@@ -48,3 +47,22 @@ CREATE TABLE if not exists job_info (
      referral_code      VARCHAR(100) COMMENT '内推码',
      remark             TEXT COMMENT '备注'
 ) COMMENT='招聘投递信息表' collate = utf8mb4_unicode_ci;
+
+-- 用户投递记录表
+CREATE TABLE IF NOT EXISTS user_job_apply
+(
+    id             BIGINT PRIMARY KEY COMMENT '主键ID',
+    user_id        BIGINT NOT NULL COMMENT '用户ID',
+    job_id         BIGINT NOT NULL COMMENT '招聘信息ID',
+    application_status VARCHAR(100) COMMENT '投递进度',
+    create_time    DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '创建时间',
+    update_time    DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    is_delete      TINYINT  DEFAULT 0 NOT NULL COMMENT '是否删除',
+
+    UNIQUE KEY uk_user_job (user_id, job_id),   -- 保证同一用户对同一岗位只投递一次
+    INDEX idx_user_id (user_id),
+    INDEX idx_job_id (job_id),
+    INDEX idx_application_status (application_status)
+) COMMENT='用户投递记录表' COLLATE = utf8mb4_unicode_ci;
+
+

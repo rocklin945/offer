@@ -24,7 +24,7 @@
     <!-- 基础字段 -->
     <sql id="Base_Column_List">
         id, company_name, company_type, industry, recruit_type, work_location,
-        recruit_target, position_name, application_status, start_time, deadline,
+        recruit_target, position_name, start_time, deadline,
         related_link, announcement, referral_code, remark
     </sql>
 
@@ -40,7 +40,6 @@
             <if test="workLocation != null">work_location,</if>
             <if test="recruitTarget != null">recruit_target,</if>
             <if test="positionName != null">position_name,</if>
-            <if test="applicationStatus != null">application_status,</if>
             <if test="startTime != null">start_time,</if>
             <if test="deadline != null">deadline,</if>
             <if test="relatedLink != null">related_link,</if>
@@ -57,7 +56,6 @@
             <if test="workLocation != null">#{workLocation,jdbcType=VARCHAR},</if>
             <if test="recruitTarget != null">#{recruitTarget,jdbcType=VARCHAR},</if>
             <if test="positionName != null">#{positionName,jdbcType=VARCHAR},</if>
-            <if test="applicationStatus != null">#{applicationStatus,jdbcType=VARCHAR},</if>
             <if test="startTime != null">#{startTime,jdbcType=TIMESTAMP},</if>
             <if test="deadline != null">#{deadline,jdbcType=VARCHAR},</if>
             <if test="relatedLink != null">#{relatedLink,jdbcType=VARCHAR},</if>
@@ -83,7 +81,6 @@
             <if test="workLocation != null">work_location = #{workLocation,jdbcType=VARCHAR},</if>
             <if test="recruitTarget != null">recruit_target = #{recruitTarget,jdbcType=VARCHAR},</if>
             <if test="positionName != null">position_name = #{positionName,jdbcType=VARCHAR},</if>
-            <if test="applicationStatus != null">application_status = #{applicationStatus,jdbcType=VARCHAR},</if>
             <if test="startTime != null">start_time = #{startTime,jdbcType=TIMESTAMP},</if>
             <if test="deadline != null">deadline = #{deadline,jdbcType=VARCHAR},</if>
             <if test="relatedLink != null">related_link = #{relatedLink,jdbcType=VARCHAR},</if>
@@ -118,9 +115,6 @@
             <if test="query.positionName != null and query.positionName != ''">
                 AND position_name LIKE CONCAT('%', #{query.positionName}, '%')
             </if>
-            <if test="query.applicationStatus != null and query.applicationStatus != ''">
-                AND application_status = #{query.applicationStatus}
-            </if>
             <if test="query.startTime != null">
                 AND start_time &gt;= #{query.startTime}
             </if>
@@ -136,7 +130,6 @@
                     <when test="query.sortField == 'recruitType'">recruit_type</when>
                     <when test="query.sortField == 'workLocation'">work_location</when>
                     <when test="query.sortField == 'positionName'">position_name</when>
-                    <when test="query.sortField == 'applicationStatus'">application_status</when>
                     <when test="query.sortField == 'startTime'">start_time</when>
                     <when test="query.sortField == 'deadline'">deadline</when>
                     <when test="query.sortField == 'id'">id</when>
@@ -170,9 +163,6 @@
             </if>
             <if test="query.positionName != null and query.positionName != ''">
                 AND position_name LIKE CONCAT('%', #{query.positionName}, '%')
-            </if>
-            <if test="query.applicationStatus != null and query.applicationStatus != ''">
-                AND application_status = #{query.applicationStatus}
             </if>
             <if test="query.startTime != null">
                 AND start_time &gt;= #{query.startTime}

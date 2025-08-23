@@ -36,4 +36,6 @@ public interface UserService {
      * 分页获取用户列表（带过滤条件）
      */
     PageResponse<UserLoginResponse> listUserByPageWithFilter(UserPageQueryRequest request);
+
+    String getUserIdFromRequest();
 }

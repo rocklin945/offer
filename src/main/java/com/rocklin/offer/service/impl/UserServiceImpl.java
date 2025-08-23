@@ -98,7 +98,8 @@ public class UserServiceImpl implements UserService {
     /**
      * 从当前请求中获取用户ID
      */
-    private String getUserIdFromRequest() {
+    @Override
+    public String getUserIdFromRequest() {
         // 使用RequestContextHolder获取当前请求
         HttpServletRequest request = ((HttpServletRequest) RequestContextHolder
                 .getRequestAttributes().resolveReference(REFERENCE_REQUEST));

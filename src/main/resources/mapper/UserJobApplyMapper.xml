@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rocklin.offer.mapper.UserJobApplyMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.rocklin.offer.model.entity.UserJobApply">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="job_id" property="jobId" jdbcType="BIGINT"/>
+        <result column="application_status" property="applicationStatus" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="is_delete" property="isDelete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <!-- DTO结果映射 -->
+    <resultMap id="DTOResultMap" type="com.rocklin.offer.model.dto.UserJobApplyDTO">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="job_id" property="jobId" jdbcType="BIGINT"/>
+        <result column="company_name" property="companyName" jdbcType="VARCHAR"/>
+        <result column="position_name" property="positionName" jdbcType="VARCHAR"/>
+        <result column="application_status" property="applicationStatus" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!-- 基础字段 -->
+    <sql id="Base_Column_List">
+        id, user_id, job_id, application_status, create_time, update_time, is_delete
+    </sql>
+
+    <!-- DTO字段 -->
+    <sql id="DTO_Column_List">
+        uja.id, uja.user_id, u.user_name, uja.job_id, ji.company_name, ji.position_name,
+        uja.application_status, uja.create_time, uja.update_time
+    </sql>
+
+    <!-- 插入 -->
+    <insert id="insert" parameterType="com.rocklin.offer.model.entity.UserJobApply">
+        INSERT INTO user_job_apply
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            id,
+            <if test="userId != null">user_id,</if>
+            <if test="jobId != null">job_id,</if>
+            <if test="applicationStatus != null">application_status,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="isDelete != null">is_delete,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            UUID_SHORT(),
+            <if test="userId != null">#{userId},</if>
+            <if test="jobId != null">#{jobId},</if>
+            <if test="applicationStatus != null">#{applicationStatus},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="isDelete != null">#{isDelete},</if>
+        </trim>
+    </insert>
+
+    <!-- 根据ID删除 -->
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM user_job_apply
+        WHERE id = #{id} AND is_delete = 0
+    </delete>
+
+    <!-- 根据用户ID和招聘信息ID删除 -->
+    <delete id="deleteByUserIdAndJobId">
+        UPDATE user_job_apply SET is_delete = 1 
+        WHERE user_id = #{userId} AND job_id = #{jobId} AND is_delete = 0
+    </delete>
+
+    <!-- 根据ID更新 -->
+    <update id="updateById" parameterType="com.rocklin.offer.model.entity.UserJobApply">
+        UPDATE user_job_apply
+        <set>
+            <if test="applicationStatus != null">application_status = #{applicationStatus},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </set>
+        WHERE id = #{id} AND is_delete = 0
+    </update>
+
+    <!-- 根据ID查询 -->
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM user_job_apply
+        WHERE id = #{id} AND is_delete = 0
+    </select>
+
+    <!-- 根据用户ID和招聘信息ID查询 -->
+    <select id="selectByUserIdAndJobId" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM user_job_apply
+        WHERE user_id = #{userId} AND job_id = #{jobId} AND is_delete = 0
+    </select>
+
+    <!-- 查询列表 -->
+    <select id="selectList" resultMap="DTOResultMap">
+        SELECT <include refid="DTO_Column_List"/>
+        FROM user_job_apply uja
+        LEFT JOIN user u ON uja.user_id = u.id AND u.is_delete = 0
+        LEFT JOIN job_info ji ON uja.job_id = ji.id
+        <where>
+            uja.is_delete = 0
+            <if test="query.userId != null">
+                AND uja.user_id = #{query.userId}
+            </if>
+            <if test="query.jobId != null">
+                AND uja.job_id = #{query.jobId}
+            </if>
+            <if test="query.companyName != null and query.companyName != ''">
+                AND ji.company_name LIKE CONCAT('%', #{query.companyName}, '%')
+            </if>
+            <if test="query.positionName != null and query.positionName != ''">
+                AND ji.position_name LIKE CONCAT('%', #{query.positionName}, '%')
+            </if>
+            <if test="query.applicationStatus != null and query.applicationStatus != ''">
+                AND uja.application_status = #{query.applicationStatus}
+            </if>
+        </where>
+        ORDER BY uja.create_time DESC
+        LIMIT #{offset} ,#{query.pageSize}
+    </select>
+
+    <!-- 查询总数 -->
+    <select id="countByQuery" parameterType="com.rocklin.offer.model.dto.request.UserJobApplyQueryRequest" 
+            resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM user_job_apply uja
+        LEFT JOIN job_info ji ON uja.job_id = ji.id
+        <where>
+            uja.is_delete = 0
+            <if test="userId != null">
+                AND uja.user_id = #{userId}
+            </if>
+            <if test="jobId != null">
+                AND uja.job_id = #{jobId}
+            </if>
+            <if test="companyName != null and companyName != ''">
+                AND ji.company_name LIKE CONCAT('%', #{companyName}, '%')
+            </if>
+            <if test="positionName != null and positionName != ''">
+                AND ji.position_name LIKE CONCAT('%', #{positionName}, '%')
+            </if>
+            <if test="applicationStatus != null and applicationStatus != ''">
+                AND uja.application_status = #{applicationStatus}
+            </if>
+        </where>
+    </select>
+</mapper>
