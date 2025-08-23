@@ -15,9 +15,7 @@
           </div>
           <div class="bg-blue-400 bg-opacity-30 rounded-full p-3">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z">
-              </path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
             </svg>
           </div>
         </div>
@@ -31,9 +29,7 @@
           </div>
           <div class="bg-green-400 bg-opacity-30 rounded-full p-3">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
-              </path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
             </svg>
           </div>
         </div>
@@ -47,11 +43,8 @@
           </div>
           <div class="bg-yellow-400 bg-opacity-30 rounded-full p-3">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z">
-              </path>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
-              </path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
             </svg>
           </div>
         </div>
@@ -65,9 +58,7 @@
           </div>
           <div class="bg-purple-400 bg-opacity-30 rounded-full p-3">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
-              </path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
             </svg>
           </div>
         </div>
@@ -79,13 +70,10 @@
       <div class="bg-white rounded-lg border border-gray-200 p-6">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">快捷操作</h3>
         <div class="space-y-3">
-          <router-link to="/admin/user-management"
-            class="flex items-center p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
+          <router-link to="/admin/user-management" class="flex items-center p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
             <div class="bg-blue-500 rounded-full p-2 mr-3">
               <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z">
-                </path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
               </svg>
             </div>
             <div>
@@ -94,13 +82,10 @@
             </div>
           </router-link>
 
-          <router-link to="/admin/job-management"
-            class="flex items-center p-3 bg-green-50 hover:bg-green-100 rounded-lg transition-colors">
+          <router-link to="/admin/job-management" class="flex items-center p-3 bg-green-50 hover:bg-green-100 rounded-lg transition-colors">
             <div class="bg-green-500 rounded-full p-2 mr-3">
               <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
-                </path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
               </svg>
             </div>
             <div>
@@ -109,13 +94,10 @@
             </div>
           </router-link>
 
-          <router-link to="/admin/user-job-apply-management"
-            class="flex items-center p-3 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors">
+          <router-link to="/admin/user-job-apply-management" class="flex items-center p-3 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors">
             <div class="bg-purple-500 rounded-full p-2 mr-3">
               <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V7a2 2 0 012-2h5l2 2h6a2 2 0 012 2v6.5M7 7v10l4-2 4 2V7M7 7l4-2 4 2">
-                </path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V7a2 2 0 012-2h5l2 2h6a2 2 0 012 2v6.5M7 7v10l4-2 4 2V7M7 7l4-2 4 2"></path>
               </svg>
             </div>
             <div>
@@ -133,8 +115,8 @@
             <div class="flex-shrink-0">
               <div :class="[
                 'w-2 h-2 rounded-full mt-2',
-                activity.type === 'add' ? 'bg-green-400' :
-                  activity.type === 'edit' ? 'bg-blue-400' : 'bg-red-400'
+                activity.type === 'add' ? 'bg-green-400' : 
+                activity.type === 'edit' ? 'bg-blue-400' : 'bg-red-400'
               ]"></div>
             </div>
             <div class="ml-3 flex-1">
@@ -200,15 +182,15 @@ const fetchStats = async () => {
     const jobResponse = await jobInfoApi.getList({ pageSize: 1000 })
     const jobs = jobResponse.data.records || jobResponse.data.list || []
     stats.value.jobCount = jobs.length
-
+    
     // 获取用户数量
     const userResponse = await listUserByPage({ pageSize: 1000 })
     const users = userResponse.data?.list || []
     stats.value.userCount = users.length
-
+    
     // 计算会员数量（userRole为0或2的用户为会员）
     stats.value.memberCount = users.filter((user: any) => user.userRole === 0 || user.userRole === 2).length
-
+    
     // 模拟浏览量增长
     stats.value.totalViews = 12580 + Math.floor(Math.random() * 100)
   } catch (error) {

@@ -86,18 +86,18 @@
     </div>
 
     <!-- 数据表格 -->
-    <div class="card">
+    <div class="card relative">
       <div v-if="loading" class="text-center py-8">
         <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
         <p class="mt-2 text-gray-500">加载中...</p>
       </div>
 
-      <div v-else-if="!hasJobs" class="text-center py-8">
+      <div v-else-if="!hasJobs && !showMemberOverlay" class="text-center py-8">
         <p class="text-gray-500">暂无数据</p>
       </div>
 
       <div v-else class="overflow-x-auto">
-        <div class="table-container" :class="{ 'table-loading': isChangingPage }">
+        <div class="table-container" :class="{ 'table-loading': isChangingPage, 'table-blurred': showMemberOverlay }">
           <table class="min-w-full table-fixed divide-y divide-gray-200">
             <thead class="bg-gray-50">
               <tr>
@@ -257,6 +257,38 @@
             </tbody>
           </table>
         </div>
+        
+        <!-- 会员限制覆盖层 -->
+        <transition name="member-overlay" appear>
+          <div v-if="showMemberOverlay" class="absolute inset-0 bg-white bg-opacity-95 flex items-center justify-center z-10">
+            <div class="text-center p-8 max-w-md mx-auto">
+              <div class="mb-6">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                  </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">会员专享内容</h3>
+                <p class="text-gray-600 leading-relaxed">{{ memberLimitMessage }}</p>
+              </div>
+              
+              <div class="space-y-3">
+                <button 
+                  @click="goToBecomeMember" 
+                  class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+                >
+                  前往开通会员
+                </button>
+                <button 
+                  @click="closeMemberOverlay" 
+                  class="w-full bg-gray-100 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-200"
+                >
+                  我知道了
+                </button>
+              </div>
+            </div>
+          </div>
+        </transition>
       </div>
     </div>
 
@@ -316,6 +348,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { jobInfoApi } from '@/api/jobInfo'
 import { userJobApplyApi } from '@/api/userJobApply'
 import type { JobInfoQueryRequest, JobInfo } from '@/api/types'
@@ -323,15 +356,37 @@ import Message from '@/components/Message'
 import { useUserStore } from '@/stores/user'
 
 const userStore = useUserStore()
+const router = useRouter()
 
 // 响应式数据
 const currentPage = ref(1)
 const pageSize = ref(10)
+
+// 检查用户是否可以设置更大的pageSize
+const getMaxPageSize = () => {
+  // 管理员(0)和会员(2)无限制，普通用户(1)限制10条
+  if (userStore.currentUser?.userRole === 0 || userStore.currentUser?.userRole === 2) {
+    return 100 // 会员和管理员可以设置更大的pageSize
+  }
+  return 10 // 普通用户最多10条
+}
+
+// 检查并调整pageSize
+const validatePageSize = () => {
+  const maxSize = getMaxPageSize()
+  if (pageSize.value > maxSize) {
+    pageSize.value = maxSize
+    Message.warning(`普通用户每页最多只能查看${maxSize}条记录，需要成为会员才能查看更多`)
+  }
+}
+
 const jobList = ref<JobInfo[]>([])
 const total = ref(0)
 const loading = ref(false)
 const jumpPage = ref<number | string>('')
 const isChangingPage = ref(false)
+const showMemberOverlay = ref(false)
+const memberLimitMessage = ref('')
 
 const searchForm = reactive<JobInfoQueryRequest>({
   companyName: '',
@@ -381,6 +436,15 @@ const handlePageChange = async (page: number) => {
 const handleJumpPage = async () => {
   const page = Number(jumpPage.value)
   if (page >= 1 && page <= totalPages.value && !isChangingPage.value) {
+    // 检查是否是普通用户且超过5页
+    if (userStore.currentUser?.userRole === 1 && page > 5) {
+      // 显示会员限制覆盖层
+      memberLimitMessage.value = '普通用户最多只能查看前5页，需要成为会员才能查看更多招聘信息'
+      showMemberOverlay.value = true
+      jumpPage.value = ''
+      return
+    }
+    
     isChangingPage.value = true
     currentPage.value = page
     jumpPage.value = ''
@@ -445,7 +509,17 @@ const getPageNumbers = () => {
 
 const fetchData = async () => {
   loading.value = true
+  // 先关闭覆盖层，避免闪现
+  showMemberOverlay.value = false
+  
   try {
+    console.log('当前用户角色:', userStore.currentUser?.userRole)
+    console.log('当前页码:', currentPage.value)
+    console.log('页面大小:', pageSize.value)
+    
+    // 验证pageSize
+    validatePageSize()
+    
     const params: JobInfoQueryRequest = {
       ...searchForm,
       pageNum: currentPage.value,
@@ -464,6 +538,7 @@ const fetchData = async () => {
       }
     })
 
+    console.log('发送请求参数:', params)
     const response = await jobInfoApi.getList(params)
 
     jobList.value = response.data.list || []
@@ -471,12 +546,33 @@ const fetchData = async () => {
 
   } catch (error: any) {
     console.error('获取招聘信息列表失败:', error)
-    // 优先显示后端返回的错误信息
+    console.log('错误详情:', error.response)
+    
+    // 检查是否是会员限制错误
     const errorMessage = error.message || error.response?.data?.message || '获取数据失败，请重试'
-    Message.error(errorMessage)
+    console.log('错误信息:', errorMessage)
+    
+    if (errorMessage.includes('普通用户') || errorMessage.includes('成为会员') || errorMessage.includes('会员查看')) {
+      // 显示会员限制覆盖层
+      console.log('显示会员限制覆盖层')
+      memberLimitMessage.value = errorMessage
+      showMemberOverlay.value = true
+    } else {
+      Message.error(errorMessage)
+    }
   } finally {
     loading.value = false
   }
+}
+
+// 前往开通会员
+const goToBecomeMember = () => {
+  router.push('/become-member')
+}
+
+// 关闭会员覆盖层
+const closeMemberOverlay = () => {
+  showMemberOverlay.value = false
 }
 
 const handleDelete = async (id: string) => {
@@ -655,6 +751,8 @@ const getStatusClass = (status?: string) => {
 onMounted(async () => {
   // 初始化用户信息
   await userStore.initUserInfo()
+  // 验证并调整pageSize
+  validatePageSize()
   // 获取招聘信息
   fetchData()
 })
@@ -682,5 +780,29 @@ onMounted(async () => {
 .table-container.table-loading tbody tr {
   opacity: 0.5;
   transform: translateX(-5px);
+}
+
+/* 会员限制模糊效果 */
+.table-container.table-blurred {
+  filter: blur(4px);
+  pointer-events: none;
+}
+
+/* 会员覆盖层过渡动画 */
+.member-overlay-enter-active,
+.member-overlay-leave-active {
+  transition: all 0.3s ease;
+}
+
+.member-overlay-enter-from,
+.member-overlay-leave-to {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.member-overlay-enter-to,
+.member-overlay-leave-from {
+  opacity: 1;
+  transform: scale(1);
 }
 </style>

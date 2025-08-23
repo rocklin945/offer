@@ -30,4 +30,12 @@ public final class Constants {
     public static final int ZERO =0;
     public static final String X_FORWARDED_FOR ="X-Forwarded-For";
     public static final String COMMA =",";
+
+    /**
+     * 会员鉴权
+     */
+    public static final String PAGE_NUM ="pageNum";
+    public static final String PAGE_SIZE ="pageSize";
+    public static final String GET ="GET";
+    public static final String POST ="POST";
 }

@@ -26,6 +26,11 @@
                 active-class="text-primary-600 bg-primary-50">
                 我的投递记录
               </router-link>
+              <router-link v-if="userStore.currentUser?.userRole === 1" to="/become-member"
+                class="text-orange-500 hover:text-orange-700 px-3 py-2 rounded-md text-sm font-medium transition-colors bg-orange-50 hover:bg-orange-100"
+                active-class="text-orange-600 bg-orange-100">
+                成为会员 ⭐
+              </router-link>
             </nav>
           </div>
 

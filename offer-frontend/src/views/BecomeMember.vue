@@ -1,0 +1,449 @@
+<template>
+  <div class="min-h-screen bg-gray-50">
+    <!-- Hero Section -->
+    <div class="bg-blue-100 text-gray-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+        <div class="text-center">
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+            升级为会员
+          </h1>
+          <p class="text-xl sm:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto">
+            解锁更多功能，享受更好的求职体验
+          </p>
+
+          <!-- Stats -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div class="text-center">
+              <div class="text-3xl sm:text-4xl font-bold mb-2 text-blue-600">10,000+</div>
+              <div class="text-gray-600">优质职位</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl sm:text-4xl font-bold mb-2 text-blue-600">5,000+</div>
+              <div class="text-gray-600">合作企业</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl sm:text-4xl font-bold mb-2 text-blue-600">98%</div>
+              <div class="text-gray-600">满意度</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pricing Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+      <!-- Section Header -->
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+          选择适合您的套餐
+        </h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          灵活的定价方案，满足不同需求
+        </p>
+      </div>
+
+      <!-- Pricing Cards -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <!-- 免费版 -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 relative">
+          <div class="text-center mb-8">
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">免费版</h3>
+            <div class="mb-4">
+              <span class="text-4xl font-bold text-gray-900">¥0</span>
+              <span class="text-gray-500">/永久</span>
+            </div>
+            <p class="text-gray-600">适合初次求职的用户</p>
+          </div>
+
+          <ul class="space-y-4 mb-8">
+            <li class="flex items-center">
+              <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+              <span class="text-gray-700">浏览前5页职位</span>
+            </li>
+            <li class="flex items-center">
+              <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+              <span class="text-gray-700">基础投递功能</span>
+            </li>
+          </ul>
+
+          <button disabled class="w-full py-3 px-6 rounded-xl bg-gray-100 text-gray-400 font-semibold cursor-not-allowed">
+            当前方案
+          </button>
+        </div>
+
+        <!-- 会员版 -->
+        <div class="bg-white rounded-2xl shadow-xl border-2 border-blue-500 p-8 relative">
+          <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+            <span class="bg-blue-500 text-white px-6 py-2 rounded-full text-sm font-semibold">
+              推荐
+            </span>
+          </div>
+
+          <div class="text-center mb-8">
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">会员版</h3>
+            <div class="mb-4">
+              <span class="text-4xl font-bold text-gray-900">¥15</span>
+              <span class="text-gray-500">/年</span>
+            </div>
+            <p class="text-gray-600">解锁全部功能</p>
+          </div>
+
+          <ul class="space-y-4 mb-8">
+            <li class="flex items-center">
+              <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+              <span class="text-gray-700">无限制浏览所有职位</span>
+            </li>
+            <li class="flex items-center">
+              <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+              <span class="text-gray-700">优先内推机会</span>
+            </li>
+            <li class="flex items-center">
+              <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+              <span class="text-gray-700">投递数据分析</span>
+            </li>
+            <li class="flex items-center">
+              <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+              <span class="text-gray-700">简历优化建议</span>
+            </li>
+            <li class="flex items-center">
+              <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+              <span class="text-gray-700">专属客服支持</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- 扫码支付 -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 relative">
+          <div class="text-center mb-8">
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">限时特惠¥9.9</h3>
+            <div class="mb-4">
+              <span class="text-lg text-gray-600">入群限时享特惠</span>
+            </div>
+            <p class="text-gray-600">专业的售后+就业咨询</p>
+          </div>
+
+          <div class="text-center mb-8">
+            <div class="inline-block p-4 bg-gray-100 rounded-xl">
+              <div
+                class="w-48 h-48 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg flex items-center justify-center border-2 border-dashed border-blue-300">
+                <div class="text-center">
+                  <svg class="w-12 h-12 text-blue-500 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M12 12h-4.01M12 12v4m6-4h.01M12 8h.01M8 12h.01m0 0h3.99">
+                    </path>
+                  </svg>
+                  <p class="text-blue-600 text-sm font-medium">二维码占位图</p>
+                  <p class="text-blue-500 text-xs mt-1">微信扫码支付</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-xl p-4 text-center">
+            <div class="text-blue-800 font-semibold mb-1">¥9.9/年</div>
+            <div class="text-blue-600 text-sm">享受所有会员特权</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="bg-white py-16 sm:py-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            为什么选择我们的会员服务
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+          <div class="text-center">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2V6">
+                </path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-4">海量优质职位</h3>
+            <p class="text-gray-600 leading-relaxed">
+              与5000+知名企业合作，提供10000+优质职位，覆盖各行各业
+            </p>
+          </div>
+
+          <div class="text-center">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z">
+                </path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-4">智能匹配推荐</h3>
+            <p class="text-gray-600 leading-relaxed">
+              基于AI算法，根据您的技能和偏好，精准推荐最适合的职位
+            </p>
+          </div>
+
+          <div class="text-center">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                </path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-4">数据分析洞察</h3>
+            <p class="text-gray-600 leading-relaxed">
+              详细的投递数据分析，帮助您了解求职进展，优化求职策略
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 用户评价 Section -->
+    <div class="py-16 sm:py-24">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            看看他们都是如何评价MyOffer的
+          </h2>
+          <p class="text-xl text-gray-600">来自真实用户的反馈</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- 评价卡片 1 -->
+          <div
+            class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+            <div class="flex items-center mb-4">
+              <div
+                class="w-12 h-12 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                张
+              </div>
+              <div class="ml-4">
+                <h4 class="font-semibold text-gray-900">张同学</h4>
+                <p class="text-sm text-gray-500">前端开发工程师</p>
+              </div>
+            </div>
+            <div class="flex mb-3">
+              <span class="text-yellow-400">★★★★★</span>
+            </div>
+            <p class="text-gray-700 leading-relaxed">
+              "MyOffer真的帮了我大忙！作为会员可以查看所有职位信息，投递记录管理也很方便。最终拿到了心仪公司的offer！"
+            </p>
+          </div>
+
+          <!-- 评价卡片 2 -->
+          <div
+            class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+            <div class="flex items-center mb-4">
+              <div
+                class="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                李
+              </div>
+              <div class="ml-4">
+                <h4 class="font-semibold text-gray-900">李女士</h4>
+                <p class="text-sm text-gray-500">产品经理</p>
+              </div>
+            </div>
+            <div class="flex mb-3">
+              <span class="text-yellow-400">★★★★★</span>
+            </div>
+            <p class="text-gray-700 leading-relaxed">
+              "界面简洁易用，职位信息很全面。会员功能让我能够深度搜索，找到了很多优质岗位。强烈推荐！"
+            </p>
+          </div>
+
+          <!-- 评价卡片 3 -->
+          <div
+            class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+            <div class="flex items-center mb-4">
+              <div
+                class="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                王
+              </div>
+              <div class="ml-4">
+                <h4 class="font-semibold text-gray-900">王先生</h4>
+                <p class="text-sm text-gray-500">Java开发工程师</p>
+              </div>
+            </div>
+            <div class="flex mb-3">
+              <span class="text-yellow-400">★★★★★</span>
+            </div>
+            <p class="text-gray-700 leading-relaxed">
+              "作为技术人员，我很看重平台的专业性。MyOffer的职位质量很高，投递流程也很顺畅。值得信赖！"
+            </p>
+          </div>
+
+          <!-- 评价卡片 4 -->
+          <div
+            class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+            <div class="flex items-center mb-4">
+              <div
+                class="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                陈
+              </div>
+              <div class="ml-4">
+                <h4 class="font-semibold text-gray-900">陈同学</h4>
+                <p class="text-sm text-gray-500">应届毕业生</p>
+              </div>
+            </div>
+            <div class="flex mb-3">
+              <span class="text-yellow-400">★★★★★</span>
+            </div>
+            <p class="text-gray-700 leading-relaxed">
+              "刚毕业找工作很迷茫，MyOffer帮我整理了投递记录，还能看到更多职位。现在已经成功入职了！"
+            </p>
+          </div>
+
+          <!-- 评价卡片 5 -->
+          <div
+            class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+            <div class="flex items-center mb-4">
+              <div
+                class="w-12 h-12 bg-gradient-to-r from-indigo-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                刘
+              </div>
+              <div class="ml-4">
+                <h4 class="font-semibold text-gray-900">刘女士</h4>
+                <p class="text-sm text-gray-500">UI设计师</p>
+              </div>
+            </div>
+            <div class="flex mb-3">
+              <span class="text-yellow-400">★★★★★</span>
+            </div>
+            <p class="text-gray-700 leading-relaxed">
+              "设计很棒，用户体验很好！会员功能让我能够查看更多设计类职位，找到了理想的工作环境。"
+            </p>
+          </div>
+
+          <!-- 评价卡片 6 -->
+          <div
+            class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+            <div class="flex items-center mb-4">
+              <div
+                class="w-12 h-12 bg-gradient-to-r from-teal-500 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                赵
+              </div>
+              <div class="ml-4">
+                <h4 class="font-semibold text-gray-900">赵先生</h4>
+                <p class="text-sm text-gray-500">运营总监</p>
+              </div>
+            </div>
+            <div class="flex mb-3">
+              <span class="text-yellow-400">★★★★★</span>
+            </div>
+            <p class="text-gray-700 leading-relaxed">
+              "平台很专业，职位信息准确及时。会员服务物超所值，帮我快速找到了合适的管理岗位。"
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="bg-gray-50 py-16 sm:py-24">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            常见问题
+          </h2>
+        </div>
+
+        <div class="space-y-4">
+          <div v-for="(faq, index) in faqs" :key="index"
+            class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <button @click="toggleFaq(index)"
+              class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors duration-200">
+              <h4 class="text-lg font-semibold text-gray-900">{{ faq.question }}</h4>
+              <svg :class="['w-5 h-5 text-gray-500 transition-transform duration-200', faq.open ? 'rotate-180' : '']"
+                fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                  clip-rule="evenodd" />
+              </svg>
+            </button>
+            <div :class="[
+              'overflow-hidden transition-all duration-300 ease-in-out',
+              faq.open ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+            ]">
+              <div class="px-6 pb-4">
+                <p class="text-gray-600 leading-relaxed">{{ faq.answer }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Message } from '@/components/Message'
+
+const isYearly = ref(false)
+
+const faqs = ref([
+  {
+    question: '会员权益何时生效？',
+    answer: '支付成功后立即生效，您可以马上享受所有会员特权。',
+    open: false
+  },
+  {
+    question: '如何取消会员？',
+    answer: '您可以随时在个人中心取消自动续费，已购买的会员时长仍然有效。',
+    open: false
+  },
+  {
+    question: '支持哪些支付方式？',
+    answer: '支持微信支付、支付宝、银行卡等多种支付方式。',
+    open: false
+  },
+  {
+    question: '会员可以退款吗？',
+    answer: '支持7天无理由退款，超过7天的会员费用将按比例退还。',
+    open: false
+  }
+])
+
+const toggleFaq = (index: number) => {
+  faqs.value[index].open = !faqs.value[index].open
+}
+
+const handlePurchase = (plan: string) => {
+  Message.success(`感谢您选择${plan}！功能开发中，敬请期待...`)
+}
+</script>

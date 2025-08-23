@@ -17,6 +17,12 @@ const router = createRouter({
       component: () => import('@/views/MyJobApply.vue'),
       meta: { requiresAuth: true }
     },
+    {
+      path: '/become-member',
+      name: 'BecomeMember',
+      component: () => import('@/views/BecomeMember.vue'),
+      meta: { requiresAuth: true }
+    },
     // 后台管理路由
     {
       path: '/admin',
