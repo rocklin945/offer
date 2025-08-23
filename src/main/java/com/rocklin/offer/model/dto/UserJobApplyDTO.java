@@ -31,6 +31,21 @@ public class UserJobApplyDTO implements Serializable {
     @Schema(description = "公司名称")
     private String companyName;
 
+    @Schema(description = "公司类型")
+    private String companyType;
+
+    @Schema(description = "所属行业")
+    private String industry;
+
+    @Schema(description = "招聘类型")
+    private String recruitType;
+
+    @Schema(description = "工作地点")
+    private String workLocation;
+
+    @Schema(description = "招聘对象")
+    private String recruitTarget;
+
     @Schema(description = "岗位名称")
     private String positionName;
 

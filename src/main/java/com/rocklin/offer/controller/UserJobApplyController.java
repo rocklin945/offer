@@ -133,6 +133,19 @@ public class UserJobApplyController {
     }
 
     /**
+     * 管理员更新投递记录
+     */
+    @PostMapping("/admin/update")
+    @Operation(summary = "管理员更新投递记录", description = "管理员更新任意投递记录的状态")
+    @AuthCheck(enableRole = UserRoleEnum.ADMIN)
+    @SlidingWindowRateLimit(windowInSeconds = 10, maxCount = 3)
+    public BaseResponse<Boolean> adminUpdateUserJobApply(@RequestBody @Validated UserJobApplyUpdateRequest req) {
+        // 管理员更新时不需要检查用户权限，直接更新
+        boolean result = userJobApplyService.updateUserJobApply(req, null);
+        return BaseResponse.success(result);
+    }
+
+    /**
      * 管理员删除投递记录
      */
     @PostMapping("/admin/delete")

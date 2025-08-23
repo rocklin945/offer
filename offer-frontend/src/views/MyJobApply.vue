@@ -11,15 +11,48 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">公司名称</label>
-          <input v-model="searchForm.companyName" type="text" placeholder="请输入公司名称" class="input-field" />
+          <input v-model="searchForm.companyName" @keyup.enter="handleSearch" type="text" placeholder="请输入公司名称" class="input-field" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">公司类型</label>
+          <select v-model="searchForm.companyType" @change="handleSearch" class="input-field">
+            <option value="">全部</option>
+            <option value="国企">国企</option>
+            <option value="外企">外企</option>
+            <option value="民企">民企</option>
+            <option value="合资">合资</option>
+            <option value="事业单位">事业单位</option>
+            <option value="其他">其他</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">所属行业</label>
+          <input v-model="searchForm.industry" @keyup.enter="handleSearch" type="text" placeholder="请输入所属行业" class="input-field" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">招聘类型</label>
+          <select v-model="searchForm.recruitType" @change="handleSearch" class="input-field">
+            <option value="">全部</option>
+            <option value="校招">校招</option>
+            <option value="社招">社招</option>
+            <option value="实习">实习</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">工作地点</label>
+          <input v-model="searchForm.workLocation" @keyup.enter="handleSearch" type="text" placeholder="请输入工作地点" class="input-field" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">招聘对象</label>
+          <input v-model="searchForm.recruitTarget" @keyup.enter="handleSearch" type="text" placeholder="如：2025年毕业" class="input-field" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">岗位名称</label>
-          <input v-model="searchForm.positionName" type="text" placeholder="请输入岗位名称" class="input-field" />
+          <input v-model="searchForm.positionName" @keyup.enter="handleSearch" type="text" placeholder="请输入岗位名称" class="input-field" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">投递状态</label>
-          <select v-model="searchForm.applicationStatus" class="input-field">
+          <select v-model="searchForm.applicationStatus" @change="handleSearch" class="input-field">
             <option value="">全部状态</option>
             <option value="已投递">已投递</option>
             <option value="简历筛选">简历筛选</option>
@@ -28,6 +61,28 @@
             <option value="终面">终面</option>
             <option value="已通过">已通过</option>
             <option value="已拒绝">已拒绝</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">排序字段</label>
+          <select v-model="searchForm.sortField" class="input-field">
+            <option value="">默认排序</option>
+            <option value="companyName">公司名称</option>
+            <option value="companyType">公司类型</option>
+            <option value="industry">所属行业</option>
+            <option value="recruitType">招聘类型</option>
+            <option value="workLocation">工作地点</option>
+            <option value="recruitTarget">招聘对象</option>
+            <option value="positionName">岗位名称</option>
+            <option value="applicationStatus">投递状态</option>
+            <option value="createTime">投递时间</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">排序方式</label>
+          <select v-model="searchForm.sortOrder" class="input-field">
+            <option value="desc">从大到小</option>
+            <option value="asc">从小到大</option>
           </select>
         </div>
       </div>
@@ -59,8 +114,17 @@
                 <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-48 whitespace-nowrap">
                   公司信息
                 </th>
+                <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-40 whitespace-nowrap">
+                  招聘对象
+                </th>
+                <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-48 whitespace-nowrap">
+                  工作地点
+                </th>
                 <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-48 whitespace-nowrap">
                   岗位名称
+                </th>
+                <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
+                  招聘类型
                 </th>
                 <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
                   投递状态
@@ -76,10 +140,52 @@
             <tbody class="bg-white divide-y divide-gray-200">
               <tr v-for="item in tableData" :key="item.id" class="hover:bg-gray-50">
                 <td class="px-2 py-2 whitespace-nowrap text-center">
-                  <div class="text-sm font-medium text-gray-900">{{ item.companyName }}</div>
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">{{ item.companyName }}</div>
+                    <div class="text-sm text-gray-500">{{ item.companyType || '-' }}</div>
+                    <div class="text-sm text-gray-500">{{ item.industry || '-' }}</div>
+                  </div>
                 </td>
                 <td class="px-2 py-2 whitespace-nowrap text-center">
-                  <div class="text-sm text-gray-900">{{ item.positionName }}</div>
+                  <div class="text-sm font-medium text-gray-900">{{ item.recruitTarget || '-' }}</div>
+                </td>
+                <td class="px-2 py-2 text-center">
+                  <div v-if="item.workLocation && item.workLocation !== '-'"
+                    class="flex flex-wrap gap-1 items-center justify-center">
+                    <span v-for="(tag, index) in getDisplayTags(item.workLocation).visible" :key="index"
+                      class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help transition-all duration-200 hover:shadow-md"
+                      :class="getPositionTagClass(tag, index)" :title="tag.length > 15 ? tag : ''">
+                      {{ truncateText(tag, 15) }}
+                    </span>
+                    <span v-if="getDisplayTags(item.workLocation).hasMore"
+                      class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help bg-gray-200 text-gray-600 hover:bg-gray-300"
+                      :title="getDisplayTags(item.workLocation).remaining.join(', ')">
+                      ...
+                    </span>
+                  </div>
+                  <div v-else class="text-sm font-medium text-gray-900">{{ item.workLocation || '-' }}</div>
+                </td>
+                <td class="px-2 py-2 text-center">
+                  <div v-if="item.positionName && item.positionName !== '-'"
+                    class="flex flex-wrap gap-1 items-center justify-center">
+                    <span v-for="(tag, index) in getDisplayTags(item.positionName).visible" :key="index"
+                      class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help transition-all duration-200 hover:shadow-md"
+                      :class="getPositionTagClass(tag, index)" :title="tag.length > 15 ? tag : ''">
+                      {{ truncateText(tag, 15) }}
+                    </span>
+                    <span v-if="getDisplayTags(item.positionName).hasMore"
+                      class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help bg-gray-200 text-gray-600 hover:bg-gray-300"
+                      :title="getDisplayTags(item.positionName).remaining.join(', ')">
+                      ...
+                    </span>
+                  </div>
+                  <div v-else class="text-sm font-medium text-gray-900">{{ item.positionName || '-' }}</div>
+                </td>
+                <td class="px-2 py-2 whitespace-nowrap text-center">
+                  <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
+                    :class="getRecruitTypeClass(item.recruitType)">
+                    {{ item.recruitType || '-' }}
+                  </span>
                 </td>
                 <td class="px-2 py-2 whitespace-nowrap text-center">
                   <span :class="getStatusClass(item.applicationStatus)" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
@@ -204,8 +310,15 @@ const isChangingPage = ref(false)
 // 搜索表单
 const searchForm = reactive<UserJobApplyQueryRequest>({
   companyName: '',
+  companyType: '',
+  industry: '',
+  recruitType: '',
+  workLocation: '',
+  recruitTarget: '',
   positionName: '',
-  applicationStatus: ''
+  applicationStatus: '',
+  sortField: '',
+  sortOrder: 'desc'
 })
 
 // 更新状态相关
@@ -264,10 +377,108 @@ const handleSearch = async () => {
 const resetSearch = () => {
   Object.assign(searchForm, {
     companyName: '',
+    companyType: '',
+    industry: '',
+    recruitType: '',
+    workLocation: '',
+    recruitTarget: '',
     positionName: '',
-    applicationStatus: ''
+    applicationStatus: '',
+    sortField: '',
+    sortOrder: 'desc'
   })
   handleSearch()
+}
+
+// 岗位信息处理方法
+const getPositionTags = (positionInfo?: string) => {
+  if (!positionInfo) return []
+
+  // 按空格分割岗位信息
+  const tags = positionInfo
+    .split(/\s+/) // 按空格分割
+    .map(tag => tag.trim())
+    .filter(tag => tag.length > 0)
+
+  return tags
+}
+
+// 获取显示标签（限制显示数量）
+const getDisplayTags = (text?: string) => {
+  if (!text) return { visible: [], remaining: [], hasMore: false }
+
+  const allTags = getPositionTags(text)
+
+  // 如果只有一个标签且不包含空格，也要显示为标签
+  if (allTags.length === 0 && text.trim()) {
+    allTags.push(text.trim())
+  }
+
+  const maxVisible = 3
+  const visible = allTags.slice(0, maxVisible)
+  const remaining = allTags.slice(maxVisible)
+  const hasMore = remaining.length > 0
+
+  return {
+    visible,
+    remaining,
+    hasMore
+  }
+}
+
+const truncateText = (text: string, maxLength: number) => {
+  if (text.length <= maxLength) return text
+  return text.substring(0, maxLength) + '...'
+}
+
+const getPositionTagClass = (tag: string, index: number) => {
+  // 预定义的颜色数组
+  const colors = [
+    'bg-blue-100 text-blue-800 border border-blue-200',
+    'bg-green-100 text-green-800 border border-green-200',
+    'bg-yellow-100 text-yellow-800 border border-yellow-200',
+    'bg-purple-100 text-purple-800 border border-purple-200',
+    'bg-pink-100 text-pink-800 border border-pink-200',
+    'bg-indigo-100 text-indigo-800 border border-indigo-200',
+    'bg-red-100 text-red-800 border border-red-200',
+    'bg-orange-100 text-orange-800 border border-orange-200',
+    'bg-teal-100 text-teal-800 border border-teal-200',
+    'bg-cyan-100 text-cyan-800 border border-cyan-200',
+    'bg-emerald-100 text-emerald-800 border border-emerald-200',
+    'bg-lime-100 text-lime-800 border border-lime-200',
+    'bg-amber-100 text-amber-800 border border-amber-200',
+    'bg-rose-100 text-rose-800 border border-rose-200',
+    'bg-violet-100 text-violet-800 border border-violet-200',
+    'bg-sky-100 text-sky-800 border border-sky-200'
+  ]
+
+  // 根据标签内容生成一个稳定的索引（同样的标签总是相同颜色）
+  let hash = 0
+  for (let i = 0; i < tag.length; i++) {
+    const char = tag.charCodeAt(i)
+    hash = ((hash << 5) - hash) + char
+    hash = hash & hash // 转换为32位整数
+  }
+
+  // 使用绝对值确保索引为正数
+  const colorIndex = Math.abs(hash) % colors.length
+
+  return colors[colorIndex]
+}
+
+// 样式类方法
+const getRecruitTypeClass = (type?: string) => {
+  switch (type) {
+    case '校招':
+    case '秋招':
+      return 'bg-blue-100 text-blue-800'
+    case '社招':
+      return 'bg-green-100 text-green-800'
+    case '实习':
+      return 'bg-yellow-100 text-yellow-800'
+    default:
+      return 'bg-gray-100 text-gray-800'
+  }
 }
 
 // 分页处理

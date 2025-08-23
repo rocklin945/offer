@@ -105,11 +105,20 @@
             <if test="query.companyName != null and query.companyName != ''">
                 AND company_name LIKE CONCAT('%', #{query.companyName}, '%')
             </if>
+            <if test="query.companyType != null and query.companyType != ''">
+                AND company_type = #{query.companyType}
+            </if>
+            <if test="query.industry != null and query.industry != ''">
+                AND industry LIKE CONCAT('%', #{query.industry}, '%')
+            </if>
             <if test="query.recruitType != null and query.recruitType != ''">
                 AND recruit_type = #{query.recruitType}
             </if>
             <if test="query.workLocation != null and query.workLocation != ''">
                 AND work_location LIKE CONCAT('%', #{query.workLocation}, '%')
+            </if>
+            <if test="query.recruitTarget != null and query.recruitTarget != ''">
+                AND recruit_target LIKE CONCAT('%', #{query.recruitTarget}, '%')
             </if>
             <if test="query.positionName != null and query.positionName != ''">
                 AND position_name LIKE CONCAT('%', #{query.positionName}, '%')
@@ -154,11 +163,20 @@
             <if test="query.companyName != null and query.companyName != ''">
                 AND company_name LIKE CONCAT('%', #{query.companyName}, '%')
             </if>
+            <if test="query.companyType != null and query.companyType != ''">
+                AND company_type = #{query.companyType}
+            </if>
+            <if test="query.industry != null and query.industry != ''">
+                AND industry LIKE CONCAT('%', #{query.industry}, '%')
+            </if>
             <if test="query.recruitType != null and query.recruitType != ''">
                 AND recruit_type = #{query.recruitType}
             </if>
             <if test="query.workLocation != null and query.workLocation != ''">
                 AND work_location LIKE CONCAT('%', #{query.workLocation}, '%')
+            </if>
+            <if test="query.recruitTarget != null and query.recruitTarget != ''">
+                AND recruit_target LIKE CONCAT('%', #{query.recruitTarget}, '%')
             </if>
             <if test="query.positionName != null and query.positionName != ''">
                 AND position_name LIKE CONCAT('%', #{query.positionName}, '%')

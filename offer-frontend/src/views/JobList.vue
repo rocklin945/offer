@@ -11,11 +11,11 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">公司名称</label>
-          <input v-model="searchForm.companyName" type="text" placeholder="请输入公司名称" class="input-field" />
+          <input v-model="searchForm.companyName" @keyup.enter="handleSearch" type="text" placeholder="请输入公司名称" class="input-field" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">公司类型</label>
-          <select v-model="searchForm.companyType" class="input-field">
+          <select v-model="searchForm.companyType" @change="handleSearch" class="input-field">
             <option value="">全部</option>
             <option value="国企">国企</option>
             <option value="外企">外企</option>
@@ -27,11 +27,11 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">所属行业</label>
-          <input v-model="searchForm.industry" type="text" placeholder="请输入所属行业" class="input-field" />
+          <input v-model="searchForm.industry" @keyup.enter="handleSearch" type="text" placeholder="请输入所属行业" class="input-field" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">招聘类型</label>
-          <select v-model="searchForm.recruitType" class="input-field">
+          <select v-model="searchForm.recruitType" @change="handleSearch" class="input-field">
             <option value="">全部</option>
             <option value="校招">校招</option>
             <option value="社招">社招</option>
@@ -40,23 +40,23 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">工作地点</label>
-          <input v-model="searchForm.workLocation" type="text" placeholder="请输入工作地点" class="input-field" />
+          <input v-model="searchForm.workLocation" @keyup.enter="handleSearch" type="text" placeholder="请输入工作地点" class="input-field" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">招聘对象</label>
-          <input v-model="searchForm.recruitTarget" type="text" placeholder="如：2025年毕业" class="input-field" />
+          <input v-model="searchForm.recruitTarget" @keyup.enter="handleSearch" type="text" placeholder="如：2025年毕业" class="input-field" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">岗位名称</label>
-          <input v-model="searchForm.positionName" type="text" placeholder="请输入岗位名称" class="input-field" />
+          <input v-model="searchForm.positionName" @keyup.enter="handleSearch" type="text" placeholder="请输入岗位名称" class="input-field" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">开始时间</label>
-          <input v-model="searchForm.startTime" type="date" class="input-field" />
+          <input v-model="searchForm.startTime" @change="handleSearch" type="date" class="input-field" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">投递截止</label>
-          <input v-model="searchForm.deadline" type="text" placeholder="请输入截止时间" class="input-field" />
+          <input v-model="searchForm.deadline" @keyup.enter="handleSearch" type="text" placeholder="请输入截止时间" class="input-field" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">排序字段</label>
@@ -244,12 +244,11 @@
                   <span v-else class="text-gray-400">-</span>
                 </td>
                 <td class="px-2 py-2 whitespace-nowrap text-center">
-                  <button
-                    @click="handleApply(job)"
-                    class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-600 bg-blue-100 rounded-full hover:bg-blue-200 transition-colors"
-                  >
+                  <button @click="handleApply(job)"
+                    class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-600 bg-blue-100 rounded-full hover:bg-blue-200 transition-colors">
                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>
                     加入我的投递
                   </button>
@@ -370,10 +369,10 @@ const handlePageChange = async (page: number) => {
   if (page >= 1 && page <= totalPages.value && !isChangingPage.value) {
     isChangingPage.value = true
     currentPage.value = page
-    
+
     // 添加动画延迟
     await new Promise(resolve => setTimeout(resolve, 300))
-    
+
     await fetchData()
     isChangingPage.value = false
   }
@@ -385,10 +384,10 @@ const handleJumpPage = async () => {
     isChangingPage.value = true
     currentPage.value = page
     jumpPage.value = ''
-    
+
     // 添加动画延迟
     await new Promise(resolve => setTimeout(resolve, 300))
-    
+
     await fetchData()
     isChangingPage.value = false
   }
@@ -509,16 +508,13 @@ const handleApply = async (job: JobInfo) => {
       jobId: job.id,
       applicationStatus: '已投递'
     })
-    
-    if (response.code === 0) {
-      Message.success('投递成功！')
-    } else {
-      Message.error(response.message || '投递失败')
-    }
+
+    // 响应拦截器已经处理了statusCode检查，如果到这里说明请求成功
+    Message.success('投递成功！')
   } catch (error: any) {
     console.error('投递失败:', error)
     const errorMessage = error.message || error.response?.data?.message || '投递失败'
-    
+
     // 如果是重复投递的错误，给出友好提示
     if (errorMessage.includes('已经投递过')) {
       Message.warning('您已经投递过该职位了')

@@ -10,13 +10,13 @@
 
     <!-- 搜索筛选区域 -->
     <div class="bg-white rounded-lg border border-gray-200 p-6">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">用户名</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">用户ID</label>
           <input
-            v-model="searchForm.userName"
-            type="text"
-            placeholder="请输入用户名"
+            v-model="searchForm.userId"
+            type="number"
+            placeholder="请输入用户ID"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
@@ -26,6 +26,54 @@
             v-model="searchForm.companyName"
             type="text"
             placeholder="请输入公司名称"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">公司类型</label>
+          <select v-model="searchForm.companyType" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="">全部</option>
+            <option value="国企">国企</option>
+            <option value="外企">外企</option>
+            <option value="民企">民企</option>
+            <option value="合资">合资</option>
+            <option value="事业单位">事业单位</option>
+            <option value="其他">其他</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">所属行业</label>
+          <input
+            v-model="searchForm.industry"
+            type="text"
+            placeholder="请输入所属行业"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">招聘类型</label>
+          <select v-model="searchForm.recruitType" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="">全部</option>
+            <option value="校招">校招</option>
+            <option value="社招">社招</option>
+            <option value="实习">实习</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">工作地点</label>
+          <input
+            v-model="searchForm.workLocation"
+            type="text"
+            placeholder="请输入工作地点"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">招聘对象</label>
+          <input
+            v-model="searchForm.recruitTarget"
+            type="text"
+            placeholder="如：2025年毕业"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
@@ -49,6 +97,28 @@
             <option value="终面">终面</option>
             <option value="已通过">已通过</option>
             <option value="已拒绝">已拒绝</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">排序字段</label>
+          <select v-model="searchForm.sortField" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="">默认排序</option>
+            <option value="companyName">公司名称</option>
+            <option value="companyType">公司类型</option>
+            <option value="industry">所属行业</option>
+            <option value="recruitType">招聘类型</option>
+            <option value="workLocation">工作地点</option>
+            <option value="recruitTarget">招聘对象</option>
+            <option value="positionName">岗位名称</option>
+            <option value="applicationStatus">投递状态</option>
+            <option value="createTime">投递时间</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">排序方式</label>
+          <select v-model="searchForm.sortOrder" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="desc">从大到小</option>
+            <option value="asc">从小到大</option>
           </select>
         </div>
       </div>
@@ -85,19 +155,19 @@
                   用户信息
                 </th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  公司名称
+                  公司信息
                 </th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  岗位名称
+                  招聘信息
+                </th>
+                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  岗位信息
                 </th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                   投递状态
                 </th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                   投递时间
-                </th>
-                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  最后更新
                 </th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                   操作
@@ -113,10 +183,23 @@
                   </div>
                 </td>
                 <td class="px-4 py-4 text-center">
-                  <div class="text-sm font-medium text-gray-900">{{ item.companyName }}</div>
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">{{ item.companyName }}</div>
+                    <div class="text-sm text-gray-500">{{ item.companyType || '-' }}</div>
+                    <div class="text-sm text-gray-500">{{ item.industry || '-' }}</div>
+                  </div>
                 </td>
                 <td class="px-4 py-4 text-center">
-                  <div class="text-sm text-gray-900">{{ item.positionName }}</div>
+                  <div>
+                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full" :class="getRecruitTypeClass(item.recruitType)">
+                      {{ item.recruitType || '-' }}
+                    </span>
+                    <div class="text-sm text-gray-500 mt-1">{{ item.recruitTarget || '-' }}</div>
+                    <div class="text-sm text-gray-500">{{ item.workLocation || '-' }}</div>
+                  </div>
+                </td>
+                <td class="px-4 py-4 text-center">
+                  <div class="text-sm font-medium text-gray-900">{{ item.positionName }}</div>
                 </td>
                 <td class="px-4 py-4 text-center">
                   <span
@@ -129,16 +212,21 @@
                 <td class="px-4 py-4 text-center text-sm text-gray-500">
                   {{ formatDate(item.createTime) }}
                 </td>
-                <td class="px-4 py-4 text-center text-sm text-gray-500">
-                  {{ formatDate(item.updateTime) }}
-                </td>
                 <td class="px-4 py-4 text-center">
-                  <button
-                    @click="handleDelete(item)"
-                    class="text-red-600 hover:text-red-900 text-sm font-medium"
-                  >
-                    删除
-                  </button>
+                  <div class="flex justify-center space-x-2">
+                    <button
+                      @click="handleUpdateStatus(item)"
+                      class="text-blue-600 hover:text-blue-900 text-sm font-medium"
+                    >
+                      更新状态
+                    </button>
+                    <button
+                      @click="handleDelete(item)"
+                      class="text-red-600 hover:text-red-900 text-sm font-medium"
+                    >
+                      删除
+                    </button>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -213,6 +301,33 @@
         </div>
       </div>
     </div>
+
+    <!-- 更新状态弹窗 -->
+    <div v-if="showUpdateModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-6 w-96">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">更新投递状态</h3>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">选择状态</label>
+          <select v-model="updateForm.applicationStatus" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="已投递">已投递</option>
+            <option value="简历筛选">简历筛选</option>
+            <option value="笔试">笔试</option>
+            <option value="面试">面试</option>
+            <option value="终面">终面</option>
+            <option value="已通过">已通过</option>
+            <option value="已拒绝">已拒绝</option>
+          </select>
+        </div>
+        <div class="flex justify-end space-x-2">
+          <button @click="showUpdateModal = false" class="px-4 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
+            取消
+          </button>
+          <button @click="confirmUpdate" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors">
+            确认
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -233,9 +348,23 @@ const isChangingPage = ref(false)
 
 // 搜索表单
 const searchForm = reactive<UserJobApplyQueryRequest>({
-  userName: '',
+  userId: undefined,
   companyName: '',
+  companyType: '',
+  industry: '',
+  recruitType: '',
+  workLocation: '',
+  recruitTarget: '',
   positionName: '',
+  applicationStatus: '',
+  sortField: '',
+  sortOrder: 'desc'
+})
+
+// 更新状态相关
+const showUpdateModal = ref(false)
+const updateForm = reactive({
+  id: 0,
   applicationStatus: ''
 })
 
@@ -287,13 +416,35 @@ const handleSearch = async () => {
 // 重置搜索
 const resetSearch = () => {
   Object.assign(searchForm, {
-    userName: '',
+    userId: undefined,
     companyName: '',
+    companyType: '',
+    industry: '',
+    recruitType: '',
+    workLocation: '',
+    recruitTarget: '',
     positionName: '',
-    applicationStatus: ''
+    applicationStatus: '',
+    sortField: '',
+    sortOrder: 'desc'
   })
   currentPage.value = 1
   fetchData()
+}
+
+// 获取招聘类型样式类
+const getRecruitTypeClass = (type?: string) => {
+  switch (type) {
+    case '校招':
+    case '秋招':
+      return 'bg-blue-100 text-blue-800'
+    case '社招':
+      return 'bg-green-100 text-green-800'
+    case '实习':
+      return 'bg-yellow-100 text-yellow-800'
+    default:
+      return 'bg-gray-100 text-gray-800'
+  }
 }
 
 // 分页处理
@@ -377,6 +528,36 @@ const getPageNumbers = () => {
   }
 
   return pages
+}
+
+// 更新状态
+const handleUpdateStatus = (item: UserJobApplyDTO) => {
+  updateForm.id = item.id
+  updateForm.applicationStatus = item.applicationStatus
+  showUpdateModal.value = true
+}
+
+// 确认更新
+const confirmUpdate = async () => {
+  try {
+    const response = await userJobApplyApi.adminUpdate(updateForm)
+    // axios拦截器返回response对象，实际数据在response.data中
+    if (response.data.statusCode === 200) {
+      // 更新本地数据
+      const index = tableData.value.findIndex(item => item.id === updateForm.id)
+      if (index !== -1) {
+        tableData.value[index].applicationStatus = updateForm.applicationStatus
+      }
+      
+      Message.success('状态更新成功')
+      showUpdateModal.value = false
+    } else {
+      Message.error(response.data.message || '更新失败')
+    }
+  } catch (error: any) {
+    console.error('更新状态失败:', error)
+    Message.error(error.message || '更新失败')
+  }
 }
 
 // 删除

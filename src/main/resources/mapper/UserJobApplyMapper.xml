@@ -21,6 +21,11 @@
         <result column="user_name" property="userName" jdbcType="VARCHAR"/>
         <result column="job_id" property="jobId" jdbcType="BIGINT"/>
         <result column="company_name" property="companyName" jdbcType="VARCHAR"/>
+        <result column="company_type" property="companyType" jdbcType="VARCHAR"/>
+        <result column="industry" property="industry" jdbcType="VARCHAR"/>
+        <result column="recruit_type" property="recruitType" jdbcType="VARCHAR"/>
+        <result column="work_location" property="workLocation" jdbcType="VARCHAR"/>
+        <result column="recruit_target" property="recruitTarget" jdbcType="VARCHAR"/>
         <result column="position_name" property="positionName" jdbcType="VARCHAR"/>
         <result column="application_status" property="applicationStatus" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
@@ -34,7 +39,8 @@
 
     <!-- DTO字段 -->
     <sql id="DTO_Column_List">
-        uja.id, uja.user_id, u.user_name, uja.job_id, ji.company_name, ji.position_name,
+        uja.id, uja.user_id, u.user_name, uja.job_id, ji.company_name, ji.company_type, ji.industry,
+        ji.recruit_type, ji.work_location, ji.recruit_target, ji.position_name,
         uja.application_status, uja.create_time, uja.update_time
     </sql>
 
@@ -114,6 +120,21 @@
             <if test="query.companyName != null and query.companyName != ''">
                 AND ji.company_name LIKE CONCAT('%', #{query.companyName}, '%')
             </if>
+            <if test="query.companyType != null and query.companyType != ''">
+                AND ji.company_type = #{query.companyType}
+            </if>
+            <if test="query.industry != null and query.industry != ''">
+                AND ji.industry LIKE CONCAT('%', #{query.industry}, '%')
+            </if>
+            <if test="query.recruitType != null and query.recruitType != ''">
+                AND ji.recruit_type = #{query.recruitType}
+            </if>
+            <if test="query.workLocation != null and query.workLocation != ''">
+                AND ji.work_location LIKE CONCAT('%', #{query.workLocation}, '%')
+            </if>
+            <if test="query.recruitTarget != null and query.recruitTarget != ''">
+                AND ji.recruit_target LIKE CONCAT('%', #{query.recruitTarget}, '%')
+            </if>
             <if test="query.positionName != null and query.positionName != ''">
                 AND ji.position_name LIKE CONCAT('%', #{query.positionName}, '%')
             </if>
@@ -121,7 +142,51 @@
                 AND uja.application_status = #{query.applicationStatus}
             </if>
         </where>
-        ORDER BY uja.create_time DESC
+        <choose>
+            <when test="query.sortField != null and query.sortField != ''">
+                <choose>
+                    <when test="query.sortField == 'companyName'">
+                        ORDER BY ji.company_name
+                    </when>
+                    <when test="query.sortField == 'companyType'">
+                        ORDER BY ji.company_type
+                    </when>
+                    <when test="query.sortField == 'industry'">
+                        ORDER BY ji.industry
+                    </when>
+                    <when test="query.sortField == 'recruitType'">
+                        ORDER BY ji.recruit_type
+                    </when>
+                    <when test="query.sortField == 'workLocation'">
+                        ORDER BY ji.work_location
+                    </when>
+                    <when test="query.sortField == 'recruitTarget'">
+                        ORDER BY ji.recruit_target
+                    </when>
+                    <when test="query.sortField == 'positionName'">
+                        ORDER BY ji.position_name
+                    </when>
+                    <when test="query.sortField == 'applicationStatus'">
+                        ORDER BY uja.application_status
+                    </when>
+                    <when test="query.sortField == 'createTime'">
+                        ORDER BY uja.create_time
+                    </when>
+                    <otherwise>
+                        ORDER BY uja.create_time DESC
+                    </otherwise>
+                </choose>
+                <if test="query.sortOrder != null and query.sortOrder != ''">
+                    ${query.sortOrder}
+                </if>
+                <if test="query.sortOrder == null or query.sortOrder == ''">
+                    DESC
+                </if>
+            </when>
+            <otherwise>
+                ORDER BY uja.create_time DESC
+            </otherwise>
+        </choose>
         LIMIT #{offset} ,#{query.pageSize}
     </select>
 
@@ -141,6 +206,21 @@
             </if>
             <if test="companyName != null and companyName != ''">
                 AND ji.company_name LIKE CONCAT('%', #{companyName}, '%')
+            </if>
+            <if test="companyType != null and companyType != ''">
+                AND ji.company_type = #{companyType}
+            </if>
+            <if test="industry != null and industry != ''">
+                AND ji.industry LIKE CONCAT('%', #{industry}, '%')
+            </if>
+            <if test="recruitType != null and recruitType != ''">
+                AND ji.recruit_type = #{recruitType}
+            </if>
+            <if test="workLocation != null and workLocation != ''">
+                AND ji.work_location LIKE CONCAT('%', #{workLocation}, '%')
+            </if>
+            <if test="recruitTarget != null and recruitTarget != ''">
+                AND ji.recruit_target LIKE CONCAT('%', #{recruitTarget}, '%')
             </if>
             <if test="positionName != null and positionName != ''">
                 AND ji.position_name LIKE CONCAT('%', #{positionName}, '%')

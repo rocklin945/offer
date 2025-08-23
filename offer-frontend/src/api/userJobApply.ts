@@ -8,6 +8,11 @@ export interface UserJobApplyDTO {
   userName: string
   jobId: number
   companyName: string
+  companyType?: string
+  industry?: string
+  recruitType?: string
+  workLocation?: string
+  recruitTarget?: string
   positionName: string
   applicationStatus: string
   createTime: string
@@ -30,8 +35,15 @@ export interface UserJobApplyQueryRequest {
   userId?: number
   jobId?: number
   companyName?: string
+  companyType?: string
+  industry?: string
+  recruitType?: string
+  workLocation?: string
+  recruitTarget?: string
   positionName?: string
   applicationStatus?: string
+  sortField?: string
+  sortOrder?: string
 }
 
 // 用户投递记录API
@@ -69,5 +81,10 @@ export const userJobApplyApi = {
   // 管理员删除投递记录
   adminDelete: (id: number) => {
     return request.post<boolean>('/user-job-apply/admin/delete', { id })
+  },
+
+  // 管理员更新投递记录状态
+  adminUpdate: (data: UserJobApplyUpdateRequest) => {
+    return request.post<boolean>('/user-job-apply/admin/update', data)
   }
 }
