@@ -131,7 +131,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(UserUpdateRequest req) {
-        req.setUserPassword(encryptPasswordUtil.getEncryptPassword(req.getUserPassword()));
+        if (req.getUserPassword() != null) {
+            req.setUserPassword(encryptPasswordUtil.getEncryptPassword(req.getUserPassword()));
+        }
         Long result = userMapper.updateById(req);
         Assert.isTrue(result > 0, ErrorCode.OPERATION_ERROR, "数据库异常，用户更新失败");
     }

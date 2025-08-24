@@ -10,37 +10,23 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">用户ID</label>
-          <input
-            v-model="queryParams.id"
-            type="text"
-            placeholder="请输入用户ID"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+          <input v-model="queryParams.id" type="text" placeholder="请输入用户ID"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">用户名</label>
-          <input
-            v-model="queryParams.userName"
-            type="text"
-            placeholder="请输入用户名"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+          <input v-model="queryParams.userName" type="text" placeholder="请输入用户名"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">账号</label>
-          <input
-            v-model="queryParams.userAccount"
-            type="text"
-            placeholder="请输入账号"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+          <input v-model="queryParams.userAccount" type="text" placeholder="请输入账号"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">用户角色</label>
-          <select
-            v-model="queryParams.userRole"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          >
+          <select v-model="queryParams.userRole"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             <option value="">全部</option>
             <option :value="0">管理员</option>
             <option :value="1">普通用户</option>
@@ -49,15 +35,17 @@
         </div>
       </div>
       <div class="flex justify-end space-x-2">
-        <button @click="resetQuery" class="px-4 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
+        <button @click="resetQuery"
+          class="px-4 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
           重置
         </button>
-        <button @click="handleQuery" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors">
+        <button @click="handleQuery"
+          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors">
           搜索
         </button>
       </div>
     </div>
-    
+
     <!-- 数据表格 -->
     <div class="bg-white rounded-lg border border-gray-200">
       <div v-if="loading" class="text-center py-12">
@@ -67,7 +55,9 @@
 
       <div v-else-if="userList.length === 0" class="text-center py-12">
         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
+          </path>
         </svg>
         <p class="mt-2 text-gray-500">暂无数据</p>
       </div>
@@ -117,30 +107,27 @@
                   {{ user.userAccount }}
                 </td>
                 <td class="px-4 py-4 text-center">
-                  <span
-                    :class="[
-                      'inline-flex px-2 py-1 text-xs font-semibold rounded-full',
-                      user.userRole === 0 ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'
-                    ]"
-                  >
-                    {{ user.userRole === 0 ? '管理员' : '普通用户' }}
+                  <span :class="[
+                    'inline-flex px-2 py-1 text-xs font-semibold rounded-full',
+                    user.userRole === 0
+                      ? 'bg-blue-100 text-blue-800'
+                      : user.userRole === 1
+                        ? 'bg-gray-100 text-gray-800'
+                        : 'bg-yellow-100 text-yellow-800'
+                  ]">
+                    {{ user.userRole === 0 ? '管理员' : user.userRole === 1 ? '普通用户' : '会员' }}
                   </span>
                 </td>
+
                 <td class="px-4 py-4 text-center text-sm text-gray-500">
                   {{ formatDate(user.createTime) }}
                 </td>
                 <td class="px-4 py-4 text-center">
                   <div class="flex justify-center space-x-2">
-                    <button
-                      @click="handleEdit(user)"
-                      class="text-blue-600 hover:text-blue-900 text-sm font-medium"
-                    >
+                    <button @click="handleEdit(user)" class="text-blue-600 hover:text-blue-900 text-sm font-medium">
                       编辑
                     </button>
-                    <button
-                      @click="handleDelete(user)"
-                      class="text-red-600 hover:text-red-900 text-sm font-medium"
-                    >
+                    <button @click="handleDelete(user)" class="text-red-600 hover:text-red-900 text-sm font-medium">
                       删除
                     </button>
                   </div>
@@ -165,23 +152,22 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
               </svg>
             </button>
-            
+
             <!-- 页码按钮 -->
             <template v-for="page in getPageNumbers()" :key="page">
               <button v-if="page === '...'" disabled class="px-3 py-2 text-sm text-gray-400 cursor-default">
                 ...
               </button>
-              <button v-else @click="handlePageChange(page as number)"
-                :class="[
-                  'px-3 py-2 text-sm border rounded transition-colors',
-                  currentPage === page 
-                    ? 'bg-blue-600 text-white border-blue-600' 
-                    : 'border-gray-300 hover:bg-gray-50'
-                ]">
+              <button v-else @click="handlePageChange(page as number)" :class="[
+                'px-3 py-2 text-sm border rounded transition-colors',
+                currentPage === page
+                  ? 'bg-blue-600 text-white border-blue-600'
+                  : 'border-gray-300 hover:bg-gray-50'
+              ]">
                 {{ page }}
               </button>
             </template>
-            
+
             <!-- 下一页 -->
             <button @click="handlePageChange(currentPage + 1)" :disabled="currentPage >= totalPages"
               class="px-3 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white">
@@ -189,19 +175,20 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
               </svg>
             </button>
-            
+
             <!-- 跳转到指定页 -->
             <div class="flex items-center space-x-2 ml-4">
               <span class="text-sm text-gray-700">跳至</span>
               <input v-model="jumpPage" @keyup.enter="handleJumpPage" type="number" min="1" :max="totalPages"
                 class="w-16 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
               <span class="text-sm text-gray-700">页</span>
-              <button @click="handleJumpPage" :disabled="!jumpPage || Number(jumpPage) < 1 || Number(jumpPage) > totalPages"
+              <button @click="handleJumpPage"
+                :disabled="!jumpPage || Number(jumpPage) < 1 || Number(jumpPage) > totalPages"
                 class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600">
                 跳转
               </button>
             </div>
-            
+
             <!-- 每页显示条数 -->
             <div class="flex items-center space-x-2 ml-4">
               <span class="text-sm text-gray-700">每页</span>
@@ -218,7 +205,7 @@
         </div>
       </div>
     </div>
-    
+
     <!-- 编辑用户对话框 -->
     <div v-if="showEditDialog" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
@@ -230,70 +217,46 @@
             </svg>
           </button>
         </div>
-        
+
         <form @submit.prevent="submitEdit">
           <div class="mb-4">
             <label for="userName" class="block text-sm font-medium text-gray-700 mb-1">用户名</label>
-            <input
-              type="text"
-              id="userName"
-              v-model="editForm.userName"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md"
-              required
-            />
+            <input type="text" id="userName" v-model="editForm.userName"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md" required />
           </div>
-          
+
           <div class="mb-4">
             <label for="userProfile" class="block text-sm font-medium text-gray-700 mb-1">用户简介</label>
-            <textarea
-              id="userProfile"
-              v-model="editForm.userProfile"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md"
-              rows="3"
-            ></textarea>
+            <textarea id="userProfile" v-model="editForm.userProfile"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md" rows="3"></textarea>
           </div>
-          
+
           <div class="mb-4">
             <label for="userRole" class="block text-sm font-medium text-gray-700 mb-1">用户角色</label>
-            <select
-              id="userRole"
-              v-model="editForm.userRole"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md"
-              required
-            >
+            <select id="userRole" v-model="editForm.userRole" class="w-full px-3 py-2 border border-gray-300 rounded-md"
+              required>
               <option :value="0">管理员</option>
               <option :value="1">普通用户</option>
+              <option :value="2">会员</option>
             </select>
           </div>
-          
+
           <div class="mb-4">
             <label for="userPassword" class="block text-sm font-medium text-gray-700 mb-1">
               密码（留空表示不修改）
             </label>
-            <input
-              type="password"
-              id="userPassword"
-              v-model="editForm.userPassword"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md"
-              placeholder="请输入新密码"
-              minlength="8"
-              maxlength="16"
-            />
+            <input type="password" id="userPassword" v-model="editForm.userPassword"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="请输入新密码" minlength="8"
+              maxlength="16" />
           </div>
-          
+
           <div class="flex justify-end">
-            <button
-              type="button"
-              @click="showEditDialog = false"
-              class="px-4 py-2 border border-gray-300 rounded-md mr-2 hover:bg-gray-50"
-            >
+            <button type="button" @click="showEditDialog = false"
+              class="px-4 py-2 border border-gray-300 rounded-md mr-2 hover:bg-gray-50">
               取消
             </button>
-            <button
-              type="submit"
-              class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-              :disabled="loading"
-            >
+            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              :disabled="loading">
               {{ loading ? '提交中...' : '确认' }}
             </button>
           </div>
@@ -355,7 +318,7 @@ const fetchUserList = async () => {
       ...queryParams,
       userRole: queryParams.userRole === null ? undefined : queryParams.userRole
     }
-    
+
     const res = await listUserByPage(params)
     if (res.statusCode === 200 && res.data) {
       userList.value = res.data.list
@@ -408,10 +371,10 @@ const handlePageChange = async (page: number) => {
     isChangingPage.value = true
     queryParams.pageNum = page
     currentPage.value = page
-    
+
     // 添加动画延迟
     await new Promise(resolve => setTimeout(resolve, 300))
-    
+
     await fetchUserList()
     isChangingPage.value = false
   }
@@ -424,10 +387,10 @@ const handleJumpPage = async () => {
     queryParams.pageNum = page
     currentPage.value = page
     jumpPage.value = ''
-    
+
     // 添加动画延迟
     await new Promise(resolve => setTimeout(resolve, 300))
-    
+
     await fetchUserList()
     isChangingPage.value = false
   }
@@ -439,10 +402,10 @@ const handlePageSizeChange = async () => {
     queryParams.pageSize = pageSize.value
     queryParams.pageNum = 1
     currentPage.value = 1
-    
+
     // 添加动画延迟
     await new Promise(resolve => setTimeout(resolve, 300))
-    
+
     await fetchUserList()
     isChangingPage.value = false
   }
@@ -452,7 +415,7 @@ const getPageNumbers = () => {
   const pages: (number | string)[] = []
   const total = totalPages.value
   const current = currentPage.value
-  
+
   if (total <= 7) {
     // 总页数小于等于7，显示所有页码
     for (let i = 1; i <= total; i++) {
@@ -485,7 +448,7 @@ const getPageNumbers = () => {
       pages.push(total)
     }
   }
-  
+
   return pages
 }
 
@@ -503,19 +466,19 @@ const handleEdit = (user: UserLoginResponse) => {
 const submitEdit = async () => {
   try {
     loading.value = true
-    
+
     const updateData: UserUpdateRequest = {
       id: editForm.id,
       userName: editForm.userName,
       userProfile: editForm.userProfile,
       userRole: editForm.userRole
     }
-    
+
     // 如果密码不为空，则更新密码
     if (editForm.userPassword) {
       updateData.userPassword = editForm.userPassword
     }
-    
+
     const res = await updateUser(updateData)
     if (res.statusCode === 200) {
       showEditDialog.value = false
@@ -534,7 +497,7 @@ const handleDelete = async (user: UserLoginResponse) => {
   if (!confirm(`确定要删除用户 "${user.userName}" 吗？`)) {
     return
   }
-  
+
   try {
     loading.value = true
     const res = await deleteUser(user.userId)

@@ -167,7 +167,7 @@ public class MemberCheckAspect {
                     pageNumField.setAccessible(true);
                     Integer pageNum = (Integer) pageNumField.get(arg);
 
-                    if (pageNum != null && pageNum > 1) {
+                    if (pageNum != null && pageNum > 2) {
                         throw new BusinessException(ErrorCode.UNAUTHORIZED, "未登录用户只能查看前2页，请登录查看更多职位");
                     }
                 }
