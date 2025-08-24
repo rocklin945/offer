@@ -33,10 +33,10 @@
               <select v-model="form.companyType"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 <option value="">请选择公司类型</option>
-                <option value="国企">国企</option>
+                <option value="国企">央国企</option>
+                <option value="银行">银行</option>
                 <option value="外企">外企</option>
                 <option value="民企">民企</option>
-                <option value="合资">合资</option>
                 <option value="事业单位">事业单位</option>
                 <option value="其他">其他</option>
               </select>
@@ -54,9 +54,12 @@
               <select v-model="form.recruitType"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 <option value="">请选择招聘类型</option>
-                <option value="校招">校招</option>
-                <option value="社招">社招</option>
                 <option value="实习">实习</option>
+                <option value="春招">春招</option>
+                <option value="秋招">秋招</option>
+                <option value="补录">补录</option>
+                <option value="提前批">提前批</option>
+                <option value="社招">社招</option>
               </select>
             </div>
           </div>
@@ -84,21 +87,9 @@
               <label class="block text-sm font-medium text-gray-700 mb-2">招聘对象</label>
               <input v-model="form.recruitTarget" type="text"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="如：2025年毕业生" />
+                placeholder="如：2026年毕业生" />
             </div>
 
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">投递进度</label>
-              <select v-model="form.applicationStatus"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                <option value="">请选择投递进度</option>
-                <option value="未投递">未投递</option>
-                <option value="已投递">已投递</option>
-                <option value="面试中">面试中</option>
-                <option value="已通过">已通过</option>
-                <option value="已拒绝">已拒绝</option>
-              </select>
-            </div>
           </div>
         </div>
 

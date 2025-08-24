@@ -13,95 +13,79 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">用户ID</label>
-          <input
-            v-model="searchForm.userId"
-            type="number"
-            placeholder="请输入用户ID"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+          <input v-model="searchForm.userId" type="number" placeholder="请输入用户ID"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">公司名称</label>
-          <input
-            v-model="searchForm.companyName"
-            type="text"
-            placeholder="请输入公司名称"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+          <input v-model="searchForm.companyName" type="text" placeholder="请输入公司名称"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">公司类型</label>
-          <select v-model="searchForm.companyType" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          <select v-model="searchForm.companyType"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             <option value="">全部</option>
-            <option value="国企">国企</option>
+            <option value="国企">央国企</option>
+            <option value="银行">银行</option>
             <option value="外企">外企</option>
             <option value="民企">民企</option>
-            <option value="合资">合资</option>
             <option value="事业单位">事业单位</option>
             <option value="其他">其他</option>
           </select>
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">所属行业</label>
-          <input
-            v-model="searchForm.industry"
-            type="text"
-            placeholder="请输入所属行业"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+          <input v-model="searchForm.industry" type="text" placeholder="请输入所属行业"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">招聘类型</label>
-          <select v-model="searchForm.recruitType" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          <select v-model="searchForm.recruitType"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             <option value="">全部</option>
-            <option value="校招">校招</option>
-            <option value="社招">社招</option>
             <option value="实习">实习</option>
+            <option value="春招">春招</option>
+            <option value="秋招">秋招</option>
+            <option value="补录">补录</option>
+            <option value="提前批">提前批</option>
+            <option value="社招">社招</option>
           </select>
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">工作地点</label>
-          <input
-            v-model="searchForm.workLocation"
-            type="text"
-            placeholder="请输入工作地点"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+          <input v-model="searchForm.workLocation" type="text" placeholder="请输入工作地点"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">招聘对象</label>
-          <input
-            v-model="searchForm.recruitTarget"
-            type="text"
-            placeholder="如：2025年毕业"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+          <input v-model="searchForm.recruitTarget" type="text" placeholder="如：2026年毕业"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">岗位名称</label>
-          <input
-            v-model="searchForm.positionName"
-            type="text"
-            placeholder="请输入岗位名称"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+          <input v-model="searchForm.positionName" type="text" placeholder="请输入岗位名称"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">投递状态</label>
-          <select v-model="searchForm.applicationStatus" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          <select v-model="searchForm.applicationStatus"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             <option value="">全部状态</option>
+            <option value="未投递">未投递</option>
             <option value="已投递">已投递</option>
-            <option value="简历筛选">简历筛选</option>
             <option value="笔试">笔试</option>
-            <option value="面试">面试</option>
-            <option value="终面">终面</option>
+            <option value="一面">一面</option>
+            <option value="二面">二面</option>
+            <option value="HR面">HR面</option>
             <option value="已通过">已通过</option>
             <option value="已拒绝">已拒绝</option>
           </select>
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">排序字段</label>
-          <select v-model="searchForm.sortField" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          <select v-model="searchForm.sortField"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             <option value="">默认排序</option>
             <option value="companyName">公司名称</option>
             <option value="companyType">公司类型</option>
@@ -116,17 +100,20 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">排序方式</label>
-          <select v-model="searchForm.sortOrder" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          <select v-model="searchForm.sortOrder"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             <option value="desc">从大到小</option>
             <option value="asc">从小到大</option>
           </select>
         </div>
       </div>
       <div class="flex justify-end space-x-2">
-        <button @click="resetSearch" class="px-4 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
+        <button @click="resetSearch"
+          class="px-4 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
           重置
         </button>
-        <button @click="handleSearch" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors">
+        <button @click="handleSearch"
+          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors">
           搜索
         </button>
       </div>
@@ -141,7 +128,9 @@
 
       <div v-else-if="!hasData" class="text-center py-12">
         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
+          </path>
         </svg>
         <p class="mt-2 text-gray-500">暂无投递记录</p>
       </div>
@@ -191,7 +180,8 @@
                 </td>
                 <td class="px-4 py-4 text-center">
                   <div>
-                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full" :class="getRecruitTypeClass(item.recruitType)">
+                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
+                      :class="getRecruitTypeClass(item.recruitType)">
                       {{ item.recruitType || '-' }}
                     </span>
                     <div class="text-sm text-gray-500 mt-1">{{ item.recruitTarget || '-' }}</div>
@@ -202,10 +192,8 @@
                   <div class="text-sm font-medium text-gray-900">{{ item.positionName }}</div>
                 </td>
                 <td class="px-4 py-4 text-center">
-                  <span
-                    :class="getStatusClass(item.applicationStatus)"
-                    class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
-                  >
+                  <span :class="getStatusClass(item.applicationStatus)"
+                    class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
                     {{ item.applicationStatus }}
                   </span>
                 </td>
@@ -214,16 +202,11 @@
                 </td>
                 <td class="px-4 py-4 text-center">
                   <div class="flex justify-center space-x-2">
-                    <button
-                      @click="handleUpdateStatus(item)"
-                      class="text-blue-600 hover:text-blue-900 text-sm font-medium"
-                    >
+                    <button @click="handleUpdateStatus(item)"
+                      class="text-blue-600 hover:text-blue-900 text-sm font-medium">
                       更新状态
                     </button>
-                    <button
-                      @click="handleDelete(item)"
-                      class="text-red-600 hover:text-red-900 text-sm font-medium"
-                    >
+                    <button @click="handleDelete(item)" class="text-red-600 hover:text-red-900 text-sm font-medium">
                       删除
                     </button>
                   </div>
@@ -248,23 +231,22 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
               </svg>
             </button>
-            
+
             <!-- 页码按钮 -->
             <template v-for="page in getPageNumbers()" :key="page">
               <button v-if="page === '...'" disabled class="px-3 py-2 text-sm text-gray-400 cursor-default">
                 ...
               </button>
-              <button v-else @click="handlePageChange(page as number)"
-                :class="[
-                  'px-3 py-2 text-sm border rounded transition-colors',
-                  currentPage === page 
-                    ? 'bg-blue-600 text-white border-blue-600' 
-                    : 'border-gray-300 hover:bg-gray-50'
-                ]">
+              <button v-else @click="handlePageChange(page as number)" :class="[
+                'px-3 py-2 text-sm border rounded transition-colors',
+                currentPage === page
+                  ? 'bg-blue-600 text-white border-blue-600'
+                  : 'border-gray-300 hover:bg-gray-50'
+              ]">
                 {{ page }}
               </button>
             </template>
-            
+
             <!-- 下一页 -->
             <button @click="handlePageChange(currentPage + 1)" :disabled="currentPage >= totalPages"
               class="px-3 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white">
@@ -272,19 +254,20 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
               </svg>
             </button>
-            
+
             <!-- 跳转到指定页 -->
             <div class="flex items-center space-x-2 ml-4">
               <span class="text-sm text-gray-700">跳至</span>
               <input v-model="jumpPage" @keyup.enter="handleJumpPage" type="number" min="1" :max="totalPages"
                 class="w-16 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
               <span class="text-sm text-gray-700">页</span>
-              <button @click="handleJumpPage" :disabled="!jumpPage || Number(jumpPage) < 1 || Number(jumpPage) > totalPages"
+              <button @click="handleJumpPage"
+                :disabled="!jumpPage || Number(jumpPage) < 1 || Number(jumpPage) > totalPages"
                 class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600">
                 跳转
               </button>
             </div>
-            
+
             <!-- 每页显示条数 -->
             <div class="flex items-center space-x-2 ml-4">
               <span class="text-sm text-gray-700">每页</span>
@@ -308,21 +291,25 @@
         <h3 class="text-lg font-medium text-gray-900 mb-4">更新投递状态</h3>
         <div class="mb-4">
           <label class="block text-sm font-medium text-gray-700 mb-2">选择状态</label>
-          <select v-model="updateForm.applicationStatus" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          <select v-model="updateForm.applicationStatus"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="未投递">未投递</option>
             <option value="已投递">已投递</option>
-            <option value="简历筛选">简历筛选</option>
             <option value="笔试">笔试</option>
-            <option value="面试">面试</option>
-            <option value="终面">终面</option>
+            <option value="一面">一面</option>
+            <option value="二面">二面</option>
+            <option value="HR面">HR面</option>
             <option value="已通过">已通过</option>
             <option value="已拒绝">已拒绝</option>
           </select>
         </div>
         <div class="flex justify-end space-x-2">
-          <button @click="showUpdateModal = false" class="px-4 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
+          <button @click="showUpdateModal = false"
+            class="px-4 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
             取消
           </button>
-          <button @click="confirmUpdate" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors">
+          <button @click="confirmUpdate"
+            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors">
             确认
           </button>
         </div>
@@ -381,7 +368,7 @@ const fetchData = async () => {
       pageSize: pageSize.value,
       ...searchForm
     }
-    
+
     // 过滤空值
     Object.keys(params).forEach(key => {
       if (params[key as keyof UserJobApplyQueryRequest] === '') {
@@ -390,7 +377,7 @@ const fetchData = async () => {
     })
 
     const response = await userJobApplyApi.adminGetPage(params)
-    
+
     // axios响应拦截器返回response对象，实际数据在response.data中
     if (response && response.data && response.data.data) {
       const pageData = response.data.data
@@ -451,10 +438,10 @@ const handlePageChange = async (page: number) => {
   if (page >= 1 && page <= totalPages.value && !isChangingPage.value) {
     isChangingPage.value = true
     currentPage.value = page
-    
+
     // 添加动画延迟
     await new Promise(resolve => setTimeout(resolve, 300))
-    
+
     await fetchData()
     isChangingPage.value = false
   }
@@ -466,10 +453,10 @@ const handleJumpPage = async () => {
     isChangingPage.value = true
     currentPage.value = page
     jumpPage.value = ''
-    
+
     // 添加动画延迟
     await new Promise(resolve => setTimeout(resolve, 300))
-    
+
     await fetchData()
     isChangingPage.value = false
   }
@@ -479,10 +466,10 @@ const handlePageSizeChange = async () => {
   if (!isChangingPage.value) {
     isChangingPage.value = true
     currentPage.value = 1
-    
+
     // 添加动画延迟
     await new Promise(resolve => setTimeout(resolve, 300))
-    
+
     await fetchData()
     isChangingPage.value = false
   }
@@ -547,7 +534,7 @@ const confirmUpdate = async () => {
       if (index !== -1) {
         tableData.value[index].applicationStatus = updateForm.applicationStatus
       }
-      
+
       Message.success('状态更新成功')
       showUpdateModal.value = false
     } else {

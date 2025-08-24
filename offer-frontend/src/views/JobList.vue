@@ -18,12 +18,12 @@
           <label class="block text-sm font-medium text-gray-700 mb-1">公司类型</label>
           <select v-model="searchForm.companyType" @change="handleSearch" class="input-field">
             <option value="">全部</option>
-            <option value="国企">国企</option>
-            <option value="外企">外企</option>
-            <option value="民企">民企</option>
-            <option value="合资">合资</option>
-            <option value="事业单位">事业单位</option>
-            <option value="其他">其他</option>
+                  <option value="国企">央国企</option>
+                  <option value="银行">银行</option>
+                  <option value="外企">外企</option>
+                  <option value="民企">民企</option>
+                  <option value="事业单位">事业单位</option>
+                  <option value="其他">其他</option>
           </select>
         </div>
         <div>
@@ -35,9 +35,12 @@
           <label class="block text-sm font-medium text-gray-700 mb-1">招聘类型</label>
           <select v-model="searchForm.recruitType" @change="handleSearch" class="input-field">
             <option value="">全部</option>
-            <option value="校招">校招</option>
-            <option value="社招">社招</option>
-            <option value="实习">实习</option>
+                  <option value="实习">实习</option>
+                  <option value="春招">春招</option>
+                  <option value="秋招">秋招</option>
+                  <option value="补录">补录</option>
+                  <option value="提前批">提前批</option>
+                  <option value="社招">社招</option>
           </select>
         </div>
         <div>
@@ -47,7 +50,7 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">招聘对象</label>
-          <input v-model="searchForm.recruitTarget" @keyup.enter="handleSearch" type="text" placeholder="如：2025年毕业"
+          <input v-model="searchForm.recruitTarget" @keyup.enter="handleSearch" type="text" placeholder="如：2026年毕业"
             class="input-field" />
         </div>
         <div>
@@ -669,7 +672,7 @@ const handleApply = async (job: JobInfo) => {
     })
 
     // 响应拦截器已经处理了statusCode检查，如果到这里说明请求成功
-    Message.success('投递成功！')
+    Message.success('成功加入我的投递记录！')
   } catch (error: any) {
     console.error('投递失败:', error)
     const errorMessage = error.message || error.response?.data?.message || '投递失败'

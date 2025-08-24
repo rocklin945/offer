@@ -25,10 +25,10 @@
           <select v-model="searchForm.companyType"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             <option value="">全部</option>
-            <option value="国企">国企</option>
+            <option value="国企">央国企</option>
+            <option value="银行">银行</option>
             <option value="外企">外企</option>
             <option value="民企">民企</option>
-            <option value="合资">合资</option>
             <option value="事业单位">事业单位</option>
             <option value="其他">其他</option>
           </select>
@@ -43,9 +43,12 @@
           <select v-model="searchForm.recruitType"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             <option value="">全部</option>
-            <option value="校招">校招</option>
-            <option value="社招">社招</option>
             <option value="实习">实习</option>
+            <option value="春招">春招</option>
+            <option value="秋招">秋招</option>
+            <option value="补录">补录</option>
+            <option value="提前批">提前批</option>
+            <option value="社招">社招</option>
           </select>
         </div>
         <div>
@@ -55,25 +58,13 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">招聘对象</label>
-          <input v-model="searchForm.recruitTarget" type="text" placeholder="如：2025年毕业"
+          <input v-model="searchForm.recruitTarget" type="text" placeholder="如：2026年毕业"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">岗位名称</label>
           <input v-model="searchForm.positionName" type="text" placeholder="请输入岗位名称"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">投递进度</label>
-          <select v-model="searchForm.applicationStatus"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-            <option value="">全部</option>
-            <option value="未投递">未投递</option>
-            <option value="已投递">已投递</option>
-            <option value="面试中">面试中</option>
-            <option value="已通过">已通过</option>
-            <option value="已拒绝">已拒绝</option>
-          </select>
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">开始时间</label>
