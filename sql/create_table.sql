@@ -37,7 +37,7 @@ CREATE TABLE if not exists job_info (
      work_location      VARCHAR(255) COMMENT '工作地点',
      recruit_target     VARCHAR(100) COMMENT '招聘对象(20xx年毕业)',
 
-     position_name      VARCHAR(255) COMMENT '岗位(专业/岗位名称)',
+     position_name      VARCHAR(2048) COMMENT '岗位(专业/岗位名称)',
 
      start_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '开始时间',
      deadline           VARCHAR(100) COMMENT '投递截止(尽快投递/x.x截止)',
