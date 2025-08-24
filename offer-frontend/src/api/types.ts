@@ -97,3 +97,29 @@ export interface JobInfoQueryRequest {
   sortField?: string
   sortOrder?: string
 }
+
+// 网站信息相关类型
+export interface WebInfoResponse {
+  id: number
+  pv: number
+  imageUrl: string
+  userCount: number
+  memberCount: number
+  jobCount: number
+  activity1: string
+  activity2: string
+  activity3: string
+  activity4: string
+  activity5: string
+  updateTime: string
+}
+
+export interface WebInfoUpdateRequest {
+  id: number
+  imageUrl?: string
+  activity1?: string
+  activity2?: string
+  activity3?: string
+  activity4?: string
+  activity5?: string
+}

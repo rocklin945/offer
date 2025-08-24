@@ -11,11 +11,16 @@
         <div class="flex items-center justify-between">
           <div>
             <p class="text-blue-100 text-sm">用户数量</p>
-            <p class="text-3xl font-bold">{{ stats.userCount }}</p>
+            <p class="text-3xl font-bold">
+              <span v-if="loading" class="animate-pulse">...</span>
+              <span v-else>{{ stats.userCount }}</span>
+            </p>
           </div>
           <div class="bg-blue-400 bg-opacity-30 rounded-full p-3">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z">
+              </path>
             </svg>
           </div>
         </div>
@@ -25,11 +30,16 @@
         <div class="flex items-center justify-between">
           <div>
             <p class="text-green-100 text-sm">招聘信息数量</p>
-            <p class="text-3xl font-bold">{{ stats.jobCount }}</p>
+            <p class="text-3xl font-bold">
+              <span v-if="loading" class="animate-pulse">...</span>
+              <span v-else>{{ stats.jobCount }}</span>
+            </p>
           </div>
           <div class="bg-green-400 bg-opacity-30 rounded-full p-3">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
+              </path>
             </svg>
           </div>
         </div>
@@ -39,12 +49,18 @@
         <div class="flex items-center justify-between">
           <div>
             <p class="text-yellow-100 text-sm">网站总浏览量</p>
-            <p class="text-3xl font-bold">{{ stats.totalViews }}</p>
+            <p class="text-3xl font-bold">
+              <span v-if="loading" class="animate-pulse">...</span>
+              <span v-else>{{ webInfo?.pv || stats.totalViews }}</span>
+            </p>
           </div>
           <div class="bg-yellow-400 bg-opacity-30 rounded-full p-3">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z">
+              </path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+              </path>
             </svg>
           </div>
         </div>
@@ -54,11 +70,16 @@
         <div class="flex items-center justify-between">
           <div>
             <p class="text-purple-100 text-sm">网站会员数量</p>
-            <p class="text-3xl font-bold">{{ stats.memberCount }}</p>
+            <p class="text-3xl font-bold">
+              <span v-if="loading" class="animate-pulse">...</span>
+              <span v-else>{{ stats.memberCount }}</span>
+            </p>
           </div>
           <div class="bg-purple-400 bg-opacity-30 rounded-full p-3">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+              </path>
             </svg>
           </div>
         </div>
@@ -70,10 +91,13 @@
       <div class="bg-white rounded-lg border border-gray-200 p-6">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">快捷操作</h3>
         <div class="space-y-3">
-          <router-link to="/admin/user-management" class="flex items-center p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
+          <router-link to="/admin/user-management"
+            class="flex items-center p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
             <div class="bg-blue-500 rounded-full p-2 mr-3">
               <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z">
+                </path>
               </svg>
             </div>
             <div>
@@ -82,10 +106,13 @@
             </div>
           </router-link>
 
-          <router-link to="/admin/job-management" class="flex items-center p-3 bg-green-50 hover:bg-green-100 rounded-lg transition-colors">
+          <router-link to="/admin/job-management"
+            class="flex items-center p-3 bg-green-50 hover:bg-green-100 rounded-lg transition-colors">
             <div class="bg-green-500 rounded-full p-2 mr-3">
               <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
+                </path>
               </svg>
             </div>
             <div>
@@ -94,10 +121,13 @@
             </div>
           </router-link>
 
-          <router-link to="/admin/user-job-apply-management" class="flex items-center p-3 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors">
+          <router-link to="/admin/user-job-apply-management"
+            class="flex items-center p-3 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors">
             <div class="bg-purple-500 rounded-full p-2 mr-3">
               <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V7a2 2 0 012-2h5l2 2h6a2 2 0 012 2v6.5M7 7v10l4-2 4 2V7M7 7l4-2 4 2"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V7a2 2 0 012-2h5l2 2h6a2 2 0 012 2v6.5M7 7v10l4-2 4 2V7M7 7l4-2 4 2">
+                </path>
               </svg>
             </div>
             <div>
@@ -111,17 +141,72 @@
       <div class="bg-white rounded-lg border border-gray-200 p-6">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">最近活动</h3>
         <div class="space-y-4">
-          <div v-for="activity in recentActivities" :key="activity.id" class="flex items-start">
-            <div class="flex-shrink-0">
-              <div :class="[
-                'w-2 h-2 rounded-full mt-2',
-                activity.type === 'add' ? 'bg-green-400' : 
-                activity.type === 'edit' ? 'bg-blue-400' : 'bg-red-400'
-              ]"></div>
+          <div v-if="webInfo" class="space-y-4">
+            <div v-if="webInfo.activity1" class="flex items-start">
+              <div class="flex-shrink-0">
+                <div class="w-2 h-2 rounded-full mt-2 bg-red-400"></div>
+              </div>
+              <div class="ml-3 flex-1">
+                <p class="text-sm text-gray-900">{{ webInfo.activity1 }}</p>
+                <p class="text-xs text-gray-500">{{ formatTime(webInfo.updateTime) }}</p>
+              </div>
             </div>
-            <div class="ml-3 flex-1">
-              <p class="text-sm text-gray-900">{{ activity.description }}</p>
-              <p class="text-xs text-gray-500">{{ activity.time }}</p>
+
+            <div v-if="webInfo.activity2" class="flex items-start">
+              <div class="flex-shrink-0">
+                <div class="w-2 h-2 rounded-full mt-2 bg-blue-400"></div>
+              </div>
+              <div class="ml-3 flex-1">
+                <p class="text-sm text-gray-900">{{ webInfo.activity2 }}</p>
+                <p class="text-xs text-gray-500">{{ formatTime(webInfo.updateTime) }}</p>
+              </div>
+            </div>
+
+            <div v-if="webInfo.activity3" class="flex items-start">
+              <div class="flex-shrink-0">
+                <div class="w-2 h-2 rounded-full mt-2 bg-purple-400"></div>
+              </div>
+              <div class="ml-3 flex-1">
+                <p class="text-sm text-gray-900">{{ webInfo.activity3 }}</p>
+                <p class="text-xs text-gray-500">{{ formatTime(webInfo.updateTime) }}</p>
+              </div>
+            </div>
+
+            <div v-if="webInfo.activity4" class="flex items-start">
+              <div class="flex-shrink-0">
+                <div class="w-2 h-2 rounded-full mt-2 bg-yellow-400"></div>
+              </div>
+              <div class="ml-3 flex-1">
+                <p class="text-sm text-gray-900">{{ webInfo.activity4 }}</p>
+                <p class="text-xs text-gray-500">{{ formatTime(webInfo.updateTime) }}</p>
+              </div>
+            </div>
+
+            <div v-if="webInfo.activity5" class="flex items-start">
+              <div class="flex-shrink-0">
+                <div class="w-2 h-2 rounded-full mt-2 bg-green-400"></div>
+              </div>
+              <div class="ml-3 flex-1">
+                <p class="text-sm text-gray-900">{{ webInfo.activity5 }}</p>
+                <p class="text-xs text-gray-500">{{ formatTime(webInfo.updateTime) }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 如果没有网站信息数据，显示默认活动 -->
+          <div v-else>
+            <div v-for="activity in recentActivities" :key="activity.id" class="flex items-start">
+              <div class="flex-shrink-0">
+                <div :class="[
+                  'w-2 h-2 rounded-full mt-2',
+                  activity.type === 'add' ? 'bg-green-400' :
+                    activity.type === 'edit' ? 'bg-blue-400' : 'bg-red-400'
+                ]"></div>
+              </div>
+              <div class="ml-3 flex-1">
+                <p class="text-sm text-gray-900">{{ activity.description }}</p>
+                <p class="text-xs text-gray-500">{{ activity.time }}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -132,16 +217,19 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { jobInfoApi } from '@/api/jobInfo'
-import { listUserByPage } from '@/api/user'
+import { webInfoApi } from '@/api/webInfo'
+import type { WebInfoResponse } from '@/api/types'
 
 const currentTime = ref('')
 const stats = ref({
   userCount: 0,
   jobCount: 0,
-  totalViews: 12580,
+  totalViews: 0,
   memberCount: 0
 })
+
+const webInfo = ref<WebInfoResponse | null>(null)
+const loading = ref(true)
 
 const recentActivities = ref([
   {
@@ -178,29 +266,75 @@ const updateTime = () => {
 
 const fetchStats = async () => {
   try {
-    // 获取招聘信息数量
-    const jobResponse = await jobInfoApi.getList({ pageSize: 1000 })
-    const jobs = jobResponse.data.records || jobResponse.data.list || []
-    stats.value.jobCount = jobs.length
-    
-    // 获取用户数量
-    const userResponse = await listUserByPage({ pageSize: 1000 })
-    const users = userResponse.data?.list || []
-    stats.value.userCount = users.length
-    
-    // 计算会员数量（userRole为0或2的用户为会员）
-    stats.value.memberCount = users.filter((user: any) => user.userRole === 0 || user.userRole === 2).length
-    
-    // 模拟浏览量增长
-    stats.value.totalViews = 12580 + Math.floor(Math.random() * 100)
+    loading.value = true
+    // 获取网站信息（包含所有统计数据）
+    const response = await webInfoApi.getWebInfo()
+
+    if (response.statusCode === 200 && response.data) {
+      webInfo.value = response.data
+
+      // 更新统计数据
+      stats.value = {
+        userCount: response.data.userCount,
+        jobCount: response.data.jobCount,
+        totalViews: response.data.pv,
+        memberCount: response.data.memberCount
+      }
+    } else {
+      console.error('获取网站信息失败:', response.message)
+      // 如果获取失败，使用默认值
+      stats.value = {
+        userCount: 0,
+        jobCount: 0,
+        totalViews: 0,
+        memberCount: 0
+      }
+    }
   } catch (error) {
-    console.error('获取统计数据失败:', error)
+    console.error('获取网站统计数据失败:', error)
+    // 如果请求失败，使用默认值
+    stats.value = {
+      userCount: 0,
+      jobCount: 0,
+      totalViews: 0,
+      memberCount: 0
+    }
+  } finally {
+    loading.value = false
   }
 }
 
-onMounted(() => {
+// 格式化时间显示
+const formatTime = (timeString: string) => {
+  if (!timeString) return '刚刚'
+
+  const now = new Date()
+  const time = new Date(timeString)
+  const diff = now.getTime() - time.getTime()
+
+  const minutes = Math.floor(diff / (1000 * 60))
+  const hours = Math.floor(diff / (1000 * 60 * 60))
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+
+  if (days > 0) {
+    return `${days}天前`
+  } else if (hours > 0) {
+    return `${hours}小时前`
+  } else if (minutes > 0) {
+    return `${minutes}分钟前`
+  } else {
+    return '刚刚'
+  }
+}
+
+onMounted(async () => {
   updateTime()
   setInterval(updateTime, 1000)
-  fetchStats()
+
+  // 获取统计数据
+  await fetchStats()
+
+  // 每 30 秒刷新一次数据
+  setInterval(fetchStats, 30000)
 })
 </script>

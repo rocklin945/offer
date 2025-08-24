@@ -13,12 +13,14 @@ public interface WebInfoService {
 
     /**
      * 获取网站信息（包含会员数量统计）
+     * 
      * @return 网站信息响应
      */
     WebInfoResponse getWebInfo();
 
     /**
      * 增加PV访问量
+     * 
      * @return 是否增加成功
      */
     boolean incrementPv();

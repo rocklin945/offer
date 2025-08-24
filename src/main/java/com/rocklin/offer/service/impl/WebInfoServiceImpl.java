@@ -8,7 +8,6 @@ import com.rocklin.offer.model.entity.WebInfo;
 import com.rocklin.offer.service.WebInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -34,22 +33,22 @@ public class WebInfoServiceImpl implements WebInfoService {
             int userCount = webInfoMapper.getUserCount();
             int memberCount = webInfoMapper.getMemberCount();
             int jobCount = webInfoMapper.getJobCount();
-            
+
             // 如果统计数据发生变化，更新数据库
             if (webInfo.getUserCount() != userCount || webInfo.getJobCount() != jobCount) {
                 webInfo.setUserCount(userCount);
                 webInfo.setJobCount(jobCount);
                 webInfoMapper.updateWebInfo(webInfo);
             }
-            
+
             // 转换为响应 DTO
             WebInfoResponse response = new WebInfoResponse();
             buildWebInfoResponse(webInfo, response);
             response.setMemberCount(memberCount); // 设置会员数量
-            
+
             return response;
         }
-        
+
         return null;
     }
 
