@@ -74,4 +74,11 @@ public class WebInfoServiceImpl implements WebInfoService {
         int result = webInfoMapper.incrementPv();
         return result > 0;
     }
+
+    @Override
+    public String getMemberImageUrl() {
+        WebInfo webInfo = webInfoMapper.selectWebInfo();
+        Assert.notNull(webInfo, ErrorCode.NOT_FOUND, "网站信息不存在");
+        return webInfo.getImageUrl();
+    }
 }

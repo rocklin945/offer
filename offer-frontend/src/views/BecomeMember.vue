@@ -192,7 +192,28 @@
 
           <div class="text-center mb-8">
             <div class="inline-block p-4 bg-gray-100 rounded-xl">
-              <div
+              <!-- 加载状态 -->
+              <div v-if="loading" 
+                class="w-48 h-48 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg flex items-center justify-center border-2 border-dashed border-blue-300">
+                <div class="text-center">
+                  <div class="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-2"></div>
+                  <p class="text-blue-600 text-sm font-medium">加载中...</p>
+                </div>
+              </div>
+              
+              <!-- 显示二维码图片 -->
+              <div v-else-if="imageUrl" 
+                class="w-48 h-48 rounded-lg overflow-hidden border-2 border-blue-300">
+                <img 
+                  :src="imageUrl" 
+                  alt="会员二维码"
+                  class="w-full h-full object-cover"
+                  @error="onImageError"
+                />
+              </div>
+              
+              <!-- 备用占位图 -->
+              <div v-else
                 class="w-48 h-48 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg flex items-center justify-center border-2 border-dashed border-blue-300">
                 <div class="text-center">
                   <svg class="w-12 h-12 text-blue-500 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -514,9 +535,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { webInfoApi } from '@/api/webInfo'
 
 const isYearly = ref(false)
+const imageUrl = ref<string | null>(null)
+const loading = ref(true)
+
+// 获取会员图片URL
+const fetchMemberImageUrl = async () => {
+  try {
+    loading.value = true
+    const response = await webInfoApi.getMemberImageUrl()
+    if (response.statusCode === 200 && response.data) {
+      imageUrl.value = response.data
+    }
+  } catch (error) {
+    console.error('获取会员图片URL失败:', error)
+  } finally {
+    loading.value = false
+  }
+}
 
 const faqs = ref([
   {
@@ -544,4 +583,15 @@ const faqs = ref([
 const toggleFaq = (index: number) => {
   faqs.value[index].open = !faqs.value[index].open
 }
+
+// 处理图片加载失败
+const onImageError = (event: Event) => {
+  console.warn('二维码图片加载失败')
+  // 可以在这里设置默认图片或者隐藏图片
+}
+
+// 组件挂载时获取会员图片URL
+onMounted(() => {
+  fetchMemberImageUrl()
+})
 </script>

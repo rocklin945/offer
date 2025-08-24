@@ -24,4 +24,11 @@ public interface WebInfoService {
      * @return 是否增加成功
      */
     boolean incrementPv();
+
+    /**
+     * 获取会员图片URL（公开接口）
+     * 
+     * @return 图片URL
+     */
+    String getMemberImageUrl();
 }
