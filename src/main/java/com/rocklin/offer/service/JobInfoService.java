@@ -1,9 +1,7 @@
 package com.rocklin.offer.service;
 
-import com.rocklin.offer.model.dto.JobInfoImportDTO;
 import com.rocklin.offer.model.dto.request.JobInfoQueryRequest;
 import com.rocklin.offer.model.entity.JobInfo;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -57,17 +55,4 @@ public interface JobInfoService {
      * @return 总数
      */
     int getJobInfoCount(JobInfoQueryRequest queryRequest);
-
-    /**
-     * 获取所有招聘信息
-     * @return 所有招聘信息列表
-     */
-    List<JobInfo> getAllJobInfo();
-
-    /**
-     * 批量导入招聘信息
-     * @param file Excel文件
-     * @return 导入结果信息
-     */
-    String batchImportJobInfo(MultipartFile file);
 }

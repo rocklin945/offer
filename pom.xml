@@ -109,12 +109,6 @@
             <version>0.11.5</version>
             <scope>runtime</scope>
         </dependency>
-        <!-- EasyExcel -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>easyexcel</artifactId>
-            <version>3.3.2</version>
-        </dependency>
     </dependencies>
 
     <build>

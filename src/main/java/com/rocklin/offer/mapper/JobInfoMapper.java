@@ -58,10 +58,4 @@ public interface JobInfoMapper {
      * @return 总数
      */
     int selectCount(@Param("query") JobInfoQueryRequest queryRequest);
-
-    /**
-     * 获取所有招聘信息
-     * @return 所有招聘信息列表
-     */
-    List<JobInfo> selectAll();
 }

@@ -190,11 +190,4 @@
         </where>
     </select>
 
-    <!-- 获取所有招聘信息 -->
-    <select id="selectAll" resultMap="BaseResultMap">
-        SELECT <include refid="Base_Column_List"/>
-        FROM job_info
-        ORDER BY id DESC
-    </select>
-
 </mapper>

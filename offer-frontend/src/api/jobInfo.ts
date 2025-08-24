@@ -51,7 +51,9 @@ export const jobInfoApi = {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
-    }).then(res => res.data)
+    }).then(res => {
+      return res.data
+    })
   }
 }
 

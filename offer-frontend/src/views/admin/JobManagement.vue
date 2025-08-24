@@ -3,29 +3,43 @@
     <!-- 页面标题和操作按钮 -->
     <div class="flex justify-between items-center">
       <h2 class="text-2xl font-bold text-gray-900">招聘信息管理</h2>
-      <div class="flex space-x-3">
-        <router-link to="/admin/job-management/add"
-          class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center transition-colors">
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-          </svg>
-          添加招聘信息
-        </router-link>
-        <button @click="triggerFileInput" :disabled="isUploading"
-          class="bg-[#ff5722] hover:bg-[#e64a19] disabled:bg-green-400 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg flex items-center transition-colors">
-          <svg v-if="isUploading" class="w-5 h-5 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="flex flex-col items-end space-y-2">
+        <div class="flex space-x-3">
+          <router-link to="/admin/job-management/add"
+            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center transition-colors">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6">
+              </path>
+            </svg>
+            添加招聘信息
+          </router-link>
+          <button @click="triggerFileInput" :disabled="isUploading"
+            class="bg-green-500 hover:bg-green-600 disabled:bg-green-400 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg flex items-center transition-colors">
+            <svg v-if="isUploading" class="w-5 h-5 mr-2 animate-spin" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+              </path>
+            </svg>
+            <svg v-else class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+            </svg>
+            {{ isUploading ? '正在导入...' : '批量导入Excel' }}
+          </button>
+          <!-- 隐藏的文件输入 -->
+          <input ref="fileInput" type="file" accept=".xlsx,.xls" @change="handleFileSelect" style="display: none;" />
+        </div>
+        <!-- 下载模板链接 -->
+        <a @click="downloadTemplate"
+          class="text-blue-600 hover:text-blue-800 text-sm cursor-pointer flex items-center transition-colors">
+          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+              d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z">
             </path>
           </svg>
-          <svg v-else class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-          </svg>
-          {{ isUploading ? '正在导入...' : '批量导入Excel' }}
-        </button>
-        <!-- 隐藏的文件输入 -->
-        <input ref="fileInput" type="file" accept=".xlsx,.xls" @change="handleFileSelect" style="display: none;" />
+          下载导入表格模版
+        </a>
       </div>
     </div>
 
@@ -361,12 +375,14 @@ const handleFileSelect = async (event: Event) => {
   const file = target.files?.[0]
 
   if (!file) {
+    console.log('没有选中文件')
     return
   }
 
   // 检查文件类型
   const allowedTypes = ['.xlsx', '.xls']
   const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'))
+  console.log('文件扩展名:', fileExtension)
 
   if (!allowedTypes.includes(fileExtension)) {
     Message.error('仅支持Excel格式文件（.xlsx或.xls）')
@@ -374,7 +390,7 @@ const handleFileSelect = async (event: Event) => {
     return
   }
 
-  // 检查文件大小（限制10MB）
+  // 检查文件大小（限制6410MB）
   const maxSize = 10 * 1024 * 1024 // 10MB
   if (file.size > maxSize) {
     Message.error('文件大小不能超过10MB')
@@ -382,6 +398,7 @@ const handleFileSelect = async (event: Event) => {
     return
   }
 
+  console.log('开始上传文件:', file.name)
   await handleFileUpload(file)
   target.value = '' // 清空文件输入
 }
@@ -393,6 +410,7 @@ const handleFileUpload = async (file: File) => {
   )
 
   if (!confirmed) {
+    console.log('用户取消了导入')
     return
   }
 
@@ -401,7 +419,6 @@ const handleFileUpload = async (file: File) => {
   try {
     const response = await jobInfoApi.batchImport(file)
     Message.success(response.data || '导入成功')
-
     // 刷新列表数据
     await fetchData()
   } catch (error: any) {
@@ -410,6 +427,25 @@ const handleFileUpload = async (file: File) => {
   } finally {
     isUploading.value = false
   }
+}
+
+// 下载模板文件
+const downloadTemplate = () => {
+  // 创建一个隐藏的a标签来下载文件
+  const link = document.createElement('a')
+  // 使用正确的静态文件路径
+  link.href = '/templates/导入表格模版.xlsx'
+  link.download = '招聘信息导入模板.xlsx'
+  link.style.display = 'none'
+
+  // 添加到DOM中并点击
+  document.body.appendChild(link)
+  link.click()
+
+  // 清理DOM
+  document.body.removeChild(link)
+
+  Message.success('模板下载已开始，请检查浏览器下载文件夹')
 }
 
 const handlePageChange = async (page: number) => {
