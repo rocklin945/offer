@@ -27,6 +27,13 @@ export const useUserStore = defineStore('user', () => {
       }
     } catch (error: any) {
       console.error('获取用户信息失败', error)
+      // 如果是限流错误，保持当前用户状态，不清除token
+      if (error.message && error.message.includes('请求过于频繁')) {
+        return null
+      }
+      // 其他错误（如 token 过期），清除用户信息
+      removeToken()
+      currentUser.value = null
       return null
     } finally {
       loading.value = false

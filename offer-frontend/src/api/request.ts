@@ -41,8 +41,8 @@ request.interceptors.response.use(
 
     // 检查业务状态码 - 后端使用statusCode字段，成功时为200
     if (data.statusCode !== 200) {
-      Message.error(data.message || '请求失败')
       console.error('API Error:', data.message)
+      Message.error(data.message || '请求失败')
       return Promise.reject(new Error(data.message || '请求失败'))
     }
 
@@ -50,6 +50,7 @@ request.interceptors.response.use(
   },
   (error) => {
     console.error('Request Error:', error)
+    Message.error('网络请求失败，请检查网络连接')
     return Promise.reject(error)
   }
 )

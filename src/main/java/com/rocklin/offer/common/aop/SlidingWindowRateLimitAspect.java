@@ -1,6 +1,8 @@
 package com.rocklin.offer.common.aop;
 
 import com.rocklin.offer.common.annotation.SlidingWindowRateLimit;
+import com.rocklin.offer.common.enums.ErrorCode;
+import com.rocklin.offer.common.exception.Assert;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -36,9 +38,7 @@ public class SlidingWindowRateLimitAspect {
 
         // 2. 当前窗口请求数
         Long count = redisTemplate.opsForZSet().zCard(key);
-        if (count != null && count >= rateLimit.maxCount()) {
-            throw new RuntimeException("请求太频繁，请稍后再试");
-        }
+        Assert.isTrue(count == null || count < rateLimit.maxCount(), ErrorCode.TOO_MANY_REQUESTS,"请求过于频繁，请稍后再试");
 
         // 3. 添加当前请求
         redisTemplate.opsForZSet().add(key, String.valueOf(nowTs), nowTs);

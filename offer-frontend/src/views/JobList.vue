@@ -266,8 +266,8 @@
 
         <!-- 限制覆盖层 -->
         <transition name="member-overlay" appear>
-          <div v-if="showMemberOverlay"
-            class="absolute inset-0 bg-white bg-opacity-95 flex items-center justify-center" style="z-index: 50;">
+          <div v-if="showMemberOverlay" class="absolute inset-0 bg-white bg-opacity-95 flex items-center justify-center"
+            style="z-index: 50;">
             <div class="text-center p-8 max-w-md mx-auto">
               <div class="mb-6">
                 <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -569,7 +569,6 @@ const fetchData = async () => {
 
   } catch (error: any) {
     console.error('获取招聘信息列表失败:', error)
-    console.log('错误详情:', error.response)
 
     // 检查是否是会员限制错误或未登录用户限制
     const errorMessage = error.message || error.response?.data?.message || '获取数据失败，请重试'
@@ -578,7 +577,6 @@ const fetchData = async () => {
     if (errorMessage.includes('普通用户') || errorMessage.includes('成为会员') || errorMessage.includes('会员查看') ||
       errorMessage.includes('未登录用户') || errorMessage.includes('请登录')) {
       // 显示限制覆盖层
-      console.log('显示限制覆盖层')
       memberLimitMessage.value = errorMessage
       showMemberOverlay.value = true
     } else {
@@ -869,4 +867,5 @@ onMounted(async () => {
 .member-overlay-leave-from {
   opacity: 1;
   transform: scale(1);
-}</style>
+}
+</style>
