@@ -252,8 +252,6 @@ const fetchJobInfo = async () => {
     }
   } catch (error: any) {
     console.error('获取招聘信息失败:', error)
-    const errorMessage = error.message || error.response?.data?.message || '获取招聘信息失败'
-    Message.error(errorMessage)
     router.push('/admin/job-management')
   } finally {
     pageLoading.value = false
@@ -290,8 +288,6 @@ const handleSubmit = async () => {
     }
   } catch (error: any) {
     console.error('更新失败:', error)
-    const errorMessage = error.message || error.response?.data?.message || '更新失败，请重试'
-    Message.error(errorMessage)
   } finally {
     loading.value = false
   }

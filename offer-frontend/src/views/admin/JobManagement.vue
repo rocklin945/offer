@@ -3,7 +3,8 @@
     <!-- 页面标题和操作按钮 -->
     <div class="flex justify-between items-center">
       <h2 class="text-2xl font-bold text-gray-900">招聘信息管理</h2>
-      <router-link to="/admin/job-management/add" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors">
+      <router-link to="/admin/job-management/add"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors">
         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
         </svg>
@@ -16,12 +17,12 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">公司名称</label>
-          <input v-model="searchForm.companyName" type="text" placeholder="请输入公司名称" 
+          <input v-model="searchForm.companyName" type="text" placeholder="请输入公司名称"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">公司类型</label>
-          <select v-model="searchForm.companyType" 
+          <select v-model="searchForm.companyType"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             <option value="">全部</option>
             <option value="国企">国企</option>
@@ -34,12 +35,12 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">所属行业</label>
-          <input v-model="searchForm.industry" type="text" placeholder="请输入所属行业" 
+          <input v-model="searchForm.industry" type="text" placeholder="请输入所属行业"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">招聘类型</label>
-          <select v-model="searchForm.recruitType" 
+          <select v-model="searchForm.recruitType"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             <option value="">全部</option>
             <option value="校招">校招</option>
@@ -49,22 +50,22 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">工作地点</label>
-          <input v-model="searchForm.workLocation" type="text" placeholder="请输入工作地点" 
+          <input v-model="searchForm.workLocation" type="text" placeholder="请输入工作地点"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">招聘对象</label>
-          <input v-model="searchForm.recruitTarget" type="text" placeholder="如：2025年毕业" 
+          <input v-model="searchForm.recruitTarget" type="text" placeholder="如：2025年毕业"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">岗位名称</label>
-          <input v-model="searchForm.positionName" type="text" placeholder="请输入岗位名称" 
+          <input v-model="searchForm.positionName" type="text" placeholder="请输入岗位名称"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">投递进度</label>
-          <select v-model="searchForm.applicationStatus" 
+          <select v-model="searchForm.applicationStatus"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             <option value="">全部</option>
             <option value="未投递">未投递</option>
@@ -76,17 +77,17 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">开始时间</label>
-          <input v-model="searchForm.startTime" type="date" 
+          <input v-model="searchForm.startTime" type="date"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">投递截止</label>
-          <input v-model="searchForm.deadline" type="text" placeholder="请输入截止时间" 
+          <input v-model="searchForm.deadline" type="text" placeholder="请输入截止时间"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">排序字段</label>
-          <select v-model="searchForm.sortField" 
+          <select v-model="searchForm.sortField"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             <option value="">默认排序</option>
             <option value="companyName">公司名称</option>
@@ -100,7 +101,7 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">排序方式</label>
-          <select v-model="searchForm.sortOrder" 
+          <select v-model="searchForm.sortOrder"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             <option value="desc">从大到小</option>
             <option value="asc">从小到大</option>
@@ -108,10 +109,12 @@
         </div>
       </div>
       <div class="flex justify-end space-x-2">
-        <button @click="resetSearch" class="px-4 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
+        <button @click="resetSearch"
+          class="px-4 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
           重置
         </button>
-        <button @click="handleSearch" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors">
+        <button @click="handleSearch"
+          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors">
           搜索
         </button>
       </div>
@@ -126,7 +129,9 @@
 
       <div v-else-if="!hasJobs" class="text-center py-12">
         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
+          </path>
         </svg>
         <p class="mt-2 text-gray-500">暂无数据</p>
       </div>
@@ -200,12 +205,11 @@
                 </td>
                 <td class="px-4 py-4 text-center">
                   <div class="flex justify-center space-x-2">
-                    <router-link :to="`/admin/job-management/edit/${job.id}`" 
+                    <router-link :to="`/admin/job-management/edit/${job.id}`"
                       class="text-blue-600 hover:text-blue-900 text-sm font-medium">
                       编辑
                     </router-link>
-                    <button @click="handleDelete(job.id!)" 
-                      class="text-red-600 hover:text-red-900 text-sm font-medium">
+                    <button @click="handleDelete(job.id!)" class="text-red-600 hover:text-red-900 text-sm font-medium">
                       删除
                     </button>
                   </div>
@@ -230,23 +234,22 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
               </svg>
             </button>
-            
+
             <!-- 页码按钮 -->
             <template v-for="page in getPageNumbers()" :key="page">
               <button v-if="page === '...'" disabled class="px-3 py-2 text-sm text-gray-400 cursor-default">
                 ...
               </button>
-              <button v-else @click="handlePageChange(page as number)"
-                :class="[
-                  'px-3 py-2 text-sm border rounded transition-colors',
-                  currentPage === page 
-                    ? 'bg-blue-600 text-white border-blue-600' 
-                    : 'border-gray-300 hover:bg-gray-50'
-                ]">
+              <button v-else @click="handlePageChange(page as number)" :class="[
+                'px-3 py-2 text-sm border rounded transition-colors',
+                currentPage === page
+                  ? 'bg-blue-600 text-white border-blue-600'
+                  : 'border-gray-300 hover:bg-gray-50'
+              ]">
                 {{ page }}
               </button>
             </template>
-            
+
             <!-- 下一页 -->
             <button @click="handlePageChange(currentPage + 1)" :disabled="currentPage >= totalPages"
               class="px-3 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white">
@@ -254,19 +257,20 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
               </svg>
             </button>
-            
+
             <!-- 跳转到指定页 -->
             <div class="flex items-center space-x-2 ml-4">
               <span class="text-sm text-gray-700">跳至</span>
               <input v-model="jumpPage" @keyup.enter="handleJumpPage" type="number" min="1" :max="totalPages"
                 class="w-16 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
               <span class="text-sm text-gray-700">页</span>
-              <button @click="handleJumpPage" :disabled="!jumpPage || Number(jumpPage) < 1 || Number(jumpPage) > totalPages"
+              <button @click="handleJumpPage"
+                :disabled="!jumpPage || Number(jumpPage) < 1 || Number(jumpPage) > totalPages"
                 class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600">
                 跳转
               </button>
             </div>
-            
+
             <!-- 每页显示条数 -->
             <div class="flex items-center space-x-2 ml-4">
               <span class="text-sm text-gray-700">每页</span>
@@ -339,10 +343,10 @@ const handlePageChange = async (page: number) => {
   if (page >= 1 && page <= totalPages.value && !isChangingPage.value) {
     isChangingPage.value = true
     currentPage.value = page
-    
+
     // 添加动画延迟
     await new Promise(resolve => setTimeout(resolve, 300))
-    
+
     await fetchData()
     isChangingPage.value = false
   }
@@ -354,10 +358,10 @@ const handleJumpPage = async () => {
     isChangingPage.value = true
     currentPage.value = page
     jumpPage.value = ''
-    
+
     // 添加动画延迟
     await new Promise(resolve => setTimeout(resolve, 300))
-    
+
     await fetchData()
     isChangingPage.value = false
   }
@@ -367,10 +371,10 @@ const handlePageSizeChange = async () => {
   if (!isChangingPage.value) {
     isChangingPage.value = true
     currentPage.value = 1
-    
+
     // 添加动画延迟
     await new Promise(resolve => setTimeout(resolve, 300))
-    
+
     await fetchData()
     isChangingPage.value = false
   }
@@ -380,7 +384,7 @@ const getPageNumbers = () => {
   const pages: (number | string)[] = []
   const total = totalPages.value
   const current = currentPage.value
-  
+
   if (total <= 7) {
     // 总页数小于等于7，显示所有页码
     for (let i = 1; i <= total; i++) {
@@ -413,7 +417,7 @@ const getPageNumbers = () => {
       pages.push(total)
     }
   }
-  
+
   return pages
 }
 
@@ -438,8 +442,6 @@ const fetchData = async () => {
     total.value = response.data.total || 0
   } catch (error: any) {
     console.error('获取招聘信息列表失败:', error)
-    const errorMessage = error.message || error.response?.data?.message || '获取数据失败，请重试'
-    Message.error(errorMessage)
   } finally {
     loading.value = false
   }
@@ -447,7 +449,7 @@ const fetchData = async () => {
 
 const handleDelete = async (id: string) => {
   const confirmed = await Confirm.danger('确定要删除这条招聘信息吗？删除后无法恢复。', '删除确认')
-  
+
   if (confirmed) {
     try {
       const response = await jobInfoApi.delete(id)
@@ -457,7 +459,6 @@ const handleDelete = async (id: string) => {
       }
     } catch (error: any) {
       console.error('删除失败:', error)
-      Message.error(error.response?.data?.message || error.message || '删除失败')
     }
   }
 }

@@ -212,7 +212,7 @@ const handleSubmit = async () => {
   loading.value = true
   try {
     const submitData = { ...form }
-    
+
     // 处理日期格式
     if (submitData.startTime) {
       submitData.startTime = new Date(submitData.startTime).toISOString()
@@ -226,15 +226,13 @@ const handleSubmit = async () => {
     })
 
     const response = await jobInfoApi.add(submitData)
-    
+
     if (response.data) {
       Message.success(response.message || '添加成功')
       router.push('/admin/job-management')
     }
   } catch (error: any) {
     console.error('添加失败:', error)
-    const errorMessage = error.message || error.response?.data?.message || '添加失败，请重试'
-    Message.error(errorMessage)
   } finally {
     loading.value = false
   }

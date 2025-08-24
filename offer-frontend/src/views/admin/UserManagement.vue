@@ -486,7 +486,7 @@ const submitEdit = async () => {
       Message.success(res.message || '更新成功')
     }
   } catch (error: any) {
-    Message.error(error.response?.data?.message || `更新失败: ${error.message || '未知错误'}`)
+    console.error('更新失败:', error)
   } finally {
     loading.value = false
   }
@@ -506,7 +506,7 @@ const handleDelete = async (user: UserLoginResponse) => {
       Message.success(res.message || '删除成功')
     }
   } catch (error: any) {
-    Message.error(error.response?.data?.message || `删除失败: ${error.message || '未知错误'}`)
+    console.error('删除失败:', error)
   } finally {
     loading.value = false
   }

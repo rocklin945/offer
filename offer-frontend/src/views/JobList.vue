@@ -652,7 +652,6 @@ const handleDelete = async (id: string) => {
       }
     } catch (error: any) {
       console.error('删除失败:', error)
-      Message.error(error.response?.data?.message || '删除失败')
     }
   }
 }

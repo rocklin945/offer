@@ -401,7 +401,6 @@ const fetchData = async () => {
     }
   } catch (error: any) {
     console.error('获取投递记录失败:', error)
-    Message.error(error.message || '获取数据失败')
   } finally {
     loading.value = false
   }
@@ -556,7 +555,6 @@ const confirmUpdate = async () => {
     }
   } catch (error: any) {
     console.error('更新状态失败:', error)
-    Message.error(error.message || '更新失败')
   }
 }
 
@@ -582,7 +580,6 @@ const handleDelete = async (item: UserJobApplyDTO) => {
       }
     } catch (error: any) {
       console.error('删除失败:', error)
-      Message.error(error.message || '删除失败')
     }
   }
 }

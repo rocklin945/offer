@@ -17,7 +17,7 @@ export const useUserStore = defineStore('user', () => {
   // 初始化用户信息
   const initUserInfo = async () => {
     if (!token.value) return null
-    
+
     try {
       loading.value = true
       const res = await getCurrentUser()
@@ -27,9 +27,6 @@ export const useUserStore = defineStore('user', () => {
       }
     } catch (error: any) {
       console.error('获取用户信息失败', error)
-      // 获取用户信息失败，清除token
-      removeToken()
-      Message.error(error.response?.data?.message || '获取用户信息失败')
       return null
     } finally {
       loading.value = false
@@ -49,7 +46,6 @@ export const useUserStore = defineStore('user', () => {
       }
     } catch (error: any) {
       console.error('登录失败', error)
-      Message.error(error.response?.data?.message || '登录失败')
       throw error
     } finally {
       loading.value = false

@@ -515,7 +515,6 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Message } from '@/components/Message'
 
 const isYearly = ref(false)
 
@@ -544,9 +543,5 @@ const faqs = ref([
 
 const toggleFaq = (index: number) => {
   faqs.value[index].open = !faqs.value[index].open
-}
-
-const handlePurchase = (plan: string) => {
-  Message.success(`感谢您选择${plan}！功能开发中，敬请期待...`)
 }
 </script>

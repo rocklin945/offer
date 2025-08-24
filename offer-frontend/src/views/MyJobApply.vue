@@ -11,7 +11,8 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">公司名称</label>
-          <input v-model="searchForm.companyName" @keyup.enter="handleSearch" type="text" placeholder="请输入公司名称" class="input-field" />
+          <input v-model="searchForm.companyName" @keyup.enter="handleSearch" type="text" placeholder="请输入公司名称"
+            class="input-field" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">公司类型</label>
@@ -27,7 +28,8 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">所属行业</label>
-          <input v-model="searchForm.industry" @keyup.enter="handleSearch" type="text" placeholder="请输入所属行业" class="input-field" />
+          <input v-model="searchForm.industry" @keyup.enter="handleSearch" type="text" placeholder="请输入所属行业"
+            class="input-field" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">招聘类型</label>
@@ -40,15 +42,18 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">工作地点</label>
-          <input v-model="searchForm.workLocation" @keyup.enter="handleSearch" type="text" placeholder="请输入工作地点" class="input-field" />
+          <input v-model="searchForm.workLocation" @keyup.enter="handleSearch" type="text" placeholder="请输入工作地点"
+            class="input-field" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">招聘对象</label>
-          <input v-model="searchForm.recruitTarget" @keyup.enter="handleSearch" type="text" placeholder="如：2025年毕业" class="input-field" />
+          <input v-model="searchForm.recruitTarget" @keyup.enter="handleSearch" type="text" placeholder="如：2025年毕业"
+            class="input-field" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">岗位名称</label>
-          <input v-model="searchForm.positionName" @keyup.enter="handleSearch" type="text" placeholder="请输入岗位名称" class="input-field" />
+          <input v-model="searchForm.positionName" @keyup.enter="handleSearch" type="text" placeholder="请输入岗位名称"
+            class="input-field" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">投递状态</label>
@@ -111,28 +116,36 @@
           <table class="min-w-full table-fixed divide-y divide-gray-200">
             <thead class="bg-gray-50">
               <tr>
-                <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-48 whitespace-nowrap">
+                <th
+                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-48 whitespace-nowrap">
                   公司信息
                 </th>
-                <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-40 whitespace-nowrap">
+                <th
+                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-40 whitespace-nowrap">
                   招聘对象
                 </th>
-                <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-48 whitespace-nowrap">
+                <th
+                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-48 whitespace-nowrap">
                   工作地点
                 </th>
-                <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-48 whitespace-nowrap">
+                <th
+                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-48 whitespace-nowrap">
                   岗位名称
                 </th>
-                <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
+                <th
+                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
                   招聘类型
                 </th>
-                <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
+                <th
+                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
                   投递状态
                 </th>
-                <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-36 whitespace-nowrap">
+                <th
+                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-36 whitespace-nowrap">
                   投递时间
                 </th>
-                <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
+                <th
+                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
                   操作
                 </th>
               </tr>
@@ -188,7 +201,8 @@
                   </span>
                 </td>
                 <td class="px-2 py-2 whitespace-nowrap text-center">
-                  <span :class="getStatusClass(item.applicationStatus)" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
+                  <span :class="getStatusClass(item.applicationStatus)"
+                    class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
                     {{ item.applicationStatus }}
                   </span>
                 </td>
@@ -197,10 +211,10 @@
                 </td>
                 <td class="px-2 py-2 whitespace-nowrap text-center">
                   <div class="flex justify-center space-x-2">
-                    <button @click="handleUpdateStatus(item)" class="text-blue-600 hover:text-blue-900 text-xs">
+                    <button @click="handleUpdateStatus(item)" class="text-blue-600 hover:text-blue-900 text-sm">
                       更新状态
                     </button>
-                    <button @click="handleDelete(item)" class="text-red-600 hover:text-red-900 text-xs">
+                    <button @click="handleDelete(item)" class="text-red-600 hover:text-red-900 text-sm">
                       删除
                     </button>
                   </div>
@@ -341,7 +355,7 @@ const fetchData = async () => {
       pageSize: pageSize.value,
       ...searchForm
     }
-    
+
     // 过滤空值
     Object.keys(params).forEach(key => {
       if (params[key as keyof UserJobApplyQueryRequest] === '') {
@@ -350,7 +364,7 @@ const fetchData = async () => {
     })
 
     const response = await userJobApplyApi.getPage(params)
-    
+
     // axios响应拦截器返回response对象，实际数据在response.data中
     if (response && response.data && response.data.data) {
       const pageData = response.data.data
@@ -361,7 +375,6 @@ const fetchData = async () => {
     }
   } catch (error: any) {
     console.error('获取投递记录失败:', error)
-    Message.error(error.message || '获取数据失败')
   } finally {
     loading.value = false
   }
@@ -486,10 +499,10 @@ const handlePageChange = async (page: number) => {
   if (page >= 1 && page <= totalPages.value && !isChangingPage.value) {
     isChangingPage.value = true
     currentPage.value = page
-    
+
     // 添加动画延迟
     await new Promise(resolve => setTimeout(resolve, 300))
-    
+
     await fetchData()
     isChangingPage.value = false
   }
@@ -501,10 +514,10 @@ const handleJumpPage = async () => {
     isChangingPage.value = true
     currentPage.value = page
     jumpPage.value = ''
-    
+
     // 添加动画延迟
     await new Promise(resolve => setTimeout(resolve, 300))
-    
+
     await fetchData()
     isChangingPage.value = false
   }
@@ -569,7 +582,7 @@ const confirmUpdate = async () => {
       if (index !== -1) {
         tableData.value[index].applicationStatus = updateForm.applicationStatus
       }
-      
+
       Message.success('状态更新成功')
       showUpdateModal.value = false
     } else {
@@ -577,7 +590,6 @@ const confirmUpdate = async () => {
     }
   } catch (error: any) {
     console.error('更新状态失败:', error)
-    Message.error(error.message || '更新失败')
   }
 }
 
@@ -590,7 +602,7 @@ const handleDelete = async (item: UserJobApplyDTO) => {
     cancelText: '取消',
     type: 'danger'
   })
-  
+
   if (confirmed) {
     try {
       const response = await userJobApplyApi.delete(item.id)
@@ -603,7 +615,6 @@ const handleDelete = async (item: UserJobApplyDTO) => {
       }
     } catch (error: any) {
       console.error('删除失败:', error)
-      Message.error(error.message || '删除失败')
     }
   }
 }
