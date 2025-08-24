@@ -9,12 +9,14 @@ import com.rocklin.offer.common.utils.AvatarUtil;
 import com.rocklin.offer.common.utils.EncryptPasswordUtil;
 import com.rocklin.offer.common.utils.JwtUtils;
 import com.rocklin.offer.mapper.UserMapper;
+import com.rocklin.offer.mapper.WebInfoMapper;
 import com.rocklin.offer.model.dto.request.UserLoginRequest;
 import com.rocklin.offer.model.dto.request.UserPageQueryRequest;
 import com.rocklin.offer.model.dto.request.UserRegisterRequest;
 import com.rocklin.offer.model.dto.request.UserUpdateRequest;
 import com.rocklin.offer.model.dto.response.UserLoginResponse;
 import com.rocklin.offer.model.entity.User;
+import com.rocklin.offer.model.entity.WebInfo;
 import com.rocklin.offer.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +42,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final JwtUtils jwtUtils;
     private final EncryptPasswordUtil encryptPasswordUtil;
+    private final WebInfoMapper webInfoMapper;
 
     @Override
     public Long register(UserRegisterRequest req) {
@@ -57,6 +60,14 @@ public class UserServiceImpl implements UserService {
         user.setUserProfile("这个人很懒，什么都没有留下。");
         Long res = userMapper.insert(user);
         Assert.isTrue(res > 0, ErrorCode.OPERATION_ERROR, "数据库异常，注册失败");
+        //更新最新活动
+        WebInfo webInfo = webInfoMapper.selectWebInfo();
+        webInfo.setActivity5(webInfo.getActivity4());
+        webInfo.setActivity4(webInfo.getActivity3());
+        webInfo.setActivity3(webInfo.getActivity2());
+        webInfo.setActivity2(webInfo.getActivity1());
+        webInfo.setActivity1("新用户注册：" + user.getUserName());
+        webInfoMapper.updateWebInfo(webInfo);
         return res;
     }
 
@@ -74,6 +85,15 @@ public class UserServiceImpl implements UserService {
         // 构建响应对象
         UserLoginResponse response = buildUserResponse(queryUser);
         response.setToken(token);
+
+        //更新最新活动
+        WebInfo webInfo = webInfoMapper.selectWebInfo();
+        webInfo.setActivity5(webInfo.getActivity4());
+        webInfo.setActivity4(webInfo.getActivity3());
+        webInfo.setActivity3(webInfo.getActivity2());
+        webInfo.setActivity2(webInfo.getActivity1());
+        webInfo.setActivity1("用户登录：" + queryUser.getUserName());
+        webInfoMapper.updateWebInfo(webInfo);
         return response;
     }
 

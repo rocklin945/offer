@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rocklin.offer.mapper.WebInfoMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.rocklin.offer.model.entity.WebInfo">
+        <id property="id" column="id"/>
+        <result property="pv" column="pv"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="userCount" column="user_count"/>
+        <result property="jobCount" column="job_count"/>
+        <result property="activity1" column="activity1"/>
+        <result property="activity2" column="activity2"/>
+        <result property="activity3" column="activity3"/>
+        <result property="activity4" column="activity4"/>
+        <result property="activity5" column="activity5"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <!-- 基础字段 -->
+    <sql id="Base_Column_List">
+        id, pv, image_url, user_count, job_count,
+        activity1, activity2, activity3, activity4,activity5,update_time
+    </sql>
+
+    <!-- 查询网站信息 -->
+    <select id="selectWebInfo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from web_info
+        order by id desc
+        limit 1
+    </select>
+
+    <!-- 更新网站信息 -->
+    <update id="updateWebInfo">
+        update web_info
+        <set>
+            <if test="pv != null">
+                pv = #{pv},
+            </if>
+            <if test="imageUrl != null">
+                image_url = #{imageUrl},
+            </if>
+            <if test="userCount != null">
+                user_count = #{userCount},
+            </if>
+            <if test="jobCount != null">
+                job_count = #{jobCount},
+            </if>
+            <if test="activity1 != null">
+                activity1 = #{activity1},
+            </if>
+            <if test="activity2 != null">
+                activity2 = #{activity2},
+            </if>
+            <if test="activity3 != null">
+                activity3 = #{activity3},
+            </if>
+            <if test="activity4 != null">
+                activity4 = #{activity4},
+            </if>
+            <if test="activity5 != null">
+                activity5 = #{activity5},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!-- 增加PV访问量 -->
+    <update id="incrementPv">
+        update web_info set
+        pv = pv + 1
+    </update>
+
+    <!-- 获取用户总数 -->
+    <select id="getUserCount" resultType="int">
+        select count(*) from user where is_delete = 0
+    </select>
+
+    <!-- 获取会员总数 -->
+    <select id="getMemberCount" resultType="int">
+        select count(*) from user where is_delete = 0 and user_role = 2
+    </select>
+
+    <!-- 获取招聘信息总数 -->
+    <select id="getJobCount" resultType="int">
+        select count(*) from job_info
+    </select>
+
+</mapper>

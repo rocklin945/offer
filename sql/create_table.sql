@@ -65,4 +65,19 @@ CREATE TABLE IF NOT EXISTS user_job_apply
     INDEX idx_application_status (application_status)
 ) COMMENT='用户投递记录表' COLLATE = utf8mb4_unicode_ci;
 
+CREATE TABLE web_info (
+                          id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                          pv BIGINT DEFAULT 0 COMMENT '网站总浏览量',
+                          image_url VARCHAR(255) COMMENT '会员展示图片URL',
+                          user_count INT DEFAULT 0 COMMENT '用户数量',
+                          job_count INT DEFAULT 0 COMMENT '招聘信息数量',
+
+                          activity1 VARCHAR(255) COMMENT '最近活动1',
+                          activity2 VARCHAR(255) COMMENT '最近活动2',
+                          activity3 VARCHAR(255) COMMENT '最近活动3',
+                          activity4 VARCHAR(255) COMMENT '最近活动4',
+                          activity5 VARCHAR(255) COMMENT '最近活动5',
+
+                          update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) COMMENT='网站概览信息表';
 
