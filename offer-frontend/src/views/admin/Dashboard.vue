@@ -184,7 +184,7 @@
 
             <div v-if="webInfo.activity5" class="flex items-start">
               <div class="flex-shrink-0">
-                <div class="w-2 h-2 rounded-full mt-2 bg-green-400"></div>
+                <div class="w-2 h-2 rounded-full mt-2 bg-red-400"></div>
               </div>
               <div class="ml-3 flex-1">
                 <p class="text-sm text-gray-900">{{ webInfo.activity5 }}</p>

@@ -41,6 +41,17 @@ export const jobInfoApi = {
   // 分页获取招聘信息（别名方法，兼容JobList.vue）
   getPage: (params: JobInfoQueryRequest): Promise<BaseResponse<PageResponse<JobInfo>>> => {
     return request.post('/jobInfo/list', params).then(res => res.data)
+  },
+
+  // 批量导入招聘信息
+  batchImport: (file: File): Promise<BaseResponse<string>> => {
+    const formData = new FormData()
+    formData.append('file', file)
+    return request.post('/jobInfo/batch-import', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }).then(res => res.data)
   }
 }
 

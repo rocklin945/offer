@@ -3,13 +3,30 @@
     <!-- 页面标题和操作按钮 -->
     <div class="flex justify-between items-center">
       <h2 class="text-2xl font-bold text-gray-900">招聘信息管理</h2>
-      <router-link to="/admin/job-management/add"
-        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors">
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-        </svg>
-        添加招聘信息
-      </router-link>
+      <div class="flex space-x-3">
+        <router-link to="/admin/job-management/add"
+          class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center transition-colors">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+          </svg>
+          添加招聘信息
+        </router-link>
+        <button @click="triggerFileInput" :disabled="isUploading"
+          class="bg-[#ff5722] hover:bg-[#e64a19] disabled:bg-green-400 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg flex items-center transition-colors">
+          <svg v-if="isUploading" class="w-5 h-5 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+            </path>
+          </svg>
+          <svg v-else class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+          </svg>
+          {{ isUploading ? '正在导入...' : '批量导入Excel' }}
+        </button>
+        <!-- 隐藏的文件输入 -->
+        <input ref="fileInput" type="file" accept=".xlsx,.xls" @change="handleFileSelect" style="display: none;" />
+      </div>
     </div>
 
     <!-- 搜索筛选区域 -->
@@ -296,6 +313,8 @@ const total = ref(0)
 const loading = ref(false)
 const jumpPage = ref<number | string>('')
 const isChangingPage = ref(false)
+const fileInput = ref<HTMLInputElement>()
+const isUploading = ref(false)
 
 const searchForm = reactive<JobInfoQueryRequest>({
   companyName: '',
@@ -328,6 +347,69 @@ const resetSearch = () => {
   })
   searchForm.sortOrder = 'desc'
   handleSearch()
+}
+
+// 文件导入相关方法
+const triggerFileInput = () => {
+  if (fileInput.value) {
+    fileInput.value.click()
+  }
+}
+
+const handleFileSelect = async (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+
+  if (!file) {
+    return
+  }
+
+  // 检查文件类型
+  const allowedTypes = ['.xlsx', '.xls']
+  const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'))
+
+  if (!allowedTypes.includes(fileExtension)) {
+    Message.error('仅支持Excel格式文件（.xlsx或.xls）')
+    target.value = '' // 清空文件输入
+    return
+  }
+
+  // 检查文件大小（限制10MB）
+  const maxSize = 10 * 1024 * 1024 // 10MB
+  if (file.size > maxSize) {
+    Message.error('文件大小不能超过10MB')
+    target.value = ''
+    return
+  }
+
+  await handleFileUpload(file)
+  target.value = '' // 清空文件输入
+}
+
+const handleFileUpload = async (file: File) => {
+  const confirmed = await Confirm.info(
+    `确定要导入文件「${file.name}」吗？\n\n注意：系统会根据“公司名称+招聘类型+招聘对象”进行去重处理。`,
+    '批量导入确认'
+  )
+
+  if (!confirmed) {
+    return
+  }
+
+  isUploading.value = true
+
+  try {
+    const response = await jobInfoApi.batchImport(file)
+    Message.success(response.data || '导入成功')
+
+    // 刷新列表数据
+    await fetchData()
+  } catch (error: any) {
+    console.error('批量导入失败:', error)
+    // 错误信息已在request.ts中处理
+  } finally {
+    isUploading.value = false
+  }
 }
 
 const handlePageChange = async (page: number) => {

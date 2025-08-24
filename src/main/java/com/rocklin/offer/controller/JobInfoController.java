@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
 import java.util.List;
@@ -92,5 +93,28 @@ public class JobInfoController {
         );
         
         return BaseResponse.success(pageResponse);
+    }
+
+    @Operation(summary = "批量导入招聘信息", description = "通过Excel文件批量导入招聘信息，根据公司名+招聘类型+招聘对象去重")
+    @PostMapping("/batch-import")
+    @AuthCheck(enableRole = UserRoleEnum.ADMIN)
+    @SlidingWindowRateLimit(windowInSeconds = 30, maxCount = 2)
+    public BaseResponse<String> batchImportJobInfo(@RequestParam("file") MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            return BaseResponse.error(40000, "请选择要上传的Excel文件");
+        }
+        
+        // 检查文件类型
+        String fileName = file.getOriginalFilename();
+        if (fileName == null || (!fileName.endsWith(".xlsx") && !fileName.endsWith(".xls"))) {
+            return BaseResponse.error(40000, "仅支持Excel格式文件（.xlsx或.xls）");
+        }
+        
+        try {
+            String result = jobInfoService.batchImportJobInfo(file);
+            return BaseResponse.success(result);
+        } catch (Exception e) {
+            return BaseResponse.error(50000, "导入失败：" + e.getMessage());
+        }
     }
 }
