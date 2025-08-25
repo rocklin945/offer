@@ -675,11 +675,17 @@ const handleDelete = async (item: UserJobApplyDTO) => {
 const getStatusClass = (status: string) => {
   switch (status) {
     case '已投递':
-      return 'bg-blue-100 text-blue-800'
+      return 'bg-yellow-100 text-yellow-800'
     case '简历筛选':
       return 'bg-yellow-100 text-yellow-800'
     case '笔试':
       return 'bg-purple-100 text-purple-800'
+    case '一面':
+      return 'bg-indigo-100 text-indigo-800'
+    case '二面':
+      return 'bg-cyan-100 text-cyan-800'
+    case 'HR面':
+      return 'bg-orange-100 text-orange-800'
     case '面试':
       return 'bg-indigo-100 text-indigo-800'
     case '终面':

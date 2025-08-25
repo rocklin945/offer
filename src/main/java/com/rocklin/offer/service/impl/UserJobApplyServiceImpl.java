@@ -64,7 +64,7 @@ public class UserJobApplyServiceImpl implements UserJobApplyService {
         // 检查记录是否存在且属于当前用户
         UserJobApply existingApply = userJobApplyMapper.selectById(updateRequest.getId());
         Assert.notNull(existingApply, ErrorCode.NOT_FOUND, "投递记录不存在");
-        Assert.isTrue(existingApply.getUserId().equals(userId), ErrorCode.UNAUTHORIZED, "无权限修改该记录");
+        Assert.isTrue(existingApply.getUserId().equals(userId) || userId == null, ErrorCode.UNAUTHORIZED, "无权限修改该记录");
 
         // 更新记录
         UserJobApply userJobApply = new UserJobApply();

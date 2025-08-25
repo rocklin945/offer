@@ -159,6 +159,9 @@
                   投递时间
                 </th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  个人备注
+                </th>
+                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                   操作
                 </th>
               </tr>
@@ -199,6 +202,10 @@
                 </td>
                 <td class="px-4 py-4 text-center text-sm text-gray-500">
                   {{ formatDate(item.createTime) }}
+                </td>
+                <td class="px-4 py-4 text-center">
+                  <div v-if="item.personalNote" class="text-sm text-gray-700 max-w-xs mx-auto break-words" v-html="renderLinksInText(item.personalNote)"></div>
+                  <div v-else class="text-sm text-gray-500">-</div>
                 </td>
                 <td class="px-4 py-4 text-center">
                   <div class="flex justify-center space-x-2">
@@ -303,6 +310,20 @@
             <option value="已拒绝">已拒绝</option>
           </select>
         </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">个人备注</label>
+          <div class="relative">
+            <textarea 
+              v-model="updateForm.personalNote" 
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24 resize-none" 
+              placeholder="添加个人备注，如投递进度链接等（最多500字）"
+              maxlength="500"
+            ></textarea>
+            <div class="absolute bottom-2 right-2 text-xs text-gray-500">
+              {{ updateForm.personalNote?.length || 0 }}/500
+            </div>
+          </div>
+        </div>
         <div class="flex justify-end space-x-2">
           <button @click="showUpdateModal = false"
             class="px-4 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
@@ -352,7 +373,8 @@ const searchForm = reactive<UserJobApplyQueryRequest>({
 const showUpdateModal = ref(false)
 const updateForm = reactive({
   id: 0,
-  applicationStatus: ''
+  applicationStatus: '',
+  personalNote: ''
 })
 
 // 计算属性
@@ -520,6 +542,7 @@ const getPageNumbers = () => {
 const handleUpdateStatus = (item: UserJobApplyDTO) => {
   updateForm.id = item.id
   updateForm.applicationStatus = item.applicationStatus
+  updateForm.personalNote = item.personalNote || ''
   showUpdateModal.value = true
 }
 
@@ -533,6 +556,7 @@ const confirmUpdate = async () => {
       const index = tableData.value.findIndex(item => item.id === updateForm.id)
       if (index !== -1) {
         tableData.value[index].applicationStatus = updateForm.applicationStatus
+        tableData.value[index].personalNote = updateForm.personalNote
       }
 
       Message.success('状态更新成功')
@@ -574,9 +598,12 @@ const handleDelete = async (item: UserJobApplyDTO) => {
 // 获取状态样式
 const getStatusClass = (status: string) => {
   const statusMap: Record<string, string> = {
-    '已投递': 'bg-blue-100 text-blue-800',
+    '已投递': 'bg-yellow-100 text-yellow-800',
     '简历筛选': 'bg-yellow-100 text-yellow-800',
     '笔试': 'bg-purple-100 text-purple-800',
+    '一面': 'bg-indigo-100 text-indigo-800',
+    '二面': 'bg-cyan-100 text-cyan-800',
+    'HR面': 'bg-orange-100 text-orange-800',
     '面试': 'bg-indigo-100 text-indigo-800',
     '终面': 'bg-pink-100 text-pink-800',
     '已通过': 'bg-green-100 text-green-800',
@@ -588,6 +615,19 @@ const getStatusClass = (status: string) => {
 // 格式化日期
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleString('zh-CN')
+}
+
+// 将文本中的链接转换为可点击的链接
+const renderLinksInText = (text: string) => {
+  if (!text) return ''
+  
+  // URL正则表达式，匹配http/https/ftp开头的URL
+  const urlRegex = /(https?:\/\/|ftp:\/\/)(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi
+  
+  // 替换文本中的URL为HTML链接
+  return text.replace(urlRegex, (url) => {
+    return `<a href="${url}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline">${url}</a>`
+  })
 }
 
 // 页面加载时获取数据
