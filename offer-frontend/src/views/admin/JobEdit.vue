@@ -39,7 +39,7 @@
               <select v-model="form.companyType"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 <option value="">请选择公司类型</option>
-                <option value="国企">央国企</option>
+                <option value="央国企">央国企</option>
                 <option value="银行">银行</option>
                 <option value="外企">外企</option>
                 <option value="民企">民企</option>

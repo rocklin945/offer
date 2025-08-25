@@ -26,7 +26,7 @@
           <select v-model="searchForm.companyType"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             <option value="">全部</option>
-            <option value="国企">央国企</option>
+            <option value="央国企">央国企</option>
             <option value="银行">银行</option>
             <option value="外企">外企</option>
             <option value="民企">民企</option>
@@ -204,7 +204,8 @@
                   {{ formatDate(item.createTime) }}
                 </td>
                 <td class="px-4 py-4 text-center">
-                  <div v-if="item.personalNote" class="text-sm text-gray-700 max-w-xs mx-auto break-words" v-html="renderLinksInText(item.personalNote)"></div>
+                  <div v-if="item.personalNote" class="text-sm text-gray-700 max-w-xs mx-auto break-words"
+                    v-html="renderLinksInText(item.personalNote)"></div>
                   <div v-else class="text-sm text-gray-500">-</div>
                 </td>
                 <td class="px-4 py-4 text-center">
@@ -313,12 +314,9 @@
         <div class="mb-4">
           <label class="block text-sm font-medium text-gray-700 mb-2">个人备注</label>
           <div class="relative">
-            <textarea 
-              v-model="updateForm.personalNote" 
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24 resize-none" 
-              placeholder="添加个人备注，如投递进度链接等（最多500字）"
-              maxlength="500"
-            ></textarea>
+            <textarea v-model="updateForm.personalNote"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24 resize-none"
+              placeholder="添加个人备注，如投递进度链接等（最多500字）" maxlength="500"></textarea>
             <div class="absolute bottom-2 right-2 text-xs text-gray-500">
               {{ updateForm.personalNote?.length || 0 }}/500
             </div>
@@ -620,10 +618,10 @@ const formatDate = (dateString: string) => {
 // 将文本中的链接转换为可点击的链接
 const renderLinksInText = (text: string) => {
   if (!text) return ''
-  
+
   // URL正则表达式，匹配http/https/ftp开头的URL
   const urlRegex = /(https?:\/\/|ftp:\/\/)(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi
-  
+
   // 替换文本中的URL为HTML链接
   return text.replace(urlRegex, (url) => {
     return `<a href="${url}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline">${url}</a>`
