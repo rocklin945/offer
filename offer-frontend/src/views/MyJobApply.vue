@@ -35,12 +35,12 @@
           <label class="block text-sm font-medium text-gray-700 mb-1">招聘类型</label>
           <select v-model="searchForm.recruitType" @change="handleSearch" class="input-field">
             <option value="">全部</option>
-                  <option value="实习">实习</option>
-                  <option value="春招">春招</option>
-                  <option value="秋招">秋招</option>
-                  <option value="补录">补录</option>
-                  <option value="提前批">提前批</option>
-                  <option value="社招">社招</option>
+            <option value="实习">实习</option>
+            <option value="春招">春招</option>
+            <option value="秋招">秋招</option>
+            <option value="补录">补录</option>
+            <option value="提前批">提前批</option>
+            <option value="社招">社招</option>
           </select>
         </div>
         <div>
@@ -63,13 +63,13 @@
           <select v-model="searchForm.applicationStatus" @change="handleSearch" class="input-field">
             <option value="">全部状态</option>
             <option value="未投递">未投递</option>
-                      <option value="已投递">已投递</option>
-                      <option value="笔试">笔试</option>
-                      <option value="一面">一面</option>
-                      <option value="二面">二面</option>
-                      <option value="HR面">HR面</option>
-                      <option value="已通过">已通过</option>
-                      <option value="已拒绝">已拒绝</option>
+            <option value="已投递">已投递</option>
+            <option value="笔试">笔试</option>
+            <option value="一面">一面</option>
+            <option value="二面">二面</option>
+            <option value="HR面">HR面</option>
+            <option value="已通过">已通过</option>
+            <option value="已拒绝">已拒绝</option>
           </select>
         </div>
         <div>
@@ -142,12 +142,22 @@
                 </th>
                 <th
                   class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
+                  相关链接
+                </th>
+                <th
+                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
                   投递状态
                 </th>
                 <th
                   class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-36 whitespace-nowrap">
                   投递时间
                 </th>
+                <th
+                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-36 whitespace-normal">
+                  个人备注
+                  <span class="block">(可以备注个人投递进度链接，方便查询进度)</span>
+                </th>
+
                 <th
                   class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
                   操作
@@ -205,6 +215,17 @@
                   </span>
                 </td>
                 <td class="px-2 py-2 whitespace-nowrap text-center">
+                  <a v-if="item.relatedLink" :href="item.relatedLink" target="_blank"
+                    class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-600 bg-blue-100 rounded-full hover:bg-blue-200 transition-colors">
+                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                    </svg>
+                    投递链接
+                  </a>
+                  <span v-else class="text-gray-400">-</span>
+                </td>
+                <td class="px-2 py-2 whitespace-nowrap text-center">
                   <span :class="getStatusClass(item.applicationStatus)"
                     class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
                     {{ item.applicationStatus }}
@@ -212,6 +233,9 @@
                 </td>
                 <td class="px-2 py-2 whitespace-nowrap text-center text-sm text-gray-500">
                   {{ formatDate(item.createTime) }}
+                </td>
+                <td class="px-2 py-2 whitespace-nowrap text-center">
+                  备注
                 </td>
                 <td class="px-2 py-2 whitespace-nowrap text-center">
                   <div class="flex justify-center space-x-2">
@@ -289,13 +313,13 @@
           <label class="block text-sm font-medium text-gray-700 mb-2">选择状态</label>
           <select v-model="updateForm.applicationStatus" class="input-field">
             <option value="未投递">未投递</option>
-                  <option value="已投递">已投递</option>
-                  <option value="笔试">笔试</option>
-                  <option value="一面">一面</option>
-                  <option value="二面">二面</option>
-                  <option value="HR面">HR面</option>
-                  <option value="已通过">已通过</option>
-                  <option value="已拒绝">已拒绝</option>
+            <option value="已投递">已投递</option>
+            <option value="笔试">笔试</option>
+            <option value="一面">一面</option>
+            <option value="二面">二面</option>
+            <option value="HR面">HR面</option>
+            <option value="已通过">已通过</option>
+            <option value="已拒绝">已拒绝</option>
           </select>
         </div>
         <div class="flex justify-end space-x-2">

@@ -15,6 +15,8 @@ export interface UserJobApplyDTO {
   recruitTarget?: string
   positionName: string
   applicationStatus: string
+  relatedLink: string
+  personalNote: string
   createTime: string
   updateTime: string
 }
@@ -27,6 +29,7 @@ export interface UserJobApplyAddRequest {
 export interface UserJobApplyUpdateRequest {
   id: number
   applicationStatus: string
+  personalNote: string
 }
 
 export interface UserJobApplyQueryRequest {
