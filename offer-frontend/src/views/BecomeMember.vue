@@ -18,7 +18,7 @@
               <div class="text-gray-600">优质职位</div>
             </div>
             <div class="text-center">
-              <div class="text-3xl sm:text-4xl font-bold mb-2 text-blue-600">5,000+</div>
+              <div class="text-3xl sm:text-4xl font-bold mb-2 text-blue-600">15,00+</div>
               <div class="text-gray-600">合作企业</div>
             </div>
             <div class="text-center">
@@ -193,25 +193,21 @@
           <div class="text-center mb-8">
             <div class="inline-block p-4 bg-gray-100 rounded-xl">
               <!-- 加载状态 -->
-              <div v-if="loading" 
+              <div v-if="loading"
                 class="w-48 h-48 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg flex items-center justify-center border-2 border-dashed border-blue-300">
                 <div class="text-center">
-                  <div class="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-2"></div>
+                  <div
+                    class="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-2">
+                  </div>
                   <p class="text-blue-600 text-sm font-medium">加载中...</p>
                 </div>
               </div>
-              
+
               <!-- 显示二维码图片 -->
-              <div v-else-if="imageUrl" 
-                class="w-48 h-48 rounded-lg overflow-hidden border-2 border-blue-300">
-                <img 
-                  :src="imageUrl" 
-                  alt="会员二维码"
-                  class="w-full h-full object-cover"
-                  @error="onImageError"
-                />
+              <div v-else-if="imageUrl" class="w-48 h-48 rounded-lg overflow-hidden border-2 border-blue-300">
+                <img :src="imageUrl" alt="会员二维码" class="w-full h-full object-cover" @error="onImageError" />
               </div>
-              
+
               <!-- 备用占位图 -->
               <div v-else
                 class="w-48 h-48 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg flex items-center justify-center border-2 border-dashed border-blue-300">
@@ -257,7 +253,7 @@
             </div>
             <h3 class="text-xl font-bold text-gray-900 mb-4">海量优质职位</h3>
             <p class="text-gray-600 leading-relaxed">
-              与5000+知名企业合作，提供10000+优质职位，覆盖各行各业
+              与1500+知名企业合作，提供10000+优质职位，覆盖各行各业
             </p>
           </div>
 

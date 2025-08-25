@@ -55,7 +55,7 @@
             <if test="userId != null">user_id,</if>
             <if test="jobId != null">job_id,</if>
             <if test="applicationStatus != null">application_status,</if>
-            <if test="personal_note != null">personal_note,</if>
+            <if test="personalNote != null">personal_note,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateTime != null">update_time,</if>
             <if test="isDelete != null">is_delete,</if>
