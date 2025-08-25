@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,11 +62,7 @@ public class UserServiceImpl implements UserService {
         Long res = userMapper.insert(user);
         Assert.isTrue(res > 0, ErrorCode.OPERATION_ERROR, "数据库异常，注册失败");
         //更新最新活动
-        WebInfo webInfo = webInfoMapper.selectWebInfo();
-        webInfo.setActivity5(webInfo.getActivity4());
-        webInfo.setActivity4(webInfo.getActivity3());
-        webInfo.setActivity3(webInfo.getActivity2());
-        webInfo.setActivity2(webInfo.getActivity1());
+        WebInfo webInfo = getWebInfo();
         webInfo.setActivity1("新用户注册：" + user.getUserName());
         webInfoMapper.updateWebInfo(webInfo);
         return res;
@@ -87,14 +84,24 @@ public class UserServiceImpl implements UserService {
         response.setToken(token);
 
         //更新最新活动
-        WebInfo webInfo = webInfoMapper.selectWebInfo();
-        webInfo.setActivity5(webInfo.getActivity4());
-        webInfo.setActivity4(webInfo.getActivity3());
-        webInfo.setActivity3(webInfo.getActivity2());
-        webInfo.setActivity2(webInfo.getActivity1());
+        WebInfo webInfo = getWebInfo();
         webInfo.setActivity1("用户登录：" + queryUser.getUserName());
         webInfoMapper.updateWebInfo(webInfo);
         return response;
+    }
+
+    private WebInfo getWebInfo() {
+        WebInfo webInfo = webInfoMapper.selectWebInfo();
+        webInfo.setActivity5(webInfo.getActivity4());
+        webInfo.setActivity5Time(webInfo.getActivity4Time());
+        webInfo.setActivity4(webInfo.getActivity3());
+        webInfo.setActivity4Time(webInfo.getActivity3Time());
+        webInfo.setActivity3(webInfo.getActivity2());
+        webInfo.setActivity3Time(webInfo.getActivity2Time());
+        webInfo.setActivity2(webInfo.getActivity1());
+        webInfo.setActivity2Time(webInfo.getActivity1Time());
+        webInfo.setActivity1Time(LocalDateTime.now());
+        return webInfo;
     }
 
     @Override

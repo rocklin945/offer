@@ -148,7 +148,7 @@
               </div>
               <div class="ml-3 flex-1">
                 <p class="text-sm text-gray-900">{{ webInfo.activity1 }}</p>
-                <p class="text-xs text-gray-500">{{ formatTime(webInfo.updateTime) }}</p>
+                <p class="text-xs text-gray-500">{{ formatTime(webInfo.activity1Time) }}</p>
               </div>
             </div>
 
@@ -158,7 +158,7 @@
               </div>
               <div class="ml-3 flex-1">
                 <p class="text-sm text-gray-900">{{ webInfo.activity2 }}</p>
-                <p class="text-xs text-gray-500">{{ formatTime(webInfo.updateTime) }}</p>
+                <p class="text-xs text-gray-500">{{ formatTime(webInfo.activity2Time) }}</p>
               </div>
             </div>
 
@@ -168,7 +168,7 @@
               </div>
               <div class="ml-3 flex-1">
                 <p class="text-sm text-gray-900">{{ webInfo.activity3 }}</p>
-                <p class="text-xs text-gray-500">{{ formatTime(webInfo.updateTime) }}</p>
+                <p class="text-xs text-gray-500">{{ formatTime(webInfo.activity3Time) }}</p>
               </div>
             </div>
 
@@ -178,7 +178,7 @@
               </div>
               <div class="ml-3 flex-1">
                 <p class="text-sm text-gray-900">{{ webInfo.activity4 }}</p>
-                <p class="text-xs text-gray-500">{{ formatTime(webInfo.updateTime) }}</p>
+                <p class="text-xs text-gray-500">{{ formatTime(webInfo.activity4Time) }}</p>
               </div>
             </div>
 
@@ -188,7 +188,7 @@
               </div>
               <div class="ml-3 flex-1">
                 <p class="text-sm text-gray-900">{{ webInfo.activity5 }}</p>
-                <p class="text-xs text-gray-500">{{ formatTime(webInfo.updateTime) }}</p>
+                <p class="text-xs text-gray-500">{{ formatTime(webInfo.activity4Time) }}</p>
               </div>
             </div>
           </div>

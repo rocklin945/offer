@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -38,9 +39,14 @@ public class JobInfoServiceImpl implements JobInfoService {
         //更新最新活动
         WebInfo webInfo = webInfoMapper.selectWebInfo();
         webInfo.setActivity5(webInfo.getActivity4());
+        webInfo.setActivity5Time(webInfo.getActivity4Time());
         webInfo.setActivity4(webInfo.getActivity3());
+        webInfo.setActivity4Time(webInfo.getActivity3Time());
         webInfo.setActivity3(webInfo.getActivity2());
+        webInfo.setActivity3Time(webInfo.getActivity2Time());
         webInfo.setActivity2(webInfo.getActivity1());
+        webInfo.setActivity2Time(webInfo.getActivity1Time());
+        webInfo.setActivity1Time(LocalDateTime.now());
         webInfo.setActivity1("新发布招聘信息：" + jobInfo.getCompanyName()+jobInfo.getRecruitType());
         webInfoMapper.updateWebInfo(webInfo);
         return jobInfoMapper.insert(jobInfo) > 0;

@@ -74,10 +74,15 @@ CREATE TABLE web_info (
                           job_count INT DEFAULT 0 COMMENT '招聘信息数量',
 
                           activity1 VARCHAR(255) COMMENT '最近活动1',
+                          activity1_time DATETIME COMMENT '活动1时间',
                           activity2 VARCHAR(255) COMMENT '最近活动2',
+                          activity2_time DATETIME COMMENT '活动2时间',
                           activity3 VARCHAR(255) COMMENT '最近活动3',
+                          activity3_time DATETIME COMMENT '活动3时间',
                           activity4 VARCHAR(255) COMMENT '最近活动4',
+                          activity4_time DATETIME COMMENT '活动4时间',
                           activity5 VARCHAR(255) COMMENT '最近活动5',
+                          activity5_time DATETIME COMMENT '活动5时间',
 
                           update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) COMMENT='网站概览信息表';

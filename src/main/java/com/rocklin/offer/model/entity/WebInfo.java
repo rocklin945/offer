@@ -72,6 +72,31 @@ public class WebInfo implements Serializable {
     private String activity5;
 
     /**
+     * 最近活动1时间
+     */
+    private LocalDateTime activity1Time;
+
+    /**
+     * 最近活动2时间
+     */
+    private LocalDateTime activity2Time;
+
+    /**
+     * 最近活动3时间
+     */
+    private LocalDateTime activity3Time;
+
+    /**
+     * 最近活动4时间
+     */
+    private LocalDateTime activity4Time;
+
+    /**
+     * 最近活动5时间
+     */
+    private LocalDateTime activity5Time;
+
+    /**
      * 更新时间
      */
     private LocalDateTime updateTime;

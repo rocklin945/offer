@@ -12,17 +12,23 @@
         <result property="userCount" column="user_count"/>
         <result property="jobCount" column="job_count"/>
         <result property="activity1" column="activity1"/>
+        <result property="activity1Time" column="activity1_time"/>
         <result property="activity2" column="activity2"/>
+        <result property="activity2Time" column="activity2_time"/>
         <result property="activity3" column="activity3"/>
+        <result property="activity3Time" column="activity3_time"/>
         <result property="activity4" column="activity4"/>
+        <result property="activity4Time" column="activity4_time"/>
         <result property="activity5" column="activity5"/>
+        <result property="activity5Time" column="activity5_time"/>
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
     <!-- 基础字段 -->
     <sql id="Base_Column_List">
         id, pv, image_url, user_count, job_count,
-        activity1, activity2, activity3, activity4,activity5,update_time
+        activity1, activity2, activity3, activity4,activity5,
+        activity1_time,activity2_time,activity3_time,activity4_time,activity5_time,update_time
     </sql>
 
     <!-- 查询网站信息 -->
@@ -53,17 +59,32 @@
             <if test="activity1 != null">
                 activity1 = #{activity1},
             </if>
+            <if test="activity1Time !=null">
+                activity1_time = #{activity1Time},
+            </if>
             <if test="activity2 != null">
                 activity2 = #{activity2},
+            </if>
+            <if test="activity2Time !=null">
+                activity2_time = #{activity2Time},
             </if>
             <if test="activity3 != null">
                 activity3 = #{activity3},
             </if>
+            <if test="activity3Time !=null">
+                activity3_time = #{activity3Time},
+            </if>
             <if test="activity4 != null">
                 activity4 = #{activity4},
             </if>
+            <if test="activity4Time !=null">
+                activity4_time = #{activity4Time},
+            </if>
             <if test="activity5 != null">
                 activity5 = #{activity5},
+            </if>
+            <if test="activity5Time !=null">
+                activity5_time = #{activity5Time},
             </if>
         </set>
         where id = #{id}
