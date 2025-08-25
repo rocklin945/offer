@@ -307,46 +307,51 @@
     </div>
 
     <!-- 更新状态弹窗 -->
-    <div v-if="showUpdateModal" class="fixed inset-0 overflow-hidden bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg p-6 w-96 max-h-[90vh] overflow-y-auto">
-        <h3 class="text-lg font-medium text-gray-900 mb-4">更新投递状态</h3>
-        <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-2">选择状态</label>
-          <select v-model="updateForm.applicationStatus" class="input-field">
-            <option value="未投递">未投递</option>
-            <option value="已投递">已投递</option>
-            <option value="笔试">笔试</option>
-            <option value="一面">一面</option>
-            <option value="二面">二面</option>
-            <option value="HR面">HR面</option>
-            <option value="已通过">已通过</option>
-            <option value="已拒绝">已拒绝</option>
-          </select>
-        </div>
-        <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-2">个人备注</label>
-          <div class="relative">
-            <textarea 
-              v-model="updateForm.personalNote" 
-              class="input-field h-24 resize-none" 
-              placeholder="添加个人备注，如投递进度链接等（最多500字）"
-              maxlength="500"
-            ></textarea>
-            <div class="absolute bottom-2 right-2 text-xs text-gray-500">
-              {{ updateForm.personalNote?.length || 0 }}/500
+    <teleport to="body">
+      <div v-if="showUpdateModal">
+        <div class="modal-backdrop fixed inset-0 bg-black bg-opacity-50" style="z-index: 99999;"></div>
+        <div class="modal-container fixed inset-0 flex items-center justify-center" style="z-index: 100000;" @click.self="showUpdateModal = false">
+          <div class="bg-white rounded-lg p-6 w-96 max-h-[90vh] overflow-y-auto">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">更新投递状态</h3>
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">选择状态</label>
+              <select v-model="updateForm.applicationStatus" class="input-field">
+                <option value="未投递">未投递</option>
+                <option value="已投递">已投递</option>
+                <option value="笔试">笔试</option>
+                <option value="一面">一面</option>
+                <option value="二面">二面</option>
+                <option value="HR面">HR面</option>
+                <option value="已通过">已通过</option>
+                <option value="已拒绝">已拒绝</option>
+              </select>
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">个人备注</label>
+              <div class="relative">
+                <textarea 
+                  v-model="updateForm.personalNote" 
+                  class="input-field h-24 resize-none" 
+                  placeholder="添加个人备注，如投递进度链接等（最多500字）"
+                  maxlength="500"
+                ></textarea>
+                <div class="absolute bottom-2 right-2 text-xs text-gray-500">
+                  {{ updateForm.personalNote?.length || 0 }}/500
+                </div>
+              </div>
+            </div>
+            <div class="flex justify-end space-x-2">
+              <button @click="showUpdateModal = false" class="btn-secondary">
+                取消
+              </button>
+              <button @click="confirmUpdate" class="btn-primary">
+                确认
+              </button>
             </div>
           </div>
         </div>
-        <div class="flex justify-end space-x-2">
-          <button @click="showUpdateModal = false" class="btn-secondary">
-            取消
-          </button>
-          <button @click="confirmUpdate" class="btn-primary">
-            确认
-          </button>
-        </div>
       </div>
-    </div>
+    </teleport>
   </div>
 </template>
 
@@ -745,5 +750,22 @@ onMounted(() => {
 .table-container.table-loading tbody tr {
   opacity: 0.5;
   transform: translateX(-5px);
+}
+
+/* 弹窗样式 */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
 }
 </style>
