@@ -55,6 +55,7 @@ CREATE TABLE IF NOT EXISTS user_job_apply
     user_id        BIGINT NOT NULL COMMENT '用户ID',
     job_id         BIGINT NOT NULL COMMENT '招聘信息ID',
     application_status VARCHAR(100) COMMENT '投递进度',
+    personal_note     VARCHAR(2048) COMMENT '个人备注',
     create_time    DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '创建时间',
     update_time    DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     is_delete      TINYINT  DEFAULT 0 NOT NULL COMMENT '是否删除',

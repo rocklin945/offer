@@ -19,4 +19,7 @@ public class UserJobApplyUpdateRequest implements Serializable {
 
     @Schema(description = "投递进度")
     private String applicationStatus;
+
+    @Schema(description = "个人备注")
+    private String personalNote;
 }

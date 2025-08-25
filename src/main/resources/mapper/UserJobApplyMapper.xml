@@ -9,6 +9,7 @@
         <result column="user_id" property="userId" jdbcType="BIGINT"/>
         <result column="job_id" property="jobId" jdbcType="BIGINT"/>
         <result column="application_status" property="applicationStatus" jdbcType="VARCHAR"/>
+        <result column="personal_note" property="personalNote" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
         <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
         <result column="is_delete" property="isDelete" jdbcType="TINYINT"/>
@@ -28,20 +29,22 @@
         <result column="recruit_target" property="recruitTarget" jdbcType="VARCHAR"/>
         <result column="position_name" property="positionName" jdbcType="VARCHAR"/>
         <result column="application_status" property="applicationStatus" jdbcType="VARCHAR"/>
+        <result column="related_link" property="relatedLink" jdbcType="VARCHAR"/>
+        <result column="personal_note" property="personalNote" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
         <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <!-- 基础字段 -->
     <sql id="Base_Column_List">
-        id, user_id, job_id, application_status, create_time, update_time, is_delete
+        id, user_id, job_id, application_status, personal_note, create_time, update_time, is_delete
     </sql>
 
     <!-- DTO字段 -->
     <sql id="DTO_Column_List">
         uja.id, uja.user_id, u.user_name, uja.job_id, ji.company_name, ji.company_type, ji.industry,
-        ji.recruit_type, ji.work_location, ji.recruit_target, ji.position_name,
-        uja.application_status, uja.create_time, uja.update_time
+        ji.recruit_type, ji.work_location, ji.recruit_target, ji.position_name, ji.related_link,
+        uja.application_status, uja.personal_note, uja.create_time, uja.update_time
     </sql>
 
     <!-- 插入 -->
@@ -52,6 +55,7 @@
             <if test="userId != null">user_id,</if>
             <if test="jobId != null">job_id,</if>
             <if test="applicationStatus != null">application_status,</if>
+            <if test="personal_note != null">personal_note,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateTime != null">update_time,</if>
             <if test="isDelete != null">is_delete,</if>
@@ -61,6 +65,7 @@
             <if test="userId != null">#{userId},</if>
             <if test="jobId != null">#{jobId},</if>
             <if test="applicationStatus != null">#{applicationStatus},</if>
+            <if test="personalNote != null">#{personalNote},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateTime != null">#{updateTime},</if>
             <if test="isDelete != null">#{isDelete},</if>
@@ -84,6 +89,7 @@
         UPDATE user_job_apply
         <set>
             <if test="applicationStatus != null">application_status = #{applicationStatus},</if>
+            <if test="personalNote != null">personal_note = #{personalNote},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
         </set>
         WHERE id = #{id} AND is_delete = 0

@@ -78,6 +78,7 @@ public class UserJobApplyServiceImpl implements UserJobApplyService {
     private void buildUserJobApply(UserJobApplyUpdateRequest updateRequest, UserJobApply userJobApply) {
         userJobApply.setId(updateRequest.getId());
         userJobApply.setApplicationStatus(updateRequest.getApplicationStatus());
+        userJobApply.setPersonalNote(updateRequest.getPersonalNote());
     }
 
     @Override
