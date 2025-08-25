@@ -153,7 +153,7 @@
                   投递时间
                 </th>
                 <th
-                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-36 whitespace-normal">
+                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-64 whitespace-normal">
                   个人备注
                   <span class="block">(可以备注个人投递进度链接，方便查询进度)</span>
                 </th>
@@ -234,8 +234,9 @@
                 <td class="px-2 py-2 whitespace-nowrap text-center text-sm text-gray-500">
                   {{ formatDate(item.createTime) }}
                 </td>
-                <td class="px-2 py-2 whitespace-nowrap text-center">
-                  备注
+                <td class="px-2 py-2 text-center">
+                  <div v-if="item.personalNote" class="text-sm text-gray-700 max-w-xs mx-auto break-words" v-html="renderLinksInText(item.personalNote)"></div>
+                  <div v-else class="text-sm text-gray-500">-</div>
                 </td>
                 <td class="px-2 py-2 whitespace-nowrap text-center">
                   <div class="flex justify-center space-x-2">
@@ -306,8 +307,8 @@
     </div>
 
     <!-- 更新状态弹窗 -->
-    <div v-if="showUpdateModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg p-6 w-96">
+    <div v-if="showUpdateModal" class="fixed inset-0 overflow-hidden bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-6 w-96 max-h-[90vh] overflow-y-auto">
         <h3 class="text-lg font-medium text-gray-900 mb-4">更新投递状态</h3>
         <div class="mb-4">
           <label class="block text-sm font-medium text-gray-700 mb-2">选择状态</label>
@@ -321,6 +322,20 @@
             <option value="已通过">已通过</option>
             <option value="已拒绝">已拒绝</option>
           </select>
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">个人备注</label>
+          <div class="relative">
+            <textarea 
+              v-model="updateForm.personalNote" 
+              class="input-field h-24 resize-none" 
+              placeholder="添加个人备注，如投递进度链接等（最多500字）"
+              maxlength="500"
+            ></textarea>
+            <div class="absolute bottom-2 right-2 text-xs text-gray-500">
+              {{ updateForm.personalNote?.length || 0 }}/500
+            </div>
+          </div>
         </div>
         <div class="flex justify-end space-x-2">
           <button @click="showUpdateModal = false" class="btn-secondary">
@@ -368,7 +383,8 @@ const searchForm = reactive<UserJobApplyQueryRequest>({
 const showUpdateModal = ref(false)
 const updateForm = reactive({
   id: 0,
-  applicationStatus: ''
+  applicationStatus: '',
+  personalNote: ''
 })
 
 // 计算属性
@@ -597,6 +613,7 @@ const getPageNumbers = () => {
 const handleUpdateStatus = (item: UserJobApplyDTO) => {
   updateForm.id = item.id
   updateForm.applicationStatus = item.applicationStatus
+  updateForm.personalNote = item.personalNote || ''
   showUpdateModal.value = true
 }
 
@@ -610,6 +627,7 @@ const confirmUpdate = async () => {
       const index = tableData.value.findIndex(item => item.id === updateForm.id)
       if (index !== -1) {
         tableData.value[index].applicationStatus = updateForm.applicationStatus
+        tableData.value[index].personalNote = updateForm.personalNote
       }
 
       Message.success('状态更新成功')
@@ -684,6 +702,19 @@ const formatDate = (dateString?: string) => {
   } catch (error) {
     return dateString
   }
+}
+
+// 将文本中的链接转换为可点击的链接
+const renderLinksInText = (text: string) => {
+  if (!text) return ''
+  
+  // URL正则表达式，匹配http/https/ftp开头的URL
+  const urlRegex = /(https?:\/\/|ftp:\/\/)(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi
+  
+  // 替换文本中的URL为HTML链接
+  return text.replace(urlRegex, (url) => {
+    return `<a href="${url}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline">${url}</a>`
+  })
 }
 
 // 页面加载时获取数据
