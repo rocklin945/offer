@@ -8,11 +8,13 @@ import com.rocklin.offer.model.dto.request.UserRegisterRequest;
 import com.rocklin.offer.model.dto.request.UserUpdateRequest;
 import com.rocklin.offer.model.dto.response.UserLoginResponse;
 import com.rocklin.offer.model.entity.User;
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface UserService {
-    Long register(UserRegisterRequest req);
 
-    UserLoginResponse login(UserLoginRequest req);
+    Long register(UserRegisterRequest req, HttpServletRequest httpServletRequest);
+
+    UserLoginResponse login(UserLoginRequest req, HttpServletRequest httpServletRequest);
 
     /**
      * 根据用户ID获取当前用户

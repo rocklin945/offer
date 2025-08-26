@@ -2,17 +2,16 @@ package com.rocklin.offer.controller;
 
 import com.rocklin.offer.common.annotation.AuthCheck;
 import com.rocklin.offer.common.annotation.SlidingWindowRateLimit;
-import com.rocklin.offer.common.enums.ErrorCode;
 import com.rocklin.offer.common.enums.UserRoleEnum;
-import com.rocklin.offer.common.exception.Assert;
 import com.rocklin.offer.common.response.BaseResponse;
 import com.rocklin.offer.model.dto.response.WebInfoResponse;
 import com.rocklin.offer.service.WebInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @ClassName WebInfoController

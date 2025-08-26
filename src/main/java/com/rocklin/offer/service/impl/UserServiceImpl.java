@@ -7,6 +7,7 @@ import com.rocklin.offer.common.exception.Assert;
 import com.rocklin.offer.common.response.PageResponse;
 import com.rocklin.offer.common.utils.AvatarUtil;
 import com.rocklin.offer.common.utils.EncryptPasswordUtil;
+import com.rocklin.offer.common.utils.IpUtil;
 import com.rocklin.offer.common.utils.JwtUtils;
 import com.rocklin.offer.mapper.UserMapper;
 import com.rocklin.offer.mapper.WebInfoMapper;
@@ -20,6 +21,7 @@ import com.rocklin.offer.model.entity.WebInfo;
 import com.rocklin.offer.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 
@@ -36,6 +38,7 @@ import static org.springframework.web.context.request.RequestAttributes.REFERENC
  * @Description 用户服务实现类
  * @Author: rockli
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -46,7 +49,7 @@ public class UserServiceImpl implements UserService {
     private final WebInfoMapper webInfoMapper;
 
     @Override
-    public Long register(UserRegisterRequest req) {
+    public Long register(UserRegisterRequest req, HttpServletRequest httpServletRequest) {
         // 查询用户是否已存在
         User userQuery = userMapper.query(req.getUserAccount());
         Assert.isNull(userQuery, ErrorCode.OPERATION_ERROR, "用户已存在");
@@ -65,11 +68,12 @@ public class UserServiceImpl implements UserService {
         WebInfo webInfo = getWebInfo();
         webInfo.setActivity1("新用户注册：" + user.getUserName());
         webInfoMapper.updateWebInfo(webInfo);
+        log.info("用户注册成功：{} ,ip: {}", user.getUserName(), IpUtil.getIp(httpServletRequest));
         return res;
     }
 
     @Override
-    public UserLoginResponse login(UserLoginRequest req) {
+    public UserLoginResponse login(UserLoginRequest req, HttpServletRequest httpServletRequest) {
         User user = new User();
         user.setUserAccount(req.getUserAccount());
         user.setUserPassword(encryptPasswordUtil.getEncryptPassword(req.getUserPassword()));
@@ -87,6 +91,7 @@ public class UserServiceImpl implements UserService {
         WebInfo webInfo = getWebInfo();
         webInfo.setActivity1("用户登录：" + queryUser.getUserName());
         webInfoMapper.updateWebInfo(webInfo);
+        log.info("用户登录成功：{} ,ip: {}", queryUser.getUserName(), IpUtil.getIp(httpServletRequest));
         return response;
     }
 

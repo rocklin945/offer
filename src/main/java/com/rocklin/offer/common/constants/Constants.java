@@ -38,4 +38,12 @@ public final class Constants {
     public static final String PAGE_SIZE ="pageSize";
     public static final String GET ="GET";
     public static final String POST ="POST";
+
+    /**
+     * ip
+     */
+    public static final String UNKNOWN ="unknown";
+    public static final String X_REAL_IP ="X-Real-IP";
+    public static final String PROXY_CLIENT_IP ="Proxy-Client-IP";
+    public static final String WL_PROXY_CLIENT_IP ="WL-Proxy-Client-IP";
 }

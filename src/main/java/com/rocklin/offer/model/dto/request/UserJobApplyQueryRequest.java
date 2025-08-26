@@ -46,10 +46,4 @@ public class UserJobApplyQueryRequest extends PageRequest implements Serializabl
 
     @Schema(description = "投递进度")
     private String applicationStatus;
-
-    @Schema(description = "排序字段")
-    private String sortField;
-
-    @Schema(description = "排序方式(asc/desc)")
-    private String sortOrder;
 }

@@ -34,8 +34,6 @@ public class MemberCheckAspect {
 
     @Around("@annotation(memberCheck)")
     public Object doMemberCheck(ProceedingJoinPoint joinPoint, MemberCheck memberCheck) throws Throwable {
-        log.info("MemberCheck AOP 开始执行，方法: {}", joinPoint.getSignature().getName());
-        
         // 获取请求
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (attributes == null) {
@@ -49,7 +47,6 @@ public class MemberCheckAspect {
         
         // 处理未登录用户
         if (token == null || !token.startsWith(BEARER)) {
-            log.info("未登录用户访问，检查匿名访问限制");
             return handleAnonymousUser(request, joinPoint, memberCheck);
         }
         
@@ -61,8 +58,6 @@ public class MemberCheckAspect {
      * 处理未登录用户访问
      */
     private Object handleAnonymousUser(HttpServletRequest request, ProceedingJoinPoint joinPoint, MemberCheck memberCheck) throws Throwable {
-        log.info("处理未登录用户访问");
-        
         String httpMethod = request.getMethod();
         
         if (GET.equalsIgnoreCase(httpMethod)) {
@@ -72,8 +67,6 @@ public class MemberCheckAspect {
             // POST请求：从请求体DTO中获取
             checkAnonymousPostRequestParams(joinPoint.getArgs(), memberCheck);
         }
-        
-        log.info("未登录用户访问检查通过，继续执行方法");
         return joinPoint.proceed();
     }
     
@@ -84,27 +77,22 @@ public class MemberCheckAspect {
         token = token.substring(TOKEN_START_INDEX);
         String userIdStr = jwtUtils.getUserIdFromToken(token);
         if (userIdStr == null) {
-            log.warn("无法从token中获取用户ID");
             throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
         }
         
         Long userId = Long.parseLong(userIdStr);
         User user = userService.getUserById(userId);
         if (user == null) {
-            log.warn("用户不存在，userId: {}", userId);
             throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
         }
         
         // 检查用户角色，管理员(0)和会员(2)可以无限制访问
         if (user.getUserRole() == 0 || user.getUserRole() == 2) {
-            log.info("管理员或会员用户，跳过限制检查");
             return joinPoint.proceed();
         }
         
         // 普通用户(1)需要检查页数和页面大小限制
         String httpMethod = request.getMethod();
-        log.info("HTTP方法: {}", httpMethod);
-        
         if (GET.equalsIgnoreCase(httpMethod)) {
             // GET请求：从URL参数中获取
             checkGetRequestParams(request, memberCheck);
@@ -112,8 +100,6 @@ public class MemberCheckAspect {
             // POST请求：从请求体DTO中获取
             checkPostRequestParams(joinPoint.getArgs(), memberCheck);
         }
-        
-        log.info("会员检查通过，继续执行方法");
         return joinPoint.proceed();
     }
     
@@ -153,8 +139,6 @@ public class MemberCheckAspect {
      * 检查未登录用户的POST请求参数
      */
     private void checkAnonymousPostRequestParams(Object[] args, MemberCheck memberCheck) {
-        log.info("开始检查未登录用户POST请求参数，参数个数: {}", args.length);
-        
         for (int i = 0; i < args.length; i++) {
             Object arg = args[i];
             if (arg == null) {
@@ -221,8 +205,6 @@ public class MemberCheckAspect {
      * 检查POST请求参数（从DTO对象中获取）
      */
     private void checkPostRequestParams(Object[] args, MemberCheck memberCheck) {
-        log.info("开始检查POST请求参数，参数个数: {}", args.length);
-        
         for (int i = 0; i < args.length; i++) {
             Object arg = args[i];
             if (arg == null) {

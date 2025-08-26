@@ -59,10 +59,15 @@ public class WebInfoServiceImpl implements WebInfoService {
         response.setUserCount(webInfo.getUserCount());
         response.setJobCount(webInfo.getJobCount());
         response.setActivity1(webInfo.getActivity1());
+        response.setActivity1Time(webInfo.getActivity1Time());
         response.setActivity2(webInfo.getActivity2());
+        response.setActivity2Time(webInfo.getActivity2Time());
         response.setActivity3(webInfo.getActivity3());
+        response.setActivity3Time(webInfo.getActivity3Time());
         response.setActivity4(webInfo.getActivity4());
+        response.setActivity4Time(webInfo.getActivity4Time());
         response.setActivity5(webInfo.getActivity5());
+        response.setActivity5Time(webInfo.getActivity5Time());
         response.setUpdateTime(webInfo.getUpdateTime());
     }
 

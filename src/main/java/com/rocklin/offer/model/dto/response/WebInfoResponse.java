@@ -52,6 +52,21 @@ public class WebInfoResponse implements Serializable {
     @Schema(description = "最近活动5")
     private String activity5;
 
+    @Schema(description = "最近活动1时间")
+    private LocalDateTime activity1Time;
+
+    @Schema(description = "最近活动2时间")
+    private LocalDateTime activity2Time;
+
+    @Schema(description = "最近活动3时间")
+    private LocalDateTime activity3Time;
+
+    @Schema(description = "最近活动4时间")
+    private LocalDateTime activity4Time;
+
+    @Schema(description = "最近活动5时间")
+    private LocalDateTime activity5Time;
+
     @Schema(description = "更新时间")
     private LocalDateTime updateTime;
 }

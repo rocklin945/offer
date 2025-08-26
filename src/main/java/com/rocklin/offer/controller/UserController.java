@@ -7,6 +7,7 @@ import com.rocklin.offer.common.enums.UserRoleEnum;
 import com.rocklin.offer.common.exception.Assert;
 import com.rocklin.offer.common.response.BaseResponse;
 import com.rocklin.offer.common.response.PageResponse;
+import com.rocklin.offer.common.utils.IpUtil;
 import com.rocklin.offer.model.dto.request.UserLoginRequest;
 import com.rocklin.offer.model.dto.request.UserPageQueryRequest;
 import com.rocklin.offer.model.dto.request.UserRegisterRequest;
@@ -16,7 +17,9 @@ import com.rocklin.offer.model.entity.User;
 import com.rocklin.offer.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -45,11 +48,11 @@ public class UserController {
     @Operation(summary = "注册", description = "注册用户")
     @PostMapping("/register")
     @SlidingWindowRateLimit()
-    public BaseResponse<Long> register(@RequestBody @Validated UserRegisterRequest req) {
+    public BaseResponse<Long> register(@RequestBody @Validated UserRegisterRequest req, HttpServletRequest  httpServletRequest) {
         Assert.notNull(req, ErrorCode.PARAMS_ERROR, "参数为空");
         Assert.isTrue(req.getUserPassword().equals(req.getCheckPassword()),
                 ErrorCode.PARAMS_ERROR, "密码和校验密码不一致");
-        userService.register(req);
+        userService.register(req, httpServletRequest);
         return BaseResponse.success();
     }
 
@@ -59,9 +62,9 @@ public class UserController {
     @Operation(summary = "登录", description = "用户登录")
     @PostMapping("/login")
     @SlidingWindowRateLimit()
-    public BaseResponse<UserLoginResponse> login(@RequestBody @Validated UserLoginRequest req) {
+    public BaseResponse<UserLoginResponse> login(@RequestBody @Validated UserLoginRequest req, HttpServletRequest  httpServletRequest) {
         Assert.notNull(req, ErrorCode.PARAMS_ERROR, "参数为空");
-        UserLoginResponse userLoginResponse = userService.login(req);
+        UserLoginResponse userLoginResponse = userService.login(req, httpServletRequest);
         return BaseResponse.success(userLoginResponse);
     }
 
