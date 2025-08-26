@@ -9,24 +9,26 @@
     <div v-else class="min-h-screen flex flex-col">
       <!-- 全局顶部导航 -->
       <header class="bg-white shadow-sm border-b border-gray-200">
-        <div class="flex items-center justify-between h-16">
-          <div class="flex items-center">
+        <div class="flex items-center justify-between h-16 px-3 sm:px-8">
+          <div class="flex items-center min-w-0 flex-1">
             <!-- 系统标题 -->
-            <h1 class="px-8 text-xl font-semibold text-gray-900">MyOffer</h1>
+            <h1 class="text-lg sm:text-xl font-semibold text-gray-900 mr-2 sm:mr-4 flex-shrink-0">MyOffer</h1>
 
-            <!-- 导航 -->
-            <nav class="flex space-x-8">
+            <!-- 导航 - 在小屏幕下限制宽度 -->
+            <nav class="flex flex-nowrap space-x-1 sm:space-x-8 min-w-0 overflow-hidden">
               <router-link to="/"
-                class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                class="text-gray-500 hover:text-gray-700 px-1 py-1 text-sm sm:px-3 sm:py-2 sm:text-sm rounded-md font-medium transition-colors whitespace-nowrap flex-shrink-0"
                 active-class="text-primary-600 bg-primary-50">
-                招聘列表
+                <span class="hidden sm:inline">招聘列表</span>
+                <span class="sm:hidden">招聘列表</span>
               </router-link>
-              <router-link v-if="userStore.currentUser" to="/my-apply"
-                class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              <router-link to="/my-apply"
+                class="text-gray-500 hover:text-gray-700 px-1 py-1 text-sm sm:px-3 sm:py-2 sm:text-sm rounded-md font-medium transition-colors whitespace-nowrap flex-shrink-0"
                 active-class="text-primary-600 bg-primary-50">
-                我的投递记录
+                <span class="hidden sm:inline">我的投递记录</span>
+                <span class="sm:hidden">我的投递记录</span>
               </router-link>
-              <router-link v-if="userStore.currentUser" to="/become-member" :class="[
+              <router-link v-if="userStore.currentUser" to="/become-member" class="hidden sm:inline-flex" :class="[
                 'px-3 py-2 rounded-md text-sm font-medium transition-colors',
                 userStore.currentUser.userRole === 1
                   ? 'text-orange-500 hover:text-orange-700 bg-orange-50 hover:bg-orange-100'
@@ -37,10 +39,47 @@
             </nav>
           </div>
 
-          <!-- 用户操作区 -->
-          <div class="px-8">
+          <!-- 用户操作区 - 优化小屏幕下的布局 -->
+          <div class="relative flex-shrink-0">
+            <!-- 移动端汉堡菜单（已登录） -->
+            <div v-if="userStore.currentUser" class="sm:hidden">
+              <button @click="showMobileMenu = !showMobileMenu"
+                class="p-2 rounded-md border border-gray-300 hover:bg-gray-50">
+                <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                  </path>
+                </svg>
+              </button>
+
+              <!-- 透明遮罩层 -->
+              <div v-if="showMobileMenu" class="fixed inset-0 z-40" @click="showMobileMenu = false"></div>
+
+              <div v-if="showMobileMenu"
+                class="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                <div class="px-4 py-3 border-b">
+                  <div class="flex items-center space-x-2">
+                    <img :src="userStore.currentUser.userAvatar" alt="用户头像" class="w-6 h-6 rounded-full" />
+                    <span class="text-sm font-medium text-gray-700">{{ userStore.currentUser.userName }}</span>
+                  </div>
+                </div>
+                <div class="py-1">
+                  <router-link to="/become-member" @click="showMobileMenu = false"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    {{ userStore.currentUser.userRole === 1 ? '成为会员 ⭐' : '会员中心 💎' }}
+                  </router-link>
+                  <router-link v-if="userStore.isAdmin()" to="/admin/dashboard" @click="showMobileMenu = false"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    后台管理
+                  </router-link>
+                  <button @click="() => { handleLogout(); showMobileMenu = false; }"
+                    class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    退出登录
+                  </button>
+                </div>
+              </div>
+            </div>
             <!-- 已登录状态 -->
-            <div v-if="userStore.currentUser" class="flex items-center space-x-4">
+            <div v-if="userStore.currentUser" class="hidden sm:flex items-center space-x-4">
               <div class="flex items-center space-x-2">
                 <!-- 用户身份标识 -->
                 <span v-if="userStore.currentUser.userRole === 0"
@@ -73,11 +112,13 @@
               </div>
             </div>
 
-            <!-- 未登录状态 -->
-            <button v-else @click="showLoginModal = true"
-              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
-              登录/注册
+            <!-- 未登录状态 - 优化小屏幕按钮大小 -->
+            <button v-else @click="showLoginModal = true" class="px-4 py-2 text-sm bg-blue-600 text-white rounded 
+         hover:bg-blue-700 transition-colors whitespace-nowrap">
+              <span class="sm:hidden">登录/注册</span>
+              <span class="hidden sm:inline">登录/注册</span>
             </button>
+
           </div>
         </div>
       </header>
@@ -117,6 +158,7 @@ import LoginModal from './components/LoginModal.vue'
 const route = useRoute()
 const userStore = useUserStore()
 const showLoginModal = ref(false)
+const showMobileMenu = ref(false)
 
 // 判断是否为管理页面路由
 const isAdminRoute = computed(() => {

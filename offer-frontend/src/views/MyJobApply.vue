@@ -103,7 +103,14 @@
 
     <!-- 数据表格 -->
     <div class="card">
-      <div v-if="loading" class="text-center py-8">
+      <div v-if="!userStore.currentUser" class="text-center py-8">
+        <p class="text-gray-500 mb-4">请先登录后查看我的投递记录</p>
+        <button @click="showLoginModal = true" class="inline-block px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+          去登录
+        </button>
+      </div>
+      <template v-else>
+        <div v-if="loading" class="text-center py-8">
         <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
         <p class="mt-2 text-gray-500">加载中...</p>
       </div>
@@ -253,17 +260,18 @@
           </table>
         </div>
       </div>
+    </template>
     </div>
 
     <!-- 分页 -->
-    <div v-if="hasData && totalPages > 1" class="flex justify-between items-center">
+    <div v-if="hasData && totalPages > 1" class="pagination flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
       <div class="text-sm text-gray-700">
         共 {{ total }} 条记录
       </div>
-      <div class="flex items-center space-x-2">
+      <div class="flex flex-wrap items-center gap-2 sm:flex-nowrap sm:space-x-2">
         <!-- 上一页 -->
         <button @click="handlePageChange(currentPage - 1)" :disabled="currentPage <= 1"
-          class="px-3 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white">
+          class="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
           </svg>
@@ -271,11 +279,11 @@
 
         <!-- 页码按钮 -->
         <template v-for="page in getPageNumbers()" :key="page">
-          <button v-if="page === '...'" disabled class="px-3 py-2 text-sm text-gray-400 cursor-default">
+          <button v-if="page === '...'" disabled class="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm text-gray-400 cursor-default">
             ...
           </button>
           <button v-else @click="handlePageChange(page as number)" :class="[
-            'px-3 py-2 text-sm border rounded transition-colors',
+            'px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm border rounded transition-colors',
             currentPage === page
               ? 'bg-blue-600 text-white border-blue-600'
               : 'border-gray-300 hover:bg-gray-50'
@@ -286,20 +294,20 @@
 
         <!-- 下一页 -->
         <button @click="handlePageChange(currentPage + 1)" :disabled="currentPage >= totalPages"
-          class="px-3 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white">
+          class="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
           </svg>
         </button>
 
         <!-- 跳转到指定页 -->
-        <div class="flex items-center space-x-2 ml-4">
+        <div class="flex items-center gap-2 ml-0 sm:ml-4 w-full sm:w-auto flex-wrap">
           <span class="text-sm text-gray-700">跳至</span>
           <input v-model="jumpPage" @keyup.enter="handleJumpPage" type="number" min="1" :max="totalPages"
-            class="w-16 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            class="w-14 sm:w-16 px-2 py-1 text-xs sm:text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
           <span class="text-sm text-gray-700">页</span>
           <button @click="handleJumpPage" :disabled="!jumpPage || jumpPage < 1 || jumpPage > totalPages"
-            class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600 transition-colors">
+            class="px-2 py-1 text-xs sm:px-3 sm:py-1 sm:text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600 transition-colors">
             跳转
           </button>
         </div>
@@ -352,6 +360,9 @@
         </div>
       </div>
     </teleport>
+
+    <!-- 登录模态框 -->
+    <LoginModal v-if="showLoginModal" @close="showLoginModal = false" @login-success="handleLoginSuccess" />
   </div>
 </template>
 
@@ -360,7 +371,10 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { userJobApplyApi, type UserJobApplyDTO, type UserJobApplyQueryRequest } from '../api/userJobApply'
 import Message from '../components/Message'
 import Confirm from '../components/Confirm'
+import { useUserStore } from '@/stores/user'
+import LoginModal from '@/components/LoginModal.vue'
 
+const userStore = useUserStore()
 // 响应式数据
 const currentPage = ref(1)
 const pageSize = ref(10)
@@ -369,6 +383,7 @@ const total = ref(0)
 const loading = ref(false)
 const jumpPage = ref<number | string>('')
 const isChangingPage = ref(false)
+const showLoginModal = ref(false)
 
 // 搜索表单
 const searchForm = reactive<UserJobApplyQueryRequest>({
@@ -398,6 +413,11 @@ const totalPages = computed(() => Math.ceil(total.value / pageSize.value))
 
 // 获取数据
 const fetchData = async () => {
+  // 如果用户未登录，直接返回
+  if (!userStore.currentUser) {
+    return
+  }
+  
   loading.value = true
   try {
     const params: UserJobApplyQueryRequest = {
@@ -432,12 +452,18 @@ const fetchData = async () => {
 
 // 搜索
 const handleSearch = async () => {
+  if (!userStore.currentUser) {
+    return
+  }
   currentPage.value = 1
   await fetchData()
 }
 
 // 重置搜索
 const resetSearch = () => {
+  if (!userStore.currentUser) {
+    return
+  }
   Object.assign(searchForm, {
     companyName: '',
     companyType: '',
@@ -728,9 +754,18 @@ const renderLinksInText = (text: string) => {
   })
 }
 
-// 页面加载时获取数据
-onMounted(() => {
+// 登录成功后的处理
+const handleLoginSuccess = () => {
+  showLoginModal.value = false
+  // 登录成功后获取数据
   fetchData()
+}
+
+// 页面加载时获取数据（仅在已登录时）
+onMounted(() => {
+  if (userStore.currentUser) {
+    fetchData()
+  }
 })
 </script>
 

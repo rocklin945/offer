@@ -14,8 +14,7 @@ const router = createRouter({
     {
       path: '/my-apply',
       name: 'MyJobApply',
-      component: () => import('@/views/MyJobApply.vue'),
-      meta: { requiresAuth: true }
+      component: () => import('@/views/MyJobApply.vue')
     },
     {
       path: '/become-member',

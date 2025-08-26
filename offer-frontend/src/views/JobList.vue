@@ -320,14 +320,14 @@
     </div>
 
     <!-- 分页 -->
-    <div v-if="hasJobs && totalPages > 1" class="flex justify-between items-center">
+    <div v-if="hasJobs && totalPages > 1" class="pagination flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
       <div class="text-sm text-gray-700">
         共 {{ total }} 条记录
       </div>
-      <div class="flex items-center space-x-2">
+      <div class="flex flex-wrap items-center gap-2 sm:flex-nowrap sm:space-x-2">
         <!-- 上一页 -->
         <button @click="handlePageChange(currentPage - 1)" :disabled="currentPage <= 1"
-          class="px-3 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white">
+          class="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
           </svg>
@@ -335,11 +335,11 @@
 
         <!-- 页码按钮 -->
         <template v-for="page in getPageNumbers()" :key="page">
-          <button v-if="page === '...'" disabled class="px-3 py-2 text-sm text-gray-400 cursor-default">
+          <button v-if="page === '...'" disabled class="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm text-gray-400 cursor-default">
             ...
           </button>
           <button v-else @click="handlePageChange(page as number)" :class="[
-            'px-3 py-2 text-sm border rounded transition-colors',
+            'px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm border rounded transition-colors',
             currentPage === page
               ? 'bg-blue-600 text-white border-blue-600'
               : 'border-gray-300 hover:bg-gray-50'
@@ -350,20 +350,20 @@
 
         <!-- 下一页 -->
         <button @click="handlePageChange(currentPage + 1)" :disabled="currentPage >= totalPages"
-          class="px-3 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white">
+          class="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
           </svg>
         </button>
 
         <!-- 跳转到指定页 -->
-        <div class="flex items-center space-x-2 ml-4">
+        <div class="flex items-center gap-2 ml-0 sm:ml-4 w-full sm:w-auto flex-wrap">
           <span class="text-sm text-gray-700">跳至</span>
           <input v-model="jumpPage" @keyup.enter="handleJumpPage" type="number" min="1" :max="totalPages"
-            class="w-16 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            class="w-14 sm:w-16 px-2 py-1 text-xs sm:text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
           <span class="text-sm text-gray-700">页</span>
           <button @click="handleJumpPage" :disabled="!jumpPage || jumpPage < 1 || jumpPage > totalPages"
-            class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600 transition-colors">
+            class="px-2 py-1 text-xs sm:px-3 sm:py-1 sm:text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600 transition-colors">
             跳转
           </button>
         </div>
