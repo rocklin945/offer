@@ -83,18 +83,35 @@
             </nav>
           </div>
 
-          <!-- 查看前台页面按钮 -->
-          <router-link to="/"
-            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors text-sm">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
-              </path>
-            </svg>
-            查看前台页面
-          </router-link>
+          <!-- 右上角按钮组 -->
+          <div class="flex items-center gap-3">
+            <!-- 首页弹窗控制开关 -->
+            <button @click="toggleHomeModal" :class="[
+              'inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors shadow-sm',
+              homeModalEnabled
+                ? 'bg-green-600 text-white hover:bg-green-700'
+                : 'bg-gray-600 text-white hover:bg-gray-700'
+            ]">
+              <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                <path v-if="homeModalEnabled" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <path v-else d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              {{ homeModalEnabled ? '弹窗：开' : '弹窗：关' }}
+            </button>
+
+            <!-- 查看前台页面按钮 -->
+            <router-link to="/"
+              class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors text-sm">
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                </path>
+              </svg>
+              查看前台页面
+            </router-link>
+          </div>
         </div>
       </div>
 
@@ -111,14 +128,42 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const sidebarCollapsed = ref(false)
 
+// 首页弹窗控制状态
+const homeModalEnabled = ref(true)
+
 const toggleSidebar = () => {
   sidebarCollapsed.value = !sidebarCollapsed.value
+}
+
+// 初始化弹窗控制状态
+const initHomeModalStatus = () => {
+  const status = localStorage.getItem('adminHomeModalEnabled')
+  homeModalEnabled.value = status !== 'false' // 默认为true，只有明确设置为false才关闭
+}
+
+// 切换弹窗显示状态
+const toggleHomeModal = () => {
+  homeModalEnabled.value = !homeModalEnabled.value
+
+  // 保存设置到localStorage
+  localStorage.setItem('adminHomeModalEnabled', homeModalEnabled.value.toString())
+
+  // 清除旧的显示记录，让用户下次访问时能看到效果
+  if (homeModalEnabled.value) {
+    // 开启弹窗时，清除之前的显示记录
+    sessionStorage.removeItem('homeModalShown')
+    localStorage.removeItem('homeModalLastShown')
+    localStorage.removeItem('adminDisabledHomeModal')
+  } else {
+    // 关闭弹窗时，设置一个永久标记
+    localStorage.setItem('adminDisabledHomeModal', 'true')
+  }
 }
 
 const getCurrentPageTitle = () => {
@@ -152,6 +197,11 @@ const menuItems = [
     label: '投递记录管理'
   }
 ]
+
+// 初始化组件
+onMounted(() => {
+  initHomeModalStatus()
+})
 </script>
 
 <style scoped>

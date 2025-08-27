@@ -106,7 +106,8 @@
             </li>
           </ul>
 
-          <button disabled class="w-full py-3 px-6 rounded-xl bg-gray-100 text-gray-400 font-semibold cursor-not-allowed">
+          <button disabled
+            class="w-full py-3 px-6 rounded-xl bg-gray-100 text-gray-400 font-semibold cursor-not-allowed">
             当前方案
           </button>
         </div>
@@ -183,7 +184,7 @@
         <!-- 扫码支付 -->
         <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 relative">
           <div class="text-center mb-8">
-            <h3 class="text-2xl font-bold text-gray-900 mb-2">限时特惠¥9.9</h3>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">秋招求职季特惠¥9.9</h3>
             <div class="mb-4">
               <span class="text-lg text-gray-600">入群限时享特惠</span>
             </div>
@@ -212,7 +213,8 @@
               <div v-else
                 class="w-48 h-48 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg flex items-center justify-center border-2 border-dashed border-blue-300">
                 <div class="text-center">
-                  <svg class="w-12 h-12 text-blue-500 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-12 h-12 text-blue-500 mx-auto mb-2" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M12 12h-4.01M12 12v4m6-4h.01M12 8h.01M8 12h.01m0 0h3.99">
                     </path>
@@ -541,15 +543,28 @@ const loading = ref(true)
 // 获取会员图片URL
 const fetchMemberImageUrl = async () => {
   try {
+    console.log('BecomeMember: 开始获取二维码图片URL...')
     loading.value = true
     const response = await webInfoApi.getMemberImageUrl()
-    if (response.statusCode === 200 && response.data) {
-      imageUrl.value = response.data
+    console.log('BecomeMember: 获取到响应:', response)
+    if (response.statusCode === 200) {
+      if (response.data && response.data.trim() !== '') {
+        imageUrl.value = response.data
+        console.log('BecomeMember: 设置图片URL:', response.data)
+      } else {
+        console.warn('BecomeMember: 返回的图片URL为空，使用占位图')
+        imageUrl.value = null
+      }
+    } else {
+      console.warn('BecomeMember: 响应状态码异常:', response)
+      imageUrl.value = null
     }
   } catch (error) {
-    console.error('获取会员图片URL失败:', error)
+    console.error('BecomeMember: 获取会员图片URL失败:', error)
+    imageUrl.value = null
   } finally {
     loading.value = false
+    console.log('BecomeMember: 加载完成, imageUrl:', imageUrl.value)
   }
 }
 

@@ -137,6 +137,9 @@
       <!-- 登录/注册模态框 -->
       <LoginModal v-if="showLoginModal" @close="showLoginModal = false" @login-success="showLoginModal = false" />
 
+      <!-- 首页弹窗 -->
+      <HomeModal v-if="showHomeModal" @close="closeHomeModal" />
+
       <!-- 全局页脚 -->
       <footer class="bg-white border-t border-gray-200">
         <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -150,15 +153,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from './stores/user'
 import LoginModal from './components/LoginModal.vue'
+import HomeModal from './components/HomeModal.vue'
 
 const route = useRoute()
 const userStore = useUserStore()
 const showLoginModal = ref(false)
 const showMobileMenu = ref(false)
+const showHomeModal = ref(false)
 
 // 判断是否为管理页面路由
 const isAdminRoute = computed(() => {
@@ -170,11 +175,50 @@ const handleLogout = () => {
   userStore.userLogout()
 }
 
+// 检查是否显示首页弹窗
+const checkShowHomeModal = () => {
+  // 只在首页显示弹窗
+  if (route.path === '/') {
+    // 首先检查管理员是否关闭了弹窗
+    const adminDisabled = localStorage.getItem('adminDisabledHomeModal')
+    const adminEnabled = localStorage.getItem('adminHomeModalEnabled')
+
+    // 如果管理员明确关闭了弹窗，则不显示
+    if (adminDisabled === 'true' || adminEnabled === 'false') {
+      console.log('管理员已关闭首页弹窗')
+      return
+    }
+
+    // 检查是否已经显示过弹窗（本次会话内）
+    const sessionShown = sessionStorage.getItem('homeModalShown')
+
+    if (!sessionShown) {
+      // 延迟1秒显示弹窗，让页面加载完成
+      setTimeout(() => {
+        showHomeModal.value = true
+        sessionStorage.setItem('homeModalShown', 'true')
+      }, 1000)
+    }
+  }
+}
+
+// 关闭弹窗的处理函数
+const closeHomeModal = () => {
+  showHomeModal.value = false
+}
+
+// 监听路由变化
+watch(() => route.path, () => {
+  checkShowHomeModal()
+}, { immediate: true })
+
 // 页面加载时尝试获取用户信息
 onMounted(async () => {
   if (userStore.token) {
     await userStore.initUserInfo()
   }
+  // 检查是否需要显示首页弹窗
+  checkShowHomeModal()
 })
 </script>
 
