@@ -1,6 +1,7 @@
 package com.rocklin.offer.model.dto;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.format.DateTimeFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -61,6 +62,7 @@ public class JobInfoImportDTO {
      * 开始时间
      */
     @ExcelProperty("开始时间")
+    @DateTimeFormat("yyyy-MM-dd")
     private Date startTime;
 
     /**
