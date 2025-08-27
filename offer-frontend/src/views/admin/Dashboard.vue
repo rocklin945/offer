@@ -7,36 +7,36 @@
 
     <!-- 统计卡片 -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg p-6 text-white">
+      <div class="bg-blue-50 rounded-lg p-6 border border-gray-200">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-blue-100 text-sm">用户数量</p>
-            <p class="text-3xl font-bold">
+            <p class="text-gray-600 text-sm">用户数量</p>
+            <p class="text-3xl font-bold text-gray-900">
               <span v-if="loading" class="animate-pulse">...</span>
               <span v-else>{{ stats.userCount }}</span>
             </p>
           </div>
-          <div class="bg-blue-400 bg-opacity-30 rounded-full p-3">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="bg-blue-500 rounded-full p-3">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z">
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
               </path>
             </svg>
           </div>
         </div>
       </div>
 
-      <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-6 text-white">
+      <div class="bg-green-50 rounded-lg p-6 border border-gray-200">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-green-100 text-sm">招聘信息数量</p>
-            <p class="text-3xl font-bold">
+            <p class="text-gray-600 text-sm">招聘信息数量</p>
+            <p class="text-3xl font-bold text-gray-900">
               <span v-if="loading" class="animate-pulse">...</span>
               <span v-else>{{ stats.jobCount }}</span>
             </p>
           </div>
-          <div class="bg-green-400 bg-opacity-30 rounded-full p-3">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="bg-green-500 rounded-full p-3">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
               </path>
@@ -45,17 +45,17 @@
         </div>
       </div>
 
-      <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg p-6 text-white">
+      <div class="bg-purple-50 rounded-lg p-6 border border-gray-200">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-yellow-100 text-sm">网站总浏览量</p>
-            <p class="text-3xl font-bold">
+            <p class="text-gray-600 text-sm">网站总浏览量</p>
+            <p class="text-3xl font-bold text-gray-900">
               <span v-if="loading" class="animate-pulse">...</span>
               <span v-else>{{ webInfo?.pv || stats.totalViews }}</span>
             </p>
           </div>
-          <div class="bg-yellow-400 bg-opacity-30 rounded-full p-3">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="bg-purple-500 rounded-full p-3">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z">
               </path>
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -66,76 +66,29 @@
         </div>
       </div>
 
-      <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg p-6 text-white">
+      <div class="bg-yellow-50 rounded-lg p-6 border border-gray-200">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-purple-100 text-sm">网站会员数量</p>
-            <p class="text-3xl font-bold">
+            <p class="text-gray-600 text-sm">网站会员数量</p>
+            <p class="text-3xl font-bold text-gray-900">
               <span v-if="loading" class="animate-pulse">...</span>
               <span v-else>{{ stats.memberCount }}</span>
             </p>
           </div>
-          <div class="bg-purple-400 bg-opacity-30 rounded-full p-3">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
-              </path>
+          <div class="bg-yellow-500 rounded-full p-3">
+            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
             </svg>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 快捷操作 -->
+    <!-- 数据统计图表 -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div class="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">快捷操作</h3>
-        <div class="space-y-3">
-          <router-link to="/admin/user-management"
-            class="flex items-center p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
-            <div class="bg-blue-500 rounded-full p-2 mr-3">
-              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z">
-                </path>
-              </svg>
-            </div>
-            <div>
-              <p class="font-medium text-gray-900">管理用户信息</p>
-              <p class="text-sm text-gray-500">查看和管理系统用户</p>
-            </div>
-          </router-link>
-
-          <router-link to="/admin/job-management"
-            class="flex items-center p-3 bg-green-50 hover:bg-green-100 rounded-lg transition-colors">
-            <div class="bg-green-500 rounded-full p-2 mr-3">
-              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
-                </path>
-              </svg>
-            </div>
-            <div>
-              <p class="font-medium text-gray-900">管理招聘信息</p>
-              <p class="text-sm text-gray-500">查看和编辑现有职位</p>
-            </div>
-          </router-link>
-
-          <router-link to="/admin/user-job-apply-management"
-            class="flex items-center p-3 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors">
-            <div class="bg-purple-500 rounded-full p-2 mr-3">
-              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V7a2 2 0 012-2h5l2 2h6a2 2 0 012 2v6.5M7 7v10l4-2 4 2V7M7 7l4-2 4 2">
-                </path>
-              </svg>
-            </div>
-            <div>
-              <p class="font-medium text-gray-900">管理用户投递记录</p>
-              <p class="text-sm text-gray-500">查看和管理所有投递记录</p>
-            </div>
-          </router-link>
-        </div>
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">数据统计</h3>
+        <div id="pieChart" style="width: 100%; height: 400px;"></div>
       </div>
 
       <div class="bg-white rounded-lg border border-gray-200 p-6">
@@ -144,7 +97,7 @@
           <div v-if="webInfo" class="space-y-4">
             <div v-if="webInfo.activity1" class="flex items-start">
               <div class="flex-shrink-0">
-                <div class="w-2 h-2 rounded-full mt-2 bg-red-400"></div>
+                <div class="w-2 h-2 rounded-full mt-2 bg-green-400"></div>
               </div>
               <div class="ml-3 flex-1">
                 <p class="text-sm text-gray-900">{{ webInfo.activity1 }}</p>
@@ -216,9 +169,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick, watch } from 'vue'
+import * as echarts from 'echarts'
 import { webInfoApi } from '@/api/webInfo'
 import type { WebInfoResponse } from '@/api/types'
+
+type EChartsOption = echarts.EChartsOption
 
 const currentTime = ref('')
 const stats = ref({
@@ -230,27 +186,100 @@ const stats = ref({
 
 const webInfo = ref<WebInfoResponse | null>(null)
 const loading = ref(true)
+let myChart: echarts.ECharts | null = null
 
-const recentActivities = ref([
-  {
-    id: 1,
-    type: 'add',
-    description: '新用户注册：张三',
-    time: '2小时前'
-  },
-  {
-    id: 2,
-    type: 'edit',
-    description: '更新了字节跳动产品经理职位信息',
-    time: '4小时前'
-  },
-  {
-    id: 3,
-    type: 'add',
-    description: '添加了新的招聘信息：阿里巴巴前端开发',
-    time: '1天前'
+const initChart = async () => {
+  await nextTick()
+  const chartDom = document.getElementById('pieChart')
+  if (!chartDom) return
+
+  if (myChart) {
+    myChart.dispose()
   }
-])
+
+  myChart = echarts.init(chartDom)
+
+  const option: EChartsOption = {
+    tooltip: {
+      trigger: 'item',
+      formatter: function (params: any) {
+        // 获取原始数据值（统计卡片中显示的数值），并转换为数字
+        const originalValue = params.name === '用户数量' ? Number(stats.value.userCount) :
+          params.name === '招聘信息数量' ? Number(stats.value.jobCount) :
+            params.name === '网站总浏览量' ? Number(stats.value.totalViews) :
+              params.name === '网站会员数量' ? Number(stats.value.memberCount) : Number(params.value);
+
+        // 计算统计卡片数据的总和（确保所有数据都为数字类型）
+        const displayTotal = Number(stats.value.userCount) + Number(stats.value.jobCount) + Number(stats.value.totalViews) + Number(stats.value.memberCount);
+
+        // 计算百分比
+        const percent = displayTotal > 0 ? ((originalValue / displayTotal) * 100).toFixed(1) : '0.0';
+
+        // 调试信息
+        console.log('百分比计算调试:', {
+          '选中项': params.name,
+          '原始值': originalValue,
+          '总数': displayTotal,
+          '百分比': percent
+        });
+
+        return `${params.seriesName} <br/>${params.name}: ${originalValue} (${percent}%)`;
+      }
+    },
+    legend: {
+      top: '5%',
+      left: 'center'
+    },
+    color: ['#FFB6C1', '#98D8C8', '#DDA0DD', '#F7DC6F', '#B0E0E6'],
+    series: [
+      {
+        name: '统计数据',
+        type: 'pie',
+        radius: ['40%', '70%'],
+        center: ['50%', '60%'],
+        avoidLabelOverlap: false,
+        itemStyle: {
+          borderRadius: 10,
+          borderColor: '#fff',
+          borderWidth: 2
+        },
+        label: {
+          show: true,
+          position: 'outside',
+          formatter: function (params: any) {
+            const originalValue = params.name === '用户数量' ? Number(stats.value.userCount) :
+              params.name === '招聘信息数量' ? Number(stats.value.jobCount) :
+                params.name === '网站总浏览量' ? Number(stats.value.totalViews) :
+                  params.name === '网站会员数量' ? Number(stats.value.memberCount) : Number(params.value);
+            return `${params.name}: ${originalValue}`;
+          },
+          fontSize: 12,
+          fontWeight: 'normal'
+        },
+        labelLine: {
+          show: true,
+          length: 15,
+          length2: 10
+        },
+        data: [
+          { value: stats.value.userCount * 100, name: '用户数量' },
+          { value: stats.value.jobCount, name: '招聘信息数量' },
+          { value: stats.value.totalViews, name: '网站总浏览量' },
+          { value: stats.value.memberCount * 100, name: '网站会员数量' }
+        ]
+      }
+    ]
+  }
+
+  option && myChart.setOption(option)
+}
+
+// 监听统计数据变化，更新图表
+watch(stats, () => {
+  if (myChart && !loading.value) {
+    initChart()
+  }
+}, { deep: true })
 
 const updateTime = () => {
   const now = new Date()
@@ -269,36 +298,38 @@ const fetchStats = async () => {
     loading.value = true
     // 获取网站信息（包含所有统计数据）
     const response = await webInfoApi.getWebInfo()
-
     if (response.statusCode === 200 && response.data) {
       webInfo.value = response.data
 
-      // 更新统计数据
+      // 更新统计数据（确保所有数据都转换为数字类型）
       stats.value = {
-        userCount: response.data.userCount,
-        jobCount: response.data.jobCount,
-        totalViews: response.data.pv,
-        memberCount: response.data.memberCount
+        userCount: Number(response.data.userCount) || 0,
+        jobCount: Number(response.data.jobCount) || 0,
+        totalViews: Number(response.data.pv) || 0,
+        memberCount: Number(response.data.memberCount) || 0
       }
+
     } else {
       console.error('获取网站信息失败:', response.message)
-      // 如果获取失败，使用默认值
+      // 如果获取失败，使用测试数据
       stats.value = {
-        userCount: 0,
-        jobCount: 0,
-        totalViews: 0,
-        memberCount: 0
+        userCount: 12,
+        jobCount: 8,
+        totalViews: 245,
+        memberCount: 5
       }
+      console.log('使用测试数据:', stats.value); // 调试信息
     }
   } catch (error) {
     console.error('获取网站统计数据失败:', error)
-    // 如果请求失败，使用默认值
+    // 如果请求失败，使用测试数据
     stats.value = {
-      userCount: 0,
-      jobCount: 0,
-      totalViews: 0,
-      memberCount: 0
+      userCount: 12,
+      jobCount: 8,
+      totalViews: 245,
+      memberCount: 5
     }
+    console.log('网络错误，使用测试数据:', stats.value); // 调试信息
   } finally {
     loading.value = false
   }
@@ -334,7 +365,12 @@ onMounted(async () => {
   // 获取统计数据
   await fetchStats()
 
+  // 初始化图表
+  await initChart()
+
   // 每 30 秒刷新一次数据
-  setInterval(fetchStats, 30000)
+  setInterval(async () => {
+    await fetchStats()
+  }, 30000)
 })
 </script>

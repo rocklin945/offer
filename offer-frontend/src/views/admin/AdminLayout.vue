@@ -10,11 +10,13 @@
         <div class="flex items-center justify-center">
           <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
             <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+              <path
+                d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z">
+              </path>
             </svg>
           </div>
           <div v-if="!sidebarCollapsed" class="ml-3 overflow-hidden">
-            <span class="text-lg font-semibold whitespace-nowrap">管理系统</span>
+            <span class="text-lg font-semibold whitespace-nowrap">MyOffer管理系统</span>
           </div>
         </div>
       </div>
@@ -22,24 +24,29 @@
       <!-- 菜单项 -->
       <nav class="flex-1 py-4">
         <div class="space-y-1">
-          <router-link
-            v-for="item in menuItems"
-            :key="item.name"
-            :to="item.path"
-            :class="[
-              'flex items-center px-4 py-3 text-sm font-medium transition-all duration-300 group relative',
-              $route.path === item.path || $route.path.startsWith(item.path + '/')
-                ? 'bg-blue-600 text-white'
-                : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-            ]"
-            :title="sidebarCollapsed ? item.label : ''"
-          >
+          <router-link v-for="item in menuItems" :key="item.name" :to="item.path" :class="[
+            'flex items-center px-4 py-3 text-sm font-medium transition-all duration-300 group relative',
+            $route.path === item.path || $route.path.startsWith(item.path + '/')
+              ? 'bg-blue-600 text-white'
+              : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+          ]" :title="sidebarCollapsed ? item.label : ''">
             <div class="w-5 h-5 flex-shrink-0 flex items-center justify-center">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path v-if="item.name === 'dashboard'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"></path>
-                <path v-else-if="item.name === 'job-management'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                <path v-else-if="item.name === 'user-management'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
-                <path v-else-if="item.name === 'user-job-apply-management'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                <path v-if="item.name === 'dashboard'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2">
+                </path>
+                <path v-else-if="item.name === 'job-management'" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                </path>
+                <path v-else-if="item.name === 'user-management'" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                </path>
+                <path v-else-if="item.name === 'user-job-apply-management'" stroke-linecap="round"
+                  stroke-linejoin="round" stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                </path>
               </svg>
             </div>
             <div v-if="!sidebarCollapsed" class="ml-3 overflow-hidden">
@@ -59,10 +66,11 @@
             <!-- 汉堡菜单按钮 -->
             <button @click="toggleSidebar" class="p-2 rounded-md hover:bg-gray-100 transition-colors mr-4">
               <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                </path>
               </svg>
             </button>
-            
+
             <!-- 面包屑 -->
             <nav class="flex items-center text-sm text-gray-500">
               <router-link to="/admin/dashboard" class="hover:text-blue-600 transition-colors">
@@ -74,15 +82,16 @@
               <span class="text-gray-900 font-medium">{{ getCurrentPageTitle() }}</span>
             </nav>
           </div>
-          
+
           <!-- 查看前台页面按钮 -->
-          <router-link 
-            to="/" 
-            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors text-sm"
-          >
+          <router-link to="/"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors text-sm">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+              </path>
             </svg>
             查看前台页面
           </router-link>
@@ -114,7 +123,7 @@ const toggleSidebar = () => {
 
 const getCurrentPageTitle = () => {
   const currentPath = route.path
-  const menuItem = menuItems.find(item => 
+  const menuItem = menuItems.find(item =>
     currentPath === item.path || currentPath.startsWith(item.path + '/')
   )
   return menuItem?.label || '系统管理'
