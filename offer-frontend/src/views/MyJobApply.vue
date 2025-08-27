@@ -105,166 +105,175 @@
     <div class="card">
       <div v-if="!userStore.currentUser" class="text-center py-8">
         <p class="text-gray-500 mb-4">请先登录后查看我的投递记录</p>
-        <button @click="showLoginModal = true" class="inline-block px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+        <button @click="showLoginModal = true"
+          class="inline-block px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
           去登录
         </button>
       </div>
       <template v-else>
         <div v-if="loading" class="text-center py-8">
-        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
-        <p class="mt-2 text-gray-500">加载中...</p>
-      </div>
-
-      <div v-else-if="!hasData" class="text-center py-8">
-        <p class="text-gray-500">暂无投递记录</p>
-        <router-link to="/" class="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-          去投递职位
-        </router-link>
-      </div>
-
-      <div v-else class="overflow-x-auto">
-        <div class="table-container" :class="{ 'table-loading': isChangingPage }">
-          <table class="min-w-full table-fixed divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th
-                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-48 whitespace-nowrap">
-                  公司信息
-                </th>
-                <th
-                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-40 whitespace-nowrap">
-                  招聘对象
-                </th>
-                <th
-                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-48 whitespace-nowrap">
-                  工作地点
-                </th>
-                <th
-                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-48 whitespace-nowrap">
-                  岗位名称
-                </th>
-                <th
-                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
-                  招聘类型
-                </th>
-                <th
-                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
-                  相关链接
-                </th>
-                <th
-                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
-                  投递状态
-                </th>
-                <th
-                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-36 whitespace-nowrap">
-                  投递时间
-                </th>
-                <th
-                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-64 whitespace-normal">
-                  个人备注
-                  <span class="block">(可以备注个人投递进度链接，方便查询进度)</span>
-                </th>
-
-                <th
-                  class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
-                  操作
-                </th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr v-for="item in tableData" :key="item.id" class="hover:bg-gray-50">
-                <td class="px-2 py-2 whitespace-nowrap text-center">
-                  <div>
-                    <div class="text-sm font-medium text-gray-900">{{ item.companyName }}</div>
-                    <div class="text-sm text-gray-500">{{ item.companyType || '-' }}</div>
-                    <div class="text-sm text-gray-500">{{ item.industry || '-' }}</div>
-                  </div>
-                </td>
-                <td class="px-2 py-2 whitespace-nowrap text-center">
-                  <div class="text-sm font-medium text-gray-900">{{ item.recruitTarget || '-' }}</div>
-                </td>
-                <td class="px-2 py-2 text-center">
-                  <div v-if="item.workLocation && item.workLocation !== '-'"
-                    class="flex flex-wrap gap-1 items-center justify-center">
-                    <span v-for="(tag, index) in getDisplayTags(item.workLocation).visible" :key="index"
-                      class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help transition-all duration-200 hover:shadow-md"
-                      :class="getPositionTagClass(tag, index)" :title="tag.length > 15 ? tag : ''">
-                      {{ truncateText(tag, 15) }}
-                    </span>
-                    <span v-if="getDisplayTags(item.workLocation).hasMore"
-                      class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help bg-gray-200 text-gray-600 hover:bg-gray-300"
-                      :title="getDisplayTags(item.workLocation).remaining.join(', ')">
-                      ...
-                    </span>
-                  </div>
-                  <div v-else class="text-sm font-medium text-gray-900">{{ item.workLocation || '-' }}</div>
-                </td>
-                <td class="px-2 py-2 text-center">
-                  <div v-if="item.positionName && item.positionName !== '-'"
-                    class="flex flex-wrap gap-1 items-center justify-center">
-                    <span v-for="(tag, index) in getDisplayTags(item.positionName).visible" :key="index"
-                      class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help transition-all duration-200 hover:shadow-md"
-                      :class="getPositionTagClass(tag, index)" :title="tag.length > 15 ? tag : ''">
-                      {{ truncateText(tag, 15) }}
-                    </span>
-                    <span v-if="getDisplayTags(item.positionName).hasMore"
-                      class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help bg-gray-200 text-gray-600 hover:bg-gray-300"
-                      :title="getDisplayTags(item.positionName).remaining.join(', ')">
-                      ...
-                    </span>
-                  </div>
-                  <div v-else class="text-sm font-medium text-gray-900">{{ item.positionName || '-' }}</div>
-                </td>
-                <td class="px-2 py-2 whitespace-nowrap text-center">
-                  <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
-                    :class="getRecruitTypeClass(item.recruitType)">
-                    {{ item.recruitType || '-' }}
-                  </span>
-                </td>
-                <td class="px-2 py-2 whitespace-nowrap text-center">
-                  <a v-if="item.relatedLink" :href="item.relatedLink" target="_blank"
-                    class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-600 bg-blue-100 rounded-full hover:bg-blue-200 transition-colors">
-                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                    </svg>
-                    投递链接
-                  </a>
-                  <span v-else class="text-gray-400">-</span>
-                </td>
-                <td class="px-2 py-2 whitespace-nowrap text-center">
-                  <span :class="getStatusClass(item.applicationStatus)"
-                    class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
-                    {{ item.applicationStatus }}
-                  </span>
-                </td>
-                <td class="px-2 py-2 whitespace-nowrap text-center text-sm text-gray-500">
-                  {{ formatDate(item.createTime) }}
-                </td>
-                <td class="px-2 py-2 text-center">
-                  <div v-if="item.personalNote" class="text-sm text-gray-700 max-w-xs mx-auto break-words" v-html="renderLinksInText(item.personalNote)"></div>
-                  <div v-else class="text-sm text-gray-500">-</div>
-                </td>
-                <td class="px-2 py-2 whitespace-nowrap text-center">
-                  <div class="flex justify-center space-x-2">
-                    <button @click="handleUpdateStatus(item)" class="text-blue-600 hover:text-blue-900 text-sm">
-                      更新状态
-                    </button>
-                    <button @click="handleDelete(item)" class="text-red-600 hover:text-red-900 text-sm">
-                      删除
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+          <p class="mt-2 text-gray-500">加载中...</p>
         </div>
-      </div>
-    </template>
+
+        <div v-else-if="!hasData" class="text-center py-8">
+          <p class="text-gray-500">暂无投递记录</p>
+          <router-link to="/" class="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+            去投递职位
+          </router-link>
+        </div>
+
+        <div v-else class="overflow-x-auto">
+          <div class="table-container" :class="{ 'table-loading': isChangingPage }">
+            <table class="min-w-full table-fixed divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th
+                    class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-48 whitespace-nowrap">
+                    公司信息
+                  </th>
+                  <th
+                    class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-40 whitespace-nowrap">
+                    招聘对象
+                  </th>
+                  <th
+                    class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-48 whitespace-nowrap">
+                    工作地点
+                  </th>
+                  <th
+                    class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-48 whitespace-nowrap">
+                    岗位名称
+                  </th>
+                  <th
+                    class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
+                    招聘类型
+                  </th>
+                  <th
+                    class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
+                    相关链接
+                  </th>
+                  <th
+                    class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
+                    投递状态
+                  </th>
+                  <th
+                    class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-36 whitespace-nowrap">
+                    投递时间
+                  </th>
+                  <th
+                    class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-64 whitespace-normal">
+                    个人备注
+                    <span class="block">(可以备注个人投递进度链接，方便查询进度)</span>
+                  </th>
+
+                  <th
+                    class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
+                    操作
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr v-for="item in tableData" :key="item.id" class="hover:bg-gray-50">
+                  <td class="px-2 py-2 whitespace-nowrap text-center">
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">{{ item.companyName }}</div>
+                      <div class="text-sm text-gray-500">{{ item.companyType || '-' }}</div>
+                      <div class="text-sm text-gray-500">{{ item.industry || '-' }}</div>
+                    </div>
+                  </td>
+                  <td class="px-2 py-2 whitespace-nowrap text-center">
+                    <div class="text-sm font-medium text-gray-900">{{ item.recruitTarget || '-' }}</div>
+                  </td>
+                  <td class="px-2 py-2 text-center">
+                    <div v-if="item.workLocation && item.workLocation !== '-'"
+                      class="flex flex-wrap gap-1 items-center justify-center">
+                      <span
+                        v-for="(tag, index) in getDisplayTags(item.workLocation, expandedItems[item.id]?.workLocation).visible"
+                        :key="index"
+                        class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help transition-all duration-200 hover:shadow-md"
+                        :class="getPositionTagClass(tag, index)" :title="tag.length > 15 ? tag : ''">
+                        {{ truncateText(tag, 15) }}
+                      </span>
+                      <button v-if="getDisplayTags(item.workLocation, false).hasMore"
+                        @click="toggleExpanded(item.id, 'workLocation')"
+                        class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-pointer bg-gray-200 text-gray-600 hover:bg-gray-300 transition-colors">
+                        {{ expandedItems[item.id]?.workLocation ? '收起' : `+${getDisplayTags(item.workLocation,
+                          false).remaining.length}` }}
+                      </button>
+                    </div>
+                    <div v-else class="text-sm font-medium text-gray-900">{{ item.workLocation || '-' }}</div>
+                  </td>
+                  <td class="px-2 py-2 text-center">
+                    <div v-if="item.positionName && item.positionName !== '-'"
+                      class="flex flex-wrap gap-1 items-center justify-center">
+                      <span
+                        v-for="(tag, index) in getDisplayTags(item.positionName, expandedItems[item.id]?.positionName).visible"
+                        :key="index"
+                        class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help transition-all duration-200 hover:shadow-md"
+                        :class="getPositionTagClass(tag, index)" :title="tag.length > 15 ? tag : ''">
+                        {{ truncateText(tag, 15) }}
+                      </span>
+                      <button v-if="getDisplayTags(item.positionName, false).hasMore"
+                        @click="toggleExpanded(item.id, 'positionName')"
+                        class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-pointer bg-gray-200 text-gray-600 hover:bg-gray-300 transition-colors">
+                        {{ expandedItems[item.id]?.positionName ? '收起' : `+${getDisplayTags(item.positionName,
+                          false).remaining.length}` }}
+                      </button>
+                    </div>
+                    <div v-else class="text-sm font-medium text-gray-900">{{ item.positionName || '-' }}</div>
+                  </td>
+                  <td class="px-2 py-2 whitespace-nowrap text-center">
+                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
+                      :class="getRecruitTypeClass(item.recruitType)">
+                      {{ item.recruitType || '-' }}
+                    </span>
+                  </td>
+                  <td class="px-2 py-2 whitespace-nowrap text-center">
+                    <a v-if="item.relatedLink" :href="item.relatedLink" target="_blank"
+                      class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-600 bg-blue-100 rounded-full hover:bg-blue-200 transition-colors">
+                      <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                      </svg>
+                      投递链接
+                    </a>
+                    <span v-else class="text-gray-400">-</span>
+                  </td>
+                  <td class="px-2 py-2 whitespace-nowrap text-center">
+                    <span :class="getStatusClass(item.applicationStatus)"
+                      class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
+                      {{ item.applicationStatus }}
+                    </span>
+                  </td>
+                  <td class="px-2 py-2 whitespace-nowrap text-center text-sm text-gray-500">
+                    {{ formatDate(item.createTime) }}
+                  </td>
+                  <td class="px-2 py-2 text-center">
+                    <div v-if="item.personalNote" class="text-sm text-gray-700 max-w-xs mx-auto break-words"
+                      v-html="renderLinksInText(item.personalNote)"></div>
+                    <div v-else class="text-sm text-gray-500">-</div>
+                  </td>
+                  <td class="px-2 py-2 whitespace-nowrap text-center">
+                    <div class="flex justify-center space-x-2">
+                      <button @click="handleUpdateStatus(item)" class="text-blue-600 hover:text-blue-900 text-sm">
+                        更新状态
+                      </button>
+                      <button @click="handleDelete(item)" class="text-red-600 hover:text-red-900 text-sm">
+                        删除
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </template>
     </div>
 
     <!-- 分页 -->
-    <div v-if="hasData && totalPages > 1" class="pagination flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
+    <div v-if="hasData && totalPages > 1"
+      class="pagination flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
       <div class="text-sm text-gray-700">
         共 {{ total }} 条记录
       </div>
@@ -279,7 +288,8 @@
 
         <!-- 页码按钮 -->
         <template v-for="page in getPageNumbers()" :key="page">
-          <button v-if="page === '...'" disabled class="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm text-gray-400 cursor-default">
+          <button v-if="page === '...'" disabled
+            class="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm text-gray-400 cursor-default">
             ...
           </button>
           <button v-else @click="handlePageChange(page as number)" :class="[
@@ -318,7 +328,8 @@
     <teleport to="body">
       <div v-if="showUpdateModal">
         <div class="modal-backdrop fixed inset-0 bg-black bg-opacity-50" style="z-index: 99999;"></div>
-        <div class="modal-container fixed inset-0 flex items-center justify-center" style="z-index: 100000;" @click.self="showUpdateModal = false">
+        <div class="modal-container fixed inset-0 flex items-center justify-center" style="z-index: 100000;"
+          @click.self="showUpdateModal = false">
           <div class="bg-white rounded-lg p-6 w-96 max-h-[90vh] overflow-y-auto">
             <h3 class="text-lg font-medium text-gray-900 mb-4">更新投递状态</h3>
             <div class="mb-4">
@@ -337,12 +348,8 @@
             <div class="mb-4">
               <label class="block text-sm font-medium text-gray-700 mb-2">个人备注</label>
               <div class="relative">
-                <textarea 
-                  v-model="updateForm.personalNote" 
-                  class="input-field h-24 resize-none" 
-                  placeholder="添加个人备注，如投递进度链接等（最多500字）"
-                  maxlength="500"
-                ></textarea>
+                <textarea v-model="updateForm.personalNote" class="input-field h-24 resize-none"
+                  placeholder="添加个人备注，如投递进度链接等（最多500字）" maxlength="500"></textarea>
                 <div class="absolute bottom-2 right-2 text-xs text-gray-500">
                   {{ updateForm.personalNote?.length || 0 }}/500
                 </div>
@@ -385,6 +392,9 @@ const jumpPage = ref<number | string>('')
 const isChangingPage = ref(false)
 const showLoginModal = ref(false)
 
+// 添加展开状态管理
+const expandedItems = ref<{ [key: string]: { workLocation: boolean, positionName: boolean } }>({})
+
 // 搜索表单
 const searchForm = reactive<UserJobApplyQueryRequest>({
   companyName: '',
@@ -417,7 +427,7 @@ const fetchData = async () => {
   if (!userStore.currentUser) {
     return
   }
-  
+
   loading.value = true
   try {
     const params: UserJobApplyQueryRequest = {
@@ -493,7 +503,7 @@ const getPositionTags = (positionInfo?: string) => {
 }
 
 // 获取显示标签（限制显示数量）
-const getDisplayTags = (text?: string) => {
+const getDisplayTags = (text?: string, isExpanded?: boolean) => {
   if (!text) return { visible: [], remaining: [], hasMore: false }
 
   const allTags = getPositionTags(text)
@@ -503,16 +513,25 @@ const getDisplayTags = (text?: string) => {
     allTags.push(text.trim())
   }
 
-  const maxVisible = 3
+  const maxVisible = isExpanded ? allTags.length : 3
   const visible = allTags.slice(0, maxVisible)
   const remaining = allTags.slice(maxVisible)
-  const hasMore = remaining.length > 0
+  const hasMore = allTags.length > 3
 
   return {
     visible,
     remaining,
     hasMore
   }
+}
+
+// 切换展开状态
+const toggleExpanded = (itemId: number, field: 'workLocation' | 'positionName') => {
+  const key = itemId.toString()
+  if (!expandedItems.value[key]) {
+    expandedItems.value[key] = { workLocation: false, positionName: false }
+  }
+  expandedItems.value[key][field] = !expandedItems.value[key][field]
 }
 
 const truncateText = (text: string, maxLength: number) => {
@@ -744,10 +763,10 @@ const formatDate = (dateString?: string) => {
 // 将文本中的链接转换为可点击的链接
 const renderLinksInText = (text: string) => {
   if (!text) return ''
-  
+
   // URL正则表达式，匹配http/https/ftp开头的URL
   const urlRegex = /(https?:\/\/|ftp:\/\/)(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi
-  
+
   // 替换文本中的URL为HTML链接
   return text.replace(urlRegex, (url) => {
     return `<a href="${url}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline">${url}</a>`

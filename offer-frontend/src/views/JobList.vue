@@ -18,12 +18,12 @@
           <label class="block text-sm font-medium text-gray-700 mb-1">公司类型</label>
           <select v-model="searchForm.companyType" @change="handleSearch" class="input-field">
             <option value="">全部</option>
-                  <option value="央国企">央国企</option>
-                  <option value="银行">银行</option>
-                  <option value="外企">外企</option>
-                  <option value="民企">民企</option>
-                  <option value="事业单位">事业单位</option>
-                  <option value="其他">其他</option>
+            <option value="央国企">央国企</option>
+            <option value="银行">银行</option>
+            <option value="外企">外企</option>
+            <option value="民企">民企</option>
+            <option value="事业单位">事业单位</option>
+            <option value="其他">其他</option>
           </select>
         </div>
         <div>
@@ -35,12 +35,12 @@
           <label class="block text-sm font-medium text-gray-700 mb-1">招聘类型</label>
           <select v-model="searchForm.recruitType" @change="handleSearch" class="input-field">
             <option value="">全部</option>
-                  <option value="实习">实习</option>
-                  <option value="春招">春招</option>
-                  <option value="秋招">秋招</option>
-                  <option value="补录">补录</option>
-                  <option value="提前批">提前批</option>
-                  <option value="社招">社招</option>
+            <option value="实习">实习</option>
+            <option value="春招">春招</option>
+            <option value="秋招">秋招</option>
+            <option value="补录">补录</option>
+            <option value="提前批">提前批</option>
+            <option value="社招">社招</option>
           </select>
         </div>
         <div>
@@ -175,32 +175,38 @@
                 <td class="px-2 py-2 text-center">
                   <div v-if="job.workLocation && job.workLocation !== '-'"
                     class="flex flex-wrap gap-1 items-center justify-center">
-                    <span v-for="(tag, index) in getDisplayTags(job.workLocation).visible" :key="index"
+                    <span
+                      v-for="(tag, index) in getDisplayTags(job.workLocation, expandedItems[job.id]?.workLocation).visible"
+                      :key="index"
                       class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help transition-all duration-200 hover:shadow-md"
                       :class="getPositionTagClass(tag, index)" :title="tag.length > 15 ? tag : ''">
                       {{ truncateText(tag, 15) }}
                     </span>
-                    <span v-if="getDisplayTags(job.workLocation).hasMore"
-                      class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help bg-gray-200 text-gray-600 hover:bg-gray-300"
-                      :title="getDisplayTags(job.workLocation).remaining.join(', ')">
-                      ...
-                    </span>
+                    <button v-if="getDisplayTags(job.workLocation, false).hasMore"
+                      @click="toggleExpanded(job.id, 'workLocation')"
+                      class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-pointer bg-gray-200 text-gray-600 hover:bg-gray-300 transition-colors">
+                      {{ expandedItems[job.id]?.workLocation ? '收起' : `+${getDisplayTags(job.workLocation,
+                        false).remaining.length}` }}
+                    </button>
                   </div>
                   <div v-else class="text-sm font-medium text-gray-900">{{ job.workLocation || '-' }}</div>
                 </td>
                 <td class="px-2 py-2 text-center">
                   <div v-if="job.positionName && job.positionName !== '-'"
                     class="flex flex-wrap gap-1 items-center justify-center">
-                    <span v-for="(tag, index) in getDisplayTags(job.positionName).visible" :key="index"
+                    <span
+                      v-for="(tag, index) in getDisplayTags(job.positionName, expandedItems[job.id]?.positionName).visible"
+                      :key="index"
                       class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help transition-all duration-200 hover:shadow-md"
                       :class="getPositionTagClass(tag, index)" :title="tag.length > 15 ? tag : ''">
                       {{ truncateText(tag, 15) }}
                     </span>
-                    <span v-if="getDisplayTags(job.positionName).hasMore"
-                      class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-help bg-gray-200 text-gray-600 hover:bg-gray-300"
-                      :title="getDisplayTags(job.positionName).remaining.join(', ')">
-                      ...
-                    </span>
+                    <button v-if="getDisplayTags(job.positionName, false).hasMore"
+                      @click="toggleExpanded(job.id, 'positionName')"
+                      class="inline-flex px-2 py-1 text-xs font-medium rounded-md cursor-pointer bg-gray-200 text-gray-600 hover:bg-gray-300 transition-colors">
+                      {{ expandedItems[job.id]?.positionName ? '收起' : `+${getDisplayTags(job.positionName,
+                        false).remaining.length}` }}
+                    </button>
                   </div>
                   <div v-else class="text-sm font-medium text-gray-900">{{ job.positionName || '-' }}</div>
                 </td>
@@ -247,7 +253,8 @@
                   <span v-else class="text-gray-400">-</span>
                 </td>
                 <td class="px-2 py-2 max-w-xs text-center">
-                  <div v-if="job.remark && job.remark !== '-'" class="text-sm text-gray-900 truncate" :title="job.remark">
+                  <div v-if="job.remark && job.remark !== '-'" class="text-sm text-gray-900 truncate"
+                    :title="job.remark">
                     {{ job.remark }}
                   </div>
                   <span v-else class="text-gray-400">-</span>
@@ -320,7 +327,8 @@
     </div>
 
     <!-- 分页 -->
-    <div v-if="hasJobs && totalPages > 1" class="pagination flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
+    <div v-if="hasJobs && totalPages > 1"
+      class="pagination flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
       <div class="text-sm text-gray-700">
         共 {{ total }} 条记录
       </div>
@@ -335,7 +343,8 @@
 
         <!-- 页码按钮 -->
         <template v-for="page in getPageNumbers()" :key="page">
-          <button v-if="page === '...'" disabled class="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm text-gray-400 cursor-default">
+          <button v-if="page === '...'" disabled
+            class="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm text-gray-400 cursor-default">
             ...
           </button>
           <button v-else @click="handlePageChange(page as number)" :class="[
@@ -418,6 +427,9 @@ const jumpPage = ref<number | string>('')
 const isChangingPage = ref(false)
 const showMemberOverlay = ref(false)
 const memberLimitMessage = ref('')
+
+// 添加展开状态管理
+const expandedItems = ref<{ [key: string]: { workLocation: boolean, positionName: boolean } }>({})
 
 const searchForm = reactive<JobInfoQueryRequest>({
   companyName: '',
@@ -719,7 +731,7 @@ const getPositionTags = (positionInfo?: string) => {
 }
 
 // 获取显示标签（限制显示数量）
-const getDisplayTags = (text?: string) => {
+const getDisplayTags = (text?: string, isExpanded?: boolean) => {
   if (!text) return { visible: [], remaining: [], hasMore: false }
 
   const allTags = getPositionTags(text)
@@ -729,16 +741,24 @@ const getDisplayTags = (text?: string) => {
     allTags.push(text.trim())
   }
 
-  const maxVisible = 3
+  const maxVisible = isExpanded ? allTags.length : 3
   const visible = allTags.slice(0, maxVisible)
   const remaining = allTags.slice(maxVisible)
-  const hasMore = remaining.length > 0
+  const hasMore = allTags.length > 3
 
   return {
     visible,
     remaining,
     hasMore
   }
+}
+
+// 切换展开状态
+const toggleExpanded = (jobId: string, field: 'workLocation' | 'positionName') => {
+  if (!expandedItems.value[jobId]) {
+    expandedItems.value[jobId] = { workLocation: false, positionName: false }
+  }
+  expandedItems.value[jobId][field] = !expandedItems.value[jobId][field]
 }
 
 const truncateText = (text: string, maxLength: number) => {
