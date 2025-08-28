@@ -106,8 +106,7 @@
             </li>
           </ul>
 
-          <button disabled
-            class="w-full py-3 px-6 rounded-xl bg-gray-100 text-gray-400 font-semibold cursor-not-allowed">
+          <button disabled class="w-full py-3 px-6 rounded-xl bg-gray-100 text-gray-400 font-semibold cursor-not-allowed">
             当前方案
           </button>
         </div>
@@ -207,21 +206,6 @@
               <!-- 显示二维码图片 -->
               <div v-else-if="imageUrl" class="w-48 h-48 rounded-lg overflow-hidden border-2 border-blue-300">
                 <img :src="imageUrl" alt="会员二维码" class="w-full h-full object-cover" @error="onImageError" />
-              </div>
-
-              <!-- 备用占位图 -->
-              <div v-else
-                class="w-48 h-48 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg flex items-center justify-center border-2 border-dashed border-blue-300">
-                <div class="text-center">
-                  <svg class="w-12 h-12 text-blue-500 mx-auto mb-2" fill="none" stroke="currentColor"
-                    viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M12 12h-4.01M12 12v4m6-4h.01M12 8h.01M8 12h.01m0 0h3.99">
-                    </path>
-                  </svg>
-                  <p class="text-blue-600 text-sm font-medium">二维码占位图</p>
-                  <p class="text-blue-500 text-xs mt-1">微信扫码支付</p>
-                </div>
               </div>
             </div>
           </div>
