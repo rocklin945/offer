@@ -113,6 +113,15 @@ public class UserServiceImpl implements UserService {
     public UserLoginResponse getCurrentUser(Long userId) {
         User user = userMapper.selectById(userId);
         Assert.notNull(user, ErrorCode.OPERATION_ERROR, "用户不存在");
+        LocalDateTime memberExpireTime = user.getMemberExpireTime();
+        if (memberExpireTime != null && user.getUserRole()==2
+                && memberExpireTime.isBefore(LocalDateTime.now())) {
+            UserUpdateRequest userUpdateRequest = new UserUpdateRequest();
+            userUpdateRequest.setId(userId);
+            userUpdateRequest.setUserRole(UserRoleEnum.USER.getValue());
+            userUpdateRequest.setMemberExpireTime(null);
+            userMapper.updateById(userUpdateRequest);
+        }
         // 构建响应对象（不返回token，因为获取当前用户时不需要重新生成token）
         UserLoginResponse response = buildUserResponse(user);
         return response;
@@ -178,6 +187,7 @@ public class UserServiceImpl implements UserService {
         response.setUserAvatar(user.getUserAvatar());
         response.setUserProfile(user.getUserProfile());
         response.setUserRole(user.getUserRole());
+        response.setMemberExpireTime(user.getMemberExpireTime());
         response.setCreateTime(user.getCreateTime());
         response.setUpdateTime(user.getUpdateTime());
         return response;

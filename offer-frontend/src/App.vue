@@ -179,15 +179,15 @@ const handleLogout = () => {
 const checkShowHomeModal = () => {
   // 只在首页显示弹窗
   if (route.path === '/') {
-    // 首先检查管理员是否关闭了弹窗
-    const adminDisabled = localStorage.getItem('adminDisabledHomeModal')
-    const adminEnabled = localStorage.getItem('adminHomeModalEnabled')
+    // // 首先检查管理员是否关闭了弹窗
+    // const adminDisabled = localStorage.getItem('adminDisabledHomeModal')
+    // const adminEnabled = localStorage.getItem('adminHomeModalEnabled')
 
-    // 如果管理员明确关闭了弹窗，则不显示
-    if (adminDisabled === 'true' || adminEnabled === 'false') {
-      console.log('管理员已关闭首页弹窗')
-      return
-    }
+    // // 如果管理员明确关闭了弹窗，则不显示
+    // if (adminDisabled === 'true' || adminEnabled === 'false') {
+    //   console.log('管理员已关闭首页弹窗')
+    //   return
+    // }
 
     // 检查是否已经显示过弹窗（本次会话内）
     const sessionShown = sessionStorage.getItem('homeModalShown')
@@ -197,7 +197,7 @@ const checkShowHomeModal = () => {
       setTimeout(() => {
         showHomeModal.value = true
         sessionStorage.setItem('homeModalShown', 'true')
-      }, 1000)
+      }, 500)
     }
   }
 }

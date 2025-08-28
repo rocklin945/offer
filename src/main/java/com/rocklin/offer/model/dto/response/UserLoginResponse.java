@@ -42,6 +42,11 @@ public class UserLoginResponse implements Serializable {
     private Integer userRole;
 
     /**
+     * 会员过期时间
+     */
+    private LocalDateTime memberExpireTime;
+
+    /**
      * JWT token
      */
     private String token;

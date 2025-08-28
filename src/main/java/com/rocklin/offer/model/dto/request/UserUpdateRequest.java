@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * @ClassName UpdateUserRequest
@@ -42,4 +43,9 @@ public class UserUpdateRequest implements Serializable {
      * 用户角色：0:管理员 1:普通用户
      */
     private Integer userRole;
+
+    /**
+     * 会员过期时间
+     */
+    private LocalDateTime memberExpireTime;
 }

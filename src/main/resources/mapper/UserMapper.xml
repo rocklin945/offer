@@ -12,6 +12,7 @@
         <result property="userAvatar" column="user_avatar"/>
         <result property="userProfile" column="user_profile"/>
         <result property="userRole" column="user_role"/>
+        <result property="memberExpireTime" column="member_expire_time"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
         <result property="isDelete" column="is_delete"/>
@@ -19,7 +20,7 @@
     
     <!-- 基础字段 -->
     <sql id="Base_Column_List">
-        id, user_account, user_password, user_name, user_avatar, user_profile, user_role, create_time, update_time, is_delete
+        id, user_account, user_password, user_name, user_avatar, user_profile, user_role, member_expire_time,create_time, update_time, is_delete
     </sql>
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         insert into user
@@ -55,8 +56,9 @@
             user_profile = #{userProfile},
         </if>
         <if test="userRole != null">
-            user_role = #{userRole}
+            user_role = #{userRole},
         </if>
+            member_expire_time = #{memberExpireTime}
         where id = #{id}
     </update>
 

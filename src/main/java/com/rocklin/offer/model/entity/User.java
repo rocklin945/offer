@@ -54,6 +54,11 @@ public class User implements Serializable {
     private Integer userRole;
 
     /**
+     * 会员过期时间
+     */
+    private LocalDateTime memberExpireTime;
+
+    /**
      * 创建时间
      */
     private LocalDateTime createTime;
