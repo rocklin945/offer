@@ -83,6 +83,9 @@
                   角色
                 </th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  会员到期时间
+                </th>
+                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                   创建时间
                 </th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -117,6 +120,20 @@
                   ]">
                     {{ user.userRole === 0 ? '管理员' : user.userRole === 1 ? '普通用户' : '会员' }}
                   </span>
+                </td>
+
+                <td class="px-4 py-4 text-center text-sm text-gray-500">
+                  <span v-if="user.userRole === 2">
+                    <span v-if="user.memberExpireTime" :class="[
+                      'text-sm',
+                      isMemberExpired(user.memberExpireTime) ? 'text-red-600' : 'text-green-600'
+                    ]">
+                      {{ formatMemberExpireTime(user.memberExpireTime) }}
+                      <span v-if="isMemberExpired(user.memberExpireTime)" class="ml-1 text-red-500">(已过期)</span>
+                    </span>
+                    <span v-else class="text-gray-400">未设置</span>
+                  </span>
+                  <span v-else class="text-gray-400">-</span>
                 </td>
 
                 <td class="px-4 py-4 text-center text-sm text-gray-500">
@@ -234,11 +251,27 @@
           <div class="mb-4">
             <label for="userRole" class="block text-sm font-medium text-gray-700 mb-1">用户角色</label>
             <select id="userRole" v-model="editForm.userRole" class="w-full px-3 py-2 border border-gray-300 rounded-md"
-              required>
+              required @change="handleRoleChange">
               <option :value="0">管理员</option>
               <option :value="1">普通用户</option>
               <option :value="2">会员</option>
             </select>
+          </div>
+
+          <!-- 会员到期时间设置 -->
+          <div v-if="editForm.userRole === 2" class="mb-4">
+            <label for="memberExpireTime" class="block text-sm font-medium text-gray-700 mb-1">
+              会员到期时间
+            </label>
+            <input 
+              type="datetime-local" 
+              id="memberExpireTime" 
+              v-model="editForm.memberExpireTime"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md" 
+              min="" 
+              :min="getCurrentDateTime()"
+            />
+            <p class="text-xs text-gray-500 mt-1">请设置会员到期时间</p>
           </div>
 
           <div class="mb-4">
@@ -302,7 +335,8 @@ const editForm = reactive({
   userName: '',
   userProfile: '',
   userRole: 0,
-  userPassword: ''
+  userPassword: '',
+  memberExpireTime: ''
 })
 
 // 初始化加载数据
@@ -459,6 +493,12 @@ const handleEdit = (user: UserLoginResponse) => {
   editForm.userProfile = user.userProfile
   editForm.userRole = user.userRole
   editForm.userPassword = ''
+  // 处理会员到期时间，将后端格式转换为datetime-local格式用于显示
+  if (user.memberExpireTime) {
+    editForm.memberExpireTime = formatFromBackendString(user.memberExpireTime)
+  } else {
+    editForm.memberExpireTime = ''
+  }
   showEditDialog.value = true
 }
 
@@ -477,6 +517,11 @@ const submitEdit = async () => {
     // 如果密码不为空，则更新密码
     if (editForm.userPassword) {
       updateData.userPassword = editForm.userPassword
+    }
+
+    // 如果是会员并且设置了到期时间，则传递会员到期时间（转换为后端格式）
+    if (editForm.userRole === 2 && editForm.memberExpireTime) {
+      updateData.memberExpireTime = formatToBackendString(editForm.memberExpireTime)
     }
 
     const res = await updateUser(updateData)
@@ -524,6 +569,73 @@ const formatDate = (dateString?: string) => {
     })
   } catch (error) {
     return dateString
+  }
+}
+
+// 格式化会员到期时间（显示时分秒）
+const formatMemberExpireTime = (dateString?: string) => {
+  if (!dateString) return ''
+  try {
+    const date = new Date(dateString)
+    return date.toLocaleString('zh-CN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    })
+  } catch (error) {
+    return dateString
+  }
+}
+
+// 格式化日期时间为 datetime-local 格式（用于input显示）
+const formatDateTimeLocal = (date: Date) => {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  return `${year}-${month}-${day}T${hours}:${minutes}`
+}
+
+// 将datetime-local格式转换为后端期望的格式（yyyy-MM-dd HH:mm:ss）
+const formatToBackendString = (datetimeLocal: string) => {
+  if (!datetimeLocal) return ''
+  // datetime-local格式：2025-08-28T10:53
+  // 转换为后端格式：2025-08-28 10:53:00
+  return datetimeLocal.replace('T', ' ') + ':00'
+}
+
+// 将后端格式转换为datetime-local格式
+const formatFromBackendString = (backendString: string) => {
+  if (!backendString) return ''
+  // 后端格式：2025-08-28 10:53:00
+  // 转换为datetime-local格式：2025-08-28T10:53
+  return backendString.replace(' ', 'T').substring(0, 16)
+}
+
+// 获取当前时间（用于设置日期输入框的最小值）
+const getCurrentDateTime = () => {
+  const now = new Date()
+  return formatDateTimeLocal(now)
+}
+
+// 检查会员是否过期
+const isMemberExpired = (expireTime: string) => {
+  if (!expireTime) return false
+  const now = new Date()
+  const expire = new Date(expireTime)
+  return expire < now
+}
+
+// 处理角色变更
+const handleRoleChange = () => {
+  // 如果不是会员，清空会员到期时间
+  if (editForm.userRole !== 2) {
+    editForm.memberExpireTime = ''
   }
 }
 </script>

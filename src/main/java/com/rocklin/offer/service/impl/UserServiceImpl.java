@@ -80,6 +80,8 @@ public class UserServiceImpl implements UserService {
         User queryUser = userMapper.queryByPassword(user);
         Assert.notNull(queryUser, ErrorCode.OPERATION_ERROR, "用户不存在或密码错误");
 
+        memberIsExpire(queryUser.getId(), queryUser);
+
         // 生成JWT token
         String token = jwtUtils.generateToken(queryUser.getId().toString(), queryUser.getUserAccount());
 
@@ -113,6 +115,13 @@ public class UserServiceImpl implements UserService {
     public UserLoginResponse getCurrentUser(Long userId) {
         User user = userMapper.selectById(userId);
         Assert.notNull(user, ErrorCode.OPERATION_ERROR, "用户不存在");
+        memberIsExpire(userId, user);
+        // 构建响应对象（不返回token，因为获取当前用户时不需要重新生成token）
+        UserLoginResponse response = buildUserResponse(user);
+        return response;
+    }
+
+    private void memberIsExpire(Long userId, User user) {
         LocalDateTime memberExpireTime = user.getMemberExpireTime();
         if (memberExpireTime != null && user.getUserRole()==2
                 && memberExpireTime.isBefore(LocalDateTime.now())) {
@@ -122,9 +131,6 @@ public class UserServiceImpl implements UserService {
             userUpdateRequest.setMemberExpireTime(null);
             userMapper.updateById(userUpdateRequest);
         }
-        // 构建响应对象（不返回token，因为获取当前用户时不需要重新生成token）
-        UserLoginResponse response = buildUserResponse(user);
-        return response;
     }
 
     @Override

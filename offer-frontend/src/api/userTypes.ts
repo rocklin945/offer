@@ -17,6 +17,7 @@ export interface UserLoginResponse {
   token: string
   createTime: string
   updateTime: string
+  memberExpireTime?: string
 }
 
 // 用户更新请求
@@ -27,6 +28,7 @@ export interface UserUpdateRequest {
   userAvatar?: string
   userProfile?: string
   userRole?: number
+  memberExpireTime?: string
 }
 
 // 用户分页查询请求
