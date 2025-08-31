@@ -550,6 +550,7 @@
         <!-- 登录模态框 -->
         <LoginModal v-if="showLoginModal" @close="showLoginModal = false" />
     </div>
+}
 </template>
 
 <script setup lang="ts">
@@ -563,6 +564,8 @@ import Confirm from '@/components/Confirm'
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist/legacy/build/pdf'
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker?url'
 import mammoth from 'mammoth'
+// 导入简历API
+import { getMyResume, addResume, updateResume, deleteResume } from '@/api/resume'
 
 // 配置PDF.js worker
 // 在生产环境中使用动态导入的worker路径
