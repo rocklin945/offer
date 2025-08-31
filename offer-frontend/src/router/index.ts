@@ -17,6 +17,11 @@ const router = createRouter({
       component: () => import('@/views/MyJobApply.vue')
     },
     {
+      path: '/my-resume',
+      name: 'MyResume',
+      component: () => import('@/views/MyResume.vue')
+    },
+    {
       path: '/become-member',
       name: 'BecomeMember',
       component: () => import('@/views/BecomeMember.vue'),
@@ -75,7 +80,7 @@ const router = createRouter({
 // 路由守卫
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
-  
+
   // 检查是否需要认证
   if (to.meta.requiresAuth) {
     // 如果没有token，跳转到首页
@@ -83,7 +88,7 @@ router.beforeEach(async (to, from, next) => {
       next('/')
       return
     }
-    
+
     // 如果有token但没有用户信息，尝试获取用户信息
     if (!userStore.currentUser) {
       try {
@@ -95,14 +100,14 @@ router.beforeEach(async (to, from, next) => {
         return
       }
     }
-    
+
     // 检查是否需要管理员权限
     if (to.meta.requiresAdmin && !userStore.isAdmin()) {
       next('/')
       return
     }
   }
-  
+
   next()
 })
 

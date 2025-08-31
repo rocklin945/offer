@@ -28,6 +28,12 @@
                 <span class="hidden sm:inline">我的投递记录</span>
                 <span class="sm:hidden">我的投递记录</span>
               </router-link>
+              <router-link to="/my-resume"
+                class="text-gray-500 hover:text-gray-700 px-1 py-1 text-sm sm:px-3 sm:py-2 sm:text-sm rounded-md font-medium transition-colors whitespace-nowrap flex-shrink-0"
+                active-class="text-primary-600 bg-primary-50">
+                <span class="hidden sm:inline">个人简历</span>
+                <span class="sm:hidden">个人简历</span>
+              </router-link>
               <router-link v-if="userStore.currentUser" to="/become-member" class="hidden sm:inline-flex" :class="[
                 'px-3 py-2 rounded-md text-sm font-medium transition-colors',
                 userStore.currentUser.userRole === 1
@@ -63,6 +69,10 @@
                   </div>
                 </div>
                 <div class="py-1">
+                  <router-link to="/my-resume" @click="showMobileMenu = false"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    📜 个人简历
+                  </router-link>
                   <router-link to="/become-member" @click="showMobileMenu = false"
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                     {{ userStore.currentUser.userRole === 1 ? '成为会员 ⭐' : '会员中心 💎' }}

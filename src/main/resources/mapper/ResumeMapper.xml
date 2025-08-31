@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rocklin.offer.mapper.ResumeMapper">
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.rocklin.offer.model.entity.Resume">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="name" column="name"/>
+        <result property="phone" column="phone"/>
+        <result property="wechat" column="wechat"/>
+        <result property="email" column="email"/>
+        <result property="gender" column="gender"/>
+        <result property="birthday" column="birthday"/>
+        <result property="address" column="address"/>
+        <result property="education" column="education"/>
+        <result property="skills" column="skills"/>
+        <result property="workExperience" column="work_experience"/>
+        <result property="projectExperience" column="project_experience"/>
+        <result property="internshipExperience" column="internship_experience"/>
+        <result property="certificates" column="certificates"/>
+        <result property="selfEvaluation" column="self_evaluation"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    
+    <!-- 基础字段 -->
+    <sql id="Base_Column_List">
+        id, user_id, name, phone, wechat, email, gender, birthday, address, 
+        education, skills, work_experience, project_experience, internship_experience, 
+        certificates, self_evaluation, create_time, update_time
+    </sql>
+    
+    <!-- 插入简历 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into resume
+        (user_id, name, phone, wechat, email, gender, birthday, address,
+         education, skills, work_experience, project_experience, internship_experience,
+         certificates, self_evaluation, create_time, update_time)
+        values
+        (#{userId}, #{name}, #{phone}, #{wechat}, #{email}, #{gender}, #{birthday}, #{address},
+         #{education}, #{skills}, #{workExperience}, #{projectExperience}, #{internshipExperience},
+         #{certificates}, #{selfEvaluation}, now(), now())
+    </insert>
+    
+    <!-- 根据ID查询简历 -->
+    <select id="selectById" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from resume where id = #{id}
+    </select>
+    
+    <!-- 根据用户ID查询简历 -->
+    <select id="selectByUserId" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from resume where user_id = #{userId}
+    </select>
+    
+    <!-- 更新简历 -->
+    <update id="updateById">
+        update resume set
+        update_time = now()
+        <if test="name != null">
+            , name = #{name}
+        </if>
+        <if test="phone != null">
+            , phone = #{phone}
+        </if>
+        <if test="wechat != null">
+            , wechat = #{wechat}
+        </if>
+        <if test="email != null">
+            , email = #{email}
+        </if>
+        <if test="gender != null">
+            , gender = #{gender}
+        </if>
+        <if test="birthday != null">
+            , birthday = #{birthday}
+        </if>
+        <if test="address != null">
+            , address = #{address}
+        </if>
+        <if test="education != null">
+            , education = #{education}
+        </if>
+        <if test="skills != null">
+            , skills = #{skills}
+        </if>
+        <if test="workExperience != null">
+            , work_experience = #{workExperience}
+        </if>
+        <if test="projectExperience != null">
+            , project_experience = #{projectExperience}
+        </if>
+        <if test="internshipExperience != null">
+            , internship_experience = #{internshipExperience}
+        </if>
+        <if test="certificates != null">
+            , certificates = #{certificates}
+        </if>
+        <if test="selfEvaluation != null">
+            , self_evaluation = #{selfEvaluation}
+        </if>
+        where id = #{id}
+    </update>
+    
+    <!-- 根据ID删除简历 -->
+    <delete id="deleteById">
+        delete from resume where id = #{id}
+    </delete>
+    
+    <!-- 根据用户ID删除简历 -->
+    <delete id="deleteByUserId">
+        delete from resume where user_id = #{userId}
+    </delete>
+</mapper>

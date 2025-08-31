@@ -43,7 +43,7 @@ CREATE TABLE if not exists job_info (
      start_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '开始时间',
      deadline           VARCHAR(100) COMMENT '投递截止(尽快投递/x.x截止)',
 
-     related_link       VARCHAR(500) COMMENT '相关链接',
+     related_link       VARCHAR(2048) COMMENT '相关链接',
      announcement       TEXT COMMENT '招聘公告',
      referral_code      VARCHAR(100) COMMENT '内推码',
      remark             TEXT COMMENT '备注'
@@ -87,4 +87,29 @@ CREATE TABLE web_info (
 
                           update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) COMMENT='网站概览信息表';
+
+CREATE TABLE resume (
+                        id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '简历ID',
+                        user_id BIGINT NOT NULL COMMENT '用户ID',
+
+    -- 基本信息
+                        name VARCHAR(255) NOT NULL COMMENT '姓名',
+                        phone VARCHAR(255) COMMENT '手机号',
+                        wechat VARCHAR(255) COMMENT '微信号',
+                        email VARCHAR(255) COMMENT '邮箱',
+                        gender VARCHAR(255) COMMENT '性别',
+                        birthday VARCHAR(255) COMMENT '出生日期',
+                        address VARCHAR(255) COMMENT '地址',
+
+    -- 大段内容用 TEXT
+                        education TEXT COMMENT '教育背景（学校、专业、时间等）',
+                        skills TEXT COMMENT '专业技能',
+                        work_experience TEXT COMMENT '工作经验',
+                        project_experience TEXT COMMENT '项目经历',
+                        internship_experience TEXT COMMENT '实习经历',
+                        certificates TEXT COMMENT '荣誉证书',
+                        self_evaluation TEXT COMMENT '自我评价',
+                        create_time    DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '创建时间',
+                        update_time    DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+) COMMENT='个人简历信息表';
 
