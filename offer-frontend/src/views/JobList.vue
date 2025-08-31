@@ -385,7 +385,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, onActivated } from 'vue'
 import { useRouter } from 'vue-router'
 import { jobInfoApi } from '@/api/jobInfo'
 import { userJobApplyApi } from '@/api/userJobApply'
@@ -841,6 +841,14 @@ onMounted(async () => {
   validatePageSize()
   // 获取招聘信息
   fetchData()
+})
+
+// 组件激活时重新加载数据
+onActivated(async () => {
+  // 重新获取用户信息
+  await userStore.initUserInfo()
+  // 重新获取招聘信息
+  await fetchData()
 })
 </script>
 

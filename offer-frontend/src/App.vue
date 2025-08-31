@@ -132,7 +132,7 @@
         <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <router-view v-slot="{ Component }">
             <transition name="fade" mode="out-in">
-              <component :is="Component" />
+              <component :is="Component" :key="$route.fullPath" />
             </transition>
           </router-view>
         </div>

@@ -374,7 +374,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, onActivated } from 'vue'
 import { userJobApplyApi, type UserJobApplyDTO, type UserJobApplyQueryRequest } from '../api/userJobApply'
 import Message from '../components/Message'
 import Confirm from '../components/Confirm'
@@ -782,6 +782,19 @@ const handleLoginSuccess = () => {
 
 // 页面加载时获取数据（仅在已登录时）
 onMounted(() => {
+  if (userStore.currentUser) {
+    fetchData()
+  }
+})
+
+// 组件激活时重新加载数据
+onActivated(() => {
+  // 重新获取用户信息
+  if (userStore.token && !userStore.currentUser) {
+    userStore.initUserInfo()
+  }
+  
+  // 重新获取投递记录数据
   if (userStore.currentUser) {
     fetchData()
   }
