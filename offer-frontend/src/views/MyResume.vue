@@ -667,8 +667,6 @@ const parsePDF = async (file: File): Promise<string> => {
                 .join(' ')
             fullText += pageText + '\n'
         }
-
-        console.log('提取到的PDF文本:', fullText)
         return fullText.trim()
     } catch (error) {
         console.error('PDF解析失败:', error)
@@ -695,6 +693,7 @@ const parseWord = async (file: File): Promise<string> => {
                     resolve(result.value)
                 })
                 .catch((error: any) => {
+                    console.error('Word解析失败:', error)
                     reject(error)
                 })
         }
@@ -706,7 +705,6 @@ const parseWord = async (file: File): Promise<string> => {
 
 // 通用文档解析函数 - 适用于PDF和Word
 const parseResumeText = async (text: string) => {
-    console.log('开始解析文档文本:', text)
 
     // 特殊处理PDF解析失败的情况
     if (text.includes('PDF解析失败')) {
@@ -721,9 +719,8 @@ const parseResumeText = async (text: string) => {
         .replace(/([\uff1a:])/g, ':')  // 统一冒号格式
         .trim()
 
-    console.log('预处理后文本长度:', processedText.length)
-    console.log('文本前500字符:', processedText.substring(0, 500))
-    console.log('文本中间500字符:', processedText.substring(Math.max(0, Math.floor(processedText.length / 2) - 250), Math.floor(processedText.length / 2) + 250))
+    // 添加更多调试信息
+    const debugLines = processedText.split('\n');
 
     const extractedData: any = {}
     let extractedCount = 0
@@ -749,7 +746,6 @@ const parseResumeText = async (text: string) => {
                 if (name.length >= 2 && name.length <= 4 && /^[\u4e00-\u9fa5]+$/.test(name)) {
                     extractedData.name = name
                     extractedCount++
-                    console.log('提取姓名:', extractedData.name)
                     break
                 }
             }
@@ -779,7 +775,6 @@ const parseResumeText = async (text: string) => {
                 if (phone.length === 11 && /^1[3-9]\d{9}$/.test(phone)) {
                     extractedData.phone = phone
                     extractedCount++
-                    console.log('提取手机号:', extractedData.phone)
                     break
                 }
             }
@@ -792,7 +787,6 @@ const parseResumeText = async (text: string) => {
         if (emailMatch) {
             extractedData.email = emailMatch[0]
             extractedCount++
-            console.log('提取邮箱:', extractedData.email)
         }
     }
 
@@ -809,7 +803,6 @@ const parseResumeText = async (text: string) => {
             if (match && match[1]) {
                 extractedData.gender = match[1]
                 extractedCount++
-                console.log('提取性别:', extractedData.gender)
                 break
             }
         }
@@ -862,7 +855,6 @@ const parseResumeText = async (text: string) => {
 
                     extractedData.birthday = birthday
                     extractedCount++
-                    console.log('提取出生日期:', extractedData.birthday)
                     break
                 }
             }
@@ -873,24 +865,46 @@ const parseResumeText = async (text: string) => {
     if (!extractedData.education) {
         const educationPatterns = [
             // 格式1: "XX大学 XX专业 本科"
-            /([\u4e00-\u9fa5]{2,8}大学)[\s,\uff0c]*([\u4e00-\u9fa5]{2,8}[\u5de5\u7a0b\u4e13\u4e1a\u7cfb])[\s,\uff0c]*(本科|硕士|博士)/,
+            /([\u4e00-\u9fa5]{2,8}大学)[\s,\uff0c]*([\u4e00-\u9fa5]{2,8}[\u5de5\u7a0b\u4e13\u4e1a\u7cfb\u5b66\u9662])[\s,\uff0c]*(本科|硕士|博士|学士)/,
             // 格式2: "教育背景：XX大学"
-            /教育背景[\s:：]*([\u4e00-\u9fa5]{2,15}大学[^\n]*)/
+            /教育背景[\s:：]*([^。\n]+)/,
+            // 格式3: "学历：XX" 或 "学位：XX"
+            /(学历|学位)[\s:：]*([^。\n]+)/,
+            // 格式4: 包含学校名称的行
+            /([\u4e00-\u9fa5]{2,8}(大学|学院))[^。\n]*/,
+            // 格式5: 包含学历信息的行
+            /[^。\n]*(本科|硕士|博士|学士)[^。\n]*/
         ]
 
         for (const pattern of educationPatterns) {
             const match = processedText.match(pattern)
             if (match) {
-                if (match.length >= 4) {
+                let educationText = '';
+                if (match.length >= 4 && match[1] && match[2] && match[3]) {
                     // 完整格式：学校 专业 学历
-                    extractedData.education = `${match[1]} ${match[2]} ${match[3]}`
-                } else {
+                    educationText = `${match[1]} ${match[2]} ${match[3]}`
+                } else if (match.length >= 2 && match[1]) {
                     // 简单格式：直接使用匹配内容
-                    extractedData.education = match[1]
+                    educationText = match[1]
+                } else if (match[0]) {
+                    // 使用整个匹配
+                    educationText = match[0]
                 }
-                extractedCount++
-                console.log('提取教育背景:', extractedData.education)
-                break
+
+                // 清理教育背景内容
+                if (educationText) {
+                    // 移除标题前缀
+                    educationText = educationText.replace(/^(教育背景|学历|学位)[\s:：]*/i, '').trim()
+                    // 只保留到句号或段落结束的部分
+                    educationText = educationText.split('。')[0].trim()
+
+                    // 进一步清理，确保只包含教育相关信息
+                    if (educationText.length > 2) {
+                        extractedData.education = educationText
+                        extractedCount++
+                        break
+                    }
+                }
             }
         }
     }
@@ -899,18 +913,17 @@ const parseResumeText = async (text: string) => {
 
     // 定义标题到字段的映射关系
     const titleMappings = {
-        'skills': ['专业技能', '技能', '技术技能', '核心技能'],
-        'workExperience': ['工作经验', '工作经历', '职业经历'],
-        'projectExperience': ['项目经历', '项目经验', '项目描述'],
-        'internshipExperience': ['实习经历', '实习经验'],
-        'certificates': ['荣誉证书', '证书', '荣誉奖项', '竞赛奖项', '获奖情况'],
-        'selfEvaluation': ['自我评价', '个人评价', '自我介绍', '个人简介']
+        'skills': ['专业技能', '技能', '技术技能', '核心技能', '专业能力'],
+        'workExperience': ['工作经验', '工作经历', '职业经历', '工作实践', '职场经历'],
+        'projectExperience': ['项目经历', '项目经验', '项目描述', '项目实践', '项目参与'],
+        'internshipExperience': ['实习经历', '实习经验', '实习情况', '实习表现'],
+        'certificates': ['荣誉证书', '证书', '荣誉奖项', '竞赛奖项', '获奖情况', '奖励情况'],
+        'selfEvaluation': ['自我评价', '个人评价', '自我介绍', '个人简介', '个人总结', '自我总结']
     }
 
     // 按行分割文本进行标题匹配
     const lines = processedText.split('\n').map(line => line.trim()).filter(line => line.length > 0)
 
-    console.log('总行数:', lines.length)
 
     // 遍历每一行，寻找标题格式
     for (let i = 0; i < lines.length; i++) {
@@ -923,18 +936,71 @@ const parseResumeText = async (text: string) => {
                 if (line.includes(title + ':') || line.includes(title + '：') ||
                     line === title || (line.startsWith(title) && line.length <= title.length + 3)) {
 
-                    console.log(`找到标题匹配: ${title} -> ${fieldName}`)
 
                     // 提取该标题下的内容
                     const content = extractContentUnderTitle(lines, i, title)
                     if (content && content.trim().length > 0) {
                         extractedData[fieldName] = content.trim()
                         extractedCount++
-                        console.log(`提取${fieldName}内容:`, content.substring(0, 100) + '...')
                     }
                     break
                 }
             }
+        }
+    }
+
+    // === 第二部分半：特殊规则处理 ===
+
+    // 如果没有通过标题提取到专业技能，则使用关键词规则提取
+    if (!extractedData.skills) {
+        // 查找包含"熟悉"、"熟练"、"了解"、"掌握"的内容作为专业技能
+        const skillsLines: string[] = []
+
+        lines.forEach(line => {
+            // 使用更精确的正则表达式匹配技能相关的内容
+            // 匹配"熟悉"、"熟练"、"了解"、"掌握"前后到句号的内容
+            const skillPatterns = [
+                /([^。]*熟悉[^。]*)/g,
+                /([^。]*熟练[^。]*)/g,
+                /([^。]*了解[^。]*)/g,
+                /([^。]*掌握[^。]*)/g
+            ];
+
+            for (const pattern of skillPatterns) {
+                const skillMatches = line.match(pattern);
+                if (skillMatches && skillMatches.length > 0) {
+                    skillsLines.push(...skillMatches);
+                }
+            }
+        });
+
+        if (skillsLines.length > 0) {
+            // 去重并限制数量，避免过多重复内容
+            const uniqueSkills = Array.from(new Set(skillsLines)).slice(0, 10);
+            extractedData.skills = uniqueSkills.join('\n');
+            extractedCount++;
+        }
+    }
+
+    // 如果没有通过标题提取到荣誉证书，则使用关键词规则提取
+    if (!extractedData.certificates) {
+        // 查找包含"奖"字的内容作为荣誉证书
+        const certificateLines: string[] = [];
+
+        lines.forEach(line => {
+            // 使用更精确的正则表达式匹配奖项相关的内容
+            // 匹配包含"奖"字的短语，前后到句号为止
+            const awardMatches = line.match(/([^。]*奖[^。]*)/g);
+            if (awardMatches && awardMatches.length > 0) {
+                certificateLines.push(...awardMatches);
+            }
+        });
+
+        if (certificateLines.length > 0) {
+            // 去重并限制数量，避免过多重复内容
+            const uniqueCertificates = Array.from(new Set(certificateLines)).slice(0, 10);
+            extractedData.certificates = uniqueCertificates.join('\n');
+            extractedCount++;
         }
     }
 
@@ -946,7 +1012,8 @@ const parseResumeText = async (text: string) => {
         // 如果标题行本身包含内容（如"专业技能：Java, Python"），先提取这部分
         const titleWithContent = currentLine.replace(new RegExp(`${title}[\\s:：]*`), '')
         if (titleWithContent.trim().length > 0) {
-            content += titleWithContent.trim() + '\n'
+            // 只保留到句号为止的内容
+            content += titleWithContent.split('。')[0].trim() + '\n'
         }
 
         // 继续读取后续行，直到遇到下一个标题或文档结束
@@ -969,9 +1036,14 @@ const parseResumeText = async (text: string) => {
             // 如果遇到新标题，停止提取
             if (isNewTitle) break
 
-            // 添加内容行
+            // 添加内容行，但只保留到句号为止
             if (nextLine.trim().length > 0) {
-                content += nextLine + '\n'
+                content += nextLine.split('。')[0] + '\n'
+            }
+
+            // 如果当前行包含句号，停止提取
+            if (nextLine.includes('。')) {
+                break
             }
         }
 
@@ -980,18 +1052,93 @@ const parseResumeText = async (text: string) => {
 
     // === 第三部分：填入表单 ===
 
-    console.log('提取完成，开始填入表单。提取到的数据:', extractedData)
     let filledCount = 0
+    // 注意：extractedCount 已经在前面声明并使用了
 
+    // 如果没有提取到项目经历，则将未匹配到的大段文本放入项目经历
+    if (!extractedData.projectExperience) {
+        // 收集未被匹配到的文本行
+        const unmatchedLines: string[] = []
+
+        // 过滤出较长的文本行（超过一定长度的行）
+        lines.forEach(line => {
+            // 排除只包含标题关键词的行
+            const isTitleLine = Object.values(titleMappings).some(titles =>
+                titles.some(title => line.includes(title))
+            )
+
+            // 排除只包含关键词的行
+            const isKeywordLine = line.includes('熟悉') || line.includes('熟练') ||
+                line.includes('了解') || line.includes('掌握') ||
+                line.includes('奖')
+
+            // 排除只包含教育背景关键词的行
+            const isEducationLine = line.includes('大学') || line.includes('学院') ||
+                line.includes('本科') || line.includes('硕士') ||
+                line.includes('博士') || line.includes('学士') ||
+                line.includes('教育背景') || line.includes('学历') ||
+                line.includes('学位')
+
+            // 排除只包含个人信息的行
+            const isPersonalInfoLine = line.includes('姓名') || line.includes('电话') ||
+                line.includes('手机') || line.includes('邮箱') ||
+                line.includes('性别') || line.includes('出生') ||
+                line.includes('地址') || line.includes('微信')
+
+            // 排除只包含日期格式的行
+            const isDateLine = /^\d{4}[-/年]\d{1,2}[-/月]\d{1,2}/.test(line)
+
+            // 如果不是标题行且不是关键词行，且长度足够长，则认为是未匹配的大段文本
+            if (!isTitleLine && !isKeywordLine && !isEducationLine &&
+                !isPersonalInfoLine && !isDateLine && line.length > 20) {
+                unmatchedLines.push(line)
+            }
+        })
+
+        // 如果有未匹配的文本，将其放入项目经历
+        if (unmatchedLines.length > 0) {
+            // 限制数量，避免过多内容
+            const limitedLines = unmatchedLines.slice(0, 20)
+            extractedData.projectExperience = limitedLines.join('\n')
+            extractedCount++
+        }
+    }
+
+    // 如果没有提取到工作经验，也尝试从未匹配文本中提取
+    if (!extractedData.workExperience && extractedData.projectExperience) {
+        // 将项目经历的一部分也放入工作经验
+        const projectLines = extractedData.projectExperience.split('\n')
+        if (projectLines.length > 3) {
+            // 取前几行放入工作经验
+            const workLines = projectLines.slice(0, Math.min(3, Math.floor(projectLines.length / 3)))
+            extractedData.workExperience = workLines.join('\n')
+            extractedCount++
+        }
+    }
+
+    // 如果没有提取到实习经历，也尝试从未匹配文本中提取
+    if (!extractedData.internshipExperience && extractedData.projectExperience) {
+        // 将项目经历的另一部分放入实习经历
+        const projectLines = extractedData.projectExperience.split('\n')
+        if (projectLines.length > 3) {
+            // 取中间部分放入实习经历
+            const startIndex = Math.min(2, Math.floor(projectLines.length / 3))
+            const endIndex = Math.min(startIndex + 3, projectLines.length)
+            const internshipLines = projectLines.slice(startIndex, endIndex)
+            if (internshipLines.length > 0) {
+                extractedData.internshipExperience = internshipLines.join('\n')
+                extractedCount++
+            }
+        }
+    }
+
+    // 处理填入表单的逻辑，确保所有字段都能被填入
     Object.keys(extractedData).forEach(key => {
         if (extractedData[key] && (resumeForm as any)[key] !== undefined) {
             // 只填入空字段，保留用户已填写的内容
             if (!(resumeForm as any)[key] || (resumeForm as any)[key].trim() === '') {
                 (resumeForm as any)[key] = extractedData[key]
                 filledCount++
-                console.log(`成功填入字段 ${key}`)
-            } else {
-                console.log(`跳过字段 ${key}，已有内容`)
             }
         }
     })
@@ -1003,7 +1150,6 @@ const parseResumeText = async (text: string) => {
             if (!resumeForm.name || resumeForm.name.trim() === '') {
                 resumeForm.name = fileName
                 filledCount++
-                console.log('从文件名提取姓名:', fileName)
             }
         }
     }
