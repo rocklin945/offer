@@ -555,9 +555,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { useUserStore } from '@/stores/user'
-import LoginModal from '@/components/LoginModal.vue'
-import { addResume, getMyResume, updateResume, deleteResume } from '@/api/resume'
-import type { Resume, ResumeAddRequest, ResumeUpdateRequest } from '@/api/resumeTypes'
+import type { Resume, ResumeAddRequest, ResumeUpdateRequest } from '@/api/types'
 import type { DeleteRequest } from '@/api/types'
 import Message from '@/components/Message'
 import Confirm from '@/components/Confirm'
@@ -567,7 +565,24 @@ import pdfjsWorker from 'pdfjs-dist/build/pdf.worker?url'
 import mammoth from 'mammoth'
 
 // 配置PDF.js worker
-GlobalWorkerOptions.workerSrc = pdfjsWorker
+// 在生产环境中使用动态导入的worker路径
+if (import.meta.env.PROD) {
+  // 使用动态路径，避免硬编码文件名
+  // 为了处理MIME类型问题，我们使用一个更兼容的配置
+  try {
+    // 尝试设置worker源
+    GlobalWorkerOptions.workerSrc = pdfjsWorker
+  } catch (e) {
+    console.warn('Failed to set PDF worker source, using fallback:', e)
+    // 如果设置失败，使用空字符串让pdfjs使用fake worker
+    GlobalWorkerOptions.workerSrc = ''
+  }
+} else {
+  GlobalWorkerOptions.workerSrc = pdfjsWorker
+}
+
+// 添加额外的配置以处理MIME类型问题
+GlobalWorkerOptions.workerPort = null // 确保不使用worker port
 
 const userStore = useUserStore()
 const showLoginModal = ref(false)
@@ -651,36 +666,98 @@ const handleFileUpload = async (event: Event) => {
 
 // 解析PDF文件（使用PDF.js）
 const parsePDF = async (file: File): Promise<string> => {
+  try {
+    const arrayBuffer = await file.arrayBuffer()
+    const pdf = await getDocument({ 
+      data: arrayBuffer,
+      // 添加更多配置以提高兼容性
+      disableWorker: false,     // 尝试使用worker
+      disableStream: true       // 禁用流式处理以提高稳定性
+    }).promise
+
+    let fullText = ''
+    const numPages = pdf.numPages
+
+    // 逐页提取文本
+    for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+      const page = await pdf.getPage(pageNum)
+      const textContent = await page.getTextContent()
+      const pageText = textContent.items
+        .map((item: any) => item.str)
+        .join(' ')
+      fullText += pageText + '\n'
+    }
+    return fullText.trim()
+  } catch (error) {
+    console.error('PDF解析失败:', error)
+    
+    // 尝试使用不同的配置重新解析
     try {
+      // 使用不依赖worker的配置重新尝试
+      const arrayBuffer = await file.arrayBuffer()
+      const pdf = await getDocument({ 
+        data: arrayBuffer,
+        disableWorker: true,  // 禁用worker，使用主线程处理
+        disableStream: true   // 禁用流式处理
+      }).promise
+
+      let fullText = ''
+      const numPages = pdf.numPages
+
+      // 逐页提取文本
+      for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+        const page = await pdf.getPage(pageNum)
+        const textContent = await page.getTextContent()
+        const pageText = textContent.items
+          .map((item: any) => item.str)
+          .join(' ')
+        fullText += pageText + '\n'
+      }
+      console.warn('PDF解析使用降级方案成功')
+      return fullText.trim()
+    } catch (fallbackError) {
+      console.error('PDF解析降级方案也失败了:', fallbackError)
+      
+      // 最后的降级方案：尝试使用不同的PDF.js版本
+      try {
+        // 如果上面的方法都失败了，尝试使用更简单的文本提取方法
         const arrayBuffer = await file.arrayBuffer()
-        const pdf = await getDocument({ data: arrayBuffer }).promise
+        const pdf = await getDocument({ 
+          data: arrayBuffer,
+          disableWorker: true,
+          disableStream: true,
+          disableAutoFetch: true  // 禁用自动获取
+        }).promise
 
         let fullText = ''
-        const numPages = pdf.numPages
+        const numPages = Math.min(pdf.numPages, 10) // 限制页数以提高性能
 
         // 逐页提取文本
         for (let pageNum = 1; pageNum <= numPages; pageNum++) {
-            const page = await pdf.getPage(pageNum)
-            const textContent = await page.getTextContent()
-            const pageText = textContent.items
-                .map((item: any) => item.str)
-                .join(' ')
-            fullText += pageText + '\n'
+          const page = await pdf.getPage(pageNum)
+          const textContent = await page.getTextContent()
+          const pageText = textContent.items
+            .map((item: any) => item.str)
+            .join(' ')
+          fullText += pageText + '\n'
         }
+        console.warn('PDF解析使用最终降级方案成功')
         return fullText.trim()
-    } catch (error) {
-        console.error('PDF解析失败:', error)
-
+      } catch (finalFallbackError) {
+        console.error('PDF解析最终降级方案也失败了:', finalFallbackError)
+        
         // 如果PDF解析失败，尝试从文件名提取信息
         const fileName = file.name.replace(/\.[^/.]+$/, '')
         const nameMatch = fileName.match(/[\u4e00-\u9fa5]{2,4}/)
 
         if (nameMatch) {
-            return `PDF解析失败，但从文件名检测到可能的姓名：${nameMatch[0]}\n请手动填写其他简历信息`
+          return `PDF解析失败，但从文件名检测到可能的姓名：${nameMatch[0]}\n请手动填写其他简历信息`
         }
 
         throw new Error('PDF文件解析失败，请检查文件格式或尝试转换为Word格式')
+      }
     }
+  }
 }
 
 // 解析Word文件
