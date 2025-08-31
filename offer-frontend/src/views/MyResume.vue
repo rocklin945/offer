@@ -71,12 +71,12 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">姓名 <span
                                 class="text-red-500">*</span></label>
-                        <div class="relative">
+                        <div class="flex items-center space-x-2">
                             <input v-model="resumeForm.name" type="text" required placeholder="请输入您的姓名"
-                                class="input-field pr-10" />
-                            <button v-if="resumeForm.name" @click="copyToClipboard(resumeForm.name, '姓名')"
-                                class="absolute right-2 top-1/2 transform -translate-y-1/2 copy-btn-small">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="input-field flex-1" />
+                            <button @click="copyToClipboard(resumeForm.name, '姓名')"
+                                class="resume-copy-btn">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
                                     </path>
@@ -86,12 +86,12 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">手机号</label>
-                        <div class="relative">
+                        <div class="flex items-center space-x-2">
                             <input v-model="resumeForm.phone" type="tel" placeholder="请输入手机号"
-                                class="input-field pr-10" />
-                            <button v-if="resumeForm.phone" @click="copyToClipboard(resumeForm.phone, '手机号')"
-                                class="absolute right-2 top-1/2 transform -translate-y-1/2 copy-btn-small">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="input-field flex-1" />
+                            <button @click="copyToClipboard(resumeForm.phone, '手机号')"
+                                class="resume-copy-btn">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
                                     </path>
@@ -101,12 +101,12 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">微信号</label>
-                        <div class="relative">
+                        <div class="flex items-center space-x-2">
                             <input v-model="resumeForm.wechat" type="text" placeholder="请输入微信号"
-                                class="input-field pr-10" />
-                            <button v-if="resumeForm.wechat" @click="copyToClipboard(resumeForm.wechat, '微信号')"
-                                class="absolute right-2 top-1/2 transform -translate-y-1/2 copy-btn-small">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="input-field flex-1" />
+                            <button @click="copyToClipboard(resumeForm.wechat, '微信号')"
+                                class="resume-copy-btn">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
                                     </path>
@@ -116,12 +116,12 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
-                        <div class="relative">
+                        <div class="flex items-center space-x-2">
                             <input v-model="resumeForm.email" type="email" placeholder="请输入邮箱"
-                                class="input-field pr-10" />
-                            <button v-if="resumeForm.email" @click="copyToClipboard(resumeForm.email, '邮箱')"
-                                class="absolute right-2 top-1/2 transform -translate-y-1/2 copy-btn-small">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="input-field flex-1" />
+                            <button @click="copyToClipboard(resumeForm.email, '邮箱')"
+                                class="resume-copy-btn">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
                                     </path>
@@ -131,24 +131,44 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">性别</label>
-                        <select v-model="resumeForm.gender" class="input-field">
-                            <option value="">请选择</option>
-                            <option value="男">男</option>
-                            <option value="女">女</option>
-                        </select>
+                        <div class="flex items-center space-x-2">
+                            <select v-model="resumeForm.gender" class="input-field flex-1">
+                                <option value="">请选择</option>
+                                <option value="男">男</option>
+                                <option value="女">女</option>
+                            </select>
+                            <button @click="copyToClipboard(resumeForm.gender, '性别')"
+                                class="resume-copy-btn">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                    </path>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">出生日期</label>
-                        <input v-model="resumeForm.birthday" type="date" class="input-field" />
+                        <div class="flex items-center space-x-2">
+                            <input v-model="resumeForm.birthday" type="date" class="input-field flex-1" />
+                            <button @click="copyToClipboard(resumeForm.birthday, '出生日期')"
+                                class="resume-copy-btn">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                    </path>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                     <div class="md:col-span-2 lg:col-span-3">
                         <label class="block text-sm font-medium text-gray-700 mb-1">地址</label>
-                        <div class="relative">
+                        <div class="flex items-center space-x-2">
                             <input v-model="resumeForm.address" type="text" placeholder="请输入您的地址"
-                                class="input-field pr-10" />
-                            <button v-if="resumeForm.address" @click="copyToClipboard(resumeForm.address, '地址')"
-                                class="absolute right-2 top-1/2 transform -translate-y-1/2 copy-btn-small">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="input-field flex-1" />
+                            <button @click="copyToClipboard(resumeForm.address, '地址')"
+                                class="resume-copy-btn">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
                                     </path>
@@ -160,14 +180,14 @@
 
                 <!-- 详细信息 -->
                 <div class="space-y-4">
-                    <div class="relative">
+                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">教育背景</label>
-                        <div class="relative">
+                        <div class="flex space-x-2">
                             <textarea v-model="resumeForm.education" rows="4" placeholder="请填写您的教育背景，如：学校、专业、时间等"
-                                class="input-field resize-none pr-10"></textarea>
-                            <button v-if="resumeForm.education" @click="copyToClipboard(resumeForm.education, '教育背景')"
-                                class="absolute right-2 top-2 copy-btn-small">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="input-field resize-none flex-1"></textarea>
+                            <button @click="copyToClipboard(resumeForm.education, '教育背景')"
+                                class="resume-copy-btn flex-shrink-0 self-start">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
                                     </path>
@@ -175,14 +195,14 @@
                             </button>
                         </div>
                     </div>
-                    <div class="relative">
+                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">专业技能</label>
-                        <div class="relative">
+                        <div class="flex space-x-2">
                             <textarea v-model="resumeForm.skills" rows="4" placeholder="请填写您的专业技能"
-                                class="input-field resize-none pr-10"></textarea>
-                            <button v-if="resumeForm.skills" @click="copyToClipboard(resumeForm.skills, '专业技能')"
-                                class="absolute right-2 top-2 copy-btn-small">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="input-field resize-none flex-1"></textarea>
+                            <button @click="copyToClipboard(resumeForm.skills, '专业技能')"
+                                class="resume-copy-btn flex-shrink-0 self-start">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
                                     </path>
@@ -190,15 +210,14 @@
                             </button>
                         </div>
                     </div>
-                    <div class="relative">
+                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">工作经验</label>
-                        <div class="relative">
+                        <div class="flex space-x-2">
                             <textarea v-model="resumeForm.workExperience" rows="4" placeholder="请填写您的工作经验"
-                                class="input-field resize-none pr-10"></textarea>
-                            <button v-if="resumeForm.workExperience"
-                                @click="copyToClipboard(resumeForm.workExperience, '工作经验')"
-                                class="absolute right-2 top-2 copy-btn-small">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="input-field resize-none flex-1"></textarea>
+                            <button @click="copyToClipboard(resumeForm.workExperience, '工作经验')"
+                                class="resume-copy-btn flex-shrink-0 self-start">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
                                     </path>
@@ -206,15 +225,14 @@
                             </button>
                         </div>
                     </div>
-                    <div class="relative">
+                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">项目经历</label>
-                        <div class="relative">
+                        <div class="flex space-x-2">
                             <textarea v-model="resumeForm.projectExperience" rows="4" placeholder="请填写您的项目经历"
-                                class="input-field resize-none pr-10"></textarea>
-                            <button v-if="resumeForm.projectExperience"
-                                @click="copyToClipboard(resumeForm.projectExperience, '项目经历')"
-                                class="absolute right-2 top-2 copy-btn-small">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="input-field resize-none flex-1"></textarea>
+                            <button @click="copyToClipboard(resumeForm.projectExperience, '项目经历')"
+                                class="resume-copy-btn flex-shrink-0 self-start">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
                                     </path>
@@ -222,15 +240,14 @@
                             </button>
                         </div>
                     </div>
-                    <div class="relative">
+                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">实习经历</label>
-                        <div class="relative">
+                        <div class="flex space-x-2">
                             <textarea v-model="resumeForm.internshipExperience" rows="4" placeholder="请填写您的实习经历"
-                                class="input-field resize-none pr-10"></textarea>
-                            <button v-if="resumeForm.internshipExperience"
-                                @click="copyToClipboard(resumeForm.internshipExperience, '实习经历')"
-                                class="absolute right-2 top-2 copy-btn-small">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="input-field resize-none flex-1"></textarea>
+                            <button @click="copyToClipboard(resumeForm.internshipExperience, '实习经历')"
+                                class="resume-copy-btn flex-shrink-0 self-start">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
                                     </path>
@@ -238,15 +255,14 @@
                             </button>
                         </div>
                     </div>
-                    <div class="relative">
+                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">荣誉证书</label>
-                        <div class="relative">
+                        <div class="flex space-x-2">
                             <textarea v-model="resumeForm.certificates" rows="4" placeholder="请填写您的荣誉证书"
-                                class="input-field resize-none pr-10"></textarea>
-                            <button v-if="resumeForm.certificates"
-                                @click="copyToClipboard(resumeForm.certificates, '荣誉证书')"
-                                class="absolute right-2 top-2 copy-btn-small">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="input-field resize-none flex-1"></textarea>
+                            <button @click="copyToClipboard(resumeForm.certificates, '荣誉证书')"
+                                class="resume-copy-btn flex-shrink-0 self-start">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
                                     </path>
@@ -254,15 +270,14 @@
                             </button>
                         </div>
                     </div>
-                    <div class="relative">
+                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">自我评价</label>
-                        <div class="relative">
+                        <div class="flex space-x-2">
                             <textarea v-model="resumeForm.selfEvaluation" rows="4" placeholder="请填写您的自我评价"
-                                class="input-field resize-none pr-10"></textarea>
-                            <button v-if="resumeForm.selfEvaluation"
-                                @click="copyToClipboard(resumeForm.selfEvaluation, '自我评价')"
-                                class="absolute right-2 top-2 copy-btn-small">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="input-field resize-none flex-1"></textarea>
+                            <button @click="copyToClipboard(resumeForm.selfEvaluation, '自我评价')"
+                                class="resume-copy-btn flex-shrink-0 self-start">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
                                     </path>
@@ -676,6 +691,12 @@ const clearResume = () => {
 
 // 复制功能
 const copyToClipboard = async (text: string, fieldName: string) => {
+    // 如果内容为空，提示用户
+    if (!text || text.trim() === '') {
+        Message.warning(`${fieldName}内容为空，无法复制`)
+        return
+    }
+    
     try {
         await navigator.clipboard.writeText(text)
         Message.success(`${fieldName}已复制到剪贴板`)
@@ -805,6 +826,10 @@ onMounted(() => {
 
 .copy-btn {
     @apply p-1 bg-gray-100 text-gray-500 rounded hover:bg-gray-200 hover:text-gray-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.resume-copy-btn {
+    @apply px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center;
 }
 
 .copy-btn-small {
