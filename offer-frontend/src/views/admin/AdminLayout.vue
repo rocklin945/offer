@@ -25,7 +25,7 @@
       <nav class="flex-1 py-4">
         <div class="space-y-1">
           <router-link v-for="item in menuItems" :key="item.name" :to="item.path" :class="[
-            'flex items-center px-4 py-3 text-sm font-medium transition-all duration-300 group relative',
+            'admin-menu-item flex items-center px-4 py-3 text-sm font-medium transition-all duration-300 group relative',
             $route.path === item.path || $route.path.startsWith(item.path + '/')
               ? 'bg-blue-600 text-white'
               : 'text-gray-300 hover:bg-gray-700 hover:text-white'
@@ -225,5 +225,16 @@ onMounted(() => {
 .slide-leave-from {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* 确保菜单项的样式优先级 */
+.admin-menu-item.router-link-active {
+  background-color: #2563eb !important;
+  color: white !important;
+}
+
+.admin-menu-item:hover {
+  background-color: #527bd4 !important;
+  color: white !important;
 }
 </style>

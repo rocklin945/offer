@@ -59,6 +59,14 @@
                     <button v-if="hasResumeData" @click="clearResume" class="btn-secondary">
                         清空简历
                     </button>
+                    <button v-if="hasResumeData && storageMode === 'cloud' && cloudResume" @click="clearCloudResume" class="px-4 py-2 bg-red-400 text-white rounded-md hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 flex items-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1H8a1 1 0 00-1 1v3M4 7h16">
+                            </path>
+                        </svg>
+                        <span>清除云端数据</span>
+                    </button>
                     <button @click="saveResume" :disabled="isSaving" class="btn-primary">
                         {{ isSaving ? '保存中...' : '保存简历' }}
                     </button>
@@ -525,9 +533,11 @@
 import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { useUserStore } from '@/stores/user'
 import LoginModal from '@/components/LoginModal.vue'
-import { addResume, getMyResume, updateResume } from '@/api/resume'
+import { addResume, getMyResume, updateResume, deleteResume } from '@/api/resume'
 import type { Resume, ResumeAddRequest, ResumeUpdateRequest } from '@/api/resumeTypes'
+import type { DeleteRequest } from '@/api/types'
 import Message from '@/components/Message'
+import Confirm from '@/components/Confirm'
 
 const userStore = useUserStore()
 const showLoginModal = ref(false)
@@ -676,8 +686,20 @@ const saveResume = async () => {
 }
 
 // 清空简历
-const clearResume = () => {
-    if (confirm('确定要清空所有简历数据吗？此操作不可恢复。')) {
+const clearResume = async () => {
+    const confirmMessage = storageMode.value === 'local' 
+        ? '确定要清空所有简历数据吗？此操作不可恢复。' 
+        : '确定要清空表单中的简历数据吗？这不会删除云端已保存的数据。'
+    
+    const confirmed = await Confirm.show({
+        title: '清空简历',
+        message: confirmMessage,
+        type: 'warning',
+        confirmText: '确定清空',
+        cancelText: '取消'
+    })
+    
+    if (confirmed) {
         Object.keys(resumeForm).forEach(key => {
             (resumeForm as any)[key] = ''
         })
@@ -685,6 +707,44 @@ const clearResume = () => {
         if (storageMode.value === 'local') {
             clearLocalStorage()
             Message.success('简历数据已清空')
+        } else {
+            Message.success('表单数据已清空')
+        }
+    }
+}
+
+// 清除云端数据
+const clearCloudResume = async () => {
+    if (!cloudResume.value) {
+        Message.warning('没有云端简历数据可清除')
+        return
+    }
+
+    const confirmed = await Confirm.show({
+        title: '删除云端数据',
+        message: '确定要永久删除云端简历数据吗？此操作不可恢复。',
+        type: 'danger',
+        confirmText: '确定删除',
+        cancelText: '取消'
+    })
+
+    if (confirmed) {
+        try {
+            const response = await deleteResume({ id: cloudResume.value.id })
+            if (response.statusCode === 200) {
+                // 清空表单数据
+                Object.keys(resumeForm).forEach(key => {
+                    (resumeForm as any)[key] = ''
+                })
+                // 清空云端简历引用
+                cloudResume.value = null
+                Message.success('云端简历数据已删除')
+            } else {
+                Message.error(response.message || '删除失败')
+            }
+        } catch (error: any) {
+            console.error('删除云端简历失败:', error)
+            Message.error(error.message || '删除失败，请重试')
         }
     }
 }
