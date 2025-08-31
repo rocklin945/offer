@@ -8,29 +8,29 @@
     <!-- 前台页面布局 -->
     <div v-else class="min-h-screen flex flex-col">
       <!-- 全局顶部导航 -->
-      <header class="bg-white shadow-sm border-b border-gray-200">
+      <header class="bg-white shadow-sm border-b border-gray-200 relative z-50">
         <div class="flex items-center justify-between h-16 px-3 sm:px-8">
           <div class="flex items-center min-w-0 flex-1">
             <!-- 系统标题 -->
             <h1 class="text-lg sm:text-xl font-semibold text-gray-900 mr-2 sm:mr-4 flex-shrink-0">MyOffer</h1>
 
-            <!-- 导航 - 在小屏幕下限制宽度 -->
-            <nav class="flex flex-nowrap space-x-1 sm:space-x-8 min-w-0 overflow-hidden">
+            <!-- 导航 - 优化移动端布局 -->
+            <nav class="flex flex-nowrap space-x-1 sm:space-x-8 min-w-0 overflow-x-auto relative z-50">
               <router-link to="/"
-                class="text-gray-500 hover:text-gray-700 px-1 py-1 text-sm sm:px-3 sm:py-2 sm:text-sm rounded-md font-medium transition-colors whitespace-nowrap flex-shrink-0"
-                active-class="text-primary-600 bg-primary-50">
+                class="hover:text-gray-700 px-1 py-1 text-sm sm:px-3 sm:py-2 sm:text-sm rounded-md font-medium transition-colors whitespace-nowrap flex-shrink-0"
+                :style="getNavStyle('/')">
                 <span class="hidden sm:inline">招聘列表</span>
                 <span class="sm:hidden">招聘列表</span>
               </router-link>
               <router-link to="/my-apply"
-                class="text-gray-500 hover:text-gray-700 px-1 py-1 text-sm sm:px-3 sm:py-2 sm:text-sm rounded-md font-medium transition-colors whitespace-nowrap flex-shrink-0"
-                active-class="text-primary-600 bg-primary-50">
+                class="hover:text-gray-700 px-1 py-1 text-sm sm:px-3 sm:py-2 sm:text-sm rounded-md font-medium transition-colors whitespace-nowrap flex-shrink-0"
+                :style="getNavStyle('/my-apply')">
                 <span class="hidden sm:inline">我的投递记录</span>
-                <span class="sm:hidden">我的投递记录</span>
+                <span class="sm:hidden">投递记录</span>
               </router-link>
               <router-link to="/my-resume"
-                class="text-gray-500 hover:text-gray-700 px-1 py-1 text-sm sm:px-3 sm:py-2 sm:text-sm rounded-md font-medium transition-colors whitespace-nowrap flex-shrink-0"
-                active-class="text-primary-600 bg-primary-50">
+                class="hover:text-gray-700 px-1 py-1 text-sm sm:px-3 sm:py-2 sm:text-sm rounded-md font-medium transition-colors whitespace-nowrap flex-shrink-0"
+                :style="getNavStyle('/my-resume')">
                 <span class="hidden sm:inline">个人简历</span>
                 <span class="sm:hidden">个人简历</span>
               </router-link>
@@ -49,7 +49,7 @@
           <div class="relative flex-shrink-0">
             <!-- 移动端汉堡菜单（已登录） -->
             <div v-if="userStore.currentUser" class="sm:hidden">
-              <button @click="showMobileMenu = !showMobileMenu"
+              <button @click="showMobileMenu = !showMobileMenu" data-menu-button
                 class="p-2 rounded-md border border-gray-300 hover:bg-gray-50">
                 <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
@@ -57,11 +57,9 @@
                 </svg>
               </button>
 
-              <!-- 透明遮罩层 -->
-              <div v-if="showMobileMenu" class="fixed inset-0 z-40" @click="showMobileMenu = false"></div>
-
-              <div v-if="showMobileMenu"
-                class="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+              <div v-if="showMobileMenu" data-menu-container
+                class="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-40"
+                @click.stop>
                 <div class="px-4 py-3 border-b">
                   <div class="flex items-center space-x-2">
                     <img :src="userStore.currentUser.userAvatar" alt="用户头像" class="w-6 h-6 rounded-full" />
@@ -69,10 +67,6 @@
                   </div>
                 </div>
                 <div class="py-1">
-                  <router-link to="/my-resume" @click="showMobileMenu = false"
-                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    📜 个人简历
-                  </router-link>
                   <router-link to="/become-member" @click="showMobileMenu = false"
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                     {{ userStore.currentUser.userRole === 1 ? '成为会员 ⭐' : '会员中心 💎' }}
@@ -163,7 +157,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, watch } from 'vue'
+import { computed, ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from './stores/user'
 import LoginModal from './components/LoginModal.vue'
@@ -184,6 +178,43 @@ const isAdminRoute = computed(() => {
 const handleLogout = () => {
   userStore.userLogout()
 }
+
+// 获取导航样式（使用内联样式强制覆盖）
+const getNavStyle = (path: string) => {
+  const isActive = route.path === path
+  return {
+    color: isActive ? '#2563eb' : '#6b7280',
+    backgroundColor: isActive ? '#eff6ff' : 'transparent'
+  }
+}
+
+// 点击外部关闭菜单
+const handleClickOutside = (event: Event) => {
+  const target = event.target as Element
+  const menuButton = document.querySelector('[data-menu-button]')
+  const menuContainer = document.querySelector('[data-menu-container]')
+
+  if (showMobileMenu.value &&
+    !menuButton?.contains(target) &&
+    !menuContainer?.contains(target)) {
+    showMobileMenu.value = false
+  }
+}
+
+// 监听点击事件
+onMounted(async () => {
+  document.addEventListener('click', handleClickOutside)
+
+  if (userStore.token) {
+    await userStore.initUserInfo()
+  }
+  // 检查是否需要显示首页弹窗
+  checkShowHomeModal()
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 
 // 检查是否显示首页弹窗
 const checkShowHomeModal = () => {
@@ -217,19 +248,19 @@ const closeHomeModal = () => {
   showHomeModal.value = false
 }
 
-// 监听路由变化
+// 监听路由变化并强制刷新
 watch(() => route.path, () => {
   checkShowHomeModal()
+  // 强制触发重渲染，确保active-class正确应用
+  nextTick(() => {
+    // 触发DOM更新
+    const activeLinks = document.querySelectorAll('.router-link-active')
+    activeLinks.forEach(link => {
+      link.classList.remove('text-gray-500')
+      link.classList.add('text-primary-600', 'bg-primary-50')
+    })
+  })
 }, { immediate: true })
-
-// 页面加载时尝试获取用户信息
-onMounted(async () => {
-  if (userStore.token) {
-    await userStore.initUserInfo()
-  }
-  // 检查是否需要显示首页弹窗
-  checkShowHomeModal()
-})
 </script>
 
 <style scoped>
@@ -253,5 +284,19 @@ onMounted(async () => {
 .fade-leave-from {
   opacity: 1;
   transform: translateX(0);
+}
+
+/* 强制应用活跃状态样式 */
+.router-link-active {
+  color: #2563eb !important;
+  background-color: #eff6ff !important;
+}
+
+/* 确保在移动端也生效 */
+@media (max-width: 640px) {
+  .router-link-active {
+    color: #2563eb !important;
+    background-color: #eff6ff !important;
+  }
 }
 </style>
