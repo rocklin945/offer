@@ -793,7 +793,7 @@ onActivated(() => {
   if (userStore.token && !userStore.currentUser) {
     userStore.initUserInfo()
   }
-  
+
   // 重新获取投递记录数据
   if (userStore.currentUser) {
     fetchData()

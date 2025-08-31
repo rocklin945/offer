@@ -565,6 +565,8 @@ import pdfjsWorker from 'pdfjs-dist/build/pdf.worker?url'
 import mammoth from 'mammoth'
 // 导入简历API
 import { getMyResume, addResume, updateResume, deleteResume } from '@/api/resume'
+// 导入登录模态框组件
+import LoginModal from '@/components/LoginModal.vue'
 
 // 配置PDF.js worker
 // 在生产环境中使用动态导入的worker路径
@@ -791,12 +793,28 @@ const parseResumeText = async (text: string) => {
         return
     }
 
-    // 文本预处理：统一格式，去除多余空格
-    const processedText = text
+    // 文本预处理：统一格式，去除多余空格和句号
+    let processedText = text
         .replace(/\r\n/g, '\n')  // 统一换行符
         .replace(/\s{2,}/g, ' ')  // 多个空格替换为单个空格
         .replace(/([\uff1a:])/g, ':')  // 统一冒号格式
+        .replace(/(\s*。\s*){2,}/g, '。')  // 多个连续句号替换为单个句号
+        .replace(/^\s*。\s*$/gm, '')  // 移除只包含句号的行
+        .replace(/(\s*。\s*){2,}/g, '。')  // 再次处理可能残留的多个句号
+        .replace(/\s*。\s*$/gm, '')  // 移除行尾的句号和空格
+    
+    // 进一步清理：移除开头和结尾的多余句号
+    processedText = processedText
+        .replace(/^[\s。]+/g, '')  // 移除开头的空格和句号
+        .replace(/[\s。]+$/g, '')  // 移除结尾的空格和句号
         .trim()
+
+    // 添加调试信息：打印未处理的原文本
+    console.log('=== 未处理的原文本 ===')
+    console.log(text)
+    console.log('=== 预处理后的文本 ===')
+    console.log(processedText)
+    console.log('=====================')
 
     // 添加更多调试信息
     const debugLines = processedText.split('\n');
@@ -1000,6 +1018,13 @@ const parseResumeText = async (text: string) => {
         'selfEvaluation': ['自我评价', '个人评价', '自我介绍', '个人简介', '个人总结', '自我总结']
     }
 
+    // 确保所有字段都初始化为空字符串，特别是项目经历字段
+    for (const fieldName of Object.keys(titleMappings)) {
+        if (!extractedData[fieldName]) {
+            extractedData[fieldName] = '';
+        }
+    }
+
     // 按行分割文本进行标题匹配
     const lines = processedText.split('\n').map(line => line.trim()).filter(line => line.length > 0)
 
@@ -1134,93 +1159,140 @@ const parseResumeText = async (text: string) => {
     let filledCount = 0
     // 注意：extractedCount 已经在前面声明并使用了
 
-    // 如果没有提取到项目经历，则将未匹配到的大段文本放入项目经历
-    if (!extractedData.projectExperience) {
-        // 收集未被匹配到的文本行
-        const unmatchedLines: string[] = []
+    // 收集所有已匹配到的内容，用于后续排除
+    const matchedContent: string[] = []
+    Object.values(extractedData).forEach(content => {
+        if (typeof content === 'string' && content.trim()) {
+            // 将内容按行分割并添加到匹配内容数组中
+            content.split('\n').forEach(line => {
+                if (line.trim()) {
+                    matchedContent.push(line.trim())
+                }
+            })
+        }
+    })
 
-        // 过滤出较长的文本行（超过一定长度的行）
-        lines.forEach(line => {
-            // 排除只包含标题关键词的行
-            const isTitleLine = Object.values(titleMappings).some(titles =>
-                titles.some(title => line.includes(title))
-            )
+    // 根据用户需求：对未处理的原文本，剔除这些匹配后填入的文本后直接塞到项目经历
+    // 从原始文本中移除已匹配的内容，剩余部分放入项目经历
+    let remainingText = processedText;
+    
+    // 创建一个副本用于匹配检查，避免修改原始文本
+    let textToCheck = processedText;
+    
+    // 按长度排序，优先移除较长的匹配片段，避免部分移除
+    const sortedMatchedContent = [...matchedContent].sort((a, b) => b.length - a.length);
+    
+    // 移除已匹配的内容
+    sortedMatchedContent.forEach(content => {
+        // 只移除长度大于3的片段，避免移除过短的通用词汇
+        if (content.length > 3) {
+            // 转义特殊字符
+            const escapedContent = content.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(escapedContent, 'g');
+            textToCheck = textToCheck.replace(regex, '');
+        }
+    });
+    
+    // 清理文本：移除多余的空白行和空格
+    remainingText = textToCheck
+        .replace(/\n{3,}/g, '\n\n')  // 多个换行符合并为两个
+        .replace(/^\s+|\s+$/gm, '')   // 移除每行首尾空格
+        .replace(/\n\s*\n/g, '\n\n')  // 移除空行
+        .trim();
+    
+    // 在填入项目经历前，进一步清理多余的句号
+    remainingText = remainingText
+        .replace(/(\s*。\s*){2,}/g, '。')  // 多个连续句号替换为单个句号
+        .replace(/^\s*。\s*$/gm, '')  // 移除只包含句号的行
+        .replace(/(\s*。\s*){2,}/g, '。')  // 再次处理可能残留的多个句号
+        .replace(/\s*。\s*$/gm, '')  // 移除行尾的句号和空格
+        .replace(/^[\s。]+/g, '')  // 移除开头的空格和句号
+        .replace(/[\s。]+$/g, '')  // 移除结尾的空格和句号
+        .trim();
+    
+    // 如果有剩余文本，放入项目经历字段
+    if (remainingText.length > 0) {
+        // 如果原来有项目经历内容，追加未匹配的内容
+        if (extractedData.projectExperience && extractedData.projectExperience.trim()) {
+            extractedData.projectExperience = extractedData.projectExperience.trim() + '\n\n' + remainingText;
+        } else {
+            // 否则直接使用未匹配的内容
+            extractedData.projectExperience = remainingText;
+        }
+        extractedCount++;
+    } else if (!extractedData.projectExperience) {
+        // 确保项目经历字段存在
+        extractedData.projectExperience = '';
+    }
 
-            // 排除只包含关键词的行
-            const isKeywordLine = line.includes('熟悉') || line.includes('熟练') ||
-                line.includes('了解') || line.includes('掌握') ||
-                line.includes('奖')
+    /*
+    // 删除旧的处理逻辑
+    // 收集未被匹配到的文本行 - 简化逻辑，直接收集所有未匹配的内容
+    const unmatchedLines: string[] = []
 
-            // 排除只包含教育背景关键词的行
-            const isEducationLine = line.includes('大学') || line.includes('学院') ||
-                line.includes('本科') || line.includes('硕士') ||
-                line.includes('博士') || line.includes('学士') ||
-                line.includes('教育背景') || line.includes('学历') ||
-                line.includes('学位')
+    // 根据用户需求：对上传的文本，除去前面正则匹配到的文本，剩下的直接全部丢到项目经历中
+    // 收集所有未匹配的文本行
+    lines.forEach(line => {
+        // 跳过空行
+        if (!line.trim()) return
 
-            // 排除只包含个人信息的行
-            const isPersonalInfoLine = line.includes('姓名') || line.includes('电话') ||
-                line.includes('手机') || line.includes('邮箱') ||
-                line.includes('性别') || line.includes('出生') ||
-                line.includes('地址') || line.includes('微信')
-
-            // 排除只包含日期格式的行
-            const isDateLine = /^\d{4}[-/年]\d{1,2}[-/月]\d{1,2}/.test(line)
-
-            // 如果不是标题行且不是关键词行，且长度足够长，则认为是未匹配的大段文本
-            if (!isTitleLine && !isKeywordLine && !isEducationLine &&
-                !isPersonalInfoLine && !isDateLine && line.length > 20) {
-                unmatchedLines.push(line)
+        // 检查这一行是否已经被匹配到某个字段中
+        let isMatched = false
+        for (const content of matchedContent) {
+            // 使用更宽松的匹配条件
+            if (content.includes(line) || line.includes(content) ||
+                (line.length > 5 && content.includes(line.substring(0, Math.min(5, line.length))))) {
+                isMatched = true
+                break
             }
-        })
+        }
 
-        // 如果有未匹配的文本，将其放入项目经历
-        if (unmatchedLines.length > 0) {
-            // 限制数量，避免过多内容
-            const limitedLines = unmatchedLines.slice(0, 20)
-            extractedData.projectExperience = limitedLines.join('\n')
-            extractedCount++
+        // 排除已匹配的内容
+        if (!isMatched) {
+            unmatchedLines.push(line)
+        }
+    })
+
+    // 将所有未匹配的内容直接放入项目经历字段
+    if (unmatchedLines.length > 0) {
+        // 合并未匹配的行，添加适当的换行符
+        let unmatchedText = unmatchedLines.join('\n')
+
+        // 清理文本，移除多余的空白行
+        unmatchedText = unmatchedText.replace(/\n{3,}/g, '\n\n').trim()
+
+        // 如果原来有项目经历内容，追加未匹配的内容
+        if (extractedData.projectExperience && extractedData.projectExperience.trim()) {
+            extractedData.projectExperience = extractedData.projectExperience.trim() + '\n\n' + unmatchedText
+        } else {
+            // 否则直接使用未匹配的内容
+            extractedData.projectExperience = unmatchedText
+        }
+        // 确保计数增加
+        extractedCount++
+    } else {
+        // 如果没有未匹配的内容，但项目经历字段为空，则创建一个空字符串以确保字段存在
+        if (!extractedData.projectExperience) {
+            extractedData.projectExperience = ''
         }
     }
-
-    // 如果没有提取到工作经验，也尝试从未匹配文本中提取
-    if (!extractedData.workExperience && extractedData.projectExperience) {
-        // 将项目经历的一部分也放入工作经验
-        const projectLines = extractedData.projectExperience.split('\n')
-        if (projectLines.length > 3) {
-            // 取前几行放入工作经验
-            const workLines = projectLines.slice(0, Math.min(3, Math.floor(projectLines.length / 3)))
-            extractedData.workExperience = workLines.join('\n')
-            extractedCount++
-        }
-    }
-
-    // 如果没有提取到实习经历，也尝试从未匹配文本中提取
-    if (!extractedData.internshipExperience && extractedData.projectExperience) {
-        // 将项目经历的另一部分放入实习经历
-        const projectLines = extractedData.projectExperience.split('\n')
-        if (projectLines.length > 3) {
-            // 取中间部分放入实习经历
-            const startIndex = Math.min(2, Math.floor(projectLines.length / 3))
-            const endIndex = Math.min(startIndex + 3, projectLines.length)
-            const internshipLines = projectLines.slice(startIndex, endIndex)
-            if (internshipLines.length > 0) {
-                extractedData.internshipExperience = internshipLines.join('\n')
-                extractedCount++
-            }
-        }
-    }
+    */
 
     // 处理填入表单的逻辑，确保所有字段都能被填入
+    // 注意：这里不再重复声明filledCount，使用之前已声明的变量
     Object.keys(extractedData).forEach(key => {
         if (extractedData[key] && (resumeForm as any)[key] !== undefined) {
             // 只填入空字段，保留用户已填写的内容
             if (!(resumeForm as any)[key] || (resumeForm as any)[key].trim() === '') {
-                (resumeForm as any)[key] = extractedData[key]
-                filledCount++
+                (resumeForm as any)[key] = extractedData[key];
+                filledCount++;
+            } else if (key === 'projectExperience' && extractedData[key]) {
+                // 特殊处理项目经历：即使字段已有内容，也将解析出的内容追加到现有内容中
+                (resumeForm as any)[key] = (resumeForm as any)[key].trim() + '\n\n' + extractedData[key];
+                filledCount++;
             }
         }
-    })
+    });
 
     // 如果没有提取到姓名，尝试从文件名获取
     if (!extractedData.name && fileInput.value?.files?.[0]) {
@@ -1232,6 +1304,10 @@ const parseResumeText = async (text: string) => {
             }
         }
     }
+
+    // 调试信息
+    console.log('解析结果:', { extractedData, extractedCount, filledCount });
+    console.log('项目经历内容:', extractedData.projectExperience);
 
     // 显示提取结果
     if (filledCount > 0) {
