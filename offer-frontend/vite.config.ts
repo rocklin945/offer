@@ -19,5 +19,18 @@ export default defineConfig({
         rewrite: (path) => path
       }
     }
+  },
+  optimizeDeps: {
+    include: [
+      'pdfjs-dist/legacy/build/pdf',
+      'pdfjs-dist/build/pdf.worker'
+    ],
+    exclude: ['pdfjs-dist']
+  },
+  worker: {
+    format: 'es'
+  },
+  define: {
+    global: 'globalThis'
   }
 })

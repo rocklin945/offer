@@ -3,7 +3,7 @@
         <!-- 页面标题 -->
         <div class="text-center mb-8">
             <h1 class="text-4xl font-bold text-gray-900 mb-2">个人简历</h1>
-            <p class="text-gray-600">管理您的个人简历信息</p>
+            <p class="text-gray-600">告别填写简历时繁琐的复制粘贴</p>
         </div>
 
         <!-- 存储方式选择 -->
@@ -53,13 +53,43 @@
 
         <!-- 简历表单 -->
         <div v-if="storageMode === 'local' || userStore.currentUser" class="card">
+            <!-- 文档导入区域 -->
+            <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <h3 class="text-lg font-medium text-gray-900 mb-3">📄 导入简历文档</h3>
+                <div class="flex items-center space-x-4">
+                    <input ref="fileInput" type="file" accept=".pdf,.doc,.docx" @change="handleFileUpload"
+                        class="hidden" />
+                    <button @click="$refs.fileInput?.click()"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center space-x-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                            </path>
+                        </svg>
+                        <span>选择文档</span>
+                    </button>
+                    <span class="text-sm text-gray-600">支持 PDF、DOC、DOCX 格式，最大 10MB（自动解析并填入简历信息）</span>
+                </div>
+                <div v-if="isProcessing" class="mt-3 flex items-center space-x-2 text-blue-600">
+                    <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                    <span class="text-sm">正在解析文档...</span>
+                </div>
+            </div>
+
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-xl font-semibold text-gray-900">简历信息</h2>
                 <div class="flex space-x-2">
                     <button v-if="hasResumeData" @click="clearResume" class="btn-secondary">
                         清空简历
                     </button>
-                    <button v-if="hasResumeData && storageMode === 'cloud' && cloudResume" @click="clearCloudResume" class="px-4 py-2 bg-red-400 text-white rounded-md hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 flex items-center space-x-2">
+                    <button v-if="hasResumeData && storageMode === 'cloud' && cloudResume" @click="clearCloudResume"
+                        class="px-4 py-2 bg-red-400 text-white rounded-md hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 flex items-center space-x-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1H8a1 1 0 00-1 1v3M4 7h16">
@@ -82,8 +112,7 @@
                         <div class="flex items-center space-x-2">
                             <input v-model="resumeForm.name" type="text" required placeholder="请输入您的姓名"
                                 class="input-field flex-1" />
-                            <button @click="copyToClipboard(resumeForm.name, '姓名')"
-                                class="resume-copy-btn">
+                            <button @click="copyToClipboard(resumeForm.name, '姓名')" class="resume-copy-btn">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
@@ -97,8 +126,7 @@
                         <div class="flex items-center space-x-2">
                             <input v-model="resumeForm.phone" type="tel" placeholder="请输入手机号"
                                 class="input-field flex-1" />
-                            <button @click="copyToClipboard(resumeForm.phone, '手机号')"
-                                class="resume-copy-btn">
+                            <button @click="copyToClipboard(resumeForm.phone, '手机号')" class="resume-copy-btn">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
@@ -112,8 +140,7 @@
                         <div class="flex items-center space-x-2">
                             <input v-model="resumeForm.wechat" type="text" placeholder="请输入微信号"
                                 class="input-field flex-1" />
-                            <button @click="copyToClipboard(resumeForm.wechat, '微信号')"
-                                class="resume-copy-btn">
+                            <button @click="copyToClipboard(resumeForm.wechat, '微信号')" class="resume-copy-btn">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
@@ -127,8 +154,7 @@
                         <div class="flex items-center space-x-2">
                             <input v-model="resumeForm.email" type="email" placeholder="请输入邮箱"
                                 class="input-field flex-1" />
-                            <button @click="copyToClipboard(resumeForm.email, '邮箱')"
-                                class="resume-copy-btn">
+                            <button @click="copyToClipboard(resumeForm.email, '邮箱')" class="resume-copy-btn">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
@@ -145,8 +171,7 @@
                                 <option value="男">男</option>
                                 <option value="女">女</option>
                             </select>
-                            <button @click="copyToClipboard(resumeForm.gender, '性别')"
-                                class="resume-copy-btn">
+                            <button @click="copyToClipboard(resumeForm.gender, '性别')" class="resume-copy-btn">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
@@ -159,8 +184,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">出生日期</label>
                         <div class="flex items-center space-x-2">
                             <input v-model="resumeForm.birthday" type="date" class="input-field flex-1" />
-                            <button @click="copyToClipboard(resumeForm.birthday, '出生日期')"
-                                class="resume-copy-btn">
+                            <button @click="copyToClipboard(resumeForm.birthday, '出生日期')" class="resume-copy-btn">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
@@ -174,8 +198,7 @@
                         <div class="flex items-center space-x-2">
                             <input v-model="resumeForm.address" type="text" placeholder="请输入您的地址"
                                 class="input-field flex-1" />
-                            <button @click="copyToClipboard(resumeForm.address, '地址')"
-                                class="resume-copy-btn">
+                            <button @click="copyToClipboard(resumeForm.address, '地址')" class="resume-copy-btn">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
@@ -495,7 +518,7 @@
                                 class="copy-btn ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
                                     </path>
                                 </svg>
                             </button>
@@ -538,12 +561,22 @@ import type { Resume, ResumeAddRequest, ResumeUpdateRequest } from '@/api/resume
 import type { DeleteRequest } from '@/api/types'
 import Message from '@/components/Message'
 import Confirm from '@/components/Confirm'
+// 导入文档解析库
+import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist/legacy/build/pdf'
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker?url'
+import mammoth from 'mammoth'
+
+// 配置PDF.js worker
+GlobalWorkerOptions.workerSrc = pdfjsWorker
 
 const userStore = useUserStore()
 const showLoginModal = ref(false)
 const storageMode = ref<'local' | 'cloud'>('local')
 const isSaving = ref(false)
 const cloudResume = ref<Resume | null>(null)
+// 文档解析相关状态
+const isProcessing = ref(false)
+const fileInput = ref<HTMLInputElement | null>(null)
 
 // 简历表单数据
 const resumeForm = reactive<ResumeAddRequest>({
@@ -567,6 +600,423 @@ const resumeForm = reactive<ResumeAddRequest>({
 const hasResumeData = computed(() => {
     return Object.values(resumeForm).some(value => value && value.trim() !== '')
 })
+
+// 文档解析相关函数
+// 处理文件上传
+const handleFileUpload = async (event: Event) => {
+    const target = event.target as HTMLInputElement
+    const file = target.files?.[0]
+
+    if (!file) return
+
+    // 文件大小限制 10MB
+    if (file.size > 10 * 1024 * 1024) {
+        Message.error('文件大小不能超过 10MB')
+        return
+    }
+
+    // 文件类型检查
+    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+    if (!allowedTypes.includes(file.type)) {
+        Message.error('仅支持 PDF、DOC、DOCX 格式的文件')
+        return
+    }
+
+    isProcessing.value = true
+
+    try {
+        let extractedText = ''
+
+        if (file.type === 'application/pdf') {
+            extractedText = await parsePDF(file)
+        } else if (file.type === 'application/msword' || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+            extractedText = await parseWord(file)
+        }
+
+        if (extractedText) {
+            await parseResumeText(extractedText)
+            Message.success('文档解析成功，已自动填入简历信息')
+        } else {
+            Message.warning('未能从文档中提取到有效内容')
+        }
+    } catch (error) {
+        console.error('文档解析失败:', error)
+        Message.error('文档解析失败，请检查文件格式是否正确')
+    } finally {
+        isProcessing.value = false
+        // 清空文件输入
+        if (target) target.value = ''
+    }
+}
+
+// 解析PDF文件（使用PDF.js）
+const parsePDF = async (file: File): Promise<string> => {
+    try {
+        const arrayBuffer = await file.arrayBuffer()
+        const pdf = await getDocument({ data: arrayBuffer }).promise
+
+        let fullText = ''
+        const numPages = pdf.numPages
+
+        // 逐页提取文本
+        for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+            const page = await pdf.getPage(pageNum)
+            const textContent = await page.getTextContent()
+            const pageText = textContent.items
+                .map((item: any) => item.str)
+                .join(' ')
+            fullText += pageText + '\n'
+        }
+
+        console.log('提取到的PDF文本:', fullText)
+        return fullText.trim()
+    } catch (error) {
+        console.error('PDF解析失败:', error)
+
+        // 如果PDF解析失败，尝试从文件名提取信息
+        const fileName = file.name.replace(/\.[^/.]+$/, '')
+        const nameMatch = fileName.match(/[\u4e00-\u9fa5]{2,4}/)
+
+        if (nameMatch) {
+            return `PDF解析失败，但从文件名检测到可能的姓名：${nameMatch[0]}\n请手动填写其他简历信息`
+        }
+
+        throw new Error('PDF文件解析失败，请检查文件格式或尝试转换为Word格式')
+    }
+}
+
+// 解析Word文件
+const parseWord = async (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => {
+            mammoth.extractRawText({ arrayBuffer: reader.result as ArrayBuffer })
+                .then((result: any) => {
+                    resolve(result.value)
+                })
+                .catch((error: any) => {
+                    reject(error)
+                })
+        }
+
+        reader.onerror = () => reject(new Error('文件读取失败'))
+        reader.readAsArrayBuffer(file)
+    })
+}
+
+// 通用文档解析函数 - 适用于PDF和Word
+const parseResumeText = async (text: string) => {
+    console.log('开始解析文档文本:', text)
+
+    // 特殊处理PDF解析失败的情况
+    if (text.includes('PDF解析失败')) {
+        Message.error('文档解析失败，请检查文件格式或手动填写简历信息')
+        return
+    }
+
+    // 文本预处理：统一格式，去除多余空格
+    const processedText = text
+        .replace(/\r\n/g, '\n')  // 统一换行符
+        .replace(/\s{2,}/g, ' ')  // 多个空格替换为单个空格
+        .replace(/([\uff1a:])/g, ':')  // 统一冒号格式
+        .trim()
+
+    console.log('预处理后文本长度:', processedText.length)
+    console.log('文本前500字符:', processedText.substring(0, 500))
+    console.log('文本中间500字符:', processedText.substring(Math.max(0, Math.floor(processedText.length / 2) - 250), Math.floor(processedText.length / 2) + 250))
+
+    const extractedData: any = {}
+    let extractedCount = 0
+
+    // === 第一部分：提取有明确格式特征的基础信息 ===
+
+    // 1. 姓名提取 - 只匹配常见格式
+    if (!extractedData.name) {
+        const namePatterns = [
+            // 格式1: "姓名：张三" 或 "姓名 张三"
+            /姓名[\s:：]+([\u4e00-\u9fa5]{2,4})(?=[\s\n]|$)/,
+            // 格式2: "张三/男" 格式
+            /([\u4e00-\u9fa5]{2,4})\s*[\/\|]\s*[\u7537\u5973]/,
+            // 格式3: "姓名*张三" 格式（处理特殊符号）
+            /姓名[\s*:：]*([\u4e00-\u9fa5]{2,4})(?=[\s\n]|$)/
+        ]
+
+        for (const pattern of namePatterns) {
+            const match = processedText.match(pattern)
+            if (match && match[1]) {
+                const name = match[1].trim()
+                // 验证是否为合理的姓名（2-4个中文字符）
+                if (name.length >= 2 && name.length <= 4 && /^[\u4e00-\u9fa5]+$/.test(name)) {
+                    extractedData.name = name
+                    extractedCount++
+                    console.log('提取姓名:', extractedData.name)
+                    break
+                }
+            }
+        }
+    }
+
+    // 2. 手机号提取 - 多种格式支持
+    if (!extractedData.phone) {
+        const phonePatterns = [
+            // 直接匹配11位手机号
+            /1[3-9]\d{9}/,
+            // 带标签的手机号
+            /手机[\s:：]*(1[3-9]\d{9})/,
+            /电话[\s:：]*(1[3-9]\d{9})/,
+            /联系方式[\s:：]*(1[3-9]\d{9})/,
+            // 带空格或连字符的手机号
+            /1[3-9]\d[\s-]?\d{4}[\s-]?\d{4}/
+        ]
+
+        for (const pattern of phonePatterns) {
+            const match = processedText.match(pattern)
+            if (match) {
+                let phone = match[1] || match[0]
+                // 去除所有非数字字符，保留纯数字
+                phone = phone.replace(/[^\d]/g, '')
+                // 验证是否为11位手机号
+                if (phone.length === 11 && /^1[3-9]\d{9}$/.test(phone)) {
+                    extractedData.phone = phone
+                    extractedCount++
+                    console.log('提取手机号:', extractedData.phone)
+                    break
+                }
+            }
+        }
+    }
+
+    // 3. 邮箱提取 - 标准邮箱格式
+    if (!extractedData.email) {
+        const emailMatch = processedText.match(/[\w\.-]+@[\w\.-]+\.[a-zA-Z]{2,}/)
+        if (emailMatch) {
+            extractedData.email = emailMatch[0]
+            extractedCount++
+            console.log('提取邮箱:', extractedData.email)
+        }
+    }
+
+    // 4. 性别提取
+    if (!extractedData.gender) {
+        const genderPatterns = [
+            /性别[\s:：]*([\u7537\u5973])/,
+            /([\u7537\u5973])\s*[\/\|]/,
+            /[\/\|]\s*([\u7537\u5973])/
+        ]
+
+        for (const pattern of genderPatterns) {
+            const match = processedText.match(pattern)
+            if (match && match[1]) {
+                extractedData.gender = match[1]
+                extractedCount++
+                console.log('提取性别:', extractedData.gender)
+                break
+            }
+        }
+    }
+
+    // 5. 出生日期提取 - 多种日期格式
+    if (!extractedData.birthday) {
+        const birthdayPatterns = [
+            // 格式1: YYYY-MM-DD
+            /(\d{4}[-\/]\d{1,2}[-\/]\d{1,2})/,
+            // 格式2: YYYY.MM
+            /(\d{4}\.\d{1,2})/,
+            // 格式3: YYYY年MM月DD日
+            /(\d{4}[年]\d{1,2}[月]\d{1,2}[日]?)/,
+            // 格式4: 带标签的日期
+            /出生[\s:：]*(\d{4}[-\/\.]年?月?\d{1,2}[-\/\.]月?日?\d{0,2})日?/,
+            /生日[\s:：]*(\d{4}[-\/\.]年?月?\d{1,2}[-\/\.]月?日?\d{0,2})日?/,
+            /出生日期[\s:：]*(\d{4}[-\/\.]年?月?\d{1,2}[-\/\.]月?日?\d{0,2})日?/
+        ]
+
+        for (const pattern of birthdayPatterns) {
+            const match = processedText.match(pattern)
+            if (match && match[1]) {
+                let birthday = match[1]
+
+                // 格式化为标准日期格式 YYYY-MM-DD
+                if (birthday.includes('年') || birthday.includes('月')) {
+                    // 中文日期格式转换
+                    birthday = birthday.replace(/[年月]/g, '-').replace(/日/g, '')
+                } else if (birthday.includes('.')) {
+                    // 点号格式转换
+                    const parts = birthday.split('.')
+                    if (parts.length === 2) {
+                        birthday = `${parts[0]}-${parts[1].padStart(2, '0')}-01`
+                    }
+                } else if (birthday.includes('/')) {
+                    // 斜杠格式转换
+                    birthday = birthday.replace(/\//g, '-')
+                }
+
+                // 确保日期格式正确
+                if (/\d{4}-\d{1,2}(-\d{1,2})?/.test(birthday)) {
+                    // 补全月份和日期的零
+                    const dateParts = birthday.split('-')
+                    if (dateParts.length === 2) {
+                        birthday = `${dateParts[0]}-${dateParts[1].padStart(2, '0')}-01`
+                    } else if (dateParts.length === 3) {
+                        birthday = `${dateParts[0]}-${dateParts[1].padStart(2, '0')}-${dateParts[2].padStart(2, '0')}`
+                    }
+
+                    extractedData.birthday = birthday
+                    extractedCount++
+                    console.log('提取出生日期:', extractedData.birthday)
+                    break
+                }
+            }
+        }
+    }
+
+    // 6. 教育背景提取 - 学校+专业+学历格式
+    if (!extractedData.education) {
+        const educationPatterns = [
+            // 格式1: "XX大学 XX专业 本科"
+            /([\u4e00-\u9fa5]{2,8}大学)[\s,\uff0c]*([\u4e00-\u9fa5]{2,8}[\u5de5\u7a0b\u4e13\u4e1a\u7cfb])[\s,\uff0c]*(本科|硕士|博士)/,
+            // 格式2: "教育背景：XX大学"
+            /教育背景[\s:：]*([\u4e00-\u9fa5]{2,15}大学[^\n]*)/
+        ]
+
+        for (const pattern of educationPatterns) {
+            const match = processedText.match(pattern)
+            if (match) {
+                if (match.length >= 4) {
+                    // 完整格式：学校 专业 学历
+                    extractedData.education = `${match[1]} ${match[2]} ${match[3]}`
+                } else {
+                    // 简单格式：直接使用匹配内容
+                    extractedData.education = match[1]
+                }
+                extractedCount++
+                console.log('提取教育背景:', extractedData.education)
+                break
+            }
+        }
+    }
+
+    // === 第二部分：通过标题格式提取其他内容 ===
+
+    // 定义标题到字段的映射关系
+    const titleMappings = {
+        'skills': ['专业技能', '技能', '技术技能', '核心技能'],
+        'workExperience': ['工作经验', '工作经历', '职业经历'],
+        'projectExperience': ['项目经历', '项目经验', '项目描述'],
+        'internshipExperience': ['实习经历', '实习经验'],
+        'certificates': ['荣誉证书', '证书', '荣誉奖项', '竞赛奖项', '获奖情况'],
+        'selfEvaluation': ['自我评价', '个人评价', '自我介绍', '个人简介']
+    }
+
+    // 按行分割文本进行标题匹配
+    const lines = processedText.split('\n').map(line => line.trim()).filter(line => line.length > 0)
+
+    console.log('总行数:', lines.length)
+
+    // 遍历每一行，寻找标题格式
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i]
+
+        // 检查是否为标题行（以冒号结尾或包含标题关键词）
+        for (const [fieldName, titles] of Object.entries(titleMappings)) {
+            for (const title of titles) {
+                // 匹配格式："标题：" 或 "标题 " 或单独的标题行
+                if (line.includes(title + ':') || line.includes(title + '：') ||
+                    line === title || (line.startsWith(title) && line.length <= title.length + 3)) {
+
+                    console.log(`找到标题匹配: ${title} -> ${fieldName}`)
+
+                    // 提取该标题下的内容
+                    const content = extractContentUnderTitle(lines, i, title)
+                    if (content && content.trim().length > 0) {
+                        extractedData[fieldName] = content.trim()
+                        extractedCount++
+                        console.log(`提取${fieldName}内容:`, content.substring(0, 100) + '...')
+                    }
+                    break
+                }
+            }
+        }
+    }
+
+    // 辅助函数：提取标题下的内容
+    function extractContentUnderTitle(lines: string[], titleIndex: number, title: string): string {
+        let content = ''
+        let currentLine = lines[titleIndex]
+
+        // 如果标题行本身包含内容（如"专业技能：Java, Python"），先提取这部分
+        const titleWithContent = currentLine.replace(new RegExp(`${title}[\\s:：]*`), '')
+        if (titleWithContent.trim().length > 0) {
+            content += titleWithContent.trim() + '\n'
+        }
+
+        // 继续读取后续行，直到遇到下一个标题或文档结束
+        for (let j = titleIndex + 1; j < lines.length; j++) {
+            const nextLine = lines[j]
+
+            // 检查是否遇到了新的标题
+            let isNewTitle = false
+            for (const titles of Object.values(titleMappings)) {
+                for (const t of titles) {
+                    if (nextLine.includes(t + ':') || nextLine.includes(t + '：') ||
+                        nextLine === t || (nextLine.startsWith(t) && nextLine.length <= t.length + 3)) {
+                        isNewTitle = true
+                        break
+                    }
+                }
+                if (isNewTitle) break
+            }
+
+            // 如果遇到新标题，停止提取
+            if (isNewTitle) break
+
+            // 添加内容行
+            if (nextLine.trim().length > 0) {
+                content += nextLine + '\n'
+            }
+        }
+
+        return content
+    }
+
+    // === 第三部分：填入表单 ===
+
+    console.log('提取完成，开始填入表单。提取到的数据:', extractedData)
+    let filledCount = 0
+
+    Object.keys(extractedData).forEach(key => {
+        if (extractedData[key] && (resumeForm as any)[key] !== undefined) {
+            // 只填入空字段，保留用户已填写的内容
+            if (!(resumeForm as any)[key] || (resumeForm as any)[key].trim() === '') {
+                (resumeForm as any)[key] = extractedData[key]
+                filledCount++
+                console.log(`成功填入字段 ${key}`)
+            } else {
+                console.log(`跳过字段 ${key}，已有内容`)
+            }
+        }
+    })
+
+    // 如果没有提取到姓名，尝试从文件名获取
+    if (!extractedData.name && fileInput.value?.files?.[0]) {
+        const fileName = fileInput.value.files[0].name.replace(/\.(pdf|doc|docx)$/i, '')
+        if (fileName.length <= 10 && /[\u4e00-\u9fa5]/.test(fileName)) {
+            if (!resumeForm.name || resumeForm.name.trim() === '') {
+                resumeForm.name = fileName
+                filledCount++
+                console.log('从文件名提取姓名:', fileName)
+            }
+        }
+    }
+
+    // 显示提取结果
+    if (filledCount > 0) {
+        Message.success(`成功提取并填入 ${filledCount} 个字段的信息`)
+    } else if (extractedCount > 0) {
+        Message.info('已提取到信息，但相关字段已有内容，未覆盖')
+    } else {
+        Message.warning('未能从文档中提取到有效信息，请手动填写')
+    }
+}
 
 // 本地存储键名
 const LOCAL_STORAGE_KEY = 'my_resume_data'
@@ -687,10 +1137,10 @@ const saveResume = async () => {
 
 // 清空简历
 const clearResume = async () => {
-    const confirmMessage = storageMode.value === 'local' 
-        ? '确定要清空所有简历数据吗？此操作不可恢复。' 
+    const confirmMessage = storageMode.value === 'local'
+        ? '确定要清空所有简历数据吗？此操作不可恢复。'
         : '确定要清空表单中的简历数据吗？这不会删除云端已保存的数据。'
-    
+
     const confirmed = await Confirm.show({
         title: '清空简历',
         message: confirmMessage,
@@ -698,7 +1148,7 @@ const clearResume = async () => {
         confirmText: '确定清空',
         cancelText: '取消'
     })
-    
+
     if (confirmed) {
         Object.keys(resumeForm).forEach(key => {
             (resumeForm as any)[key] = ''
@@ -756,7 +1206,7 @@ const copyToClipboard = async (text: string, fieldName: string) => {
         Message.warning(`${fieldName}内容为空，无法复制`)
         return
     }
-    
+
     try {
         await navigator.clipboard.writeText(text)
         Message.success(`${fieldName}已复制到剪贴板`)

@@ -12,10 +12,12 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "vue": "^3.4.0",
-    "vue-router": "^4.2.5",
+    "axios": "^1.6.0",
+    "mammoth": "^1.10.0",
+    "pdfjs-dist": "^5.4.149",
     "pinia": "^2.1.7",
-    "axios": "^1.6.0"
+    "vue": "^3.4.0",
+    "vue-router": "^4.2.5"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
