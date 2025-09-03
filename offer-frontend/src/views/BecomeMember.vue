@@ -14,11 +14,11 @@
           <!-- Stats -->
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-4xl mx-auto">
             <div class="text-center">
-              <div class="text-3xl sm:text-4xl font-bold mb-2 text-blue-600">10,000+</div>
+              <div class="text-3xl sm:text-4xl font-bold mb-2 text-blue-600">2000+</div>
               <div class="text-gray-600">优质职位</div>
             </div>
             <div class="text-center">
-              <div class="text-3xl sm:text-4xl font-bold mb-2 text-blue-600">15,00+</div>
+              <div class="text-3xl sm:text-4xl font-bold mb-2 text-blue-600">500+</div>
               <div class="text-gray-600">合作企业</div>
             </div>
             <div class="text-center">
@@ -122,7 +122,7 @@
           <div class="text-center mb-8">
             <h3 class="text-2xl font-bold text-gray-900 mb-2">会员版</h3>
             <div class="mb-4">
-              <span class="text-4xl font-bold text-gray-900">¥15</span>
+              <span class="text-4xl font-bold text-gray-900">¥29.9</span>
               <span class="text-gray-500">/年</span>
             </div>
             <p class="text-gray-600">解锁全部功能</p>
@@ -239,7 +239,7 @@
             </div>
             <h3 class="text-xl font-bold text-gray-900 mb-4">海量优质职位</h3>
             <p class="text-gray-600 leading-relaxed">
-              与1500+知名企业合作，提供10000+优质职位，覆盖各行各业
+              与500+知名企业合作，提供2000+优质职位，覆盖各行各业
             </p>
           </div>
 
