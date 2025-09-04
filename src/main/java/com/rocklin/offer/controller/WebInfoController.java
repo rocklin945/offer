@@ -45,7 +45,7 @@ public class WebInfoController {
      */
     @Operation(summary = "获取会员图片URL", description = "获取会员二维码图片URL，无需管理员权限")
     @GetMapping("/member-image")
-    @SlidingWindowRateLimit(windowInSeconds = 60, maxCount = 50)
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 3)
     public BaseResponse<String> getMemberImageUrl() {
         String imageUrl = webInfoService.getMemberImageUrl();
         return BaseResponse.success(imageUrl);

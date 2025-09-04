@@ -1,6 +1,6 @@
 import request from './request'
 import type { BaseResponse } from './types'
-import type { UserLoginRequest, UserLoginResponse, UserPageQueryRequest, UserUpdateRequest } from '@/api/userTypes'
+import type { UserLoginRequest, UserLoginResponse, UserPageQueryRequest, UserUpdateRequest, UserRegisterRequest } from '@/api/userTypes'
 
 // 用户登录
 export function login(data: UserLoginRequest): Promise<BaseResponse<UserLoginResponse>> {
@@ -8,7 +8,7 @@ export function login(data: UserLoginRequest): Promise<BaseResponse<UserLoginRes
 }
 
 // 用户注册
-export function register(data: any): Promise<BaseResponse<any>> {
+export function register(data: UserRegisterRequest): Promise<BaseResponse<any>> {
   return request.post('/user/register', data).then(res => res.data)
 }
 

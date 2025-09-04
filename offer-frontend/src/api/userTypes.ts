@@ -6,6 +6,14 @@ export interface UserLoginRequest {
   userPassword: string
 }
 
+// 用户注册请求
+export interface UserRegisterRequest {
+  userAccount: string
+  userPassword: string
+  checkPassword: string
+  inviterCode?: string
+}
+
 // 用户登录响应
 export interface UserLoginResponse {
   userId: string

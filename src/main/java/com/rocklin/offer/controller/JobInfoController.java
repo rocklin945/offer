@@ -41,7 +41,7 @@ public class JobInfoController {
     @Operation(summary = "添加招聘信息", description = "添加招聘信息")
     @PostMapping("/add")
     @AuthCheck(enableRole = UserRoleEnum.ADMIN)
-    @SlidingWindowRateLimit(windowInSeconds = 10, maxCount = 3)
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 3)
     public BaseResponse<Boolean> addJobInfo(@RequestBody @Valid JobInfoAddRequest addRequest) {
         JobInfo jobInfo = new JobInfo();
         BeanUtils.copyProperties(addRequest, jobInfo);
@@ -52,7 +52,7 @@ public class JobInfoController {
     @Operation(summary = "删除招聘信息", description = "根据ID删除招聘信息")
     @PostMapping("/delete")
     @AuthCheck(enableRole = UserRoleEnum.ADMIN)
-    @SlidingWindowRateLimit(windowInSeconds = 10, maxCount = 3)
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 3)
     public BaseResponse<Boolean> deleteJobInfo(@RequestBody @Valid DeleteRequest deleteRequest) {
         boolean result = jobInfoService.deleteJobInfo(deleteRequest.getId());
         return BaseResponse.success(result);
@@ -61,7 +61,7 @@ public class JobInfoController {
     @Operation(summary = "更新招聘信息", description = "更新招聘信息")
     @PostMapping("/update")
     @AuthCheck(enableRole = UserRoleEnum.ADMIN)
-    @SlidingWindowRateLimit(windowInSeconds = 10, maxCount = 3)
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 3)
     public BaseResponse<Boolean> updateJobInfo(@RequestBody @Valid JobInfoUpdateRequest updateRequest) {
         JobInfo jobInfo = new JobInfo();
         BeanUtils.copyProperties(updateRequest, jobInfo);
@@ -72,7 +72,7 @@ public class JobInfoController {
     @Operation(summary = "根据ID获取招聘信息", description = "根据ID获取招聘信息详情")
     @GetMapping("/get/{id}")
     @AuthCheck(enableRole = UserRoleEnum.ADMIN)
-    @SlidingWindowRateLimit(windowInSeconds = 10, maxCount = 3)
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 3)
     public BaseResponse<JobInfo> getJobInfoById(@PathVariable Long id) {
         JobInfo jobInfo = jobInfoService.getJobInfoById(id);
         return BaseResponse.success(jobInfo);

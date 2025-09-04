@@ -40,4 +40,9 @@ public interface UserMapper {
      * 查询总记录数（带过滤条件）
      */
     long countTotal(@Param("req") UserPageQueryRequest req);
+
+    /**
+     * 根据邀请码查询用户
+     */
+    User selectByInviteCode(@Param("inviteCode") String inviteCode);
 }

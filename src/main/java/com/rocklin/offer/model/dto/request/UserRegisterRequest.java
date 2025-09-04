@@ -33,4 +33,9 @@ public class UserRegisterRequest implements Serializable {
     @NotBlank
     @Size(min = 8, max = 16, message = "密码长度不能小于8位， 不能大于16位")
     private String checkPassword;
+
+    /**
+     * 邀请码
+     */
+    private String inviterCode;
 }

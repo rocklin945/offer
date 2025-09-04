@@ -46,4 +46,9 @@ public final class Constants {
     public static final String X_REAL_IP ="X-Real-IP";
     public static final String PROXY_CLIENT_IP ="Proxy-Client-IP";
     public static final String WL_PROXY_CLIENT_IP ="WL-Proxy-Client-IP";
+
+    /**
+     * 数量
+     */
+    public static final int ONE = 1;
 }

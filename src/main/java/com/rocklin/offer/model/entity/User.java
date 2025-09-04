@@ -59,6 +59,11 @@ public class User implements Serializable {
     private LocalDateTime memberExpireTime;
 
     /**
+     * 注册时使用的邀请码
+     */
+    private String inviterCode;
+
+    /**
      * 创建时间
      */
     private LocalDateTime createTime;

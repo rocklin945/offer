@@ -54,7 +54,7 @@ public class UserJobApplyController {
      */
     @PostMapping("/delete")
     @Operation(summary = "删除投递记录", description = "删除用户的投递记录")
-    @SlidingWindowRateLimit(windowInSeconds = 10, maxCount = 3)
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 3)
     public BaseResponse<Boolean> deleteUserJobApply(@RequestBody @Validated DeleteRequest req) {
         Assert.notNull(req, ErrorCode.PARAMS_ERROR,"参数为空");
         String strUserId = userService.getUserIdFromRequest();
@@ -69,7 +69,7 @@ public class UserJobApplyController {
      */
     @PostMapping("/update")
     @Operation(summary = "更新投递记录", description = "更新投递记录的状态等信息")
-    @SlidingWindowRateLimit(windowInSeconds = 10, maxCount = 3)
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 3)
     public BaseResponse<Boolean> updateUserJobApply(@RequestBody @Validated UserJobApplyUpdateRequest req) {
         String strUserId = userService.getUserIdFromRequest();
         Assert.isTrue(!StrUtil.isBlank(strUserId), ErrorCode.PARAMS_ERROR, "登录信息失效");
@@ -83,7 +83,7 @@ public class UserJobApplyController {
      */
     @GetMapping("/get/{id}")
     @Operation(summary = "获取投递记录", description = "根据ID获取投递记录详情")
-    @SlidingWindowRateLimit(windowInSeconds = 10, maxCount = 3)
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 3)
     public BaseResponse<UserJobApply> getUserJobApplyById(@PathVariable Long id) {
         Assert.notNull(id, ErrorCode.PARAMS_ERROR, "ID不能为空");
         UserJobApply userJobApply = userJobApplyService.getUserJobApplyById(id);
@@ -95,7 +95,7 @@ public class UserJobApplyController {
      */
     @GetMapping("/check")
     @Operation(summary = "检查是否已投递", description = "检查用户是否已投递某个职位")
-    @SlidingWindowRateLimit(windowInSeconds = 10, maxCount = 3)
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 3)
     public BaseResponse<Boolean> hasApplied(@RequestParam Long jobId) {
         String strUserId = userService.getUserIdFromRequest();
         Assert.isTrue(!StrUtil.isBlank(strUserId), ErrorCode.PARAMS_ERROR, "登录信息失效");
@@ -138,7 +138,7 @@ public class UserJobApplyController {
     @PostMapping("/admin/update")
     @Operation(summary = "管理员更新投递记录", description = "管理员更新任意投递记录的状态")
     @AuthCheck(enableRole = UserRoleEnum.ADMIN)
-    @SlidingWindowRateLimit(windowInSeconds = 10, maxCount = 3)
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 3)
     public BaseResponse<Boolean> adminUpdateUserJobApply(@RequestBody @Validated UserJobApplyUpdateRequest req) {
         // 管理员更新时不需要检查用户权限，直接更新
         boolean result = userJobApplyService.updateUserJobApply(req, null);
@@ -151,7 +151,7 @@ public class UserJobApplyController {
     @PostMapping("/admin/delete")
     @Operation(summary = "管理员删除投递记录", description = "管理员删除任意投递记录")
     @AuthCheck(enableRole = UserRoleEnum.ADMIN)
-    @SlidingWindowRateLimit(windowInSeconds = 10, maxCount = 3)
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 3)
     public BaseResponse<Boolean> adminDeleteUserJobApply(@RequestBody @Validated DeleteRequest req) {
         // 管理员删除时不需要检查用户权限，直接删除
         boolean result = userJobApplyService.deleteUserJobApply(req.getId(), null);

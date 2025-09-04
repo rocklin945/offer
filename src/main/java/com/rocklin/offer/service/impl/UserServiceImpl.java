@@ -18,6 +18,7 @@ import com.rocklin.offer.model.dto.request.UserUpdateRequest;
 import com.rocklin.offer.model.dto.response.UserLoginResponse;
 import com.rocklin.offer.model.entity.User;
 import com.rocklin.offer.model.entity.WebInfo;
+import com.rocklin.offer.service.InviteCommissionService;
 import com.rocklin.offer.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +48,7 @@ public class UserServiceImpl implements UserService {
     private final JwtUtils jwtUtils;
     private final EncryptPasswordUtil encryptPasswordUtil;
     private final WebInfoMapper webInfoMapper;
+    private final InviteCommissionService commissionService;
 
     @Override
     public Long register(UserRegisterRequest req, HttpServletRequest httpServletRequest) {
@@ -62,8 +64,23 @@ public class UserServiceImpl implements UserService {
         user.setUserRole(UserRoleEnum.USER.getValue());
         user.setUserAvatar(AvatarUtil.generateRandomAvatarUrl(req.getUserAccount()));
         user.setUserProfile("这个人很懒，什么都没有留下。");
+        // 设置邀请码
+        user.setInviterCode(req.getInviterCode());
         Long res = userMapper.insert(user);
         Assert.isTrue(res > 0, ErrorCode.OPERATION_ERROR, "数据库异常，注册失败");
+        
+        // 处理邀请逻辑
+        if (req.getInviterCode() != null && !req.getInviterCode().isEmpty()) {
+            try {
+                User inviter = userMapper.selectByInviteCode(USER_PREFIX + req.getInviterCode());
+                if (inviter != null) {
+                    commissionService.handleUserInvitation(inviter.getId(), user.getId());
+                }
+            } catch (Exception e) {
+                log.warn("处理邀请逻辑时发生异常: {}", e.getMessage());
+            }
+        }
+        
         //更新最新活动
         WebInfo webInfo = getWebInfo();
         webInfo.setActivity1("新用户注册：" + user.getUserName());
@@ -180,6 +197,9 @@ public class UserServiceImpl implements UserService {
     public void updateUser(UserUpdateRequest req) {
         if (req.getUserPassword() != null) {
             req.setUserPassword(encryptPasswordUtil.getEncryptPassword(req.getUserPassword()));
+        }
+        if(req.getUserRole() == UserRoleEnum.VIP.getValue()){
+            commissionService.handleUserBecomeMember(req.getId());
         }
         Long result = userMapper.updateById(req);
         Assert.isTrue(result > 0, ErrorCode.OPERATION_ERROR, "数据库异常，用户更新失败");

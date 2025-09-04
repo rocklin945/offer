@@ -88,9 +88,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { login, register } from '@/api/user'
+import type { UserRegisterRequest } from '@/api/userTypes'
 
 const emit = defineEmits(['close', 'login-success'])
 
@@ -145,13 +146,23 @@ const handleRegister = async () => {
     loading.value = true
     errorMessage.value = ''
     
-    const res = await register({
+    const registerData: UserRegisterRequest = {
       userAccount: formData.userAccount,
       userPassword: formData.userPassword,
       checkPassword: formData.checkPassword
-    })
+    }
+    
+    // 如果有邀请码，添加到注册数据中
+    const inviteCode = userStore.getInviteCode()
+    if (inviteCode) {
+      registerData.inviterCode = inviteCode
+    }
+    
+    const res = await register(registerData)
     
     if (res.statusCode === 200) {
+      // 注册成功后清除邀请码
+      userStore.removeInviteCode()
       // 注册成功后自动切换到登录模式
       isLogin.value = true
       errorMessage.value = '注册成功，请登录'
@@ -163,6 +174,15 @@ const handleRegister = async () => {
     loading.value = false
   }
 }
+
+// 组件挂载时检查URL中的邀请码
+onMounted(() => {
+  const urlParams = new URLSearchParams(window.location.search)
+  const inviteCode = urlParams.get('code')
+  if (inviteCode) {
+    userStore.setInviteCode(inviteCode)
+  }
+})
 </script>
 
 <style scoped>

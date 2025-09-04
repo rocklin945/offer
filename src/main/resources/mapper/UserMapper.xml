@@ -13,6 +13,7 @@
         <result property="userProfile" column="user_profile"/>
         <result property="userRole" column="user_role"/>
         <result property="memberExpireTime" column="member_expire_time"/>
+        <result property="inviterCode" column="inviter_code"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
         <result property="isDelete" column="is_delete"/>
@@ -20,7 +21,7 @@
     
     <!-- 基础字段 -->
     <sql id="Base_Column_List">
-        id, user_account, user_password, user_name, user_avatar, user_profile, user_role, member_expire_time,create_time, update_time, is_delete
+        id, user_account, user_password, user_name, user_avatar, user_profile, user_role, member_expire_time, inviter_code, create_time, update_time, is_delete
     </sql>
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         insert into user
@@ -30,7 +31,8 @@
         user_name,
         user_avatar,
         user_profile,
-        user_role)
+        user_role,
+        inviter_code)
         values
         (UUID_SHORT(),
         #{userAccount},
@@ -38,7 +40,8 @@
         #{userName},
         #{userAvatar},
         #{userProfile},
-        #{userRole})
+        #{userRole},
+        #{inviterCode})
     </insert>
 
     <update id="updateById">
@@ -143,5 +146,9 @@
                 </if>
             </if>
         </where>
+    </select>
+
+    <select id="selectByInviteCode" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from user where user_name = #{inviteCode}
     </select>
 </mapper>

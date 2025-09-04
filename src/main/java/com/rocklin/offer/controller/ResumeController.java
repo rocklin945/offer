@@ -59,7 +59,7 @@ public class ResumeController {
 
     @Operation(summary = "根据ID获取简历", description = "根据简历ID获取简历详情")
     @GetMapping("/get/{id}")
-    @SlidingWindowRateLimit(windowInSeconds = 10, maxCount = 10)
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 3)
     public BaseResponse<Resume> getResumeById(@PathVariable Long id) {
         String strUserId = userService.getUserIdFromRequest();
         Assert.isTrue(!StrUtil.isBlank(strUserId), ErrorCode.NOT_LOGIN_ERROR, "用户未登录");
@@ -70,7 +70,7 @@ public class ResumeController {
 
     @Operation(summary = "更新简历", description = "更新个人简历信息")
     @PostMapping("/update")
-    @SlidingWindowRateLimit(windowInSeconds = 10, maxCount = 10)
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 3)
     public BaseResponse<Boolean> updateResume(@RequestBody @Valid ResumeUpdateRequest request) {
         String strUserId = userService.getUserIdFromRequest();
         Assert.isTrue(!StrUtil.isBlank(strUserId), ErrorCode.NOT_LOGIN_ERROR, "用户未登录");

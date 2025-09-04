@@ -7,6 +7,8 @@ import Message from '../components/Message'
 
 // JWT Token存储的key
 const TOKEN_KEY = 'user_token'
+// 邀请码存储的key
+const INVITE_CODE_KEY = 'invite_code'
 
 export const useUserStore = defineStore('user', () => {
   const router = useRouter()
@@ -88,6 +90,21 @@ export const useUserStore = defineStore('user', () => {
     localStorage.removeItem(TOKEN_KEY)
   }
 
+  // 设置邀请码
+  const setInviteCode = (code: string) => {
+    localStorage.setItem(INVITE_CODE_KEY, code)
+  }
+
+  // 获取邀请码
+  const getInviteCode = (): string | null => {
+    return localStorage.getItem(INVITE_CODE_KEY)
+  }
+
+  // 移除邀请码
+  const removeInviteCode = () => {
+    localStorage.removeItem(INVITE_CODE_KEY)
+  }
+
   // 判断是否为管理员
   const isAdmin = () => {
     return currentUser.value?.userRole === 0
@@ -102,6 +119,9 @@ export const useUserStore = defineStore('user', () => {
     userLogout,
     setToken,
     removeToken,
-    isAdmin
+    isAdmin,
+    setInviteCode,
+    getInviteCode,
+    removeInviteCode
   }
 })

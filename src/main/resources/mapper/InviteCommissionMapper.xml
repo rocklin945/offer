@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rocklin.offer.mapper.InviteCommissionMapper">
+
+    <resultMap id="BaseResultMap" type="com.rocklin.offer.model.entity.InviteCommission">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="invited_count" property="invitedCount" jdbcType="INTEGER"/>
+        <result column="pending_commission" property="pendingCommission" jdbcType="DECIMAL"/>
+        <result column="total_commission" property="totalCommission" jdbcType="DECIMAL"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, user_id, invited_count, pending_commission, total_commission, create_time, update_time
+    </sql>
+    <insert id="insert">
+        insert into invite_commission
+        (id,
+        user_id,
+        invited_count,
+        pending_commission,
+        total_commission,
+        create_time,
+        update_time)
+        values
+        (UUID_SHORT(),
+        #{userId},
+        #{invitedCount},
+        #{pendingCommission},
+        #{totalCommission},
+        #{createTime},
+        #{updateTime})
+    </insert>
+
+    <select id="selectByUserId" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> 
+        from invite_commission 
+        where user_id = #{userId}
+    </select>
+
+    <update id="increaseInvitedCount">
+        update invite_commission
+        set invited_count = invited_count + 1
+        where user_id = #{userId}
+    </update>
+
+    <update id="increasePendingCommission">
+        update invite_commission
+        set pending_commission = pending_commission + #{amount}
+        where user_id = #{userId}
+    </update>
+
+</mapper>
