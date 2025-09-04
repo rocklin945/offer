@@ -101,7 +101,7 @@
                             </svg>
                         </div>
                         <h3 class="text-lg font-semibold text-gray-900 mb-1">4. 返佣</h3>
-                        <p class="text-gray-600 text-sm">获得5%返佣</p>
+                        <p class="text-gray-600 text-sm">获得10%返佣</p>
                     </div>
                 </div>
             </div>

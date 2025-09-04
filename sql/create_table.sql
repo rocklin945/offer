@@ -20,6 +20,7 @@ create table if not exists user
     user_profile  varchar(512)                           null comment '用户简介',
     user_role     int          default 1                 not null comment '用户角色：0:管理员 1:普通用户 2:会员',
     member_expire_time datetime                             null comment '会员到期时间',
+    inviter_code       varchar(64)                        null comment '注册时使用的邀请码',
     create_time   datetime     default CURRENT_TIMESTAMP not null comment '创建时间',
     update_time   datetime     default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     is_delete     tinyint      default 0                 not null comment '是否删除',
@@ -113,3 +114,14 @@ CREATE TABLE resume (
                         update_time    DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
 ) COMMENT='个人简历信息表';
 
+CREATE TABLE invite_commission (
+                       id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+                       user_id BIGINT NOT NULL COMMENT '邀请人用户ID，对应user表id',
+                       invited_count INT NOT NULL DEFAULT 0 COMMENT '累计邀请用户数',
+                       total_commission DECIMAL(10,2) NOT NULL DEFAULT 0.00 COMMENT '累计获得佣金',
+                       pending_commission DECIMAL(10,2) NOT NULL DEFAULT 0.00 COMMENT '确认中的佣金',
+                       balance_commission DECIMAL(10,2) NOT NULL DEFAULT 0.00 COMMENT '佣金余额，可用佣金',
+                       create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                       update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+                       UNIQUE KEY uk_user_id (user_id)
+) COMMENT='邀请佣金记录表';
