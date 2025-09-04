@@ -106,7 +106,8 @@
             </li>
           </ul>
 
-          <button disabled class="w-full py-3 px-6 rounded-xl bg-gray-100 text-gray-400 font-semibold cursor-not-allowed">
+          <button disabled
+            class="w-full py-3 px-6 rounded-xl bg-gray-100 text-gray-400 font-semibold cursor-not-allowed">
             当前方案
           </button>
         </div>
@@ -527,28 +528,21 @@ const loading = ref(true)
 // 获取会员图片URL
 const fetchMemberImageUrl = async () => {
   try {
-    console.log('BecomeMember: 开始获取二维码图片URL...')
     loading.value = true
     const response = await webInfoApi.getMemberImageUrl()
-    console.log('BecomeMember: 获取到响应:', response)
     if (response.statusCode === 200) {
       if (response.data && response.data.trim() !== '') {
         imageUrl.value = response.data
-        console.log('BecomeMember: 设置图片URL:', response.data)
       } else {
-        console.warn('BecomeMember: 返回的图片URL为空，使用占位图')
         imageUrl.value = null
       }
     } else {
-      console.warn('BecomeMember: 响应状态码异常:', response)
       imageUrl.value = null
     }
   } catch (error) {
-    console.error('BecomeMember: 获取会员图片URL失败:', error)
     imageUrl.value = null
   } finally {
     loading.value = false
-    console.log('BecomeMember: 加载完成, imageUrl:', imageUrl.value)
   }
 }
 

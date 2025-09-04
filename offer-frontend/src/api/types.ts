@@ -118,3 +118,15 @@ export interface WebInfoResponse {
   activity5Time: string
   updateTime: string
 }
+
+// 邀请佣金相关类型
+export interface InviteCommission {
+  id?: number
+  userId: number
+  invitedCount: number
+  pendingCommission: number
+  totalCommission: number
+  balanceCommission: number
+  createTime?: string
+  updateTime?: string
+}

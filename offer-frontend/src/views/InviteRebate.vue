@@ -17,7 +17,7 @@
                         </svg>
                     </div>
                     <div>
-                        <div class="text-3xl font-bold text-gray-900">0</div>
+                        <div class="text-3xl font-bold text-gray-900">{{ commissionData.invitedCount }}</div>
                         <div class="text-gray-600">已注册用户数</div>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
                         </svg>
                     </div>
                     <div>
-                        <div class="text-3xl font-bold text-gray-900">¥0.00</div>
+                        <div class="text-3xl font-bold text-gray-900">¥{{ commissionData.pendingCommission.toFixed(2) }}</div>
                         <div class="text-gray-600">确认中的佣金</div>
                     </div>
                 </div>
@@ -41,7 +41,7 @@
                         </svg>
                     </div>
                     <div>
-                        <div class="text-3xl font-bold text-gray-900">¥0.00</div>
+                        <div class="text-3xl font-bold text-gray-900">¥{{ commissionData.totalCommission.toFixed(2) }}</div>
                         <div class="text-gray-600">累计获得佣金</div>
                     </div>
                 </div>
@@ -147,7 +147,7 @@
                 <div class="flex flex-col sm:flex-row justify-between items-center">
                     <div>
                         <p class="text-gray-600">可用佣金</p>
-                        <p class="text-4xl font-bold text-gray-900">¥0.00</p>
+                        <p class="text-4xl font-bold text-gray-900">¥{{ commissionData.totalCommission.toFixed(2) }}</p>
                         <p class="text-sm text-gray-500 mt-2">邀请好友获得的佣金，可以直接划转到消费余额</p>
                     </div>
                     <div class="flex space-x-4 mt-4 sm:mt-0">
@@ -171,13 +171,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, reactive } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { Message } from '@/components/Message'
+import { getInviteCommission } from '@/api/invite'
 
 const userStore = useUserStore()
 const copied = ref(false)
 const inviteLinkInput = ref<HTMLInputElement | null>(null)
+const loading = ref(false)
+
+// 佣金数据
+const commissionData = reactive({
+  invitedCount: 0,
+  pendingCommission: 0,
+  totalCommission: 0,
+  balanceCommission: 0
+})
 
 // 生成邀请链接
 const inviteLink = computed(() => {
@@ -206,11 +216,38 @@ const copyInviteLink = () => {
     }, 2000)
 }
 
-// 组件挂载时确保用户信息已加载
-onMounted(async () => {
-    if (!userStore.currentUser && userStore.token) {
-        await userStore.initUserInfo()
+// 加载佣金数据
+const loadCommissionData = async () => {
+  loading.value = true
+  try {
+    // 检查用户是否已登录
+    if (!userStore.currentUser?.userId) {
+      Message.warning('请先登录查看佣金数据')
+      loading.value = false
+      return
     }
+    
+    const response = await getInviteCommission(userStore.currentUser?.userId)
+    if (response.code === 200 && response.data) {
+      const commission = response.data
+      commissionData.invitedCount = commission.invitedCount || 0
+      commissionData.pendingCommission = commission.pendingCommission || 0
+      commissionData.totalCommission = commission.totalCommission || 0
+    }
+  } catch (error) {
+    console.error('加载佣金数据失败:', error)
+    Message.error('加载佣金数据失败')
+  } finally {
+    loading.value = false
+  }
+}
+
+// 组件挂载时确保用户信息已加载并加载佣金数据
+onMounted(async () => {
+  if (!userStore.currentUser && userStore.token) {
+    await userStore.initUserInfo()
+  }
+  await loadCommissionData()
 })
 </script>
 
