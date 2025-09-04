@@ -42,6 +42,11 @@
               ]" active-class="text-orange-600 bg-orange-100">
                 {{ userStore.currentUser.userRole === 1 ? '成为会员 ⭐' : '会员中心 💎' }}
               </router-link>
+              <router-link v-if="userStore.currentUser" to="/invite-rebate"
+                class="hidden sm:inline-flex px-3 py-2 rounded-md text-sm font-medium transition-colors text-green-500 hover:text-green-700 bg-green-100 hover:bg-green-200"
+                active-class="text-green-600 bg-green-200">
+                邀请返利 💵
+              </router-link>
             </nav>
           </div>
 
@@ -68,7 +73,7 @@
                       class="text-xs px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full font-medium">
                       尊贵会员
                       <span v-if="memberDaysLeft !== null" class="ml-1">
-                        {{ memberDaysLeft }}天
+                        ({{ memberDaysLeft }}天)
                       </span>
                     </span>
                   </div>
@@ -77,6 +82,10 @@
                   <router-link to="/become-member" @click="showMobileMenu = false"
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                     {{ userStore.currentUser.userRole === 1 ? '成为会员 ⭐' : '会员中心 💎' }}
+                  </router-link>
+                  <router-link v-if="userStore.currentUser.userRole === 2" to="/invite-rebate"
+                    @click="showMobileMenu = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    邀请返利
                   </router-link>
                   <router-link v-if="userStore.isAdmin()" to="/admin/dashboard" @click="showMobileMenu = false"
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
@@ -101,7 +110,7 @@
                   class="text-xs px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full font-medium">
                   尊贵会员
                   <span v-if="memberDaysLeft !== null" class="ml-1">
-                    {{ memberDaysLeft }}天
+                    ({{ memberDaysLeft }}天)
                   </span>
                 </span>
                 <span v-else class="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded-full font-medium">

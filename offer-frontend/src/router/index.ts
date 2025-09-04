@@ -27,6 +27,12 @@ const router = createRouter({
       component: () => import('@/views/BecomeMember.vue'),
       meta: { requiresAuth: true }
     },
+    {
+      path: '/invite-rebate',
+      name: 'InviteRebate',
+      component: () => import('@/views/InviteRebate.vue'),
+      meta: { requiresAuth: true }
+    },
     // 后台管理路由
     {
       path: '/admin',
