@@ -199,7 +199,7 @@ const inviteLink = computed(() => {
         username = username.substring(3)
     }
 
-    return `https://offer.rocklin.top/register?code=${encodeURIComponent(username)}`
+    return `https://offer.rocklin.top/?code=${encodeURIComponent(username)}`
 })
 
 // 复制邀请链接
@@ -228,8 +228,8 @@ const loadCommissionData = async () => {
     }
     
     const response = await getInviteCommission(userStore.currentUser?.userId)
-    if (response.code === 200 && response.data) {
-      const commission = response.data
+    if (response.data.statusCode === 200 && response.data.data) {
+      const commission = response.data.data
       commissionData.invitedCount = commission.invitedCount || 0
       commissionData.pendingCommission = commission.pendingCommission || 0
       commissionData.totalCommission = commission.totalCommission || 0

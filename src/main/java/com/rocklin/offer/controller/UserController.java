@@ -58,7 +58,7 @@ public class UserController {
      */
     @Operation(summary = "登录", description = "用户登录")
     @PostMapping("/login")
-    @SlidingWindowRateLimit()
+    @SlidingWindowRateLimit(windowInSeconds = 10, maxCount = 3)
     public BaseResponse<UserLoginResponse> login(@RequestBody @Validated UserLoginRequest req, HttpServletRequest  httpServletRequest) {
         Assert.notNull(req, ErrorCode.PARAMS_ERROR, "参数为空");
         UserLoginResponse userLoginResponse = userService.login(req, httpServletRequest);

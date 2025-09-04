@@ -88,7 +88,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { login, register } from '@/api/user'
 import type { UserRegisterRequest } from '@/api/userTypes'
@@ -175,14 +175,7 @@ const handleRegister = async () => {
   }
 }
 
-// 组件挂载时检查URL中的邀请码
-onMounted(() => {
-  const urlParams = new URLSearchParams(window.location.search)
-  const inviteCode = urlParams.get('code')
-  if (inviteCode) {
-    userStore.setInviteCode(inviteCode)
-  }
-})
+
 </script>
 
 <style scoped>

@@ -33,6 +33,11 @@ const router = createRouter({
       component: () => import('@/views/InviteRebate.vue'),
       meta: { requiresAuth: true }
     },
+    {
+      path: '/code=:inviteCode',
+      name: 'InviteCode',
+      component: () => import('@/views/JobList.vue')
+    },
     // 后台管理路由
     {
       path: '/admin',
@@ -86,6 +91,19 @@ const router = createRouter({
 // 路由守卫
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
+
+  // 优先处理查询参数中的邀请码：?code=xxx
+  if (to.query && (to.query as any).code) {
+    const inviteCode = String((to.query as any).code)
+    if (inviteCode) {
+      userStore.setInviteCode(inviteCode)
+    }
+    // 清除查询参数，跳转到首页
+    next({ path: '/', query: {} })
+    return
+  }
+
+
 
   // 检查是否需要认证
   if (to.meta.requiresAuth) {
