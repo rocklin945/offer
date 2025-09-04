@@ -64,6 +64,13 @@
                   <div class="flex items-center space-x-2">
                     <img :src="userStore.currentUser.userAvatar" alt="用户头像" class="w-6 h-6 rounded-full" />
                     <span class="text-sm font-medium text-gray-700">{{ userStore.currentUser.userName }}</span>
+                    <span v-if="userStore.currentUser.userRole === 2"
+                      class="text-xs px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full font-medium">
+                      尊贵会员
+                      <span v-if="memberDaysLeft !== null" class="ml-1">
+                        {{ memberDaysLeft }}天
+                      </span>
+                    </span>
                   </div>
                 </div>
                 <div class="py-1">
@@ -93,6 +100,9 @@
                 <span v-else-if="userStore.currentUser.userRole === 2"
                   class="text-xs px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full font-medium">
                   尊贵会员
+                  <span v-if="memberDaysLeft !== null" class="ml-1">
+                    {{ memberDaysLeft }}天
+                  </span>
                 </span>
                 <span v-else class="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded-full font-medium">
                   普通用户
@@ -172,6 +182,20 @@ const showHomeModal = ref(false)
 // 判断是否为管理页面路由
 const isAdminRoute = computed(() => {
   return route.path.startsWith('/admin')
+})
+
+// 计算会员剩余天数
+const memberDaysLeft = computed(() => {
+  if (!userStore.currentUser || userStore.currentUser.userRole !== 2 || !userStore.currentUser.memberExpireTime) {
+    return null
+  }
+
+  const expireTime = new Date(userStore.currentUser.memberExpireTime)
+  const now = new Date()
+  const diffTime = expireTime.getTime() - now.getTime()
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+  return diffDays > 0 ? diffDays : 0
 })
 
 // 处理登出
