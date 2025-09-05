@@ -129,3 +129,18 @@ CREATE TABLE invite_commission (
                        UNIQUE KEY uk_user_id (user_id)
 ) COMMENT='邀请佣金记录表';
 
+CREATE TABLE membership_plan (
+                                 id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+                                 label VARCHAR(50) NOT NULL COMMENT '套餐名称，比如周卡、月卡',
+                                 price DECIMAL(10,2) NOT NULL COMMENT '套餐价格',
+                                 days INT NOT NULL COMMENT '有效天数',
+                                 create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                                 update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+                                 status TINYINT NOT NULL DEFAULT 1 COMMENT '状态：0=下架，1=上架'
+) COMMENT='会员套餐表';
+
+INSERT INTO membership_plan (label, price, days) VALUES
+                                                     ('周卡', 0.99, 7),
+                                                     ('月卡', 3.49, 30),
+                                                     ('季卡', 7.99, 90),
+                                                     ('年卡', 9.90, 365);
