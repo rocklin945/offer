@@ -17,7 +17,7 @@ public interface MembershipPlanService {
      * 根据套餐类型查询套餐(1:周卡, 2:月卡, 3:季卡, 4:年卡)
      */
     MembershipPlan getPlanByPlanType(Integer planType);
-    
+
     /**
      * 获取所有套餐
      */

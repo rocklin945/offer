@@ -26,7 +26,7 @@ public class MembershipPlanServiceImpl implements MembershipPlanService {
     public MembershipPlan getPlanByPlanType(Integer planType) {
         return membershipPlanMapper.selectByPlanType(planType);
     }
-    
+
     @Override
     public List<MembershipPlan> getAllPlans() {
         return membershipPlanMapper.selectAll();

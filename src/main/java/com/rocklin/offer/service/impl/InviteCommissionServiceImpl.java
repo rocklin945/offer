@@ -43,7 +43,7 @@ public class InviteCommissionServiceImpl implements InviteCommissionService {
     public void handleUserInvitation(Long inviterId, Long inviteeId) {
         // 检查邀请人是否已有佣金记录
         InviteCommission existing = commissionMapper.selectByUserId(inviterId);
-        
+
         if (existing == null) {
             // 创建新的佣金记录
             InviteCommission commission = new InviteCommission();
@@ -66,7 +66,8 @@ public class InviteCommissionServiceImpl implements InviteCommissionService {
         // 计算偏移量
         int offset = (request.getPageNum() - 1) * request.getPageSize();
         // 查询数据
-        List<InviteCommission> commissions = commissionMapper.selectCommissionPage(request, offset, request.getPageSize());
+        List<InviteCommission> commissions = commissionMapper.selectCommissionPage(request, offset,
+                request.getPageSize());
         // 查询总数
         long total = commissionMapper.selectCommissionCount(request);
         return new PageResponse<>(commissions, total, request.getPageNum(), request.getPageSize());
@@ -102,24 +103,24 @@ public class InviteCommissionServiceImpl implements InviteCommissionService {
         BigDecimal balanceCommission = inviteCommission.getBalanceCommission();
         Assert.isTrue(balanceCommission.compareTo(BigDecimal.ZERO) > 0,
                 ErrorCode.OPERATION_ERROR, "用户没有余额可兑换");
-        
+
         // 根据planType获取套餐信息
         MembershipPlan plan = membershipPlanMapper.selectByPlanType(planType);
         Assert.notNull(plan, ErrorCode.NOT_FOUND, "套餐不存在");
-        
+
         // 检查余额是否足够兑换该套餐
         BigDecimal amount = plan.getPrice();
         Assert.isTrue(amount.compareTo(balanceCommission) <= 0,
                 ErrorCode.OPERATION_ERROR, "兑换金额大于余额");
-        
+
         // 扣除用户余额
         inviteCommission.setBalanceCommission(balanceCommission.subtract(amount));
         commissionMapper.update(inviteCommission);
-        
+
         // 添加用户会员天数
         User user = userMapper.selectById(userId);
         Assert.notNull(user, ErrorCode.NOT_FOUND, "用户不存在");
-        
+
         // 计算新的会员过期时间
         LocalDateTime newExpireTime;
         if (user.getMemberExpireTime() == null || user.getMemberExpireTime().isBefore(LocalDateTime.now())) {
@@ -129,15 +130,15 @@ public class InviteCommissionServiceImpl implements InviteCommissionService {
             // 如果用户仍是会员，则在现有过期时间基础上增加天数
             newExpireTime = user.getMemberExpireTime().plusDays(plan.getDays());
         }
-        
+
         // 更新用户会员信息
         UserUpdateRequest userUpdateRequest = new UserUpdateRequest();
         userUpdateRequest.setId(userId);
         userUpdateRequest.setMemberExpireTime(newExpireTime);
         userUpdateRequest.setUserRole(UserRoleEnum.VIP.getValue());
         userMapper.updateById(userUpdateRequest);
-        
-        log.info("用户{}成功兑换{}套餐，增加{}天会员，余额剩余：{}", 
+
+        log.info("用户{}成功兑换{}套餐，增加{}天会员，余额剩余：{}",
                 userId, plan.getLabel(), plan.getDays(), inviteCommission.getBalanceCommission().subtract(amount));
     }
 

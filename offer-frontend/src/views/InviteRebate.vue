@@ -193,7 +193,7 @@
         </div>
     </div>
     <!-- 弹窗：兑换会员 -->
-    <RedeemMemberModal v-if="showRedeemModal" :available-commission="commissionData.totalCommission"
+    <RedeemMemberModal v-if="showRedeemModal" :available-commission="commissionData.balanceCommission"
         @close="showRedeemModal = false" @confirm="handleRedeemConfirm" />
     <!-- 弹窗：提现 -->
     <WithdrawCashModal v-if="showWithdrawModal" @close="showWithdrawModal = false" />
@@ -204,6 +204,7 @@ import { ref, computed, onMounted, reactive } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { Message } from '@/components/Message'
 import { getInviteCommission } from '@/api/invite'
+import { inviteCommissionApi } from '@/api/inviteCommission'
 import RedeemMemberModal from '@/components/RedeemMemberModal.vue'
 import WithdrawCashModal from '@/components/WithdrawCashModal.vue'
 
@@ -221,10 +222,35 @@ const openWithdrawModal = () => {
     showWithdrawModal.value = true
 }
 
-type PlanOption = { price: number; days: number; label: string }
-const handleRedeemConfirm = (plan: PlanOption) => {
-    // TODO: 调用后端兑换接口，这里先做占位提示
-    Message.success(`已提交兑换：${plan.label}（${plan.days}天），需佣金 ¥${plan.price}`)
+interface PlanOption {
+    id: number
+    price: number
+    days: number
+    label: string
+}
+
+const handleRedeemConfirm = async (plan: PlanOption) => {
+    try {
+        // 检查用户是否已登录
+        if (!userStore.currentUser?.userId) {
+            Message.warning('请先登录')
+            return
+        }
+
+        // 调用后端兑换接口
+        const response = await inviteCommissionApi.redeemMember(userStore.currentUser.userId, plan.id)
+        if (response.data.statusCode === 200) {
+            Message.success(`成功兑换${plan.label}（${plan.days}天）`)
+            showRedeemModal.value = false
+            // 重新加载佣金数据
+            await loadCommissionData()
+        } else {
+            Message.error(response.data.message || '兑换失败')
+        }
+    } catch (error) {
+        console.error('兑换失败:', error)
+        Message.error('兑换失败，请稍后重试')
+    }
 }
 
 // 佣金数据

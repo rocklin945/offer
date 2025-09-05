@@ -35,5 +35,10 @@ export const inviteCommissionApi = {
   // 拒绝佣金
   rejectCommission: (id: number) => {
     return request.post(`/invite/commission/reject/${id}`)
+  },
+
+  // 兑换会员
+  redeemMember: (userId: number, planType: number) => {
+    return request.post(`/invite/commission/redeemMember?userId=${userId}&planType=${planType}`)
   }
 }
