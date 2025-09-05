@@ -36,9 +36,9 @@
             <option value="id">ID</option>
             <option value="userId">用户ID</option>
             <option value="invitedCount">邀请人数</option>
+            <option value="totalCommission">总佣金</option>
             <option value="pendingCommission">待确认金额</option>
             <option value="balanceCommission">已确认金额</option>
-            <option value="totalCommission">总佣金</option>
             <option value="createTime">创建时间</option>
           </select>
         </div>
@@ -106,8 +106,8 @@
                 </td>
                 <td class="px-4 py-4 text-center text-sm text-gray-900">
                   <div class="flex justify-center space-x-2">
-                    <button v-if="item.status === 0" @click="handleConfirm(item.id, item.pendingCommission)" class="text-green-600 hover:text-green-900 text-sm font-medium">确认</button>
-                    <button v-if="item.status === 0" @click="handleReject(item.id)" class="text-red-600 hover:text-red-900 text-sm font-medium">拒绝</button>
+                    <button v-if="item.pendingCommission > 0" @click="handleConfirm(item.id, item.pendingCommission)" class="text-green-600 hover:text-green-900 text-sm font-medium">确认</button>
+                    <button v-if="item.pendingCommission > 0" @click="handleReject(item.id)" class="text-red-600 hover:text-red-900 text-sm font-medium">拒绝</button>
                   </div>
                 </td>
               </tr>

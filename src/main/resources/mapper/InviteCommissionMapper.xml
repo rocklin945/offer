@@ -26,8 +26,7 @@
         balance_commission,
         total_commission,
         create_time,
-        update_time,
-        status)
+        update_time)
         values
         (UUID_SHORT(),
         #{userId},
@@ -36,8 +35,7 @@
         #{balanceCommission},
         #{totalCommission},
         #{createTime},
-        #{updateTime},
-        #{status})
+        #{updateTime})
     </insert>
 
     <select id="selectByUserId" resultMap="BaseResultMap">
@@ -54,7 +52,8 @@
 
     <update id="increasePendingCommission">
         update invite_commission
-        set pending_commission = pending_commission + #{amount}
+        set pending_commission = pending_commission + #{amount},
+        status = 0
         where user_id = #{userId}
     </update>
 
