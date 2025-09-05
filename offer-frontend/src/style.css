@@ -29,3 +29,15 @@
     @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
   }
 }
+
+/* 解决页面切换时滚动条导致的抖动问题 */
+html {
+  overflow-y: scroll;
+}
+
+/* 或者使用以下方案来避免滚动条引起的页面抖动 */
+/*
+html {
+  margin-left: calc(100vw - 100%);
+}
+*/

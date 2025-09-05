@@ -86,12 +86,12 @@ public class InviteCommissionServiceImpl implements InviteCommissionService {
 
     @Override
     @Transactional
-    public void rejectCommission(Long id) {
+    public void rejectCommission(Long id, BigDecimal amount) {
         // 查询佣金记录
         InviteCommission commission = commissionMapper.selectById(id);
         Assert.notNull(commission, ErrorCode.NOT_FOUND, "佣金记录不存在");
         // 拒绝佣金
-        commissionMapper.rejectCommission(id);
+        commissionMapper.rejectCommission(id, amount);
         log.info("拒绝佣金: userId={}", commission.getUserId());
     }
 
@@ -169,5 +169,29 @@ public class InviteCommissionServiceImpl implements InviteCommissionService {
     @Override
     public InviteCommission getByUserId(Long userId) {
         return commissionMapper.selectByUserId(userId);
+    }
+
+    @Override
+    @Transactional
+    public void withdraw(Long id, BigDecimal amount) {
+        // 查询佣金记录
+        InviteCommission commission = commissionMapper.selectById(id);
+        Assert.notNull(commission, ErrorCode.NOT_FOUND, "佣金记录不存在");
+
+        // 检查余额是否足够
+        BigDecimal balanceCommission = commission.getBalanceCommission();
+        Assert.isTrue(balanceCommission.compareTo(BigDecimal.ZERO) > 0,
+                ErrorCode.OPERATION_ERROR, "用户没有余额可提现");
+        Assert.isTrue(amount.compareTo(balanceCommission) <= 0,
+                ErrorCode.OPERATION_ERROR, "提现金额大于余额");
+        Assert.isTrue(amount.compareTo(BigDecimal.ZERO) > 0,
+                ErrorCode.OPERATION_ERROR, "提现金额必须大于0");
+
+        // 扣除用户余额
+        commission.setBalanceCommission(balanceCommission.subtract(amount));
+        commissionMapper.update(commission);
+
+        log.info("用户{}成功提现{}，余额剩余：{}",
+                commission.getUserId(), amount, commission.getBalanceCommission());
     }
 }

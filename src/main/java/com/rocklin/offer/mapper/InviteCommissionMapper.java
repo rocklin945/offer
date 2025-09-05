@@ -57,7 +57,7 @@ public interface InviteCommissionMapper {
     /**
      * 拒绝佣金
      */
-    Long rejectCommission(@Param("id") Long id);
+    Long rejectCommission(@Param("id") Long id, @Param("amount") BigDecimal amount);
 
     Long update(InviteCommission inviteCommission);
 }

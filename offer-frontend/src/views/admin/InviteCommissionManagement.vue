@@ -1,12 +1,12 @@
 <template>
-  <div class="space-y-6">
+  <div class="invite-commission-management">
     <!-- 页面标题 -->
     <div class="flex justify-between items-center">
       <h2 class="text-2xl font-bold text-gray-900">邀请返利管理</h2>
     </div>
 
     <!-- 搜索筛选区域 -->
-    <div class="bg-white rounded-lg border border-gray-200 p-6">
+    <div class="bg-white rounded-lg border border-gray-200 p-6 mt-6">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">用户ID</label>
@@ -36,9 +36,9 @@
             <option value="id">ID</option>
             <option value="userId">用户ID</option>
             <option value="invitedCount">邀请人数</option>
-            <option value="totalCommission">总佣金</option>
+            <option value="totalCommission">累计佣金</option>
             <option value="pendingCommission">待确认金额</option>
-            <option value="balanceCommission">已确认金额</option>
+            <option value="balanceCommission">余额</option>
             <option value="createTime">创建时间</option>
           </select>
         </div>
@@ -64,7 +64,7 @@
     </div>
 
     <!-- 数据表格 -->
-    <div class="bg-white rounded-lg border border-gray-200">
+    <div class="bg-white rounded-lg border border-gray-200 mt-6">
       <div v-if="loading" class="text-center py-12">
         <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
         <p class="mt-2 text-gray-500">加载中...</p>
@@ -72,7 +72,9 @@
       <div v-else>
         <div v-if="commissionList.length === 0" class="text-center py-12">
           <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+            </path>
           </svg>
           <h3 class="mt-2 text-sm font-medium text-gray-900">暂无数据</h3>
           <p class="mt-1 text-sm text-gray-500">没有找到任何返利记录</p>
@@ -84,9 +86,9 @@
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">用户ID</th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">邀请人数</th>
-                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">总佣金</th>
+                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">累计佣金</th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">待确认</th>
-                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">已确认</th>
+                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">余额</th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
               </tr>
@@ -100,14 +102,21 @@
                 <td class="px-4 py-4 text-center text-sm text-gray-900">¥{{ item.pendingCommission }}</td>
                 <td class="px-4 py-4 text-center text-sm text-gray-900">¥{{ item.balanceCommission }}</td>
                 <td class="px-4 py-4 text-center text-sm text-gray-900">
-                  <span v-if="item.status === 0" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">待确认</span>
-                  <span v-else-if="item.status === 1" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">已确认</span>
-                  <span v-else class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">已拒绝</span>
+                  <span v-if="item.status === 0"
+                    class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">待确认</span>
+                  <span v-else-if="item.status === 1"
+                    class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">已确认</span>
+                  <span v-else
+                    class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">已拒绝</span>
                 </td>
                 <td class="px-4 py-4 text-center text-sm text-gray-900">
                   <div class="flex justify-center space-x-2">
-                    <button v-if="item.pendingCommission > 0" @click="handleConfirm(item.id, item.pendingCommission)" class="text-green-600 hover:text-green-900 text-sm font-medium">确认</button>
-                    <button v-if="item.pendingCommission > 0" @click="handleReject(item.id)" class="text-red-600 hover:text-red-900 text-sm font-medium">拒绝</button>
+                    <button v-if="item.pendingCommission > 0" @click="handleConfirm(item)"
+                      class="text-green-600 hover:text-green-900 text-sm font-medium">确认</button>
+                    <button v-if="item.pendingCommission > 0" @click="handleReject(item)"
+                      class="text-red-600 hover:text-red-900 text-sm font-medium">拒绝</button>
+                    <button v-if="item.balanceCommission > 0" @click="handleWithdraw(item)"
+                      class="text-blue-600 hover:text-blue-900 text-sm font-medium">提现</button>
                   </div>
                 </td>
               </tr>
@@ -133,7 +142,8 @@
 
             <!-- 页码按钮 -->
             <template v-for="page in getPageNumbers()" :key="page">
-              <button v-if="page === '...'" disabled class="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm text-gray-400 cursor-default">
+              <button v-if="page === '...'" disabled
+                class="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm text-gray-400 cursor-default">
                 ...
               </button>
               <button v-else @click="handlePageChange(page)" :class="[
@@ -183,14 +193,25 @@
         </div>
       </div>
     </div>
+
+    <!-- 金额确认弹窗 -->
+    <WithdrawConfirmModal v-if="showAmountModal" :title="amountModalData.title" :message="amountModalData.message"
+      :max-amount="amountModalData.maxAmount" :action-type="amountModalData.actionType" @close="showAmountModal = false"
+      @confirm="handleAmountConfirm" />
+
+    <!-- 提现确认弹窗 -->
+    <WithdrawConfirmModal v-if="showWithdrawModal" :title="withdrawModalData.title" :message="withdrawModalData.message"
+      :max-amount="withdrawModalData.maxAmount" action-type="withdraw" @close="showWithdrawModal = false"
+      @confirm="handleWithdrawConfirm" />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, onActivated } from 'vue'
 import { inviteCommissionApi } from '@/api/inviteCommission'
 import Message from '@/components/Message'
 import Confirm from '@/components/Confirm'
+import WithdrawConfirmModal from '@/components/WithdrawConfirmModal.vue'
 
 const searchForm = ref({
   userId: '',
@@ -205,6 +226,25 @@ const pagination = ref({
   current: 1,
   pageSize: 10,
   total: 0
+})
+
+// 金额确认弹窗相关状态
+const showAmountModal = ref(false)
+const amountModalData = ref({
+  title: '',
+  message: '',
+  maxAmount: 0,
+  commissionId: 0,
+  actionType: '' // 'confirm' or 'reject'
+})
+
+// 提现相关状态
+const showWithdrawModal = ref(false)
+const withdrawModalData = ref({
+  title: '',
+  message: '',
+  maxAmount: 0,
+  commissionId: 0
 })
 
 const handleSearch = async () => {
@@ -318,47 +358,74 @@ const getPageNumbers = () => {
   return pages
 }
 
-const handleConfirm = async (id, amount) => {
-  const confirmed = await Confirm.show({
+// 确认和拒绝相关方法
+const handleConfirm = (item) => {
+  amountModalData.value = {
     title: '确认佣金',
-    message: '确定要确认这笔佣金吗？',
-    type: 'warning',
-    confirmText: '确认',
-    cancelText: '取消'
-  })
-  
-  if (confirmed) {
-    try {
-      await inviteCommissionApi.confirmCommission(id, amount)
+    message: `确定要确认用户${item.userId}的佣金吗？`,
+    maxAmount: item.pendingCommission,
+    commissionId: item.id,
+    actionType: 'confirm'
+  }
+  showAmountModal.value = true
+}
+
+const handleReject = (item) => {
+  amountModalData.value = {
+    title: '拒绝佣金',
+    message: `确定要拒绝用户${item.userId}的佣金吗？`,
+    maxAmount: item.pendingCommission,
+    commissionId: item.id,
+    actionType: 'reject'
+  }
+  showAmountModal.value = true
+}
+
+const handleAmountConfirm = async (amount) => {
+  try {
+    if (amountModalData.value.actionType === 'confirm') {
+      await inviteCommissionApi.confirmCommission(amountModalData.value.commissionId, amount)
       Message.success('佣金确认成功')
-      handleSearch()
-    } catch (error) {
-      Message.error('确认失败: ' + error.message)
+    } else if (amountModalData.value.actionType === 'reject') {
+      await inviteCommissionApi.rejectCommission(amountModalData.value.commissionId, amount)
+      Message.success('佣金拒绝成功')
     }
+    showAmountModal.value = false
+    handleSearch() // 重新加载数据
+  } catch (error) {
+    Message.error('操作失败: ' + error.message)
   }
 }
 
-const handleReject = async (id) => {
-  const confirmed = await Confirm.show({
-    title: '拒绝佣金',
-    message: '确定要拒绝这笔佣金吗？',
-    type: 'danger',
-    confirmText: '拒绝',
-    cancelText: '取消'
-  })
-  
-  if (confirmed) {
-    try {
-      await inviteCommissionApi.rejectCommission(id)
-      Message.success('佣金拒绝成功')
-      handleSearch()
-    } catch (error) {
-      Message.error('拒绝失败: ' + error.message)
-    }
+// 提现相关方法
+const handleWithdraw = (item) => {
+  withdrawModalData.value = {
+    title: '提现确认',
+    message: `确定要从用户${item.userId}的余额中提现吗？`,
+    maxAmount: item.balanceCommission,
+    commissionId: item.id
+  }
+  showWithdrawModal.value = true
+}
+
+const handleWithdrawConfirm = async (amount) => {
+  try {
+    await inviteCommissionApi.withdraw(withdrawModalData.value.commissionId, amount)
+    Message.success('提现成功')
+    showWithdrawModal.value = false
+    handleSearch() // 重新加载数据
+  } catch (error) {
+    Message.error('提现失败: ' + error.message)
   }
 }
 
 onMounted(() => {
+  handleSearch()
+})
+
+// 当组件被激活时重新加载数据
+onActivated(() => {
+  // 确保在路由切换时重新加载数据
   handleSearch()
 })
 </script>

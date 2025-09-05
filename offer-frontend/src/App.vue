@@ -333,3 +333,10 @@ watch(() => route.path, () => {
   }
 }
 </style>
+
+<style>
+/* 解决页面切换时滚动条导致的抖动问题 */
+html {
+  margin-left: calc(100vw - 100%);
+}
+</style>

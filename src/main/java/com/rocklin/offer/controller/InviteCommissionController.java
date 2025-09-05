@@ -42,7 +42,8 @@ public class InviteCommissionController {
     @AuthCheck(enableRole = UserRoleEnum.ADMIN)
     @Operation(summary = "分页查询邀请佣金列表", description = "分页查询邀请佣金列表")
     @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 10)
-    public BaseResponse<PageResponse<InviteCommission>> listCommissionByPage(@RequestBody @Validated InviteCommissionPageQueryRequest request) {
+    public BaseResponse<PageResponse<InviteCommission>> listCommissionByPage(
+            @RequestBody @Validated InviteCommissionPageQueryRequest request) {
         PageResponse<InviteCommission> response = inviteCommissionService.listCommissionByPage(request);
         return BaseResponse.success(response);
     }
@@ -60,8 +61,8 @@ public class InviteCommissionController {
     @AuthCheck(enableRole = UserRoleEnum.ADMIN)
     @Operation(summary = "拒绝佣金", description = "拒绝佣金")
     @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 3)
-    public BaseResponse<Void> rejectCommission(@PathVariable Long id) {
-        inviteCommissionService.rejectCommission(id);
+    public BaseResponse<Void> rejectCommission(@PathVariable Long id, @RequestParam BigDecimal amount) {
+        inviteCommissionService.rejectCommission(id, amount);
         return BaseResponse.success();
     }
 
@@ -70,6 +71,15 @@ public class InviteCommissionController {
     @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 3)
     public BaseResponse<Void> redeemMember(@RequestParam Long userId, @RequestParam Integer planType) {
         inviteCommissionService.redeemMember(userId, planType);
+        return BaseResponse.success();
+    }
+
+    @PostMapping("/withdraw/{id}")
+    @AuthCheck(enableRole = UserRoleEnum.ADMIN)
+    @Operation(summary = "提现", description = "提现")
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 3)
+    public BaseResponse<Void> withdraw(@PathVariable Long id, @RequestParam BigDecimal amount) {
+        inviteCommissionService.withdraw(id, amount);
         return BaseResponse.success();
     }
 }

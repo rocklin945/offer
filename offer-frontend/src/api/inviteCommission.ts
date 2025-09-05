@@ -33,12 +33,17 @@ export const inviteCommissionApi = {
   },
 
   // 拒绝佣金
-  rejectCommission: (id: number) => {
-    return request.post(`/invite/commission/reject/${id}`)
+  rejectCommission: (id: number, amount: number) => {
+    return request.post(`/invite/commission/reject/${id}?amount=${amount}`)
   },
 
   // 兑换会员
   redeemMember: (userId: number, planType: number) => {
     return request.post(`/invite/commission/redeemMember?userId=${userId}&planType=${planType}`)
+  },
+
+  // 提现
+  withdraw: (id: number, amount: number) => {
+    return request.post(`/invite/commission/withdraw/${id}?amount=${amount}`)
   }
 }

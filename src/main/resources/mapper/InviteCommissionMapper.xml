@@ -129,7 +129,7 @@
 
     <update id="rejectCommission">
         update invite_commission
-        set pending_commission = 0,
+        set pending_commission = pending_commission - #{amount},
         status = 2
         where id = #{id}
     </update>

@@ -38,7 +38,15 @@ public interface InviteCommissionService {
     /**
      * 管理员接口：拒绝佣金
      */
-    void rejectCommission(Long id);
+    void rejectCommission(Long id, BigDecimal amount);
 
+    /**
+     * 兑换会员
+     */
     void redeemMember(Long userId, Integer planType);
+
+    /**
+     * 提现
+     */
+    void withdraw(Long id, BigDecimal amount);
 }
