@@ -313,6 +313,11 @@
                     class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl">
                     前往开通会员
                   </button>
+                  <!-- 邀请免费得会员按钮 -->
+                  <button @click="goToInviteRebate"
+                    class="w-full mt-3 bg-green-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-600 transition-all duration-200 shadow-lg hover:shadow-xl">
+                    邀请免费得会员
+                  </button>
                 </template>
 
                 <button @click="goBackToPreviousPage"
@@ -605,6 +610,11 @@ const fetchData = async () => {
 // 前往开通会员
 const goToBecomeMember = () => {
   router.push('/become-member')
+}
+
+// 前往邀请返利页面
+const goToInviteRebate = () => {
+  router.push('/invite-rebate')
 }
 
 // 关闭会员覆盖层
