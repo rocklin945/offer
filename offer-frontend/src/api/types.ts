@@ -106,6 +106,8 @@ export interface WebInfoResponse {
   userCount: number
   memberCount: number
   jobCount: number
+  originalPrice: number
+  currentPrice: number
   activity1: string
   activity1Time: string
   activity2: string
@@ -117,6 +119,12 @@ export interface WebInfoResponse {
   activity5: string
   activity5Time: string
   updateTime: string
+}
+
+// 价格信息响应类型
+export interface WebPriceResponse {
+  originalPrice: number
+  currentPrice: number
 }
 
 // 邀请佣金相关类型

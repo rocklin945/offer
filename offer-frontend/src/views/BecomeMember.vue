@@ -123,7 +123,7 @@
           <div class="text-center mb-8">
             <h3 class="text-2xl font-bold text-gray-900 mb-2">会员版</h3>
             <div class="mb-4">
-              <span class="text-4xl font-bold text-gray-900">¥29.9</span>
+              <span class="text-4xl font-bold text-gray-900">¥{{ priceInfo.originalPrice }}</span>
               <span class="text-gray-500">/年</span>
             </div>
             <p class="text-gray-600">解锁全部功能</p>
@@ -184,7 +184,7 @@
         <!-- 扫码支付 -->
         <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 relative">
           <div class="text-center mb-8">
-            <h3 class="text-2xl font-bold text-gray-900 mb-2">秋招求职季特惠¥9.9</h3>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">秋招求职季特惠¥{{ priceInfo.currentPrice }}</h3>
             <div class="mb-4">
               <span class="text-lg text-gray-600">入群限时享特惠</span>
             </div>
@@ -212,7 +212,7 @@
           </div>
 
           <div class="bg-blue-50 rounded-xl p-4 text-center">
-            <div class="text-blue-800 font-semibold mb-1">¥9.9/年</div>
+            <div class="text-blue-800 font-semibold mb-1">¥{{ priceInfo.currentPrice }}/年</div>
             <div class="text-blue-600 text-sm">享受所有会员特权</div>
           </div>
         </div>
@@ -298,7 +298,7 @@
               </div>
               <div class="ml-4">
                 <h4 class="font-semibold text-gray-900">张同学</h4>
-                <p class="text-sm text-gray-500">清华大学 · 现就职于字节跳动</p>
+                <p class="text-sm text-gray-500">武汉大学 · 现就职于字节跳动</p>
               </div>
             </div>
             <div class="flex mb-3">
@@ -523,7 +523,20 @@ import { webInfoApi } from '@/api/webInfo'
 
 const isYearly = ref(false)
 const imageUrl = ref<string | null>(null)
+const priceInfo = ref({ originalPrice: 29.9, currentPrice: 9.9 })
 const loading = ref(true)
+
+// 获取价格信息
+const fetchPriceInfo = async () => {
+  try {
+    const response = await webInfoApi.getPrice()
+    if (response.statusCode === 200 && response.data) {
+      priceInfo.value = response.data
+    }
+  } catch (error) {
+    console.error('获取价格信息失败:', error)
+  }
+}
 
 // 获取会员图片URL
 const fetchMemberImageUrl = async () => {
@@ -581,6 +594,7 @@ const onImageError = (event: Event) => {
 
 // 组件挂载时获取会员图片URL
 onMounted(() => {
+  fetchPriceInfo()
   fetchMemberImageUrl()
 })
 </script>
