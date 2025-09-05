@@ -1,6 +1,7 @@
 package com.rocklin.offer.service;
 
 import com.rocklin.offer.model.dto.response.WebInfoResponse;
+import com.rocklin.offer.model.dto.response.WebPriceResponse;
 
 /**
  * @ClassName WebInfoService
@@ -31,4 +32,11 @@ public interface WebInfoService {
      * @return 图片URL
      */
     String getMemberImageUrl();
+
+    /**
+     * 获取价格（公开接口）
+     *
+     * @return 价格信息
+     */
+    WebPriceResponse getPrice();
 }

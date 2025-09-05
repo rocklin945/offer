@@ -74,6 +74,8 @@ CREATE TABLE web_info (
                           image_url VARCHAR(255) COMMENT '会员展示图片URL',
                           user_count INT DEFAULT 0 COMMENT '用户数量',
                           job_count INT DEFAULT 0 COMMENT '招聘信息数量',
+                          original_price decimal(10, 2) default 0.00     null comment '原价',
+                          current_price  decimal(10, 2) default 0.00     null comment '现价',
 
                           activity1 VARCHAR(255) COMMENT '最近活动1',
                           activity1_time DATETIME COMMENT '活动1时间',

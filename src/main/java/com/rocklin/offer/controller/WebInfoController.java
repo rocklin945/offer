@@ -5,6 +5,7 @@ import com.rocklin.offer.common.annotation.SlidingWindowRateLimit;
 import com.rocklin.offer.common.enums.UserRoleEnum;
 import com.rocklin.offer.common.response.BaseResponse;
 import com.rocklin.offer.model.dto.response.WebInfoResponse;
+import com.rocklin.offer.model.dto.response.WebPriceResponse;
 import com.rocklin.offer.service.WebInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -49,5 +50,16 @@ public class WebInfoController {
     public BaseResponse<String> getMemberImageUrl() {
         String imageUrl = webInfoService.getMemberImageUrl();
         return BaseResponse.success(imageUrl);
+    }
+
+    /**
+     * 获取价格
+     */
+    @Operation(summary = "获取价格", description = "获取价格，无需管理员权限")
+    @GetMapping("/price")
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 3)
+    public BaseResponse<WebPriceResponse> getPrice() {
+        WebPriceResponse price = webInfoService.getPrice();
+        return BaseResponse.success(price);
     }
 }

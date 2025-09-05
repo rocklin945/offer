@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -45,6 +46,16 @@ public class WebInfo implements Serializable {
      * 招聘信息数量
      */
     private Integer jobCount;
+
+    /**
+     * 原价
+     */
+    private BigDecimal originalPrice;
+
+    /**
+     * 现价
+     */
+    private BigDecimal currentPrice;
 
     /**
      * 最近活动1

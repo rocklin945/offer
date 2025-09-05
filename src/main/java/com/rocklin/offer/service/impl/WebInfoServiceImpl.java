@@ -4,6 +4,7 @@ import com.rocklin.offer.common.enums.ErrorCode;
 import com.rocklin.offer.common.exception.Assert;
 import com.rocklin.offer.mapper.WebInfoMapper;
 import com.rocklin.offer.model.dto.response.WebInfoResponse;
+import com.rocklin.offer.model.dto.response.WebPriceResponse;
 import com.rocklin.offer.model.entity.WebInfo;
 import com.rocklin.offer.service.WebInfoService;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +59,8 @@ public class WebInfoServiceImpl implements WebInfoService {
         response.setImageUrl(webInfo.getImageUrl());
         response.setUserCount(webInfo.getUserCount());
         response.setJobCount(webInfo.getJobCount());
+        response.setOriginalPrice(webInfo.getOriginalPrice());
+        response.setCurrentPrice(webInfo.getCurrentPrice());
         response.setActivity1(webInfo.getActivity1());
         response.setActivity1Time(webInfo.getActivity1Time());
         response.setActivity2(webInfo.getActivity2());
@@ -85,5 +88,15 @@ public class WebInfoServiceImpl implements WebInfoService {
         WebInfo webInfo = webInfoMapper.selectWebInfo();
         Assert.notNull(webInfo, ErrorCode.NOT_FOUND, "网站信息不存在");
         return webInfo.getImageUrl();
+    }
+
+    @Override
+    public WebPriceResponse getPrice() {
+        WebInfo webInfo = webInfoMapper.selectWebInfo();
+        Assert.notNull(webInfo, ErrorCode.NOT_FOUND, "网站信息不存在");
+        WebPriceResponse resp = new WebPriceResponse();
+        resp.setOriginalPrice(webInfo.getOriginalPrice());
+        resp.setCurrentPrice(webInfo.getCurrentPrice());
+        return resp;
     }
 }

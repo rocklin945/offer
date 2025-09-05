@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -36,6 +37,12 @@ public class WebInfoResponse implements Serializable {
 
     @Schema(description = "招聘信息数量")
     private Integer jobCount;
+
+    @Schema(description = "原价")
+    private BigDecimal originalPrice;
+
+    @Schema(description = "现价")
+    private BigDecimal currentPrice;
 
     @Schema(description = "最近活动1")
     private String activity1;

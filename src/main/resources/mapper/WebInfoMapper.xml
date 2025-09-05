@@ -11,6 +11,8 @@
         <result property="imageUrl" column="image_url"/>
         <result property="userCount" column="user_count"/>
         <result property="jobCount" column="job_count"/>
+        <result property="originalPrice" column="original_price"/>
+        <result property="currentPrice" column="current_price"/>
         <result property="activity1" column="activity1"/>
         <result property="activity1Time" column="activity1_time"/>
         <result property="activity2" column="activity2"/>
@@ -26,7 +28,7 @@
 
     <!-- 基础字段 -->
     <sql id="Base_Column_List">
-        id, pv, image_url, user_count, job_count,
+        id, pv, image_url, user_count, job_count, original_price, current_price,
         activity1, activity2, activity3, activity4,activity5,
         activity1_time,activity2_time,activity3_time,activity4_time,activity5_time,update_time
     </sql>
@@ -55,6 +57,12 @@
             </if>
             <if test="jobCount != null">
                 job_count = #{jobCount},
+            </if>
+            <if test="originalPrice != null">
+                original_price = #{originalPrice},
+            </if>
+            <if test="currentPrice != null">
+                current_price = #{currentPrice},
             </if>
             <if test="activity1 != null">
                 activity1 = #{activity1},
