@@ -151,13 +151,13 @@
                         <p class="text-sm text-gray-500 mt-2">邀请好友获得的佣金，可以直接划转到消费余额</p>
                     </div>
                     <div class="flex space-x-4 mt-4 sm:mt-0">
-                        <button class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center">
+                        <button @click="openRedeemModal" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
                             </svg>
                             兑换会员
                         </button>
-                        <button class="px-6 py-3 border border-yellow-300 text-yellow-800 bg-yellow-300 rounded-lg hover:bg-yellow-400 transition-colors flex items-center">
+                        <button @click="openWithdrawModal" class="px-6 py-3 border border-yellow-300 text-yellow-800 bg-yellow-300 rounded-lg hover:bg-yellow-400 transition-colors flex items-center">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
                             </svg>
@@ -168,6 +168,18 @@
             </div>
         </div>
     </div>
+  <!-- 弹窗：兑换会员 -->
+  <RedeemMemberModal
+    v-if="showRedeemModal"
+    :available-commission="commissionData.totalCommission"
+    @close="showRedeemModal = false"
+    @confirm="handleRedeemConfirm"
+  />
+  <!-- 弹窗：提现 -->
+  <WithdrawCashModal
+    v-if="showWithdrawModal"
+    @close="showWithdrawModal = false"
+  />
 </template>
 
 <script setup lang="ts">
@@ -175,11 +187,28 @@ import { ref, computed, onMounted, reactive } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { Message } from '@/components/Message'
 import { getInviteCommission } from '@/api/invite'
+import RedeemMemberModal from '@/components/RedeemMemberModal.vue'
+import WithdrawCashModal from '@/components/WithdrawCashModal.vue'
 
 const userStore = useUserStore()
 const copied = ref(false)
 const inviteLinkInput = ref<HTMLInputElement | null>(null)
 const loading = ref(false)
+const showRedeemModal = ref(false)
+const showWithdrawModal = ref(false)
+
+const openRedeemModal = () => {
+  showRedeemModal.value = true
+}
+const openWithdrawModal = () => {
+  showWithdrawModal.value = true
+}
+
+type PlanOption = { price: number; days: number; label: string }
+const handleRedeemConfirm = (plan: PlanOption) => {
+  // TODO: 调用后端兑换接口，这里先做占位提示
+  Message.success(`已提交兑换：${plan.label}（${plan.days}天），需佣金 ¥${plan.price}`)
+}
 
 // 佣金数据
 const commissionData = reactive({

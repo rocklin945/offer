@@ -1,0 +1,145 @@
+<template>
+  <div class="fixed inset-0 z-50 flex items-center justify-center px-4">
+    <!-- 遮罩 -->
+    <div
+      class="absolute inset-0 bg-black transition-opacity duration-300"
+      :class="isVisible ? 'bg-opacity-50' : 'bg-opacity-0'"
+      @click="handleClose"
+    ></div>
+
+    <!-- 弹窗主体 -->
+    <div
+      class="relative bg-white rounded-2xl shadow-2xl p-6 sm:p-8 w-full max-w-md mx-auto transform transition-all duration-300 ease-out"
+      :class="isVisible ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-4'"
+    >
+      <!-- 关闭按钮 -->
+      <button
+        @click="handleClose"
+        class="absolute top-3 right-3 sm:top-4 sm:right-4 w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
+        aria-label="关闭弹窗"
+      >
+        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <!-- 内容 -->
+      <div>
+        <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-1">兑换会员</h3>
+        <p class="text-gray-600 mb-4">使用佣金兑换不同天数的会员</p>
+
+        <!-- 可用佣金 -->
+        <div class="bg-blue-50 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6">
+          <div class="text-blue-800 font-semibold">可用佣金：¥{{ (availableCommission ?? 0).toFixed(2) }}</div>
+          <div class="text-blue-600 text-xs sm:text-sm">选择对应价位进行兑换</div>
+        </div>
+
+        <!-- 方案选择 -->
+        <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
+          <button
+            v-for="(plan, idx) in plans"
+            :key="idx"
+            type="button"
+            @click="selectedIndex = idx"
+            class="border rounded-xl p-4 text-left transition-all duration-200"
+            :class="selectedIndex === idx ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-200 hover:border-gray-300'"
+          >
+            <div class="text-gray-900 font-bold text-lg">¥{{ plan.price }}</div>
+            <div class="text-gray-600 text-sm mt-1">{{ plan.label }} · {{ plan.days }}天</div>
+          </button>
+        </div>
+
+        <!-- 提示 -->
+        <div class="text-xs text-gray-500 mb-4">
+          说明：兑换成功后会员天数实时生效，无法退还，请确认后操作。
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="flex space-x-3">
+          <button
+            @click="handleClose"
+            class="flex-1 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold transition-all"
+          >
+            取消
+          </button>
+          <button
+            @click="handleConfirm"
+            class="flex-1 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+            :disabled="!currentPlan || (availableCommission ?? 0) < currentPlan.price"
+          >
+            立即兑换
+          </button>
+        </div>
+
+        <!-- 余额不足提示 -->
+        <p v-if="currentPlan && (availableCommission ?? 0) < currentPlan.price" class="text-red-500 text-xs mt-2">
+          佣金不足，无法兑换该套餐
+        </p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, computed, nextTick, onMounted } from 'vue'
+import { Message } from '@/components/Message'
+
+interface PlanOption {
+  price: number
+  days: number
+  label: string
+}
+
+const props = defineProps<{
+  availableCommission?: number
+}>()
+
+const emit = defineEmits<{
+  close: []
+  confirm: [payload: PlanOption]
+}>()
+
+const isVisible = ref(false)
+const selectedIndex = ref(0)
+const plans = ref<PlanOption[]>([
+  { price: 0.99, days: 7, label: '周卡' },
+  { price: 3.49, days: 30, label: '月卡' },
+  { price: 7.99, days: 90, label: '季卡' },
+  { price: 9.90, days: 365, label: '年卡' }
+])
+
+const currentPlan = computed(() => plans.value[selectedIndex.value])
+
+const handleClose = () => {
+  isVisible.value = false
+  setTimeout(() => emit('close'), 300)
+}
+
+const handleConfirm = () => {
+  const plan = currentPlan.value
+  if (!plan) return
+  if ((props.availableCommission ?? 0) < plan.price) {
+    Message.warning('佣金不足，无法兑换该套餐')
+    return
+  }
+  // 向父组件抛出事件，交由父组件调用后端
+  emit('confirm', plan)
+  // 关闭弹窗
+  handleClose()
+}
+
+onMounted(async () => {
+  await nextTick()
+  isVisible.value = true
+})
+</script>
+
+<style scoped>
+/* 入场/出场过渡已经用类控制，这里保留媒介适配 */
+@media (max-width: 640px) {
+  .relative {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+}
+</style>
