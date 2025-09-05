@@ -28,53 +28,70 @@
         <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-1">兑换会员</h3>
         <p class="text-gray-600 mb-4">使用佣金兑换不同天数的会员</p>
 
-        <!-- 可用佣金 -->
-        <div class="bg-blue-50 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6">
-          <div class="text-blue-800 font-semibold">可用佣金：¥{{ (availableCommission ?? 0).toFixed(2) }}</div>
-          <div class="text-blue-600 text-xs sm:text-sm">选择对应价位进行兑换</div>
+        <!-- 加载状态 -->
+        <div v-if="loading" class="flex justify-center items-center h-32">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
         </div>
 
-        <!-- 方案选择 -->
-        <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
-          <button
-            v-for="(plan, idx) in plans"
-            :key="idx"
-            type="button"
-            @click="selectedIndex = idx"
-            class="border rounded-xl p-4 text-left transition-all duration-200"
-            :class="selectedIndex === idx ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-200 hover:border-gray-300'"
-          >
-            <div class="text-gray-900 font-bold text-lg">¥{{ plan.price }}</div>
-            <div class="text-gray-600 text-sm mt-1">{{ plan.label }} · {{ plan.days }}天</div>
+        <!-- 错误状态 -->
+        <div v-else-if="error" class="bg-red-50 rounded-xl p-4 mb-4">
+          <div class="text-red-800 font-semibold">加载失败</div>
+          <div class="text-red-600 text-sm mt-1">{{ error }}</div>
+          <button @click="fetchPlans" class="mt-2 text-sm text-blue-600 hover:text-blue-800">
+            重新加载
           </button>
         </div>
 
-        <!-- 提示 -->
-        <div class="text-xs text-gray-500 mb-4">
-          说明：兑换成功后会员天数实时生效，无法退还，请确认后操作。
-        </div>
+        <!-- 正常内容 -->
+        <div v-else>
+          <!-- 可用佣金 -->
+          <div class="bg-blue-50 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6">
+            <div class="text-blue-800 font-semibold">可用佣金：¥{{ (availableCommission ?? 0).toFixed(2) }}</div>
+            <div class="text-blue-600 text-xs sm:text-sm">选择对应价位进行兑换</div>
+          </div>
 
-        <!-- 操作按钮 -->
-        <div class="flex space-x-3">
-          <button
-            @click="handleClose"
-            class="flex-1 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold transition-all"
-          >
-            取消
-          </button>
-          <button
-            @click="handleConfirm"
-            class="flex-1 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-            :disabled="!currentPlan || (availableCommission ?? 0) < currentPlan.price"
-          >
-            立即兑换
-          </button>
-        </div>
+          <!-- 方案选择 -->
+          <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <button
+              v-for="(plan, idx) in plans"
+              :key="plan.id"
+              type="button"
+              @click="selectedIndex = idx"
+              class="border rounded-xl p-4 text-left transition-all duration-200"
+              :class="selectedIndex === idx ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-200 hover:border-gray-300'"
+            >
+              <div class="text-gray-900 font-bold text-lg">¥{{ plan.price }}</div>
+              <div class="text-gray-600 text-sm mt-1">{{ plan.label }} · {{ plan.days }}天</div>
+            </button>
+          </div>
 
-        <!-- 余额不足提示 -->
-        <p v-if="currentPlan && (availableCommission ?? 0) < currentPlan.price" class="text-red-500 text-xs mt-2">
-          佣金不足，无法兑换该套餐
-        </p>
+          <!-- 提示 -->
+          <div class="text-xs text-gray-500 mb-4">
+            说明：兑换成功后会员天数实时生效，无法退还，请确认后操作。
+          </div>
+
+          <!-- 操作按钮 -->
+          <div class="flex space-x-3">
+            <button
+              @click="handleClose"
+              class="flex-1 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold transition-all"
+            >
+              取消
+            </button>
+            <button
+              @click="handleConfirm"
+              class="flex-1 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              :disabled="!currentPlan || (availableCommission ?? 0) < currentPlan.price"
+            >
+              立即兑换
+            </button>
+          </div>
+
+          <!-- 余额不足提示 -->
+          <p v-if="currentPlan && (availableCommission ?? 0) < currentPlan.price" class="text-red-500 text-xs mt-2">
+            佣金不足，无法兑换该套餐
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -83,8 +100,10 @@
 <script setup lang="ts">
 import { ref, computed, nextTick, onMounted } from 'vue'
 import { Message } from '@/components/Message'
+import { membershipPlanApi } from '@/api/membershipPlan'
 
-interface PlanOption {
+export interface PlanOption {
+  id: number
   price: number
   days: number
   label: string
@@ -101,14 +120,39 @@ const emit = defineEmits<{
 
 const isVisible = ref(false)
 const selectedIndex = ref(0)
-const plans = ref<PlanOption[]>([
-  { price: 0.99, days: 7, label: '周卡' },
-  { price: 3.49, days: 30, label: '月卡' },
-  { price: 7.99, days: 90, label: '季卡' },
-  { price: 9.90, days: 365, label: '年卡' }
-])
+const plans = ref<PlanOption[]>([])
+const loading = ref(true)
+const error = ref<string | null>(null)
 
 const currentPlan = computed(() => plans.value[selectedIndex.value])
+
+// 获取套餐信息
+const fetchPlans = async () => {
+  try {
+    loading.value = true
+    error.value = null
+    const response = await membershipPlanApi.getAllActivePlans()
+    if (response.statusCode === 200 && response.data) {
+      plans.value = response.data.map((plan: any) => ({
+        id: plan.id,
+        price: plan.price,
+        days: plan.days,
+        label: plan.label
+      }))
+      // 默认选中第一个套餐
+      if (plans.value.length > 0) {
+        selectedIndex.value = 0
+      }
+    } else {
+      error.value = '获取套餐信息失败'
+    }
+  } catch (err) {
+    error.value = '网络错误，请稍后重试'
+    console.error('获取套餐信息失败:', err)
+  } finally {
+    loading.value = false
+  }
+}
 
 const handleClose = () => {
   isVisible.value = false
@@ -131,6 +175,8 @@ const handleConfirm = () => {
 onMounted(async () => {
   await nextTick()
   isVisible.value = true
+  // 获取套餐信息
+  await fetchPlans()
 })
 </script>
 

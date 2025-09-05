@@ -25,4 +25,9 @@ public interface MembershipPlanMapper {
      * 根据套餐类型查询套餐(1:周卡, 2:月卡, 3:季卡, 4:年卡)
      */
     MembershipPlan selectByPlanType(@Param("planType") Integer planType);
+    
+    /**
+     * 查询所有套餐
+     */
+    List<MembershipPlan> selectAll();
 }

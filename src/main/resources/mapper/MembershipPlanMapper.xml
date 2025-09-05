@@ -34,4 +34,10 @@
         from membership_plan
         where id = #{planType} and status = 1
     </select>
+    
+    <select id="selectAll" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from membership_plan
+        order by id asc
+    </select>
 </mapper>
