@@ -121,7 +121,7 @@ CREATE TABLE invite_commission (
                        total_commission DECIMAL(10,2) NOT NULL DEFAULT 0.00 COMMENT '累计获得佣金',
                        pending_commission DECIMAL(10,2) NOT NULL DEFAULT 0.00 COMMENT '确认中的佣金',
                        balance_commission DECIMAL(10,2) NOT NULL DEFAULT 0.00 COMMENT '佣金余额，可用佣金',
-                       status             tinyint    default 1      not null comment '状态：0-待确认，1-已确认',
+                       status             tinyint    default 1      not null comment '状态：0-待确认，1-已确认，2-已拒绝',
                        create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                        update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
                        UNIQUE KEY uk_user_id (user_id)
