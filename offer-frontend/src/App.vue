@@ -83,9 +83,8 @@
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                     {{ userStore.currentUser.userRole === 1 ? '成为会员 ⭐' : '会员中心 💎' }}
                   </router-link>
-                  <router-link v-if="userStore.currentUser.userRole === 2" to="/invite-rebate"
-                    @click="showMobileMenu = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    邀请返利
+                  <router-link to="/invite-rebate" @click="showMobileMenu = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    邀请返利 💵
                   </router-link>
                   <router-link v-if="userStore.isAdmin()" to="/admin/dashboard" @click="showMobileMenu = false"
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
