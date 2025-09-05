@@ -1,5 +1,5 @@
 <template>
-  <div class="invite-rebate-container">
+  <div class="invite-rebate-container" style="width: 100%; overflow-x: hidden;">
     <div class="min-h-screen bg-gray-50 py-8">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         <!-- 我的返佣 Header Card -->
@@ -217,119 +217,119 @@ const showRedeemModal = ref(false)
 const showWithdrawModal = ref(false)
 
 const openRedeemModal = () => {
-    showRedeemModal.value = true
+  showRedeemModal.value = true
 }
 const openWithdrawModal = () => {
-    showWithdrawModal.value = true
+  showWithdrawModal.value = true
 }
 
 interface PlanOption {
-    id: number
-    price: number
-    days: number
-    label: string
+  id: number
+  price: number
+  days: number
+  label: string
 }
 
 const handleRedeemConfirm = async (plan: PlanOption) => {
-    try {
-        // 检查用户是否已登录
-        if (!userStore.currentUser?.userId) {
-            Message.warning('请先登录')
-            return
-        }
-
-        // 调用后端兑换接口
-        const response = await inviteCommissionApi.redeemMember(userStore.currentUser.userId, plan.id)
-        if (response.data.statusCode === 200) {
-            Message.success(`成功兑换${plan.label}（${plan.days}天）`)
-            showRedeemModal.value = false
-            // 重新加载佣金数据
-            await loadCommissionData()
-        } else {
-            Message.error(response.data.message || '兑换失败')
-        }
-    } catch (error) {
-        console.error('兑换失败:', error)
-        Message.error('兑换失败，请稍后重试')
+  try {
+    // 检查用户是否已登录
+    if (!userStore.currentUser?.userId) {
+      Message.warning('请先登录')
+      return
     }
+
+    // 调用后端兑换接口
+    const response = await inviteCommissionApi.redeemMember(userStore.currentUser.userId, plan.id)
+    if (response.data.statusCode === 200) {
+      Message.success(`成功兑换${plan.label}（${plan.days}天）`)
+      showRedeemModal.value = false
+      // 重新加载佣金数据
+      await loadCommissionData()
+    } else {
+      Message.error(response.data.message || '兑换失败')
+    }
+  } catch (error) {
+    console.error('兑换失败:', error)
+    Message.error('兑换失败，请稍后重试')
+  }
 }
 
 // 佣金数据
 const commissionData = reactive({
-    invitedCount: 0,
-    pendingCommission: 0,
-    totalCommission: 0,
-    balanceCommission: 0
+  invitedCount: 0,
+  pendingCommission: 0,
+  totalCommission: 0,
+  balanceCommission: 0
 })
 
 // 生成邀请链接
 const inviteLink = computed(() => {
-    if (!userStore.currentUser) return ''
+  if (!userStore.currentUser) return ''
 
-    // 获取用户名，去掉"用户_"前缀
-    let username = userStore.currentUser.userName || ''
-    if (username.startsWith('用户_')) {
-        username = username.substring(3)
-    }
+  // 获取用户名，去掉"用户_"前缀
+  let username = userStore.currentUser.userName || ''
+  if (username.startsWith('用户_')) {
+    username = username.substring(3)
+  }
 
-    return `https://offer.rocklin.top/?code=${encodeURIComponent(username)}`
+  return `https://offer.rocklin.top/?code=${encodeURIComponent(username)}`
 })
 
 // 复制邀请链接
 const copyInviteLink = () => {
-    if (!inviteLinkInput.value) return
+  if (!inviteLinkInput.value) return
 
-    inviteLinkInput.value.select()
-    document.execCommand('copy')
+  inviteLinkInput.value.select()
+  document.execCommand('copy')
 
-    copied.value = true
-    Message.success('邀请链接已复制！')
-    setTimeout(() => {
-        copied.value = false
-    }, 2000)
+  copied.value = true
+  Message.success('邀请链接已复制！')
+  setTimeout(() => {
+    copied.value = false
+  }, 2000)
 }
 
 // 加载佣金数据
 const loadCommissionData = async () => {
-    loading.value = true
-    try {
-        // 检查用户是否已登录
-        if (!userStore.currentUser?.userId) {
-            Message.warning('请先登录查看佣金数据')
-            loading.value = false
-            return
-        }
-
-        const response = await getInviteCommission(userStore.currentUser?.userId)
-        if (response.data.statusCode === 200 && response.data.data) {
-            const commission = response.data.data
-            commissionData.invitedCount = commission.invitedCount || 0
-            commissionData.pendingCommission = commission.pendingCommission || 0
-            commissionData.balanceCommission = commission.balanceCommission || 0
-            commissionData.totalCommission = commission.totalCommission || 0
-        }
-    } catch (error) {
-        console.error('加载佣金数据失败:', error)
-        Message.error('加载佣金数据失败')
-    } finally {
-        loading.value = false
+  loading.value = true
+  try {
+    // 检查用户是否已登录
+    if (!userStore.currentUser?.userId) {
+      Message.warning('请先登录查看佣金数据')
+      loading.value = false
+      return
     }
+
+    const response = await getInviteCommission(userStore.currentUser?.userId)
+    if (response.data.statusCode === 200 && response.data.data) {
+      const commission = response.data.data
+      commissionData.invitedCount = commission.invitedCount || 0
+      commissionData.pendingCommission = commission.pendingCommission || 0
+      commissionData.balanceCommission = commission.balanceCommission || 0
+      commissionData.totalCommission = commission.totalCommission || 0
+    }
+  } catch (error) {
+    console.error('加载佣金数据失败:', error)
+    Message.error('加载佣金数据失败')
+  } finally {
+    loading.value = false
+  }
 }
 
 // 组件挂载时确保用户信息已加载并加载佣金数据
 onMounted(async () => {
-    if (!userStore.currentUser && userStore.token) {
-        await userStore.initUserInfo()
-    }
-    await loadCommissionData()
+  if (!userStore.currentUser && userStore.token) {
+    await userStore.initUserInfo()
+  }
+  await loadCommissionData()
 })
 
 // 组件卸载时清理状态
 onUnmounted(() => {
-    // 清理可能存在的定时器
-    copied.value = false
-    showRedeemModal.value = false
-    showWithdrawModal.value = false
+  // 清理可能存在的定时器
+  copied.value = false
+  showRedeemModal.value = false
+  showWithdrawModal.value = false
 })
 
 </script>
@@ -338,16 +338,21 @@ onUnmounted(() => {
 /* 确保组件内容不会因为弹窗的显示隐藏导致页面高度变化 */
 .invite-rebate-container {
   min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  /* 添加硬件加速 */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 /* 按钮文本过渡效果 */
 .fade-enter-active,
 .fade-leave-active {
-    transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease;
 }
 
 .fade-enter-from,
 .fade-leave-to {
-    opacity: 0;
+  opacity: 0;
 }
 </style>

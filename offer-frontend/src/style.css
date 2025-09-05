@@ -5,10 +5,38 @@
 @layer base {
   html {
     font-family: 'Inter', system-ui, sans-serif;
+    /* 强制显示垂直滚动条，防止页面切换时因滚动条出现/消失导致的布局抖动 */
+    overflow-y: scroll;
+    /* 锁定视口宽度，防止页面切换时的水平偏移 */
+    width: 100vw;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
   }
-  
+
   body {
     @apply bg-gray-50 text-gray-900;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* 强制所有元素使用border-box模型，防止padding和border影响布局 */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  /* 稳定布局类，防止页面切换时的布局偏移 */
+  .stable-layout {
+    width: 100%;
+    overflow-x: hidden;
+    position: relative;
+    /* 防止子元素影响布局 */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
   }
 }
 
@@ -16,15 +44,15 @@
   .btn-primary {
     @apply bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
   }
-  
+
   .btn-secondary {
     @apply bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors duration-200;
   }
-  
+
   .input-field {
     @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
   }
-  
+
   .card {
     @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
   }

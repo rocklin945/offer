@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="min-h-screen">
+  <div id="app" class="min-h-screen" style="width: 100%; overflow-x: hidden;">
     <!-- 管理页面布局 -->
     <div v-if="isAdminRoute">
       <router-view />
@@ -148,7 +148,7 @@
 
       <!-- 内容主体部分 -->
       <main class="flex-1 bg-gray-50">
-        <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 stable-layout">
           <router-view v-slot="{ Component }">
             <transition name="fade" mode="out-in">
               <component :is="Component" :key="$route.fullPath" />
