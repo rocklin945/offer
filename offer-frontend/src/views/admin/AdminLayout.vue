@@ -214,26 +214,23 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* 后台管理页面路由过渡动画 - 统一使用fade动画与前台保持一致 */
+/* 后台管理页面路由过渡动画 - 修改为纯淡入淡出效果，避免水平位移 */
 .fade-enter-active,
 .fade-leave-active {
-  transition: all 0.3s ease;
+  transition: opacity 0.3s ease;
 }
 
 .fade-enter-from {
   opacity: 0;
-  transform: translateX(20px);
 }
 
 .fade-leave-to {
   opacity: 0;
-  transform: translateX(-20px);
 }
 
 .fade-enter-to,
 .fade-leave-from {
   opacity: 1;
-  transform: translateX(0);
 }
 
 /* 确保菜单项的样式优先级 */

@@ -5,10 +5,14 @@
 @layer base {
   html {
     font-family: 'Inter', system-ui, sans-serif;
+    /* 强制显示垂直滚动条，防止页面跳动 */
+    overflow-y: scroll;
   }
   
   body {
     @apply bg-gray-50 text-gray-900;
+    /* 防止页面内容因滚动条出现而偏移 */
+    margin-left: calc(100vw - 100%);
   }
 }
 
@@ -35,9 +39,7 @@ html {
   overflow-y: scroll;
 }
 
-/* 或者使用以下方案来避免滚动条引起的页面抖动 */
-/*
-html {
+/* 防止页面内容因滚动条出现而偏移 */
+body {
   margin-left: calc(100vw - 100%);
 }
-*/

@@ -337,7 +337,7 @@ onUnmounted(() => {
 <style scoped>
 /* 确保组件内容不会因为弹窗的显示隐藏导致页面高度变化 */
 .invite-rebate-container {
-  min-height: calc(100vh - 4rem); /* 减去顶部导航的高度 */
+  min-height: 100vh;
 }
 
 /* 按钮文本过渡效果 */
