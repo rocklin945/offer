@@ -297,23 +297,26 @@ watch(() => route.path, () => {
 </script>
 
 <style scoped>
-/* 路由过渡动画 - 修改为纯淡入淡出效果，避免水平位移 */
+/* 路由过渡动画 */
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .fade-enter-from {
   opacity: 0;
+  transform: translateX(20px);
 }
 
 .fade-leave-to {
   opacity: 0;
+  transform: translateX(-20px);
 }
 
 .fade-enter-to,
 .fade-leave-from {
   opacity: 1;
+  transform: translateX(0);
 }
 
 /* 强制应用活跃状态样式 */
@@ -328,12 +331,5 @@ watch(() => route.path, () => {
     color: #2563eb !important;
     background-color: #eff6ff !important;
   }
-}
-</style>
-
-<style>
-/* 解决页面切换时滚动条导致的抖动问题 */
-html {
-  margin-left: calc(100vw - 100%);
 }
 </style>

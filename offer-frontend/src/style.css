@@ -5,14 +5,10 @@
 @layer base {
   html {
     font-family: 'Inter', system-ui, sans-serif;
-    /* 强制显示垂直滚动条，防止页面跳动 */
-    overflow-y: scroll;
   }
   
   body {
     @apply bg-gray-50 text-gray-900;
-    /* 防止页面内容因滚动条出现而偏移 */
-    margin-left: calc(100vw - 100%);
   }
 }
 
@@ -32,14 +28,4 @@
   .card {
     @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
   }
-}
-
-/* 解决页面切换时滚动条导致的抖动问题 */
-html {
-  overflow-y: scroll;
-}
-
-/* 防止页面内容因滚动条出现而偏移 */
-body {
-  margin-left: calc(100vw - 100%);
 }

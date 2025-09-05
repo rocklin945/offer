@@ -122,8 +122,8 @@
       <!-- 页面内容 -->
       <div class="flex-1 p-6 bg-gray-50">
         <router-view v-slot="{ Component }">
-          <transition name="fade" mode="out-in">
-            <component :is="Component" :key="$route.fullPath" />
+          <transition name="slide" mode="out-in">
+            <component :is="Component" />
           </transition>
         </router-view>
       </div>
@@ -214,23 +214,26 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* 后台管理页面路由过渡动画 - 修改为纯淡入淡出效果，避免水平位移 */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
+/* 后台管理页面路由过渡动画 */
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.4s ease;
 }
 
-.fade-enter-from {
+.slide-enter-from {
   opacity: 0;
+  transform: translateY(20px);
 }
 
-.fade-leave-to {
+.slide-leave-to {
   opacity: 0;
+  transform: translateY(-20px);
 }
 
-.fade-enter-to,
-.fade-leave-from {
+.slide-enter-to,
+.slide-leave-from {
   opacity: 1;
+  transform: translateY(0);
 }
 
 /* 确保菜单项的样式优先级 */
