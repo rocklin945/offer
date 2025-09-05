@@ -6,9 +6,11 @@ import com.rocklin.offer.common.exception.BusinessException;
 import com.rocklin.offer.common.response.PageResponse;
 import com.rocklin.offer.mapper.InviteCommissionMapper;
 import com.rocklin.offer.mapper.UserMapper;
+import com.rocklin.offer.mapper.WebInfoMapper;
 import com.rocklin.offer.model.dto.request.InviteCommissionPageQueryRequest;
 import com.rocklin.offer.model.entity.InviteCommission;
 import com.rocklin.offer.model.entity.User;
+import com.rocklin.offer.model.entity.WebInfo;
 import com.rocklin.offer.service.InviteCommissionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,11 +18,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.rocklin.offer.common.constants.Constants.ONE;
-import static com.rocklin.offer.common.constants.Constants.USER_PREFIX;
+import static com.rocklin.offer.common.constants.Constants.*;
 
 @Service
 @Slf4j
@@ -29,6 +31,7 @@ public class InviteCommissionServiceImpl implements InviteCommissionService {
 
     private final InviteCommissionMapper commissionMapper;
     private final UserMapper userMapper;
+    private final WebInfoMapper webInfoMapper;
 
     @Override
     @Transactional
@@ -102,8 +105,11 @@ public class InviteCommissionServiceImpl implements InviteCommissionService {
         }
 
         // 增加待结算佣金
-        commissionMapper.increasePendingCommission(inviter.getId(), new BigDecimal("0.99"));
-        log.info("增加待结算佣金: userId={}, amount=0.99", inviter.getId());
+        WebInfo webInfo = webInfoMapper.selectWebInfo();
+        String commission = String.valueOf(webInfo.getCurrentPrice().multiply(BigDecimal.valueOf(ZERO_POINT_ONE)));
+        BigDecimal amount = new BigDecimal(commission).setScale(TWO, RoundingMode.HALF_UP);
+        commissionMapper.increasePendingCommission(inviter.getId(), amount);
+        log.info("增加待结算佣金: userId={}, amount={}", inviter.getId(), amount);
     }
 
     @Override

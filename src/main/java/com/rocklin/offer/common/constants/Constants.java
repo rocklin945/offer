@@ -51,4 +51,6 @@ public final class Constants {
      * 数量
      */
     public static final int ONE = 1;
+    public static final double ZERO_POINT_ONE =0.1;
+    public static final int TWO =2;
 }
