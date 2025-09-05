@@ -82,6 +82,12 @@ const router = createRouter({
           name: 'UserJobApplyManagement',
           component: () => import('@/views/admin/UserJobApplyManagement.vue'),
           meta: { title: '投递记录管理', icon: 'apply', requiresAuth: true, requiresAdmin: true }
+        },
+        {
+          path: 'invite-commission-management',
+          name: 'InviteCommissionManagement',
+          component: () => import('@/views/admin/InviteCommissionManagement.vue'),
+          meta: { title: '邀请返利管理', icon: 'commission', requiresAuth: true, requiresAdmin: true }
         }
       ]
     }
