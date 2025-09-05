@@ -48,4 +48,9 @@ public class InviteCommission {
      * 更新时间
      */
     private LocalDateTime updateTime;
+
+    /**
+     * 状态：0-待确认，1-已确认，2-已拒绝
+     */
+    private Integer status;
 }

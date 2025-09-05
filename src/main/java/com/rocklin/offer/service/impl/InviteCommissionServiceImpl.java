@@ -1,7 +1,12 @@
 package com.rocklin.offer.service.impl;
 
+import com.rocklin.offer.common.enums.ErrorCode;
+import com.rocklin.offer.common.exception.Assert;
+import com.rocklin.offer.common.exception.BusinessException;
+import com.rocklin.offer.common.response.PageResponse;
 import com.rocklin.offer.mapper.InviteCommissionMapper;
 import com.rocklin.offer.mapper.UserMapper;
+import com.rocklin.offer.model.dto.request.InviteCommissionPageQueryRequest;
 import com.rocklin.offer.model.entity.InviteCommission;
 import com.rocklin.offer.model.entity.User;
 import com.rocklin.offer.service.InviteCommissionService;
@@ -12,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.rocklin.offer.common.constants.Constants.ONE;
 import static com.rocklin.offer.common.constants.Constants.USER_PREFIX;
@@ -48,6 +54,37 @@ public class InviteCommissionServiceImpl implements InviteCommissionService {
     }
 
     @Override
+    public PageResponse<InviteCommission> listCommissionByPage(InviteCommissionPageQueryRequest request) {
+        // 计算偏移量
+        int offset = (request.getPageNum() - 1) * request.getPageSize();
+        // 查询数据
+        List<InviteCommission> commissions = commissionMapper.selectCommissionPage(request, offset, request.getPageSize());
+        // 查询总数
+        long total = commissionMapper.selectCommissionCount(request);
+        return new PageResponse<>(commissions, total, request.getPageNum(), request.getPageSize());
+    }
+
+    @Override
+    @Transactional
+    public void confirmCommission(Long id, BigDecimal amount) {
+        // 查询佣金记录
+        InviteCommission commission = commissionMapper.selectById(id);
+        Assert.notNull(commission, ErrorCode.NOT_FOUND, "佣金记录不存在");
+        // 更新状态
+        commissionMapper.confirmCommission(id, amount);
+        log.info("确认佣金: userId={}, amount={}", commission.getUserId(), amount);
+    }
+
+    @Override
+    @Transactional
+    public void rejectCommission(Long id) {
+        // 查询佣金记录
+        InviteCommission commission = commissionMapper.selectById(id);
+        Assert.notNull(commission, ErrorCode.NOT_FOUND, "佣金记录不存在");
+        // 拒绝佣金
+        commissionMapper.rejectCommission(id);
+        log.info("拒绝佣金: userId={}", commission.getUserId());
+    }
     @Transactional
     public void handleUserBecomeMember(Long userId) {
         // 查找用户的邀请人

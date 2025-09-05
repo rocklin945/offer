@@ -7,13 +7,15 @@
         <result column="user_id" property="userId" jdbcType="BIGINT"/>
         <result column="invited_count" property="invitedCount" jdbcType="INTEGER"/>
         <result column="pending_commission" property="pendingCommission" jdbcType="DECIMAL"/>
+        <result column="balance_commission" property="balanceCommission" jdbcType="DECIMAL"/>
         <result column="total_commission" property="totalCommission" jdbcType="DECIMAL"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
         <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, user_id, invited_count, pending_commission, total_commission, create_time, update_time
+        id, user_id, invited_count, pending_commission, balance_commission, total_commission, create_time, update_time, status
     </sql>
     <insert id="insert">
         insert into invite_commission
@@ -21,17 +23,21 @@
         user_id,
         invited_count,
         pending_commission,
+        balance_commission,
         total_commission,
         create_time,
-        update_time)
+        update_time,
+        status)
         values
         (UUID_SHORT(),
         #{userId},
         #{invitedCount},
         #{pendingCommission},
+        #{balanceCommission},
         #{totalCommission},
         #{createTime},
-        #{updateTime})
+        #{updateTime},
+        #{status})
     </insert>
 
     <select id="selectByUserId" resultMap="BaseResultMap">
@@ -52,4 +58,80 @@
         where user_id = #{userId}
     </update>
 
+    <select id="selectById" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from invite_commission
+        where id = #{id}
+    </select>
+
+    <select id="selectCommissionPage" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from invite_commission
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.userId != null">
+                and user_id = #{query.userId}
+            </if>
+            <if test="query.status != null">
+                and status = #{query.status}
+            </if>
+        </where>
+        <choose>
+            <when test="query.sortField != null and query.sortField != ''">
+                ORDER BY
+                <choose>
+                    <when test="query.sortField == 'id'">id</when>
+                    <when test="query.sortField == 'userId'">user_id</when>
+                    <when test="query.sortField == 'invitedCount'">invited_count</when>
+                    <when test="query.sortField == 'pendingCommission'">pending_commission</when>
+                    <when test="query.sortField == 'balanceCommission'">balance_commission</when>
+                    <when test="query.sortField == 'totalCommission'">total_commission</when>
+                    <when test="query.sortField == 'createTime'">create_time</when>
+                    <otherwise>create_time</otherwise>
+                </choose>
+                <choose>
+                    <when test="query.sortOrder != null and query.sortOrder.toLowerCase() == 'asc'">ASC</when>
+                    <otherwise>DESC</otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                ORDER BY create_time DESC
+            </otherwise>
+        </choose>
+        limit #{offset}, #{pageSize}
+    </select>
+
+    <select id="selectCommissionCount" resultType="java.lang.Long">
+        select count(*)
+        from invite_commission
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.userId != null">
+                and user_id = #{query.userId}
+            </if>
+            <if test="query.status != null">
+                and status = #{query.status}
+            </if>
+        </where>
+    </select>
+
+    <update id="confirmCommission">
+        update invite_commission
+        set pending_commission = pending_commission - #{amount},
+        balance_commission = balance_commission + #{amount},
+        total_commission = total_commission + #{amount},
+        status = 1
+        where id = #{id} and pending_commission >= #{amount}
+    </update>
+
+    <update id="rejectCommission">
+        update invite_commission
+        set pending_commission = 0,
+        status = 2
+        where id = #{id}
+    </update>
 </mapper>
