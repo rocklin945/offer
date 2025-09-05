@@ -58,4 +58,6 @@ public interface InviteCommissionMapper {
      * 拒绝佣金
      */
     Long rejectCommission(@Param("id") Long id);
+
+    Long update(InviteCommission inviteCommission);
 }

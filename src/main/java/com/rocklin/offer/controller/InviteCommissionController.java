@@ -64,4 +64,12 @@ public class InviteCommissionController {
         inviteCommissionService.rejectCommission(id);
         return BaseResponse.success();
     }
+
+    @PostMapping("/redeemMember")
+    @Operation(summary = "兑换会员", description = "兑换会员")
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 3)
+    public BaseResponse<Void> redeemMember(@RequestParam Long userId, @RequestParam Integer planType) {
+        inviteCommissionService.redeemMember(userId, planType);
+        return BaseResponse.success();
+    }
 }

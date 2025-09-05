@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rocklin.offer.mapper.MembershipPlanMapper">
+
+    <resultMap id="BaseResultMap" type="com.rocklin.offer.model.entity.MembershipPlan">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="label" property="label" jdbcType="VARCHAR"/>
+        <result column="price" property="price" jdbcType="DECIMAL"/>
+        <result column="days" property="days" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="status" property="status" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, label, price, days, create_time, update_time, status
+    </sql>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from membership_plan
+        where id = #{id} and status = 1
+    </select>
+
+    <select id="selectAllActive" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from membership_plan
+        where status = 1
+        order by id asc
+    </select>
+
+    <select id="selectByPlanType" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from membership_plan
+        where id = #{planType} and status = 1
+    </select>
+</mapper>

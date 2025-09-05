@@ -1,14 +1,18 @@
 package com.rocklin.offer.service.impl;
 
 import com.rocklin.offer.common.enums.ErrorCode;
+import com.rocklin.offer.common.enums.UserRoleEnum;
 import com.rocklin.offer.common.exception.Assert;
 import com.rocklin.offer.common.exception.BusinessException;
 import com.rocklin.offer.common.response.PageResponse;
 import com.rocklin.offer.mapper.InviteCommissionMapper;
 import com.rocklin.offer.mapper.UserMapper;
 import com.rocklin.offer.mapper.WebInfoMapper;
+import com.rocklin.offer.mapper.MembershipPlanMapper;
 import com.rocklin.offer.model.dto.request.InviteCommissionPageQueryRequest;
+import com.rocklin.offer.model.dto.request.UserUpdateRequest;
 import com.rocklin.offer.model.entity.InviteCommission;
+import com.rocklin.offer.model.entity.MembershipPlan;
 import com.rocklin.offer.model.entity.User;
 import com.rocklin.offer.model.entity.WebInfo;
 import com.rocklin.offer.service.InviteCommissionService;
@@ -32,6 +36,7 @@ public class InviteCommissionServiceImpl implements InviteCommissionService {
     private final InviteCommissionMapper commissionMapper;
     private final UserMapper userMapper;
     private final WebInfoMapper webInfoMapper;
+    private final MembershipPlanMapper membershipPlanMapper;
 
     @Override
     @Transactional
@@ -88,6 +93,54 @@ public class InviteCommissionServiceImpl implements InviteCommissionService {
         commissionMapper.rejectCommission(id);
         log.info("拒绝佣金: userId={}", commission.getUserId());
     }
+
+    @Override
+    public void redeemMember(Long userId, Integer planType) {
+        // 获取用户余额信息
+        InviteCommission inviteCommission = commissionMapper.selectByUserId(userId);
+        Assert.notNull(inviteCommission, ErrorCode.NOT_FOUND, "用户没有佣金记录");
+        BigDecimal balanceCommission = inviteCommission.getBalanceCommission();
+        Assert.isTrue(balanceCommission.compareTo(BigDecimal.ZERO) > 0,
+                ErrorCode.OPERATION_ERROR, "用户没有余额可兑换");
+        
+        // 根据planType获取套餐信息
+        MembershipPlan plan = membershipPlanMapper.selectByPlanType(planType);
+        Assert.notNull(plan, ErrorCode.NOT_FOUND, "套餐不存在");
+        
+        // 检查余额是否足够兑换该套餐
+        BigDecimal amount = plan.getPrice();
+        Assert.isTrue(amount.compareTo(balanceCommission) <= 0,
+                ErrorCode.OPERATION_ERROR, "兑换金额大于余额");
+        
+        // 扣除用户余额
+        inviteCommission.setBalanceCommission(balanceCommission.subtract(amount));
+        commissionMapper.update(inviteCommission);
+        
+        // 添加用户会员天数
+        User user = userMapper.selectById(userId);
+        Assert.notNull(user, ErrorCode.NOT_FOUND, "用户不存在");
+        
+        // 计算新的会员过期时间
+        LocalDateTime newExpireTime;
+        if (user.getMemberExpireTime() == null || user.getMemberExpireTime().isBefore(LocalDateTime.now())) {
+            // 如果用户不是会员或会员已过期，则从现在开始计算
+            newExpireTime = LocalDateTime.now().plusDays(plan.getDays());
+        } else {
+            // 如果用户仍是会员，则在现有过期时间基础上增加天数
+            newExpireTime = user.getMemberExpireTime().plusDays(plan.getDays());
+        }
+        
+        // 更新用户会员信息
+        UserUpdateRequest userUpdateRequest = new UserUpdateRequest();
+        userUpdateRequest.setId(userId);
+        userUpdateRequest.setMemberExpireTime(newExpireTime);
+        userUpdateRequest.setUserRole(UserRoleEnum.VIP.getValue());
+        userMapper.updateById(userUpdateRequest);
+        
+        log.info("用户{}成功兑换{}套餐，增加{}天会员，余额剩余：{}", 
+                userId, plan.getLabel(), plan.getDays(), inviteCommission.getBalanceCommission().subtract(amount));
+    }
+
     @Transactional
     public void handleUserBecomeMember(Long userId) {
         // 查找用户的邀请人

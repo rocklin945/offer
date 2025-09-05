@@ -133,4 +133,9 @@
         status = 2
         where id = #{id}
     </update>
+    <update id="update">
+        update invite_commission
+        set balance_commission = #{balanceCommission}
+        where user_id = #{userId}
+    </update>
 </mapper>

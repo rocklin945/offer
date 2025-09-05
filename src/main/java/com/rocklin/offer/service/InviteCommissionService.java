@@ -39,4 +39,6 @@ public interface InviteCommissionService {
      * 管理员接口：拒绝佣金
      */
     void rejectCommission(Long id);
+
+    void redeemMember(Long userId, Integer planType);
 }
