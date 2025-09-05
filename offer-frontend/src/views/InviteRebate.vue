@@ -193,10 +193,13 @@
       </div>
     </div>
     <!-- 弹窗：兑换会员 -->
-    <RedeemMemberModal v-if="showRedeemModal" :available-commission="commissionData.balanceCommission"
-      @close="showRedeemModal = false" @confirm="handleRedeemConfirm" />
+    <RedeemMemberModal v-if="showRedeemModal" 
+      :available-commission="commissionData.balanceCommission"
+      @close="showRedeemModal = false" 
+      @confirm="handleRedeemConfirm" />
     <!-- 弹窗：提现 -->
-    <WithdrawCashModal v-if="showWithdrawModal" @close="showWithdrawModal = false" />
+    <WithdrawCashModal v-if="showWithdrawModal" 
+      @close="showWithdrawModal = false" />
   </div>
 </template>
 
