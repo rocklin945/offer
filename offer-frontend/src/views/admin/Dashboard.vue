@@ -263,10 +263,10 @@ const initChart = async () => {
           length2: 10
         },
         data: [
-          { value: stats.value.userCount * 30, name: '用户数量' },
+          { value: stats.value.userCount, name: '用户数量' },
           { value: stats.value.jobCount, name: '招聘信息数量' },
           { value: stats.value.totalViews, name: '网站总浏览量' },
-          { value: stats.value.memberCount * 30, name: '网站会员数量' }
+          { value: stats.value.memberCount, name: '网站会员数量' }
         ]
       }
     ]
