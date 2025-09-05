@@ -23,4 +23,9 @@ public class InviteCommissionPageQueryRequest extends PageRequest implements Ser
      * 用户名
      */
     private String userName;
+
+    /**
+     * 状态 (0-待确认, 1-已确认, 2-已拒绝)
+     */
+    private Integer status;
 }

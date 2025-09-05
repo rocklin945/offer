@@ -23,9 +23,9 @@
           <select v-model="searchForm.status"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             <option value="">全部</option>
-            <option value="PENDING">待确认</option>
-            <option value="CONFIRMED">已确认</option>
-            <option value="REJECTED">已拒绝</option>
+            <option value="0">待确认</option>
+            <option value="1">已确认</option>
+            <option value="2">已拒绝</option>
           </select>
         </div>
         <div>
@@ -36,7 +36,8 @@
             <option value="id">ID</option>
             <option value="userId">用户ID</option>
             <option value="invitedCount">邀请人数</option>
-            <option value="pendingCommission">待结算金额</option>
+            <option value="pendingCommission">待确认金额</option>
+            <option value="balanceCommission">已确认金额</option>
             <option value="totalCommission">总佣金</option>
             <option value="createTime">创建时间</option>
           </select>
@@ -80,14 +81,14 @@
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
               <tr>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户ID</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">邀请人数</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">总佣金</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">待结算</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">已结算</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">用户ID</th>
+                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">邀请人数</th>
+                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">总佣金</th>
+                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">待确认</th>
+                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">已确认</th>
+                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -98,15 +99,15 @@
                 <td class="px-4 py-4 text-center text-sm text-gray-900">¥{{ item.totalCommission }}</td>
                 <td class="px-4 py-4 text-center text-sm text-gray-900">¥{{ item.pendingCommission }}</td>
                 <td class="px-4 py-4 text-center text-sm text-gray-900">¥{{ item.balanceCommission }}</td>
-                <td class="px-4 py-4 text-center">
-                  <span v-if="item.status === 'PENDING'" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">待确认</span>
-                  <span v-else-if="item.status === 'CONFIRMED'" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">已确认</span>
+                <td class="px-4 py-4 text-center text-sm text-gray-900">
+                  <span v-if="item.status === 0" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">待确认</span>
+                  <span v-else-if="item.status === 1" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">已确认</span>
                   <span v-else class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">已拒绝</span>
                 </td>
-                <td class="px-4 py-4 text-center">
+                <td class="px-4 py-4 text-center text-sm text-gray-900">
                   <div class="flex justify-center space-x-2">
-                    <button v-if="item.status === 'PENDING'" @click="handleConfirm(item.id, item.pendingCommission)" class="text-green-600 hover:text-green-900 text-sm font-medium">确认</button>
-                    <button v-if="item.status === 'PENDING'" @click="handleReject(item.id)" class="text-red-600 hover:text-red-900 text-sm font-medium">拒绝</button>
+                    <button v-if="item.status === 0" @click="handleConfirm(item.id, item.pendingCommission)" class="text-green-600 hover:text-green-900 text-sm font-medium">确认</button>
+                    <button v-if="item.status === 0" @click="handleReject(item.id)" class="text-red-600 hover:text-red-900 text-sm font-medium">拒绝</button>
                   </div>
                 </td>
               </tr>
@@ -214,10 +215,22 @@ const handleSearch = async () => {
       pageSize: pagination.value.pageSize,
       ...searchForm.value
     })
-    commissionList.value = response.data.list
-    pagination.value.total = response.data.total
+    if (response && response.data && Array.isArray(response.data.list)) {
+      commissionList.value = response.data.list
+      pagination.value.total = response.data.total
+    } else if (response && response.data && Array.isArray(response.data.data.list)) { // Check for nested data
+      commissionList.value = response.data.data.list
+      pagination.value.total = response.data.data.total
+    }
+    else {
+      commissionList.value = []
+      pagination.value.total = 0
+      console.warn('API response data.list is not an array or is missing:', response);
+    }
   } catch (error) {
     console.error('搜索失败:', error)
+    commissionList.value = []
+    pagination.value.total = 0
   } finally {
     loading.value = false
   }
@@ -271,6 +284,39 @@ const handlePageSizeChange = () => {
 const hasCommission = computed(() => {
   return commissionList.value && commissionList.value.length > 0
 })
+
+const handlePageChange = (page) => {
+  pagination.value.current = page
+  handleSearch()
+}
+
+const getPageNumbers = () => {
+  const total = totalPages.value
+  const current = pagination.value.current
+  const delta = 2 // Number of pages to show around the current page
+  const range = []
+  const pages = []
+
+  for (let i = Math.max(2, current - delta); i <= Math.min(total - 1, current + delta); i++) {
+    range.push(i)
+  }
+
+  if (current - delta > 2) {
+    pages.push(1, '...')
+  } else {
+    pages.push(1)
+  }
+
+  pages.push(...range)
+
+  if (current + delta < total - 1) {
+    pages.push('...', total)
+  } else if (total > 1) {
+    pages.push(total)
+  }
+
+  return pages
+}
 
 const handleConfirm = async (id, amount) => {
   const confirmed = await Confirm.show({

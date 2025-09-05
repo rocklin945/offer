@@ -24,16 +24,16 @@ export interface PageResponse<T> {
 export const inviteCommissionApi = {
   // 分页查询邀请佣金列表
   listCommissionByPage: (params: InviteCommissionPageQueryRequest) => {
-    return request.post<PageResponse<InviteCommission>>('/admin/invite-commission/page', params)
+    return request.post<PageResponse<InviteCommission>>('/invite/commission/page', params)
   },
 
   // 确认佣金
   confirmCommission: (id: number, amount: number) => {
-    return request.post(`/admin/invite-commission/confirm/${id}?amount=${amount}`)
+    return request.post(`/invite/commission/confirm/${id}?amount=${amount}`)
   },
 
   // 拒绝佣金
   rejectCommission: (id: number) => {
-    return request.post(`/admin/invite-commission/reject/${id}`)
+    return request.post(`/invite/commission/reject/${id}`)
   }
 }
