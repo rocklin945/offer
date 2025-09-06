@@ -54,7 +54,7 @@
                     <when test="query.sortField == 'totalPages'">total_pages</when>
                     <when test="query.sortField == 'viewCount'">view_count</when>
                     <when test="query.sortField == 'createTime'">create_time</when>
-                    <otherwise>start_time</otherwise>
+                    <otherwise>create_time</otherwise>
                 </choose>
                 <choose>
                     <when test="query.sortOrder != null and query.sortOrder.toLowerCase() == 'asc'">ASC</when>
@@ -62,7 +62,7 @@
                 </choose>
             </when>
             <otherwise>
-                ORDER BY start_time DESC
+                ORDER BY create_time DESC
             </otherwise>
         </choose>
         limit #{offset}, #{query.pageSize}
