@@ -82,7 +82,7 @@
 
     <update id="incrementViewCount">
         update material set view_count = view_count + 1
-        where file_path = #{uuid}
+        where file_uuid = #{uuid}
     </update>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">

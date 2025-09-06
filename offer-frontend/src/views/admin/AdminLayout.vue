@@ -204,6 +204,11 @@ const menuItems = [
     name: 'invite-commission-management',
     path: '/admin/invite-commission-management',
     label: '邀请返利管理'
+  },
+  {
+    name: 'material-management',
+    path: '/admin/material-management',
+    label: '资料管理'
   }
 ]
 

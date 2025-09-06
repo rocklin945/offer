@@ -22,6 +22,11 @@ const router = createRouter({
       component: () => import('@/views/MyResume.vue')
     },
     {
+      path: '/materials',
+      name: 'Materials',
+      component: () => import('@/views/Materials.vue')
+    },
+    {
       path: '/become-member',
       name: 'BecomeMember',
       component: () => import('@/views/BecomeMember.vue'),
@@ -88,6 +93,12 @@ const router = createRouter({
           name: 'InviteCommissionManagement',
           component: () => import('@/views/admin/InviteCommissionManagement.vue'),
           meta: { title: '邀请返利管理', icon: 'commission', requiresAuth: true, requiresAdmin: true }
+        },
+        {
+          path: 'material-management',
+          name: 'MaterialManagement',
+          component: () => import('@/views/admin/MaterialManagement.vue'),
+          meta: { title: '资料管理', icon: 'material', requiresAuth: true, requiresAdmin: true }
         }
       ]
     }

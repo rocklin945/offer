@@ -28,6 +28,12 @@
                 <span class="hidden sm:inline">我的投递记录</span>
                 <span class="sm:hidden">投递记录</span>
               </router-link>
+              <router-link to="/materials"
+                class="hover:text-gray-700 px-1 py-1 text-sm sm:px-3 sm:py-2 sm:text-sm rounded-md font-medium transition-colors whitespace-nowrap flex-shrink-0"
+                :style="getNavStyle('/materials')">
+                <span class="hidden sm:inline">笔试面试资料</span>
+                <span class="sm:hidden">资料</span>
+              </router-link>
               <router-link to="/my-resume"
                 class="hover:text-gray-700 px-1 py-1 text-sm sm:px-3 sm:py-2 sm:text-sm rounded-md font-medium transition-colors whitespace-nowrap flex-shrink-0"
                 :style="getNavStyle('/my-resume')">
@@ -79,6 +85,10 @@
                   </div>
                 </div>
                 <div class="py-1">
+                  <router-link to="/materials" @click="showMobileMenu = false"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    笔试面试资料
+                  </router-link>
                   <router-link to="/become-member" @click="showMobileMenu = false"
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                     {{ userStore.currentUser.userRole === 1 ? '成为会员 ⭐' : '会员中心 💎' }}
