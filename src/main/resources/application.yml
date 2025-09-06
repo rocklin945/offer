@@ -1,4 +1,8 @@
 spring:
+  servlet:
+    multipart:
+      max-file-size: 1024MB   # 单个文件 1GB
+      max-request-size: 1024MB  # 总请求大小 1GB
   application:
     name: offer
   # mysql
@@ -37,4 +41,9 @@ knife4j:
   enable: true
   setting:
     language: zh_cn
+
+# pdf图片存储
+file:
+  upload-dir: data/pdfs/
+
 

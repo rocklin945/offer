@@ -53,4 +53,15 @@ public final class Constants {
     public static final int ONE = 1;
     public static final double ZERO_POINT_ONE =0.1;
     public static final int TWO =2;
+
+    /**
+     * pdf
+     */
+    public static final String PDF_PAGE_PREFIX ="page_";
+    public static final String PDF_PAGE_SUFFIX =".jpg";
+    public static final String JPG_SUFFIX ="jpg";
+    public static final String CONTENT_DISPOSITION ="inline; filename=";
+    public static final String PDF_SUFFIX =".pdf";
+    public static final String FILE ="file";
+    public static final String ORIGIN_PDF ="origin.pdf";
 }
