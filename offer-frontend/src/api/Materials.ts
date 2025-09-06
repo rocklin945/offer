@@ -46,7 +46,7 @@ export function getMaterialById(id: string): Promise<Material> {
 
 // 构建PDF预览图片URL（第一页预览）
 export function buildPdfPreviewUrl(bookId: string, pageNum = 1): string {
-  return `/api/pdf/preview/${bookId}/page/${pageNum}`
+  return `/pdf/preview/${bookId}/page/${pageNum}`
 }
 
 // 上传PDF（管理员）

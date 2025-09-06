@@ -109,6 +109,7 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import type { Material, PageResponse } from '@/api/Materials'
 import { listMaterials, getMaterialCategories, buildPdfPreviewUrl } from '@/api/Materials'
+import request from '@/api/request' // 导入 axios 实例
 
 const materials = ref<Material[]>([])
 const categories = ref<string[]>([])
@@ -163,27 +164,48 @@ const processQueue = () => {
     const m = loadQueue.shift()!
     loadingCount++
     console.log('Attempting to fetch preview for:', m.fileName, previewUrl(m)); // Debug log
-    fetch(previewUrl(m), { credentials: 'include' })
-      .then(async res => { // Make res async to await text()
-        if (!res.ok) {
-          if (res.status === 401 || res.status === 403) {
-            throw new Error('需要登录后才能预览')
-          }
-          // Attempt to parse error message from response body if not image
-          const contentType = res.headers.get('content-type') || ''
-          if (contentType.includes('application/json')) {
-            const errorJson = await res.json()
-            throw new Error(errorJson.message || `请求失败: ${res.status}`)
-          }
-          throw new Error(`请求失败: ${res.status}`)
-        }
-        // 后端明确返回图片数据，直接创建 ObjectURL
-        const blob = await res.blob()
+    // 使用 axios 发送请求，确保 token 被携带
+    request.get(previewUrl(m), { responseType: 'blob' })
+      .then(res => {
+        // axios 成功响应，res.data 就是 blob
+        const blob = res.data as Blob
         srcMap.value[m.id] = URL.createObjectURL(blob)
       })
-      .catch((error) => {
-        console.warn('图片加载失败:', error.message)
-        srcMap.value[m.id] = `data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22><rect width=%22300%22 height=%22200%22 fill=%22%23f3f4f6%22/><text x=%2220%22 y=%22105%22 fill=%22%239ca3af%22 font-size=%2212%22>${encodeURIComponent(error.message)}</text></svg>`
+      .catch(error => {
+        let errorMessage = '图片加载失败'
+        if (error.response) {
+          // 后端返回了响应，但状态码不是 2xx
+          if (error.response.status === 401 || error.response.status === 403) {
+            errorMessage = '需要登录后才能预览'
+          } else if (error.response.data instanceof Blob) {
+            // 如果错误响应是 blob，尝试解析为文本
+            const reader = new FileReader();
+            reader.onload = () => {
+              try {
+                const json = JSON.parse(reader.result as string);
+                errorMessage = json.message || `请求失败: ${error.response.status}`;
+              } catch {
+                errorMessage = `请求失败: ${error.response.status}`;
+              }
+              console.warn('图片加载失败:', errorMessage);
+              srcMap.value[m.id] = `data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22 fill=%22%23f3f4f6%22/><text x=%2220%22 y=%22105%22 fill=%22%239ca3af%22 font-size=%2212%22>${encodeURIComponent(errorMessage)}</text></svg>`;
+            };
+            reader.readAsText(error.response.data);
+            return; // Avoid further processing in this catch block
+          } else if (error.response.data && typeof error.response.data === 'object' && (error.response.data as any).message) {
+            errorMessage = (error.response.data as any).message;
+          } else {
+            errorMessage = `请求失败: ${error.response.status}`;
+          }
+        } else if (error.request) {
+          // 请求已发出，但没有收到响应
+          errorMessage = '网络错误，无响应';
+        } else {
+          // 其他错误
+          errorMessage = error.message;
+        }
+        console.warn('图片加载失败:', errorMessage);
+        srcMap.value[m.id] = `data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22 fill=%22%23f3f4f6%22/><text x=%2220%22 y=%22105%22 fill=%22%239ca3af%22 font-size=%2212%22>${encodeURIComponent(errorMessage)}</text></svg>`;
       })
       .finally(() => {
         loadingCount--
