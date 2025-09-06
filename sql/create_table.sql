@@ -139,8 +139,18 @@ CREATE TABLE membership_plan (
                                  status TINYINT NOT NULL DEFAULT 1 COMMENT '状态：0=下架，1=上架'
 ) COMMENT='会员套餐表';
 
-INSERT INTO membership_plan (label, price, days) VALUES
-                                                     ('周卡', 0.99, 7),
-                                                     ('月卡', 3.49, 30),
-                                                     ('季卡', 7.99, 90),
-                                                     ('年卡', 9.90, 365);
+-- 笔试面试资料表
+CREATE TABLE IF NOT EXISTS material (
+                                 id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+                                 file_name VARCHAR(200) NOT NULL COMMENT '文件名',
+                                 file_uuid VARCHAR(500) NOT NULL COMMENT '文件uuid',
+                                 category VARCHAR(100) NOT NULL COMMENT '资料分类',
+                                 file_size BIGINT COMMENT '文件大小(字节)',
+                                 total_pages INT COMMENT '总页数',
+                                 view_count INT DEFAULT 0 COMMENT '查看次数',
+                                 create_time DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '创建时间',
+                                 update_time DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                                 is_delete TINYINT DEFAULT 0 NOT NULL COMMENT '是否删除',
+                                 INDEX idx_category (category),
+                                 INDEX idx_file_uuid (file_uuid)
+) COMMENT '笔试面试资料表';
