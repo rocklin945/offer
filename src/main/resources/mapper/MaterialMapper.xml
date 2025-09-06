@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rocklin.offer.mapper.MaterialMapper">
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.rocklin.offer.model.entity.Material">
+        <id property="id" column="id"/>
+        <result property="fileName" column="file_name"/>
+        <result property="category" column="category"/>
+        <result property="fileUuid" column="file_uuid"/>
+        <result property="fileSize" column="file_size"/>
+        <result property="totalPages" column="total_pages"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <!-- 基础字段 -->
+    <sql id="Base_Column_List">
+        id, file_name, category, file_uuid, file_size, total_pages, view_count, create_time, update_time
+    </sql>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from material where id = #{id} and is_delete = 0
+    </select>
+
+    <select id="selectAllCategories" resultType="string">
+        select distinct category from material where is_delete = 0 order by category
+    </select>
+
+    <select id="selectByCondition" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from material
+        <where>
+            <if test="query.category != null and query.category != ''">
+                and category = #{query.category}
+            </if>
+            <if test="query.keyword != null and query.keyword != ''">
+                and file_name like concat('%', #{query.keyword}, '%')
+            </if>
+        </where>
+        <choose>
+            <when test="query.sortField != null and query.sortField != ''">
+                ORDER BY
+                <choose>
+                    <when test="query.sortField == 'fileName'">file_name</when>
+                    <when test="query.sortField == 'category'">category</when>
+                    <when test="query.sortField == 'fileUuid'">file_uuid</when>
+                    <when test="query.sortField == 'fileSize'">file_size</when>
+                    <when test="query.sortField == 'totalPages'">total_pages</when>
+                    <when test="query.sortField == 'viewCount'">view_count</when>
+                    <when test="query.sortField == 'createTime'">create_time</when>
+                    <otherwise>start_time</otherwise>
+                </choose>
+                <choose>
+                    <when test="query.sortOrder != null and query.sortOrder.toLowerCase() == 'asc'">ASC</when>
+                    <otherwise>DESC</otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                ORDER BY start_time DESC
+            </otherwise>
+        </choose>
+        limit #{offset}, #{query.pageSize}
+    </select>
+
+    <select id="countByCondition" resultType="long">
+        select count(*) from material
+        <where>
+            <if test="query.category != null and query.category != ''">
+                and category = #{query.category}
+            </if>
+            <if test="query.keyword != null and query.keyword != ''">
+                and file_name like concat('%', #{query.keyword}, '%')
+            </if>
+        </where>
+    </select>
+
+    <update id="incrementViewCount">
+        update material set view_count = view_count + 1
+        where file_path = #{uuid}
+    </update>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into material (id, file_name, category, file_uuid, file_size, total_pages, view_count)
+        values (UUID_SHORT(), #{material.name}, #{material.category}, #{material.fileUuid}, #{material.fileSize},
+        #{material.totalPages}, #{material.viewCount})
+    </insert>
+</mapper>

@@ -6,6 +6,7 @@ import com.rocklin.offer.common.annotation.SlidingWindowRateLimit;
 import com.rocklin.offer.common.enums.UserRoleEnum;
 import com.rocklin.offer.common.utils.PdfToImageUtil;
 import com.rocklin.offer.model.dto.response.UserLoginResponse;
+import com.rocklin.offer.service.MaterialService;
 import com.rocklin.offer.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,6 +30,7 @@ import static com.rocklin.offer.common.constants.Constants.*;
 public class PdfController {
 
     private final UserService userService;
+    private final MaterialService materialService;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -37,7 +39,7 @@ public class PdfController {
     @PostMapping("/upload")
     @AuthCheck(enableRole = UserRoleEnum.ADMIN)
     @SlidingWindowRateLimit(windowInSeconds = 10, maxCount = 3)
-    public ResponseEntity<String> uploadPdf(@RequestParam(FILE) MultipartFile file) {
+    public ResponseEntity<String> uploadPdf(@RequestParam(FILE) MultipartFile file, @RequestParam String category) {
         try {
             if (!file.getOriginalFilename().endsWith(PDF_SUFFIX)) {
                 return ResponseEntity.badRequest().body("只允许上传 PDF 文件");
@@ -49,7 +51,7 @@ public class PdfController {
             // 处理 uploadDir（支持相对路径 & 绝对路径）
             File baseDir = new File(uploadDir);
             if (!baseDir.isAbsolute()) {
-                baseDir = new File(System.getProperty("user.dir"), uploadDir);
+                baseDir = new File(System.getProperty(USER_DIR), uploadDir);
             }
 
             File bookDir = new File(baseDir, bookId);
@@ -61,13 +63,32 @@ public class PdfController {
             File pdfFile = new File(bookDir, ORIGIN_PDF);
             file.transferTo(pdfFile);
 
-            // 转换 PDF → 图片
-            PdfToImageUtil.convert(pdfFile, bookDir);
+            // 转换 PDF → 图片，并获取总页数
+            int totalPages = PdfToImageUtil.convert(pdfFile, bookDir);
 
             // 转换完成后删除原始 PDF
             if (pdfFile.exists()) {
                 pdfFile.delete();
             }
+
+            // 处理文件名：去掉后缀
+            String fileName = file.getOriginalFilename();
+            if (fileName != null && fileName.contains(DOT)) {
+                fileName = fileName.substring(0, fileName.lastIndexOf(DOT));
+            }
+            
+            // 计算转换后图片的总大小（MB）
+            long totalImageSize = 0;
+            File[] imageFiles = bookDir.listFiles((dir, name) -> name.endsWith(PDF_PAGE_SUFFIX));
+            if (imageFiles != null) {
+                for (File imageFile : imageFiles) {
+                    totalImageSize += imageFile.length();
+                }
+            }
+            Long fileSizeMB = totalImageSize / (ONE_MB);
+            
+            // 向material表插入数据
+            materialService.addMaterial(bookId, fileName, category, fileSizeMB, totalPages);
 
             return ResponseEntity.ok("上传成功，bookId=" + bookId);
 
@@ -89,7 +110,7 @@ public class PdfController {
         // 处理 uploadDir（支持相对路径 & 绝对路径）
         File baseDir = new File(uploadDir);
         if (!baseDir.isAbsolute()) {
-            baseDir = new File(System.getProperty("user.dir"), uploadDir);
+            baseDir = new File(System.getProperty(USER_DIR), uploadDir);
         }
 
         File bookDir = new File(baseDir, bookId);
@@ -98,6 +119,7 @@ public class PdfController {
         if (!file.exists()) {
             return ResponseEntity.notFound().build();
         }
+        materialService.incrementViewCount(bookId);
 
         // 返回图片
         return ResponseEntity.ok()

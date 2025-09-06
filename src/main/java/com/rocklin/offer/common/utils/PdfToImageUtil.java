@@ -25,7 +25,7 @@ public class PdfToImageUtil {
      * @param outputDir 输出目录
      * @throws IOException
      */
-    public static void convert(File pdfFile, File outputDir) throws IOException {
+    public static int convert(File pdfFile, File outputDir) throws IOException {
         final int DPI = 120;        // 分辨率，可调
         final float QUALITY = 0.7f; // 压缩质量（0.0 最小体积 ~ 1.0 原画质）
 
@@ -35,9 +35,10 @@ public class PdfToImageUtil {
         }
 
         try (PDDocument document = PDDocument.load(pdfFile)) {
+            int totalPages = document.getNumberOfPages();
             PDFRenderer pdfRenderer = new PDFRenderer(document);
 
-            for (int page = 0; page < document.getNumberOfPages(); ++page) {
+            for (int page = 0; page < totalPages; ++page) {
                 // 渲染 PDF 页为 BufferedImage
                 BufferedImage bim = pdfRenderer.renderImageWithDPI(page, DPI);
 
@@ -66,6 +67,8 @@ public class PdfToImageUtil {
 
                 System.out.println("已生成并压缩: " + outputFile.getAbsolutePath());
             }
+            
+            return totalPages;
         }
     }
 }
