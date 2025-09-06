@@ -89,13 +89,16 @@
             </svg>
           </button>
         </div>
-        <div class="p-4 overflow-auto max-h-[75vh]">
-          <img
-            v-if="previewItem"
-            :src="previewItem && srcMap[previewItem.id] ? srcMap[previewItem.id] : placeholder"
-            :alt="previewItem.fileName"
-            class="w-full h-auto"
-          />
+        <div class="p-4 overflow-auto max-h-[75vh] flex justify-center items-center">
+          <!-- A4 比例容器 for preview modal image -->
+          <div v-if="previewItem" class="relative w-full max-w-md bg-white" style="padding-top: 141.42%;">
+            <img
+              :src="srcMap[previewItem.id] || placeholder"
+              :alt="previewItem.fileName"
+              class="absolute inset-0 w-full h-full block object-contain bg-white"
+              @error="onImgError(previewItem)"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -159,18 +162,23 @@ const processQueue = () => {
   while (loadingCount < MAX_CONCURRENCY && loadQueue.length) {
     const m = loadQueue.shift()!
     loadingCount++
+    console.log('Attempting to fetch preview for:', m.fileName, previewUrl(m)); // Debug log
     fetch(previewUrl(m), { credentials: 'include' })
-      .then(res => {
+      .then(async res => { // Make res async to await text()
         if (!res.ok) {
           if (res.status === 401 || res.status === 403) {
             throw new Error('需要登录后才能预览')
           }
+          // Attempt to parse error message from response body if not image
+          const contentType = res.headers.get('content-type') || ''
+          if (contentType.includes('application/json')) {
+            const errorJson = await res.json()
+            throw new Error(errorJson.message || `请求失败: ${res.status}`)
+          }
           throw new Error(`请求失败: ${res.status}`)
         }
-        return res.blob()
-      })
-      .then(blob => {
-        // FileSystemResource 直接返回图片数据，直接创建 ObjectURL
+        // 后端明确返回图片数据，直接创建 ObjectURL
+        const blob = await res.blob()
         srcMap.value[m.id] = URL.createObjectURL(blob)
       })
       .catch((error) => {
@@ -191,9 +199,8 @@ const enqueueLoad = (m: Material) => {
 }
 
 const previewUrl = (m: Material) => {
-  const base = buildPdfPreviewUrl(m.fileUuid, 1)
-  const ts = m.updateTime ? `?_=${m.updateTime}` : `?_=${Date.now()}`
-  return base + ts
+  // 移除时间戳参数
+  return buildPdfPreviewUrl(m.fileUuid, 1)
 }
 
 const onImgError = async (m: Material) => {
@@ -210,8 +217,8 @@ const onImgError = async (m: Material) => {
       }
       throw new Error(`请求失败: ${res.status}`)
     }
+    // 后端明确返回图片数据，直接创建 ObjectURL
     const blob = await res.blob()
-    // FileSystemResource 直接返回图片数据
     srcMap.value[m.id] = URL.createObjectURL(blob)
   } catch (err) {
     const errorMsg = err instanceof Error ? err.message : '预览加载失败'
