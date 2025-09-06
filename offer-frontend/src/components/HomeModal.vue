@@ -35,7 +35,7 @@
 
                 <!-- 提示文字 -->
                 <p class="text-base sm:text-lg text-gray-700 mb-4 sm:mb-6 leading-relaxed">
-                    现在进群免费获取最新校招内推信息和笔试面试资料
+                    免费获取最新校招内推信息和笔试面试资料
                 </p>
 
                 <!-- 二维码区域 -->
