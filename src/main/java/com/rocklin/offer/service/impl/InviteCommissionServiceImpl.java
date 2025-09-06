@@ -160,7 +160,7 @@ public class InviteCommissionServiceImpl implements InviteCommissionService {
 
         // 增加待结算佣金
         WebInfo webInfo = webInfoMapper.selectWebInfo();
-        String commission = String.valueOf(webInfo.getCurrentPrice().multiply(BigDecimal.valueOf(ZERO_POINT_ONE)));
+        String commission = String.valueOf(webInfo.getCurrentPrice().multiply(BigDecimal.valueOf(ZERO_POINT_TWO)));
         BigDecimal amount = new BigDecimal(commission).setScale(TWO, RoundingMode.HALF_UP);
         commissionMapper.increasePendingCommission(inviter.getId(), amount);
         log.info("增加待结算佣金: userId={}, amount={}", inviter.getId(), amount);
