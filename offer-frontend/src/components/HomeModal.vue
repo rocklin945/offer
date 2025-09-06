@@ -35,7 +35,7 @@
 
                 <!-- 提示文字 -->
                 <p class="text-base sm:text-lg text-gray-700 mb-4 sm:mb-6 leading-relaxed">
-                    现在进群领取免费面试笔试资料
+                    现在进群免费获取最新校招内推信息和笔试面试资料
                 </p>
 
                 <!-- 二维码区域 -->
@@ -74,7 +74,7 @@
                         </svg>
                         微信扫码进群
                     </p>
-                    <p class="text-blue-600 text-xs sm:text-sm">获取最新面试真题和笔试资料</p>
+                    <p class="text-blue-600 text-xs sm:text-sm">第一时间获取最新校招资讯</p>
                 </div>
 
                 <!-- 额外提示 -->
