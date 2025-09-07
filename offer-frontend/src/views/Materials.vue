@@ -786,7 +786,18 @@ const openPreview = (item: Material) => {
   limitMessage.value = ''
   limitMessageShown.value = false
 
-  // 初始加载第1页
+  // 直接使用卡片封面作为第一页预览，提高加载速度
+  if (srcMap.value[item.id]) {
+    // 如果卡片封面已加载，直接使用它作为第一页
+    if (!pageSrcMap.value[item.id]) {
+      pageSrcMap.value[item.id] = {}
+    }
+    // 将卡片封面用作第一页预览
+    pageSrcMap.value[item.id][1] = srcMap.value[item.id]
+    visiblePages.value = [1]
+  }
+
+  // 初始加载第2页及后续页面
   setTimeout(() => {
     loadMorePages('down')
     initPageObserver()
