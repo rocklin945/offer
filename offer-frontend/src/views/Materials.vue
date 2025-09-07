@@ -80,24 +80,84 @@
       class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
       @click.self="closePreview"
     >
-      <div class="bg-white rounded-lg max-w-5xl w-full max-h-[85vh] overflow-hidden">
-        <div class="flex items-center justify-between px-4 py-3 border-b">
-          <h3 class="text-base font-semibold text-gray-900 truncate">{{ previewItem?.fileName }}</h3>
-          <button class="text-gray-500 hover:text-gray-700" @click="closePreview">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
-          </button>
+      <div class="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden">
+        <div class="flex items-center justify-between px-6 py-4 border-b">
+          <div class="flex items-center space-x-4">
+            <h3 class="text-lg font-semibold text-gray-900 truncate">{{ previewItem?.fileName }}</h3>
+            <span class="text-sm text-gray-500">第 {{ currentPage }} 页 / 共 {{ previewItem?.totalPages || 0 }} 页</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button
+              class="px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+              :disabled="currentPage <= 1"
+              @click.stop="prevPage"
+            >
+              上一页
+            </button>
+            <button
+              class="px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+              :disabled="currentPage >= (previewItem?.totalPages || 1)"
+              @click.stop="nextPage"
+            >
+              下一页
+            </button>
+            <button class="text-gray-500 hover:text-gray-700 ml-2" @click.stop="closePreview">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
         </div>
-        <div class="p-4 overflow-auto max-h-[75vh] flex justify-center items-center">
-          <!-- A4 比例容器 for preview modal image -->
-          <div v-if="previewItem" class="relative w-full max-w-md bg-white" style="padding-top: 141.42%;">
-            <img
-              :src="srcMap[previewItem.id] || placeholder"
-              :alt="previewItem.fileName"
-              class="absolute inset-0 w-full h-full block object-contain bg-white"
-              @error="onImgError(previewItem)"
-            />
+        <div class="p-6 overflow-auto max-h-[80vh]">
+          <!-- 瀑布流多页预览 -->
+          <div class="columns-1 md:columns-2 lg:columns-3 gap-6">
+            <div
+              v-for="page in visiblePages"
+              :key="page"
+              class="mb-6 break-inside-avoid"
+            >
+              <div class="relative bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                <!-- A4 比例容器 -->
+                <div class="relative w-full bg-white" style="padding-top: 141.42%;">
+                  <img
+                    :src="getPageImage(previewItem!, page) || placeholder"
+                    :alt="`${previewItem?.fileName} - 第 ${page} 页`"
+                    class="absolute inset-0 w-full h-full block object-contain bg-white"
+                    loading="lazy"
+                    @error="onPreviewImgError(previewItem!, page)"
+                  />
+                </div>
+                <div class="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
+                  第 {{ page }} 页
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 加载更多观察哨 -->
+          <div
+            v-if="hasMorePages && !loadingPages"
+            ref="pageSentinelRef"
+            class="h-20 flex items-center justify-center"
+          >
+            <button
+              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              @click.stop="loadMorePages"
+            >
+              加载更多页面
+            </button>
+          </div>
+          <div
+            v-else-if="loadingPages"
+            class="h-20 flex items-center justify-center text-gray-500"
+          >
+            加载中...
+          </div>
+          <div
+            v-else-if="!hasMorePages"
+            class="h-20 flex items-center justify-center text-gray-500"
+          >
+            已加载所有页面
           </div>
         </div>
       </div>
@@ -127,7 +187,14 @@ let observer: IntersectionObserver | null = null
 const previewing = ref(false)
 const previewItem = ref<Material | null>(null)
 const srcMap = ref<Record<string, string>>({})
+const pageSrcMap = ref<Record<string, Record<number, string>>>({})
 const fading = ref(false)
+const currentPage = ref(1)
+const visiblePages = ref<number[]>([])
+const loadingPages = ref(false)
+const hasMorePages = ref(true)
+const pageSentinelRef = ref<HTMLDivElement | null>(null)
+let pageObserver: IntersectionObserver | null = null
 
 const placeholder =
   'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22><rect width=%22300%22 height=%22200%22 fill=%22%23f3f4f6%22/><text x=%2240%22 y=%22105%22 fill=%22%239ca3af%22 font-size=%2214%22>加载中...</text></svg>'
@@ -163,7 +230,6 @@ const processQueue = () => {
   while (loadingCount < MAX_CONCURRENCY && loadQueue.length) {
     const m = loadQueue.shift()!
     loadingCount++
-    console.log('Attempting to fetch preview for:', m.fileName, previewUrl(m)); // Debug log
     // 使用原生axios实例发送图片请求，跳过全局拦截器
     axios.get(previewUrl(m), { 
       responseType: 'blob',
@@ -307,15 +373,115 @@ const loadMore = async () => {
   await fetchList(false)
 }
 
-const openPreview = (m: Material) => {
-  previewItem.value = m
-  previewing.value = true
-  enqueueLoad(m)
-}
+
 
 const closePreview = () => {
   previewing.value = false
   previewItem.value = null
+  currentPage.value = 1
+  visiblePages.value = []
+  hasMorePages.value = true
+}
+
+// 加载更多页面（懒加载）
+const loadMorePages = async () => {
+  if (loadingPages.value || !hasMorePages.value || !previewItem.value) return
+  
+  loadingPages.value = true
+  const material = previewItem.value
+  
+  try {
+    // 一次加载3页
+    const pagesToLoad = 3
+    const startPage = visiblePages.value.length + 1
+    
+    const loadPromises = []
+    for (let page = startPage; page < startPage + pagesToLoad; page++) {
+      loadPromises.push(loadPreviewPage(material, page))
+    }
+    
+    const newPages = await Promise.all(loadPromises)
+    const validPages = newPages.filter(page => page !== null) as number[]
+    
+    if (validPages.length === 0) {
+      hasMorePages.value = false
+    } else {
+      visiblePages.value = [...visiblePages.value, ...validPages]
+    }
+  } catch (error) {
+    console.error('加载更多页面失败:', error)
+  } finally {
+    loadingPages.value = false
+  }
+}
+
+// 加载单个预览页面
+const getPageImage = (material: Material, page: number): string | null => {
+  return pageSrcMap.value[material.id]?.[page] || null
+}
+
+const onPreviewImgError = (material: Material, page: number) => {
+  console.warn(`预览图片加载失败: ${material.fileName} 第 ${page} 页`)
+  if (pageSrcMap.value[material.id]?.[page]) {
+    pageSrcMap.value[material.id][page] = 
+      'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22><rect width=%22300%22 height=%22200%22 fill=%22%23f3f4f6%22/><text x=%2220%22 y=%22105%22 fill=%22%239ca3af%22 font-size=%2212%22>图片加载失败</text></svg>'
+  }
+}
+
+const loadPreviewPage = async (material: Material, page: number): Promise<number | null> => {
+  try {
+    const previewUrl = `/pdf/preview/${material.fileUuid}/page/${page}`
+    const response = await axios.get(previewUrl, {
+      baseURL: '/api',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('user_token')}`
+      },
+      responseType: 'blob'
+    })
+    
+    const blob = response.data as Blob
+    if (!pageSrcMap.value[material.id]) {
+      pageSrcMap.value[material.id] = {}
+    }
+    pageSrcMap.value[material.id][page] = URL.createObjectURL(blob)
+    return page
+  } catch (error) {
+    console.error(`加载第${page}页失败:`, error)
+    return null
+  }
+}
+
+// 初始化页面观察器
+const initPageObserver = () => {
+  if (!('IntersectionObserver' in window)) return
+  
+  pageObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && hasMorePages.value && !loadingPages.value) {
+        loadMorePages()
+      }
+    })
+  }, { root: null, rootMargin: '100px', threshold: 0.1 })
+  
+  if (pageSentinelRef.value) {
+    pageObserver.observe(pageSentinelRef.value)
+  }
+}
+
+// 打开预览时初始化
+const openPreview = (item: Material) => {
+  previewing.value = true
+  previewItem.value = item
+  currentPage.value = 1
+  visiblePages.value = []
+  hasMorePages.value = true
+  loadingPages.value = false
+  
+  // 初始加载前5页
+  setTimeout(() => {
+    loadMorePages()
+    initPageObserver()
+  }, 100)
 }
 
 const initObserver = () => {
