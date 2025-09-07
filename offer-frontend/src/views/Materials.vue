@@ -80,6 +80,24 @@
               </button>
             </div>
           </div>
+          <!-- 限制消息提示 -->
+          <div v-if="limitMessage" class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mx-6 mt-4">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                  fill="currentColor">
+                  <path fill-rule="evenodd"
+                    d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                    clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div class="ml-3">
+                <p class="text-sm text-yellow-700">
+                  {{ limitMessage }}
+                </p>
+              </div>
+            </div>
+          </div>
           <div class="p-4 overflow-auto max-h-[90vh]">
             <!-- 单页无限滚动预览 -->
             <div class="space-y-6">
@@ -104,14 +122,18 @@
             </div>
 
             <!-- 无限滚动观察哨 -->
-            <div v-if="hasMorePages" ref="pageSentinelRef" class="h-20 flex items-center justify-center">
+            <div v-if="hasMorePages && !limitMessage" ref="pageSentinelRef"
+              class="h-20 flex items-center justify-center">
               <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             </div>
             <div v-else-if="loadingPages" class="h-20 flex items-center justify-center text-gray-500">
               加载中...
             </div>
-            <div v-else-if="!hasMorePages" class="h-20 flex items-center justify-center text-gray-500">
+            <div v-else-if="!hasMorePages && !limitMessage" class="h-20 flex items-center justify-center text-gray-500">
               已加载所有页面
+            </div>
+            <div v-else-if="limitMessage" class="h-20 flex items-center justify-center text-gray-500">
+              {{ limitMessage }}
             </div>
           </div>
 
@@ -160,6 +182,7 @@ const loadingPages = ref(false)
 const hasMorePages = ref(true)
 const pageSentinelRef = ref<HTMLDivElement | null>(null)
 let pageObserver: IntersectionObserver | null = null
+const limitMessage = ref('') // 添加限制消息状态
 
 const jumpPageInput = ref<string>('')
 
@@ -441,6 +464,7 @@ const closePreview = () => {
   previewItem.value = null
   visiblePages.value = []
   hasMorePages.value = true
+  limitMessage.value = '' // 清除限制消息
 }
 
 // 加载更多页面（无限滚动）
@@ -494,16 +518,62 @@ const loadPreviewPage = async (material: Material, page: number): Promise<number
       responseType: 'blob'
     })
 
+    // 检查是否是限制错误
+    if (response.data instanceof Blob && response.data.type === 'application/json') {
+      const text = await response.data.text()
+      try {
+        const jsonData = JSON.parse(text)
+        if (jsonData.statusCode === 666401) {
+          // 显示限制提示
+          showLimitMessage(jsonData.message)
+          // 停止加载更多页面
+          hasMorePages.value = false
+          return null
+        }
+      } catch (e) {
+        // 如果不是JSON格式，继续处理为图片
+      }
+    }
+
     const blob = response.data as Blob
     if (!pageSrcMap.value[material.id]) {
       pageSrcMap.value[material.id] = {}
     }
     pageSrcMap.value[material.id][page] = URL.createObjectURL(blob)
     return page
-  } catch (error) {
+  } catch (error: any) {
+    // 检查是否是限制错误
+    if (error.response && error.response.data instanceof Blob) {
+      const reader = new FileReader()
+      reader.onload = () => {
+        try {
+          const jsonData = JSON.parse(reader.result as string)
+          if (jsonData.statusCode === 666401) {
+            // 显示限制提示
+            showLimitMessage(jsonData.message)
+            // 停止加载更多页面
+            hasMorePages.value = false
+          }
+        } catch (e) {
+          // 如果不是JSON格式，显示通用错误
+          console.error(`加载第${page}页失败:`, error)
+        }
+      }
+      reader.readAsText(error.response.data)
+      return null
+    }
     console.error(`加载第${page}页失败:`, error)
     return null
   }
+}
+
+// 显示限制消息
+const showLimitMessage = (message: string) => {
+  limitMessage.value = message
+  // 3秒后自动清除消息
+  setTimeout(() => {
+    limitMessage.value = ''
+  }, 3000)
 }
 
 // 页面跳转功能
