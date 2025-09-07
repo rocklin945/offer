@@ -6,16 +6,11 @@
       <div class="flex flex-wrap gap-2">
         <button
           :class="['px-3 py-1.5 rounded-full text-sm transition-colors', selectedCategory === '' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200']"
-          @click="changeCategory('')"
-        >
+          @click="changeCategory('')">
           全部
         </button>
-        <button
-          v-for="c in categories"
-          :key="c"
-          @click="changeCategory(c)"
-          :class="['px-3 py-1.5 rounded-full text-sm transition-colors', selectedCategory === c ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200']"
-        >
+        <button v-for="c in categories" :key="c" @click="changeCategory(c)"
+          :class="['px-3 py-1.5 rounded-full text-sm transition-colors', selectedCategory === c ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200']">
           {{ c }}
         </button>
       </div>
@@ -38,11 +33,16 @@
             <div class="relative w-full bg-white/90" style="padding-top: 141.42%;">
               <img :src="srcMap[m.id] || placeholder" :alt="m.fileName"
                 class="absolute inset-0 w-full h-full block object-contain" loading="lazy" @error="onImgError(m)" />
+              <!-- 种类标签 -->
+              <div v-if="m.category"
+                :class="['absolute top-2 right-2 text-xs font-medium rounded-full px-2 py-1', getCategoryTagClass(m.category)]">
+                {{ m.category }}
+              </div>
             </div>
             <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2 text-white">
-              <div class="text-sm font-medium truncate text-black font-bold" :title="m.fileName">{{ m.fileName }}</div>
+              <div class="text-base font-bold truncate text-gray-700" :title="m.fileName">{{ m.fileName }}</div>
               <div class="text-[10px] opacity-90 mt-0.5 flex items-center justify-between">
-                <span class="text-gray-600">{{ m.category }}</span>
+                <span></span>
                 <span v-if="m.totalPages">共 {{ m.totalPages }} 页</span>
               </div>
             </div>
@@ -168,22 +168,22 @@ const placeholder =
 
 // 预定义的颜色数组（使用JobList的配色方案）
 const categoryColors = [
-  'bg-blue-100 text-black font-bold',
-  'bg-green-100 text-black font-bold',
-  'bg-yellow-100 text-black font-bold',
-  'bg-purple-100 text-black font-bold',
-  'bg-pink-100 text-black font-bold',
-  'bg-indigo-100 text-black font-bold',
-  'bg-red-100 text-black font-bold',
-  'bg-orange-100 text-black font-bold',
-  'bg-teal-100 text-black font-bold',
-  'bg-cyan-100 text-black font-bold',
-  'bg-emerald-100 text-black font-bold',
-  'bg-lime-100 text-black font-bold',
-  'bg-amber-100 text-black font-bold',
-  'bg-rose-100 text-black font-bold',
-  'bg-violet-100 text-black font-bold',
-  'bg-sky-100 text-black font-bold'
+  'bg-blue-100 text-blue-800 border border-blue-200',
+  'bg-green-100 text-green-800 border border-green-200',
+  'bg-yellow-100 text-yellow-800 border border-yellow-200',
+  'bg-purple-100 text-purple-800 border border-purple-200',
+  'bg-pink-100 text-pink-800 border border-pink-200',
+  'bg-indigo-100 text-indigo-800 border border-indigo-200',
+  'bg-red-100 text-red-800 border border-red-200',
+  'bg-orange-100 text-orange-800 border border-orange-200',
+  'bg-teal-100 text-teal-800 border border-teal-200',
+  'bg-cyan-100 text-cyan-800 border border-cyan-200',
+  'bg-emerald-100 text-emerald-800 border border-emerald-200',
+  'bg-lime-100 text-lime-800 border border-lime-200',
+  'bg-amber-100 text-amber-800 border border-amber-200',
+  'bg-rose-100 text-rose-800 border border-rose-200',
+  'bg-violet-100 text-violet-800 border border-violet-200',
+  'bg-sky-100 text-sky-800 border border-sky-200'
 ]
 
 const cardBgColors = [
@@ -240,7 +240,7 @@ const getCategoryButtonClass = (category: string) => {
 
 // 根据分类获取标签样式
 const getCategoryTagClass = (category?: string) => {
-  if (!category) return 'bg-gray-100 text-black font-bold'
+  if (!category) return 'bg-gray-100 text-gray-800 border border-gray-200'
 
   // 根据分类内容生成稳定的颜色索引
   let hash = 0

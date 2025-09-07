@@ -99,7 +99,7 @@ public class PdfController {
 
     @Operation(summary = "获取 PDF 页面", description = "获取指定页面的图片")
     @GetMapping("/preview/{bookId}/page/{pageNum}")
-    @SlidingWindowRateLimit(windowInSeconds = 2, maxCount = 3)
+    @SlidingWindowRateLimit(windowInSeconds = 10, maxCount = 1000)
     public ResponseEntity<FileSystemResource> getPage(@PathVariable String bookId, @PathVariable int pageNum) {
         // 权限控制
         UserLoginResponse currentUser = userService.getCurrentUser();
