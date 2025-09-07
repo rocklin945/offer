@@ -22,37 +22,27 @@
     </div>
 
     <!-- 空状态 -->
-    <div v-if="!loading && materials.length === 0" class="bg-white border border-gray-200 rounded-lg p-8 text-center text-gray-500">
+    <div v-if="!loading && materials.length === 0"
+      class="bg-white border border-gray-200 rounded-lg p-8 text-center text-gray-500">
       暂无资料
     </div>
 
-    <!-- 瀑布流（CSS columns） + 分类左右切换动画 -->
+    <!-- 网格布局 + 分类左右切换动画 -->
     <transition name="slide-x" mode="out-in">
-      <div :key="selectedCategory" class="columns-1 sm:columns-2 lg:columns-3 gap-4">
-        <div
-          v-for="m in materials"
-          :key="m.id"
-          class="mb-4 break-inside-avoid"
-        >
+      <div :key="selectedCategory" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div v-for="m in materials" :key="m.id" class="break-inside-avoid">
           <div
-            class="group relative bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow transition cursor-pointer"
-            @click="openPreview(m)"
-            :ref="el => observeCard(el, m)"
-          >
+            class="group relative rounded-lg overflow-hidden shadow-sm hover:shadow transition cursor-pointer transform hover:scale-105 border-2 border-transparent"
+            @click="openPreview(m)" :ref="el => observeCard(el, m)" :class="getCardBgClass(m.category)">
             <!-- A4 比例容器 -->
-            <div class="relative w-full bg-white" style="padding-top: 141.42%;">
-              <img
-                :src="srcMap[m.id] || placeholder"
-                :alt="m.fileName"
-                class="absolute inset-0 w-full h-full block object-contain bg-white"
-                loading="lazy"
-                @error="onImgError(m)"
-              />
+            <div class="relative w-full bg-white/90" style="padding-top: 141.42%;">
+              <img :src="srcMap[m.id] || placeholder" :alt="m.fileName"
+                class="absolute inset-0 w-full h-full block object-contain" loading="lazy" @error="onImgError(m)" />
             </div>
-            <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-3 text-white">
-              <div class="text-sm font-medium truncate" :title="m.fileName">{{ m.fileName }}</div>
-              <div class="text-xs opacity-80 mt-0.5 flex items-center justify-between">
-                <span>{{ m.category }}</span>
+            <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2 text-white">
+              <div class="text-sm font-medium truncate text-black font-bold" :title="m.fileName">{{ m.fileName }}</div>
+              <div class="text-[10px] opacity-90 mt-0.5 flex items-center justify-between">
+                <span class="text-gray-600">{{ m.category }}</span>
                 <span v-if="m.totalPages">共 {{ m.totalPages }} 页</span>
               </div>
             </div>
@@ -66,23 +56,18 @@
 
     <!-- 预览弹窗 -->
     <teleport to="body">
-      <div
-        v-if="previewing"
-        class="fixed inset-0 z-50 flex items-center justify-center px-4 overflow-y-auto"
-        style="z-index: 1000000;"
-      >
+      <div v-if="previewing" class="fixed inset-0 z-50 flex items-center justify-center px-4 overflow-y-auto"
+        style="z-index: 1000000;">
         <!-- 遮罩层 - 参考RedeemMemberModal.vue -->
         <div class="absolute inset-0 bg-black transition-opacity duration-300"
-          :class="previewing ? 'bg-opacity-70' : 'bg-opacity-0'" 
-          @click="closePreview">
+          :class="previewing ? 'bg-opacity-70' : 'bg-opacity-0'" @click="closePreview">
         </div>
 
         <!-- 预览内容 -->
         <div
-          class="relative bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 ease-out my-8"
-          :class="previewing ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-4'"
-        >
-          <div class="flex items-center justify-between px-6 py-4 border-b">
+          class="relative bg-white rounded-lg max-w-7xl w-full max-h-[95vh] overflow-hidden transform transition-all duration-300 ease-out my-4"
+          :class="previewing ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-4'">
+          <div class="flex items-center justify-between px-6 py-3 border-b">
             <div class="flex items-center space-x-4">
               <h3 class="text-lg font-semibold text-gray-900 truncate">{{ previewItem?.fileName }}</h3>
               <span class="text-sm text-gray-500">共 {{ previewItem?.totalPages || 0 }} 页</span>
@@ -90,31 +75,23 @@
             <div class="flex items-center space-x-2">
               <button class="text-gray-500 hover:text-gray-700" @click.stop="closePreview">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
           </div>
-          <div class="p-6 overflow-auto max-h-[80vh]">
+          <div class="p-4 overflow-auto max-h-[90vh]">
             <!-- 单页无限滚动预览 -->
             <div class="space-y-6">
-              <div
-                v-for="page in visiblePages"
-                :key="page"
-                :data-page="page"
+              <div v-for="page in visiblePages" :key="page" :data-page="page"
                 class="relative bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm mx-auto"
-                style="max-width: 800px;"
-              >
+                style="max-width: 800px;">
                 <!-- A4 比例容器 -->
                 <div class="relative w-full bg-white" style="padding-top: 141.42%;">
-                  <img
-                    v-if="getPageImage(previewItem!, page)"
-                    :src="getPageImage(previewItem!, page)"
+                  <img v-if="getPageImage(previewItem!, page)" :src="getPageImage(previewItem!, page)"
                     :alt="`${previewItem?.fileName} - 第 ${page} 页`"
-                    class="absolute inset-0 w-full h-full block object-contain bg-white"
-                    loading="lazy"
-                    @error="onPreviewImgError(previewItem!, page)"
-                  />
+                    class="absolute inset-0 w-full h-full block object-contain bg-white" loading="lazy"
+                    @error="onPreviewImgError(previewItem!, page)" />
                   <!-- 加载动画 -->
                   <div v-else class="absolute inset-0 flex items-center justify-center bg-gray-100">
                     <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -125,63 +102,26 @@
                 </div>
               </div>
             </div>
-            
+
             <!-- 无限滚动观察哨 -->
-            <div
-              v-if="hasMorePages"
-              ref="pageSentinelRef"
-              class="h-20 flex items-center justify-center"
-            >
+            <div v-if="hasMorePages" ref="pageSentinelRef" class="h-20 flex items-center justify-center">
               <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             </div>
-            <div
-              v-else-if="loadingPages"
-              class="h-20 flex items-center justify-center text-gray-500"
-            >
+            <div v-else-if="loadingPages" class="h-20 flex items-center justify-center text-gray-500">
               加载中...
             </div>
-            <div
-              v-else-if="!hasMorePages"
-              class="h-20 flex items-center justify-center text-gray-500"
-            >
+            <div v-else-if="!hasMorePages" class="h-20 flex items-center justify-center text-gray-500">
               已加载所有页面
             </div>
           </div>
 
           <!-- 右下角页面跳转功能 -->
           <div class="absolute bottom-6 right-6 flex items-center space-x-2">
-            <input
-              v-model="jumpPageInput"
-              type="number"
-              min="1"
-              :max="previewItem?.totalPages || 1"
-              placeholder="页码"
+            <input v-model="jumpPageInput" type="number" min="1" :max="previewItem?.totalPages || 1" placeholder="页码"
               class="w-20 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              @keyup.enter="jumpToPage"
-            />
-            <button
-              @click="jumpToPage"
-              class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
-            >
-              跳转
-            </button>
-          </div>
-
-          <!-- 右下角页面跳转功能 -->
-          <div class="absolute bottom-6 right-6 flex items-center space-x-2">
-            <input
-              v-model="jumpPageInput"
-              type="number"
-              min="1"
-              :max="previewItem?.totalPages || 1"
-              placeholder="页码"
-              class="w-20 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              @keyup.enter="jumpToPage"
-            />
-            <button
-              @click="jumpToPage"
-              class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
-            >
+              @keyup.enter="jumpToPage" />
+            <button @click="jumpToPage"
+              class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm">
               跳转
             </button>
           </div>
@@ -226,6 +166,109 @@ const jumpPageInput = ref<string>('')
 const placeholder =
   'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22><rect width=%22300%22 height=%22200%22 fill=%22%23f3f4f6%22/><text x=%2240%22 y=%22105%22 fill=%22%239ca3af%22 font-size=%2214%22>加载中...</text></svg>'
 
+// 预定义的颜色数组（使用JobList的配色方案）
+const categoryColors = [
+  'bg-blue-100 text-black font-bold',
+  'bg-green-100 text-black font-bold',
+  'bg-yellow-100 text-black font-bold',
+  'bg-purple-100 text-black font-bold',
+  'bg-pink-100 text-black font-bold',
+  'bg-indigo-100 text-black font-bold',
+  'bg-red-100 text-black font-bold',
+  'bg-orange-100 text-black font-bold',
+  'bg-teal-100 text-black font-bold',
+  'bg-cyan-100 text-black font-bold',
+  'bg-emerald-100 text-black font-bold',
+  'bg-lime-100 text-black font-bold',
+  'bg-amber-100 text-black font-bold',
+  'bg-rose-100 text-black font-bold',
+  'bg-violet-100 text-black font-bold',
+  'bg-sky-100 text-black font-bold'
+]
+
+const cardBgColors = [
+  'bg-blue-50/80',
+  'bg-green-50/80',
+  'bg-yellow-50/80',
+  'bg-purple-50/80',
+  'bg-pink-50/80',
+  'bg-indigo-50/80',
+  'bg-red-50/80',
+  'bg-orange-50/80',
+  'bg-teal-50/80',
+  'bg-cyan-50/80',
+  'bg-emerald-50/80',
+  'bg-lime-50/80',
+  'bg-amber-50/80',
+  'bg-rose-50/80',
+  'bg-violet-50/80',
+  'bg-sky-50/80'
+]
+
+// 根据分类获取按钮样式
+const getCategoryButtonClass = (category: string) => {
+  // 处理"全部"分类的特殊情况
+  if (category === '') {
+    if (selectedCategory.value === '') {
+      // 选中状态使用深蓝色背景和白色文字
+      return 'px-3 py-1.5 rounded-full text-sm transition-colors bg-blue-600 text-white hover:opacity-90';
+    } else {
+      // 未选中状态使用浅蓝色背景和黑色加粗文字
+      return 'px-3 py-1.5 rounded-full text-sm transition-colors bg-blue-100 text-black font-bold hover:opacity-90';
+    }
+  }
+
+  if (selectedCategory.value === category) {
+    // 选中状态使用深色背景和白色文字
+    const colorClass = getCategoryTagClass(category).split(' ').find(cls => cls.includes('bg-'));
+    if (colorClass) {
+      // 从bg-xxx-100转换为bg-xxx-600并添加hover效果
+      const bgColorClass = colorClass.replace('bg-', 'bg-').replace('-100', '-600');
+      return `px-3 py-1.5 rounded-full text-sm transition-colors ${bgColorClass} text-white hover:opacity-90`;
+    }
+    return 'px-3 py-1.5 rounded-full text-sm transition-colors bg-blue-600 text-white hover:opacity-90';
+  } else {
+    // 未选中状态使用浅色背景和深色文字（使用JobList的配色方案）
+    const colorClass = getCategoryTagClass(category).split(' ').find(cls => cls.includes('bg-'));
+    if (colorClass) {
+      // 保持bg-xxx-100的浅色背景，但确保文字是黑色加粗
+      return `px-3 py-1.5 rounded-full text-sm transition-colors ${colorClass} text-black font-bold hover:opacity-90`;
+    }
+    return 'px-3 py-1.5 rounded-full text-sm transition-colors bg-gray-100 text-black font-bold hover:opacity-90';
+  }
+}
+
+// 根据分类获取标签样式
+const getCategoryTagClass = (category?: string) => {
+  if (!category) return 'bg-gray-100 text-black font-bold'
+
+  // 根据分类内容生成稳定的颜色索引
+  let hash = 0
+  for (let i = 0; i < category.length; i++) {
+    const char = category.charCodeAt(i)
+    hash = ((hash << 5) - hash) + char
+    hash = hash & hash // 转换为32位整数
+  }
+
+  const colorIndex = Math.abs(hash) % categoryColors.length
+  return categoryColors[colorIndex]
+}
+
+// 根据分类获取卡片背景样式
+const getCardBgClass = (category?: string) => {
+  if (!category) return 'bg-white'
+
+  // 根据分类内容生成稳定的颜色索引
+  let hash = 0
+  for (let i = 0; i < category.length; i++) {
+    const char = category.charCodeAt(i)
+    hash = ((hash << 5) - hash) + char
+    hash = hash & hash // 转换为32位整数
+  }
+
+  const colorIndex = Math.abs(hash) % cardBgColors.length
+  return cardBgColors[colorIndex]
+}
 let cardObserver: IntersectionObserver | null = null
 const MAX_CONCURRENCY = 2
 const loadQueue: Material[] = []
@@ -249,7 +292,7 @@ const observeCard = (el: Element | null, m: Material) => {
       })
     }, { root: null, rootMargin: '100px', threshold: 0.01 })
   }
-  ;(el as any).__material = m
+  ; (el as any).__material = m
   cardObserver.observe(el)
 }
 
@@ -258,7 +301,7 @@ const processQueue = () => {
     const m = loadQueue.shift()!
     loadingCount++
     // 使用原生axios实例发送图片请求，跳过全局拦截器
-    axios.get(previewUrl(m), { 
+    axios.get(previewUrl(m), {
       responseType: 'blob',
       baseURL: '/api',
       headers: {
@@ -394,10 +437,6 @@ const changeCategory = async (c: string) => {
   await fetchList(true)
 }
 
-
-
-
-
 const closePreview = () => {
   previewing.value = false
   previewItem.value = null
@@ -408,16 +447,16 @@ const closePreview = () => {
 // 加载更多页面（无限滚动）
 const loadMorePages = async () => {
   if (loadingPages.value || !hasMorePages.value || !previewItem.value) return
-  
+
   loadingPages.value = true
   const material = previewItem.value
-  
+
   try {
     // 一次加载1页，实现真正的无限滚动
     const nextPage = visiblePages.value.length + 1
-    
+
     const loadedPage = await loadPreviewPage(material, nextPage)
-    
+
     if (loadedPage === null) {
       hasMorePages.value = false
     } else {
@@ -442,7 +481,7 @@ const getPageImage = (material: Material, page: number): string | null => {
 const onPreviewImgError = (material: Material, page: number) => {
   console.warn(`预览图片加载失败: ${material.fileName} 第 ${page} 页`)
   if (pageSrcMap.value[material.id]?.[page]) {
-    pageSrcMap.value[material.id][page] = 
+    pageSrcMap.value[material.id][page] =
       'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22><rect width=%22300%22 height=%22200%22 fill=%22%23f3f4f6%22/><text x=%2220%22 y=%22105%22 fill=%22%239ca3af%22 font-size=%2212%22>图片加载失败</text></svg>'
   }
 }
@@ -457,7 +496,7 @@ const loadPreviewPage = async (material: Material, page: number): Promise<number
       },
       responseType: 'blob'
     })
-    
+
     const blob = response.data as Blob
     if (!pageSrcMap.value[material.id]) {
       pageSrcMap.value[material.id] = {}
@@ -473,16 +512,16 @@ const loadPreviewPage = async (material: Material, page: number): Promise<number
 // 页面跳转功能
 const jumpToPage = () => {
   if (!previewItem.value || !jumpPageInput.value) return
-  
+
   const targetPage = parseInt(jumpPageInput.value)
   const totalPages = previewItem.value.totalPages || 1
-  
+
   if (isNaN(targetPage) || targetPage < 1 || targetPage > totalPages) {
     // 可以添加错误提示
     console.warn('请输入有效的页码')
     return
   }
-  
+
   // 如果目标页面已经加载，直接滚动到该页面
   if (visiblePages.value.includes(targetPage)) {
     const element = document.querySelector(`[data-page="${targetPage}"]`)
@@ -498,17 +537,17 @@ const jumpToPage = () => {
 // 加载指定页面
 const loadSpecificPage = async (page: number) => {
   if (!previewItem.value) return
-  
+
   try {
     loadingPages.value = true
     const loadedPage = await loadPreviewPage(previewItem.value, page)
-    
+
     if (loadedPage !== null) {
       // 如果页面不在当前可见列表中，添加到列表并排序
       if (!visiblePages.value.includes(page)) {
         visiblePages.value = [...visiblePages.value, page].sort((a, b) => a - b)
       }
-      
+
       // 滚动到该页面
       setTimeout(() => {
         const element = document.querySelector(`[data-page="${page}"]`)
@@ -527,7 +566,7 @@ const loadSpecificPage = async (page: number) => {
 // 初始化页面观察器
 const initPageObserver = () => {
   if (!('IntersectionObserver' in window)) return
-  
+
   pageObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting && hasMorePages.value && !loadingPages.value) {
@@ -535,7 +574,7 @@ const initPageObserver = () => {
       }
     })
   }, { root: null, rootMargin: '100px', threshold: 0.1 })
-  
+
   if (pageSentinelRef.value) {
     pageObserver.observe(pageSentinelRef.value)
   }
@@ -548,7 +587,7 @@ const openPreview = (item: Material) => {
   visiblePages.value = []
   hasMorePages.value = true
   loadingPages.value = false
-  
+
   // 初始加载第1页
   setTimeout(() => {
     loadMorePages()
@@ -603,14 +642,17 @@ onBeforeUnmount(() => {
 .slide-x-leave-active {
   transition: all 0.3s ease;
 }
+
 .slide-x-enter-from {
   opacity: 0;
   transform: translateX(24px);
 }
+
 .slide-x-leave-to {
   opacity: 0;
   transform: translateX(-24px);
 }
+
 .slide-x-enter-to,
 .slide-x-leave-from {
   opacity: 1;
