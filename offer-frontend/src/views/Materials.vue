@@ -65,9 +65,9 @@
 
         <!-- 预览内容 -->
         <div
-          class="relative bg-white rounded-lg max-w-7xl w-full max-h-[95vh] overflow-hidden transform transition-all duration-300 ease-out my-4"
+          class="relative bg-white rounded-lg max-w-7xl w-full max-h-[95vh] overflow-hidden transform transition-all duration-300 ease-out my-4 preview-container"
           :class="previewing ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-4'">
-          <div class="flex items-center justify-between px-6 py-3 border-b">
+          <div class="flex items-center justify-between px-6 py-3 border-b preview-header">
             <div class="flex items-center space-x-4">
               <h3 class="text-lg font-semibold text-gray-900 truncate">{{ previewItem?.fileName }}</h3>
               <span class="text-sm text-gray-500">共 {{ previewItem?.totalPages || 0 }} 页</span>
@@ -98,7 +98,7 @@
               </div>
             </div>
           </div>
-          <div class="p-4 overflow-auto max-h-[90vh]">
+          <div class="p-4 overflow-auto max-h-[90vh] preview-content">
             <!-- 顶部无限滚动观察哨 -->
             <div ref="topPageSentinelRef" class="h-10"></div>
 
@@ -651,16 +651,16 @@ const jumpToPage = () => {
 
   // 加载目标页面及其前后几页
   loadSpecificPage(targetPage).then(() => {
-    // 加载前面几页（最多3页）
-    for (let i = 1; i <= 3; i++) {
+    // 加载前面几页（最多5页）
+    for (let i = 1; i <= 5; i++) {
       const prevPage = targetPage - i
       if (prevPage >= 1) {
         loadPreviewPage(previewItem.value!, prevPage)
       }
     }
 
-    // 加载后面几页（最多3页）
-    for (let i = 1; i <= 3; i++) {
+    // 加载后面几页（最多5页）
+    for (let i = 1; i <= 5; i++) {
       const nextPage = targetPage + i
       if (nextPage <= totalPages) {
         loadPreviewPage(previewItem.value!, nextPage)
@@ -683,17 +683,17 @@ const loadSpecificPage = async (page: number) => {
         // 添加目标页面及其前后几页到可见列表
         const pagesToAdd = [page]
 
-        // 添加前面几页（最多3页）
-        for (let i = 1; i <= 3; i++) {
+        // 添加前面几页（最多5页）
+        for (let i = 1; i <= 5; i++) {
           const prevPage = page - i
           if (prevPage >= 1 && !visiblePages.value.includes(prevPage)) {
             pagesToAdd.push(prevPage)
           }
         }
 
-        // 添加后面几页（最多3页）
+        // 添加后面几页（最多5页）
         const totalPages = previewItem.value.totalPages || 1
-        for (let i = 1; i <= 3; i++) {
+        for (let i = 1; i <= 5; i++) {
           const nextPage = page + i
           if (nextPage <= totalPages && !visiblePages.value.includes(nextPage)) {
             pagesToAdd.push(nextPage)
@@ -703,11 +703,33 @@ const loadSpecificPage = async (page: number) => {
         visiblePages.value = [...visiblePages.value, ...pagesToAdd].sort((a, b) => a - b)
       }
 
-      // 滚动到该页面
+      // 滚动到该页面，使用更精确的滚动控制来保持标题稳定
       setTimeout(() => {
         const element = document.querySelector(`[data-page="${page}"]`)
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth' })
+          // 获取预览内容容器
+          const previewContainer = document.querySelector('.p-4.overflow-auto')
+          if (previewContainer) {
+            // 计算元素相对于容器的位置
+            const containerRect = previewContainer.getBoundingClientRect()
+            const elementRect = element.getBoundingClientRect()
+
+            // 计算需要滚动到的位置，保持标题在固定位置
+            const scrollTop = previewContainer.scrollTop
+            const offsetTop = elementRect.top - containerRect.top + scrollTop
+
+            // 滚动到目标位置，留出适当的顶部间距
+            previewContainer.scrollTo({
+              top: offsetTop - 50, // 留出50px的顶部间距
+              behavior: 'smooth'
+            })
+          } else {
+            // 如果找不到容器，使用默认滚动但确保标题可见
+            element.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center'
+            })
+          }
         }
       }, 100)
     }
@@ -859,5 +881,27 @@ onBeforeUnmount(() => {
 .slide-x-leave-from {
   opacity: 1;
   transform: translateX(0);
+}
+
+/* 预览弹窗布局稳定性修复 */
+.preview-container {
+  transform: translateZ(0);
+  /* 启用硬件加速 */
+  will-change: transform;
+  /* 提示浏览器该元素将要改变 */
+}
+
+/* 确保预览内容区域在跳转时保持稳定 */
+.preview-content {
+  scroll-behavior: smooth;
+}
+
+/* 标题区域稳定性增强 */
+.preview-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: white;
+  transform: translateZ(0);
 }
 </style>
