@@ -59,14 +59,14 @@
       <div v-if="previewing" class="fixed inset-0 z-50 flex items-center justify-center px-4 overflow-y-auto"
         style="z-index: 1000000;">
         <!-- 遮罩层 - 参考RedeemMemberModal.vue -->
-        <div class="absolute inset-0 bg-black transition-opacity duration-300"
-          :class="previewing ? 'bg-opacity-70' : 'bg-opacity-0'" @click="closePreview">
+        <div class="absolute inset-0 bg-black transition-opacity duration-500"
+          :class="closing ? 'bg-opacity-0' : 'bg-opacity-70'" @click="closePreview">
         </div>
 
         <!-- 预览内容 -->
         <div
-          class="relative bg-white rounded-lg max-w-7xl w-full max-h-[95vh] overflow-hidden transform transition-all duration-300 ease-out my-4 preview-container"
-          :class="previewing ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-4'">
+          class="relative bg-white rounded-lg max-w-7xl w-full max-h-[95vh] overflow-hidden transform transition-all duration-500 ease-out my-4 preview-container"
+          :class="[previewing && !closing ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-4', closing ? 'closing' : '']">
           <div class="flex items-center justify-between px-6 py-3 border-b preview-header">
             <div class="flex items-center space-x-4">
               <h3 class="text-lg font-semibold text-gray-900 truncate">{{ previewItem?.fileName }}</h3>
@@ -190,6 +190,9 @@ let pageObserver: IntersectionObserver | null = null
 let topPageObserver: IntersectionObserver | null = null // 添加顶部观察器引用
 const limitMessage = ref('') // 添加限制消息状态
 const limitMessageShown = ref(false) // 添加限制消息是否显示过的状态
+
+// 添加关闭状态
+const closing = ref(false)
 
 const jumpPageInput = ref<string>('')
 
@@ -467,19 +470,26 @@ const changeCategory = async (c: string) => {
   await fetchList(true)
 }
 
+// 修改关闭预览函数
 const closePreview = () => {
-  previewing.value = false
-  previewItem.value = null
-  visiblePages.value = []
-  hasMorePages.value = true
-  limitMessage.value = '' // 清除限制消息
-  limitMessageShown.value = false // 重置限制消息显示状态
+  closing.value = true
+  setTimeout(() => {
+    previewing.value = false
+    previewItem.value = null
+    visiblePages.value = []
+    hasMorePages.value = true
+    limitMessage.value = '' // 清除限制消息
+    limitMessageShown.value = false // 重置限制消息显示状态
 
-  // 清理页面源映射
-  pageSrcMap.value = {}
+    // 清理页面源映射
+    pageSrcMap.value = {}
 
-  // 重置跳转输入
-  jumpPageInput.value = ''
+    // 重置跳转输入
+    jumpPageInput.value = ''
+
+    // 重置关闭状态
+    closing.value = false
+  }, 300) // 与动画持续时间保持一致
 }
 
 // 加载更多页面（无限滚动）
@@ -875,7 +885,8 @@ onBeforeUnmount(() => {
 /* 横向切换过渡动画 */
 .slide-x-enter-active,
 .slide-x-leave-active {
-  transition: all 0.3s ease;
+  transition: all 0.5s ease;
+  /* 调整动画速度 */
 }
 
 .slide-x-enter-from {
@@ -900,6 +911,8 @@ onBeforeUnmount(() => {
   /* 启用硬件加速 */
   will-change: transform;
   /* 提示浏览器该元素将要改变 */
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  /* 调整动画速度 */
 }
 
 /* 确保预览内容区域在跳转时保持稳定 */
@@ -914,5 +927,43 @@ onBeforeUnmount(() => {
   z-index: 10;
   background-color: white;
   transform: translateZ(0);
+}
+
+/* 弹窗进入动画 */
+@keyframes modalEnter {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* 弹窗离开动画 */
+@keyframes modalLeave {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+}
+
+/* 应用动画到预览容器 */
+.preview-container {
+  animation: modalEnter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  /* 调整动画速度 */
+}
+
+/* 弹窗关闭时的动画 */
+.preview-container.closing {
+  animation: modalLeave 0.3s cubic-bezier(0.5, 0, 0.5, 1) forwards;
+  /* 调整动画速度 */
 }
 </style>
