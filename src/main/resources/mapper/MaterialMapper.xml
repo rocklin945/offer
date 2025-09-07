@@ -87,7 +87,7 @@
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         insert into material (id, file_name, category, file_uuid, file_size, total_pages, view_count)
-        values (UUID_SHORT(), #{material.name}, #{material.category}, #{material.fileUuid}, #{material.fileSize},
+        values (UUID_SHORT(), #{material.fileName}, #{material.category}, #{material.fileUuid}, #{material.fileSize},
         #{material.totalPages}, #{material.viewCount})
     </insert>
 </mapper>

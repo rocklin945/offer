@@ -3,10 +3,8 @@
     <!-- 标题与操作 -->
     <div class="flex justify-between items-center">
       <h2 class="text-2xl font-bold text-gray-900">资料管理</h2>
-      <button
-        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
-        @click="showUpload = true"
-      >
+      <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
+        @click="showUpload = true">
         导入PDF
       </button>
     </div>
@@ -16,29 +14,21 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">关键词</label>
-          <input
-            v-model="query.keyword"
-            type="text"
-            placeholder="文件名关键字"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+          <input v-model="query.keyword" type="text" placeholder="文件名关键字"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">分类</label>
-          <select
-            v-model="query.category"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          >
+          <select v-model="query.category"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             <option value="">全部</option>
             <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
           </select>
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">排序字段</label>
-          <select
-            v-model="query.sortField"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          >
+          <select v-model="query.sortField"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             <option value="">默认</option>
             <option value="createTime">创建时间</option>
             <option value="viewCount">浏览量</option>
@@ -47,10 +37,8 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">排序方式</label>
-          <select
-            v-model="query.sortOrder"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          >
+          <select v-model="query.sortOrder"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             <option value="">默认</option>
             <option value="asc">从小到大</option>
             <option value="desc">从大到小</option>
@@ -58,16 +46,12 @@
         </div>
       </div>
       <div class="flex justify-end space-x-2">
-        <button
-          @click="resetQuery"
-          class="px-4 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
-        >
+        <button @click="resetQuery"
+          class="px-4 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
           重置
         </button>
-        <button
-          @click="handleQuery"
-          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
-        >
+        <button @click="handleQuery"
+          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors">
           搜索
         </button>
       </div>
@@ -83,7 +67,7 @@
       <div v-else-if="list.length === 0" class="text-center py-12">
         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+            d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
         </svg>
         <p class="mt-2 text-gray-500">暂无数据</p>
       </div>
@@ -105,14 +89,15 @@
             <tbody class="bg-white divide-y divide-gray-200">
               <tr v-for="m in list" :key="m.id" class="hover:bg-gray-50">
                 <td class="px-4 py-4 text-center text-sm text-gray-500">{{ m.id }}</td>
-                <td class="px-4 py-4 text-center text-sm font-medium text-gray-900" :title="m.fileName">{{ m.fileName }}</td>
+                <td class="px-4 py-4 text-center text-sm font-medium text-gray-900" :title="m.fileName">{{ m.fileName }}
+                </td>
                 <td class="px-4 py-4 text-center">
                   <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-800">
                     {{ m.category }}
                   </span>
                 </td>
                 <td class="px-4 py-4 text-center text-sm text-gray-500">{{ m.totalPages ?? '-' }}</td>
-                <td class="px-4 py-4 text-center text-sm text-gray-500">{{ m.fileSize}}</td>
+                <td class="px-4 py-4 text-center text-sm text-gray-500">{{ m.fileSize }}</td>
                 <td class="px-4 py-4 text-center text-sm text-gray-500">{{ m.viewCount }}</td>
                 <td class="px-4 py-4 text-center text-sm text-gray-500">{{ formatDate(m.createTime) }}</td>
               </tr>
@@ -127,25 +112,25 @@
           <div class="text-sm text-gray-700">共 {{ total }} 条记录</div>
           <div class="flex flex-wrap items-center gap-2 sm:flex-nowrap sm:space-x-2">
             <button @click="handlePageChange(currentPage - 1)" :disabled="currentPage <= 1"
-                    class="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white">
+              class="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
               </svg>
             </button>
 
             <template v-for="page in getPageNumbers()" :key="page">
-              <button v-if="page === '...'" disabled class="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm text-gray-400 cursor-default">...</button>
-              <button v-else @click="handlePageChange(page as number)"
-                      :class="[
-                        'px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm border rounded transition-colors',
-                        currentPage === page ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-300 hover:bg-gray-50'
-                      ]">
+              <button v-if="page === '...'" disabled
+                class="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm text-gray-400 cursor-default">...</button>
+              <button v-else @click="handlePageChange(page as number)" :class="[
+                'px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm border rounded transition-colors',
+                currentPage === page ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-300 hover:bg-gray-50'
+              ]">
                 {{ page }}
               </button>
             </template>
 
             <button @click="handlePageChange(currentPage + 1)" :disabled="currentPage >= totalPages"
-                    class="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white">
+              class="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
               </svg>
@@ -154,10 +139,10 @@
             <div class="flex items-center gap-2 ml-0 sm:ml-4 w-full sm:w-auto flex-wrap">
               <span class="text-sm text-gray-700">跳至</span>
               <input v-model="jumpPage" @keyup.enter="handleJumpPage" type="number" min="1" :max="totalPages"
-                     class="w-14 sm:w-16 px-2 py-1 text-xs sm:text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                class="w-14 sm:w-16 px-2 py-1 text-xs sm:text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
               <span class="text-sm text-gray-700">/ {{ totalPages }}</span>
               <button @click="handleJumpPage"
-                      class="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm border border-gray-300 rounded hover:bg-gray-50">确定</button>
+                class="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm border border-gray-300 rounded hover:bg-gray-50">确定</button>
             </div>
           </div>
         </div>
@@ -165,33 +150,46 @@
     </div>
 
     <!-- 导入PDF对话框 -->
-    <div v-if="showUpload" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" @click.self="showUpload = false">
+    <div v-if="showUpload" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+      @click.self="showUpload = false">
       <div class="bg-white rounded-lg w-full max-w-md overflow-hidden">
         <div class="px-4 py-3 border-b flex items-center justify-between">
           <h3 class="text-base font-semibold text-gray-900">导入PDF</h3>
           <button class="text-gray-500 hover:text-gray-700" @click="showUpload = false">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
         <div class="p-4 space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">选择分类</label>
-            <select v-model="uploadCategory" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-              <option value="" disabled>请选择分类</option>
-              <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
-            </select>
+            <label class="block text-sm font-medium text-gray-700 mb-1">选择或输入分类</label>
+            <div class="relative">
+              <select v-model="uploadCategory" @change="handleCategoryChange"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none">
+                <option value="" disabled>请选择或输入分类</option>
+                <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                </svg>
+              </div>
+            </div>
+            <input v-model="uploadCategory" type="text" placeholder="或直接输入新分类"
+              class="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">选择PDF文件</label>
-            <input type="file" accept="application/pdf" @change="onFileChange" class="w-full"/>
+            <input type="file" accept="application/pdf" @change="onFileChange" class="w-full" />
             <p v-if="uploadFileName" class="text-sm text-gray-500 mt-1">已选择：{{ uploadFileName }}</p>
           </div>
         </div>
         <div class="px-4 py-3 border-t flex justify-end gap-2">
-          <button class="px-4 py-2 text-gray-700 bg-gray-100 rounded hover:bg-gray-200" @click="showUpload = false">取消</button>
-          <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" :disabled="uploading" @click="submitUpload">
+          <button class="px-4 py-2 text-gray-700 bg-gray-100 rounded hover:bg-gray-200"
+            @click="showUpload = false">取消</button>
+          <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" :disabled="uploading"
+            @click="submitUpload">
             {{ uploading ? '上传中...' : '开始上传' }}
           </button>
         </div>
@@ -315,6 +313,14 @@ const uploadFileObj = ref<File | null>(null)
 const uploadFileName = ref('')
 const uploadCategory = ref('')
 const uploading = ref(false)
+
+// 添加处理分类变化的方法
+const handleCategoryChange = (e: Event) => {
+  const target = e.target as HTMLSelectElement
+  if (target.value) {
+    uploadCategory.value = target.value
+  }
+}
 
 const onFileChange = (e: Event) => {
   const input = e.target as HTMLInputElement
