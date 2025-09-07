@@ -59,3 +59,8 @@ export async function uploadPdf(file: File, category: string): Promise<string> {
   })
   return res.data as unknown as string
 }
+
+// 删除资料（管理员）
+export function deleteMaterial(id: string): Promise<boolean> {
+  return request.delete(`/material/delete/${id}`).then(res => res.data.data)
+}

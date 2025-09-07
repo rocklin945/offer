@@ -18,7 +18,8 @@ public interface MaterialMapper {
     /**
      * 根据条件查询资料列表
      */
-    List<Material> selectByCondition(@Param("query") MaterialPageQueryRequest queryRequest, @Param("offset") int offset) ;
+    List<Material> selectByCondition(@Param("query") MaterialPageQueryRequest queryRequest,
+            @Param("offset") int offset);
 
     /**
      * 根据条件查询资料总数
@@ -39,4 +40,9 @@ public interface MaterialMapper {
      * 插入资料
      */
     int insert(@Param("material") Material material);
+
+    /**
+     * 根据ID删除资料（逻辑删除）
+     */
+    int deleteById(@Param("id") Long id);
 }

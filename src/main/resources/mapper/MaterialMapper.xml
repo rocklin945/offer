@@ -90,4 +90,8 @@
         values (UUID_SHORT(), #{material.fileName}, #{material.category}, #{material.fileUuid}, #{material.fileSize},
         #{material.totalPages}, #{material.viewCount})
     </insert>
+    
+    <delete id="deleteById">
+        delete from material where id = #{id}
+    </delete>
 </mapper>

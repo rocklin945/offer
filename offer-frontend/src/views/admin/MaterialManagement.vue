@@ -84,6 +84,7 @@
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">大小/MB</th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">浏览量</th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">创建时间</th>
+                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -100,6 +101,16 @@
                 <td class="px-4 py-4 text-center text-sm text-gray-500">{{ m.fileSize }}</td>
                 <td class="px-4 py-4 text-center text-sm text-gray-500">{{ m.viewCount }}</td>
                 <td class="px-4 py-4 text-center text-sm text-gray-500">{{ formatDate(m.createTime) }}</td>
+                <td class="px-4 py-4 text-center">
+                  <button @click="handleDelete(m.id, m.fileName)"
+                    class="text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-50 transition-colors"
+                    title="删除">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -200,7 +211,9 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { listMaterials, getMaterialCategories, uploadPdf, type Material, type PageResponse } from '@/api/Materials'
+import { listMaterials, getMaterialCategories, uploadPdf, deleteMaterial, type Material, type PageResponse } from '@/api/Materials'
+import Confirm from '@/components/Confirm'
+import Message from '@/components/Message'
 
 // 列表与查询
 const list = ref<Material[]>([])
@@ -306,6 +319,25 @@ const formatDate = (ts: number) => {
   return `${yyyy}-${mm}-${dd} ${hh}:${mi}`
 }
 
+// 删除资料
+const handleDelete = async (id: string, fileName: string) => {
+  const result = await Confirm.danger(`确定要删除资料 "${fileName}" 吗？此操作不可恢复。`, '删除确认')
+  if (result) {
+    try {
+      const success = await deleteMaterial(id)
+      if (success) {
+        Message.success('删除成功')
+        // 重新加载列表
+        fetchList()
+      } else {
+        Message.error('删除失败')
+      }
+    } catch (e) {
+      console.error('删除失败', e)
+      Message.error('删除失败，请重试')
+    }
+  }
+}
 
 // 上传
 const showUpload = ref(false)
@@ -337,11 +369,11 @@ const onFileChange = (e: Event) => {
 
 const submitUpload = async () => {
   if (!uploadCategory.value) {
-    alert('请选择分类')
+    Message.warning('请选择分类')
     return
   }
   if (!uploadFileObj.value) {
-    alert('请选择PDF文件')
+    Message.warning('请选择PDF文件')
     return
   }
   uploading.value = true
@@ -352,11 +384,11 @@ const submitUpload = async () => {
     uploadFileObj.value = null
     uploadFileName.value = ''
     uploadCategory.value = ''
-    alert(typeof msg === 'string' ? msg : '上传成功')
+    Message.success(typeof msg === 'string' ? msg : '上传成功')
     fetchList()
   } catch (e) {
     console.error('上传失败', e)
-    alert('上传失败，请重试')
+    Message.error('上传失败，请重试')
   } finally {
     uploading.value = false
   }

@@ -32,4 +32,9 @@ public interface MaterialService {
      * 添加资料
      */
     void addMaterial(String fileUuid, String name, String category, Long fileSize, Integer totalPages);
+
+    /**
+     * 删除资料
+     */
+    boolean deleteMaterialById(Long id);
 }
