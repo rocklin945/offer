@@ -87,21 +87,7 @@
             <span class="text-sm text-gray-500">第 {{ currentPage }} 页 / 共 {{ previewItem?.totalPages || 0 }} 页</span>
           </div>
           <div class="flex items-center space-x-2">
-            <button
-              class="px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
-              :disabled="currentPage <= 1"
-              @click.stop="prevPage"
-            >
-              上一页
-            </button>
-            <button
-              class="px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
-              :disabled="currentPage >= (previewItem?.totalPages || 1)"
-              @click.stop="nextPage"
-            >
-              下一页
-            </button>
-            <button class="text-gray-500 hover:text-gray-700 ml-2" @click.stop="closePreview">
+            <button class="text-gray-500 hover:text-gray-700" @click.stop="closePreview">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
               </svg>
@@ -109,43 +95,42 @@
           </div>
         </div>
         <div class="p-6 overflow-auto max-h-[80vh]">
-          <!-- 瀑布流多页预览 -->
-          <div class="columns-1 md:columns-2 lg:columns-3 gap-6">
+          <!-- 单页无限滚动预览 -->
+          <div class="space-y-6">
             <div
               v-for="page in visiblePages"
               :key="page"
-              class="mb-6 break-inside-avoid"
+              class="relative bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm mx-auto"
+              style="max-width: 800px;"
             >
-              <div class="relative bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-                <!-- A4 比例容器 -->
-                <div class="relative w-full bg-white" style="padding-top: 141.42%;">
-                  <img
-                    :src="getPageImage(previewItem!, page) || placeholder"
-                    :alt="`${previewItem?.fileName} - 第 ${page} 页`"
-                    class="absolute inset-0 w-full h-full block object-contain bg-white"
-                    loading="lazy"
-                    @error="onPreviewImgError(previewItem!, page)"
-                  />
+              <!-- A4 比例容器 -->
+              <div class="relative w-full bg-white" style="padding-top: 141.42%;">
+                <img
+                  v-if="getPageImage(previewItem!, page)"
+                  :src="getPageImage(previewItem!, page)"
+                  :alt="`${previewItem?.fileName} - 第 ${page} 页`"
+                  class="absolute inset-0 w-full h-full block object-contain bg-white"
+                  loading="lazy"
+                  @error="onPreviewImgError(previewItem!, page)"
+                />
+                <!-- 加载动画 -->
+                <div v-else class="absolute inset-0 flex items-center justify-center bg-gray-100">
+                  <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
                 </div>
-                <div class="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
-                  第 {{ page }} 页
-                </div>
+              </div>
+              <div class="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
+                第 {{ page }} 页
               </div>
             </div>
           </div>
           
-          <!-- 加载更多观察哨 -->
+          <!-- 无限滚动观察哨 -->
           <div
-            v-if="hasMorePages && !loadingPages"
+            v-if="hasMorePages"
             ref="pageSentinelRef"
             class="h-20 flex items-center justify-center"
           >
-            <button
-              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-              @click.stop="loadMorePages"
-            >
-              加载更多页面
-            </button>
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
           </div>
           <div
             v-else-if="loadingPages"
@@ -189,7 +174,6 @@ const previewItem = ref<Material | null>(null)
 const srcMap = ref<Record<string, string>>({})
 const pageSrcMap = ref<Record<string, Record<number, string>>>({})
 const fading = ref(false)
-const currentPage = ref(1)
 const visiblePages = ref<number[]>([])
 const loadingPages = ref(false)
 const hasMorePages = ref(true)
@@ -378,12 +362,11 @@ const loadMore = async () => {
 const closePreview = () => {
   previewing.value = false
   previewItem.value = null
-  currentPage.value = 1
   visiblePages.value = []
   hasMorePages.value = true
 }
 
-// 加载更多页面（懒加载）
+// 加载更多页面（无限滚动）
 const loadMorePages = async () => {
   if (loadingPages.value || !hasMorePages.value || !previewItem.value) return
   
@@ -391,22 +374,19 @@ const loadMorePages = async () => {
   const material = previewItem.value
   
   try {
-    // 一次加载3页
-    const pagesToLoad = 3
-    const startPage = visiblePages.value.length + 1
+    // 一次加载1页，实现真正的无限滚动
+    const nextPage = visiblePages.value.length + 1
     
-    const loadPromises = []
-    for (let page = startPage; page < startPage + pagesToLoad; page++) {
-      loadPromises.push(loadPreviewPage(material, page))
-    }
+    const loadedPage = await loadPreviewPage(material, nextPage)
     
-    const newPages = await Promise.all(loadPromises)
-    const validPages = newPages.filter(page => page !== null) as number[]
-    
-    if (validPages.length === 0) {
+    if (loadedPage === null) {
       hasMorePages.value = false
     } else {
-      visiblePages.value = [...visiblePages.value, ...validPages]
+      visiblePages.value = [...visiblePages.value, loadedPage]
+      // 检查是否还有更多页面
+      if (nextPage >= (material.totalPages || 1)) {
+        hasMorePages.value = false
+      }
     }
   } catch (error) {
     console.error('加载更多页面失败:', error)
@@ -472,12 +452,11 @@ const initPageObserver = () => {
 const openPreview = (item: Material) => {
   previewing.value = true
   previewItem.value = item
-  currentPage.value = 1
   visiblePages.value = []
   hasMorePages.value = true
   loadingPages.value = false
   
-  // 初始加载前5页
+  // 初始加载第1页
   setTimeout(() => {
     loadMorePages()
     initPageObserver()
