@@ -99,6 +99,9 @@
             </div>
           </div>
           <div class="p-4 overflow-auto max-h-[90vh]">
+            <!-- 顶部无限滚动观察哨 -->
+            <div ref="topPageSentinelRef" class="h-10"></div>
+
             <!-- 单页无限滚动预览 -->
             <div class="space-y-6">
               <div v-for="page in visiblePages" :key="page" :data-page="page"
@@ -129,7 +132,8 @@
             <div v-else-if="loadingPages" class="h-20 flex items-center justify-center text-gray-500">
               加载中...
             </div>
-            <div v-else-if="!hasMorePages && !limitMessage" class="h-20 flex items-center justify-center text-gray-500">
+            <div v-else-if="!hasMorePages && !limitMessage && !limitMessageShown"
+              class="h-20 flex items-center justify-center text-gray-500">
               已加载所有页面
             </div>
             <div v-else-if="limitMessage" class="h-20 flex items-center justify-center text-gray-500">
@@ -181,8 +185,11 @@ const visiblePages = ref<number[]>([])
 const loadingPages = ref(false)
 const hasMorePages = ref(true)
 const pageSentinelRef = ref<HTMLDivElement | null>(null)
+const topPageSentinelRef = ref<HTMLDivElement | null>(null) // 添加顶部观察哨引用
 let pageObserver: IntersectionObserver | null = null
+let topPageObserver: IntersectionObserver | null = null // 添加顶部观察器引用
 const limitMessage = ref('') // 添加限制消息状态
+const limitMessageShown = ref(false) // 添加限制消息是否显示过的状态
 
 const jumpPageInput = ref<string>('')
 
@@ -294,7 +301,6 @@ const getCardBgClass = (category?: string) => {
 }
 let cardObserver: IntersectionObserver | null = null
 const MAX_CONCURRENCY = 2
-const token = localStorage.getItem('user_token');
 const loadQueue: Material[] = []
 let loadingCount = 0
 
@@ -328,7 +334,9 @@ const processQueue = () => {
     axios.get(previewUrl(m), {
       responseType: 'blob',
       baseURL: '/api',
-      headers: token ? { Authorization: `Bearer ${token}` } : {}
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('user_token') || ''}`
+      }
     })
       .then(res => {
         // axios 成功响应，res.data 就是 blob
@@ -392,7 +400,7 @@ const previewUrl = (m: Material) => {
 const onImgError = async (m: Material) => {
   if (srcMap.value[m.id]) {
     srcMap.value[m.id] =
-      'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22><rect width=%22300%22 height=%22200%22 fill=%22%23f3f4f6%22/><text x=%2220%22 y=%22105%22 fill=%22%239ca3af%22 font-size=%2212%22>图片加载失败</text></svg>'
+      'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200"><rect width="300" height="200" fill="#f3f4f6"/><text x="20" y="105" fill="#9ca3af" font-size="12">图片加载失败</text></svg>'
     return
   }
   try {
@@ -409,7 +417,7 @@ const onImgError = async (m: Material) => {
   } catch (err) {
     const errorMsg = err instanceof Error ? err.message : '预览加载失败'
     srcMap.value[m.id] =
-      `data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22><rect width=%22300%22 height=%22200%22 fill=%22%23f3f4f6%22/><text x=%2220%22 y=%22105%22 fill=%22%239ca3af%22 font-size=%2212%22>${encodeURIComponent(errorMsg)}</text></svg>`
+      `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200"><rect width="300" height="200" fill="#f3f4f6"/><text x="20" y="105" fill="#9ca3af" font-size="12">${encodeURIComponent(errorMsg)}</text></svg>`
   }
 }
 
@@ -465,27 +473,62 @@ const closePreview = () => {
   visiblePages.value = []
   hasMorePages.value = true
   limitMessage.value = '' // 清除限制消息
+  limitMessageShown.value = false // 重置限制消息显示状态
+
+  // 清理页面源映射
+  pageSrcMap.value = {}
+
+  // 重置跳转输入
+  jumpPageInput.value = ''
 }
 
 // 加载更多页面（无限滚动）
-const loadMorePages = async () => {
+const loadMorePages = async (direction: 'up' | 'down' = 'down') => {
   if (loadingPages.value || !hasMorePages.value || !previewItem.value) return
 
   loadingPages.value = true
   const material = previewItem.value
 
   try {
-    // 一次加载1页，实现真正的无限滚动
-    const nextPage = visiblePages.value.length + 1
+    // 计算下一个要加载的页面
+    let nextPage: number
+
+    // 如果visiblePages为空，从第1页开始加载
+    if (visiblePages.value.length === 0) {
+      nextPage = 1
+    } else {
+      // 获取当前可见页面的最小和最大页码
+      const minPage = Math.min(...visiblePages.value)
+      const maxPage = Math.max(...visiblePages.value)
+
+      // 根据方向决定加载哪一页
+      if (direction === 'down') {
+        // 向下加载
+        nextPage = maxPage + 1
+      } else {
+        // 向上加载
+        nextPage = minPage - 1
+      }
+    }
+
+    // 检查是否超出范围
+    if (nextPage < 1 || nextPage > (material.totalPages || 1)) {
+      hasMorePages.value = false
+      return
+    }
 
     const loadedPage = await loadPreviewPage(material, nextPage)
 
     if (loadedPage === null) {
       hasMorePages.value = false
     } else {
-      visiblePages.value = [...visiblePages.value, loadedPage]
+      // 确保页面按顺序添加到visiblePages
+      if (!visiblePages.value.includes(loadedPage)) {
+        visiblePages.value = [...visiblePages.value, loadedPage].sort((a, b) => a - b)
+      }
+
       // 检查是否还有更多页面
-      if (nextPage >= (material.totalPages || 1)) {
+      if (visiblePages.value.length >= (material.totalPages || 1)) {
         hasMorePages.value = false
       }
     }
@@ -505,7 +548,7 @@ const onPreviewImgError = (material: Material, page: number) => {
   console.warn(`预览图片加载失败: ${material.fileName} 第 ${page} 页`)
   if (pageSrcMap.value[material.id]?.[page]) {
     pageSrcMap.value[material.id][page] =
-      'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22><rect width=%22300%22 height=%22200%22 fill=%22%23f3f4f6%22/><text x=%2220%22 y=%22105%22 fill=%22%239ca3af%22 font-size=%2212%22>图片加载失败</text></svg>'
+      'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200"><rect width="300" height="200" fill="#f3f4f6"/><text x="20" y="105" fill="#9ca3af" font-size="12">图片加载失败</text></svg>'
   }
 }
 
@@ -514,7 +557,9 @@ const loadPreviewPage = async (material: Material, page: number): Promise<number
     const previewUrl = `/pdf/preview/${material.fileUuid}/page/${page}`
     const response = await axios.get(previewUrl, {
       baseURL: '/api',
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('user_token') || ''}`
+      },
       responseType: 'blob'
     })
 
@@ -539,6 +584,12 @@ const loadPreviewPage = async (material: Material, page: number): Promise<number
     if (!pageSrcMap.value[material.id]) {
       pageSrcMap.value[material.id] = {}
     }
+
+    // 如果已经存在该页面的URL，先释放旧的
+    if (pageSrcMap.value[material.id][page]) {
+      URL.revokeObjectURL(pageSrcMap.value[material.id][page])
+    }
+
     pageSrcMap.value[material.id][page] = URL.createObjectURL(blob)
     return page
   } catch (error: any) {
@@ -570,10 +621,11 @@ const loadPreviewPage = async (material: Material, page: number): Promise<number
 // 显示限制消息
 const showLimitMessage = (message: string) => {
   limitMessage.value = message
-  // 3秒后自动清除消息
+  limitMessageShown.value = true // 标记限制消息已显示
+  // 5秒后自动清除消息
   setTimeout(() => {
     limitMessage.value = ''
-  }, 3000)
+  }, 5000)
 }
 
 // 页面跳转功能
@@ -589,16 +641,32 @@ const jumpToPage = () => {
     return
   }
 
-  // 如果目标页面已经加载，直接滚动到该页面
-  if (visiblePages.value.includes(targetPage)) {
-    const element = document.querySelector(`[data-page="${targetPage}"]`)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
+  // 清空当前可见页面列表，确保上下页导航通过接口调用
+  visiblePages.value = []
+
+  // 重置hasMorePages状态
+  hasMorePages.value = true
+  limitMessage.value = ''
+  limitMessageShown.value = false
+
+  // 加载目标页面及其前后几页
+  loadSpecificPage(targetPage).then(() => {
+    // 加载前面几页（最多3页）
+    for (let i = 1; i <= 3; i++) {
+      const prevPage = targetPage - i
+      if (prevPage >= 1) {
+        loadPreviewPage(previewItem.value!, prevPage)
+      }
     }
-  } else {
-    // 如果目标页面未加载，先加载该页面
-    loadSpecificPage(targetPage)
-  }
+
+    // 加载后面几页（最多3页）
+    for (let i = 1; i <= 3; i++) {
+      const nextPage = targetPage + i
+      if (nextPage <= totalPages) {
+        loadPreviewPage(previewItem.value!, nextPage)
+      }
+    }
+  })
 }
 
 // 加载指定页面
@@ -612,7 +680,27 @@ const loadSpecificPage = async (page: number) => {
     if (loadedPage !== null) {
       // 如果页面不在当前可见列表中，添加到列表并排序
       if (!visiblePages.value.includes(page)) {
-        visiblePages.value = [...visiblePages.value, page].sort((a, b) => a - b)
+        // 添加目标页面及其前后几页到可见列表
+        const pagesToAdd = [page]
+
+        // 添加前面几页（最多3页）
+        for (let i = 1; i <= 3; i++) {
+          const prevPage = page - i
+          if (prevPage >= 1 && !visiblePages.value.includes(prevPage)) {
+            pagesToAdd.push(prevPage)
+          }
+        }
+
+        // 添加后面几页（最多3页）
+        const totalPages = previewItem.value.totalPages || 1
+        for (let i = 1; i <= 3; i++) {
+          const nextPage = page + i
+          if (nextPage <= totalPages && !visiblePages.value.includes(nextPage)) {
+            pagesToAdd.push(nextPage)
+          }
+        }
+
+        visiblePages.value = [...visiblePages.value, ...pagesToAdd].sort((a, b) => a - b)
       }
 
       // 滚动到该页面
@@ -637,7 +725,8 @@ const initPageObserver = () => {
   pageObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting && hasMorePages.value && !loadingPages.value) {
-        loadMorePages()
+        // 底部观察器被触发，向下加载更多页面
+        loadMorePages('down')
       }
     })
   }, { root: null, rootMargin: '100px', threshold: 0.1 })
@@ -647,18 +736,39 @@ const initPageObserver = () => {
   }
 }
 
-// 打开预览
+// 初始化顶部页面观察器
+const initTopPageObserver = () => {
+  if (!('IntersectionObserver' in window)) return
+
+  topPageObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && hasMorePages.value && !loadingPages.value) {
+        // 顶部观察器被触发，向上加载更多页面
+        loadMorePages('up')
+      }
+    })
+  }, { root: null, rootMargin: '100px', threshold: 0.1 })
+
+  if (topPageSentinelRef.value) {
+    topPageObserver.observe(topPageSentinelRef.value)
+  }
+}
+
+// 修改打开预览函数
 const openPreview = (item: Material) => {
   previewing.value = true
   previewItem.value = item
   visiblePages.value = []
   hasMorePages.value = true
   loadingPages.value = false
+  limitMessage.value = ''
+  limitMessageShown.value = false
 
   // 初始加载第1页
   setTimeout(() => {
-    loadMorePages()
+    loadMorePages('down')
     initPageObserver()
+    initTopPageObserver()
   }, 100)
 }
 
@@ -691,10 +801,35 @@ onBeforeUnmount(() => {
     observer.unobserve(sentinelRef.value)
   }
   observer = null
+
   if (cardObserver) {
     cardObserver.disconnect()
     cardObserver = null
   }
+
+  // 清理页面观察器
+  if (pageObserver && pageSentinelRef.value) {
+    pageObserver.unobserve(pageSentinelRef.value)
+  }
+  pageObserver = null
+
+  // 清理顶部页面观察器
+  if (topPageObserver && topPageSentinelRef.value) {
+    topPageObserver.unobserve(topPageSentinelRef.value)
+  }
+  topPageObserver = null
+
+  // 清理页面源映射中的URL对象
+  Object.values(pageSrcMap.value).forEach(pageMap => {
+    Object.values(pageMap).forEach(url => {
+      URL.revokeObjectURL(url)
+    })
+  })
+
+  // 清理源映射
+  Object.values(srcMap.value).forEach(url => {
+    URL.revokeObjectURL(url)
+  })
 })
 </script>
 

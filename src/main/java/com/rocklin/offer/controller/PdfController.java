@@ -100,7 +100,7 @@ public class PdfController {
 
     @Operation(summary = "获取 PDF 页面", description = "获取指定页面的图片")
     @GetMapping("/preview/{bookId}/page/{pageNum}")
-    @PageAccessLimit(maxPageForUser = 3, maxPageForAnonymous = 1)
+    @PageAccessLimit(maxPageForUser = 10, maxPageForAnonymous = 3)
     @SlidingWindowRateLimit(windowInSeconds = 10, maxCount = 1000)
     public ResponseEntity<FileSystemResource> getPage(@PathVariable String bookId, @PathVariable int pageNum) {
         // 处理 uploadDir（支持相对路径 & 绝对路径）
