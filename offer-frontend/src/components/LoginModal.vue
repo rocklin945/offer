@@ -1,7 +1,8 @@
 <template>
   <teleport to="body">
     <div class="modal-backdrop fixed inset-0 bg-black bg-opacity-60" style="z-index: 99999;"></div>
-    <div class="modal-container fixed inset-0 flex items-center justify-center" style="z-index: 100000;" @click.self="$emit('close')">
+    <div class="modal-container fixed inset-0 flex items-center justify-center" style="z-index: 100000;"
+      @click.self="$emit('close')">
       <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative">
         <!-- 标题 -->
         <div class="flex justify-between items-center mb-4">
@@ -18,66 +19,40 @@
           <!-- 账号 -->
           <div class="mb-4">
             <label for="userAccount" class="block text-sm font-medium text-gray-700 mb-1">账号</label>
-            <input
-              type="text"
-              id="userAccount"
-              v-model="formData.userAccount"
+            <input type="text" id="userAccount" v-model="formData.userAccount"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="请输入账号（3-12位）"
-              required
-              minlength="3"
-              maxlength="12"
-            />
+              placeholder="请输入账号（3-12位）" required minlength="3" maxlength="12" />
           </div>
 
           <!-- 密码 -->
           <div class="mb-4">
             <label for="userPassword" class="block text-sm font-medium text-gray-700 mb-1">密码</label>
-            <input
-              type="password"
-              id="userPassword"
-              v-model="formData.userPassword"
+            <input type="password" id="userPassword" v-model="formData.userPassword"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="请输入密码（8-16位）"
-              required
-              minlength="8"
-              maxlength="16"
-            />
+              placeholder="请输入密码（8-16位）" required minlength="8" maxlength="16" />
           </div>
 
           <!-- 确认密码（仅注册时显示） -->
           <div v-if="!isLogin" class="mb-4">
             <label for="checkPassword" class="block text-sm font-medium text-gray-700 mb-1">确认密码</label>
-            <input
-              type="password"
-              id="checkPassword"
-              v-model="formData.checkPassword"
+            <input type="password" id="checkPassword" v-model="formData.checkPassword"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="请再次输入密码"
-              required
-              minlength="8"
-              maxlength="16"
-            />
+              placeholder="请再次输入密码" required minlength="8" maxlength="16" />
           </div>
 
           <!-- 错误信息 -->
-          <div v-if="errorMessage" class="mb-4 text-red-500 text-sm">{{ errorMessage }}</div>
+          <div v-if="errorMessage" class="mb-4 text-sm"
+            :class="errorMessage.includes('注册成功') ? 'text-green-600' : 'text-red-500'">{{ errorMessage }}</div>
 
           <!-- 提交按钮 -->
           <div class="flex justify-between items-center">
-            <button
-              type="submit"
+            <button type="submit"
               class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              :disabled="loading"
-            >
+              :disabled="loading">
               {{ isLogin ? '登录' : '注册' }}
               <span v-if="loading" class="ml-2">...</span>
             </button>
-            <button
-              type="button"
-              class="text-blue-600 hover:text-blue-800 text-sm"
-              @click="toggleMode"
-            >
+            <button type="button" class="text-blue-600 hover:text-blue-800 text-sm" @click="toggleMode">
               {{ isLogin ? '没有账号？去注册' : '已有账号？去登录' }}
             </button>
           </div>
@@ -121,7 +96,7 @@ const handleLogin = async () => {
   try {
     loading.value = true
     errorMessage.value = ''
-    
+
     const result = await userStore.userLogin(formData.userAccount, formData.userPassword)
     if (result) {
       emit('login-success')
@@ -142,24 +117,24 @@ const handleRegister = async () => {
       errorMessage.value = '两次输入的密码不一致'
       return
     }
-    
+
     loading.value = true
     errorMessage.value = ''
-    
+
     const registerData: UserRegisterRequest = {
       userAccount: formData.userAccount,
       userPassword: formData.userPassword,
       checkPassword: formData.checkPassword
     }
-    
+
     // 如果有邀请码，添加到注册数据中
     const inviteCode = userStore.getInviteCode()
     if (inviteCode) {
       registerData.inviterCode = inviteCode
     }
-    
+
     const res = await register(registerData)
-    
+
     if (res.statusCode === 200) {
       // 注册成功后清除邀请码
       userStore.removeInviteCode()
