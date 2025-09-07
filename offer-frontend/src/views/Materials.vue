@@ -109,7 +109,7 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import type { Material, PageResponse } from '@/api/Materials'
 import { listMaterials, getMaterialCategories, buildPdfPreviewUrl } from '@/api/Materials'
-import request from '@/api/request' // 导入 axios 实例
+import axios from 'axios' // 导入原生axios实例用于图片请求
 
 const materials = ref<Material[]>([])
 const categories = ref<string[]>([])
@@ -164,8 +164,14 @@ const processQueue = () => {
     const m = loadQueue.shift()!
     loadingCount++
     console.log('Attempting to fetch preview for:', m.fileName, previewUrl(m)); // Debug log
-    // 使用 axios 发送请求，确保 token 被携带
-    request.get(previewUrl(m), { responseType: 'blob' })
+    // 使用原生axios实例发送图片请求，跳过全局拦截器
+    axios.get(previewUrl(m), { 
+      responseType: 'blob',
+      baseURL: '/api',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('user_token')}`
+      }
+    })
       .then(res => {
         // axios 成功响应，res.data 就是 blob
         const blob = res.data as Blob
