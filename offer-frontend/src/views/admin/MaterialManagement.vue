@@ -81,7 +81,7 @@
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">名称</th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">分类</th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">页数</th>
-                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">大小/MB</th>
+                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">大小</th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">浏览量</th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">创建时间</th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
@@ -98,7 +98,7 @@
                   </span>
                 </td>
                 <td class="px-4 py-4 text-center text-sm text-gray-500">{{ m.totalPages ?? '-' }}</td>
-                <td class="px-4 py-4 text-center text-sm text-gray-500">{{ m.fileSize }}</td>
+                <td class="px-4 py-4 text-center text-sm text-gray-500">{{ formatFileSize(m.fileSize) }}</td>
                 <td class="px-4 py-4 text-center text-sm text-gray-500">{{ m.viewCount }}</td>
                 <td class="px-4 py-4 text-center text-sm text-gray-500">{{ formatDate(m.createTime) }}</td>
                 <td class="px-4 py-4 text-center">
@@ -238,6 +238,23 @@ const query = ref<{
 
 const categories = ref<string[]>([])
 const jumpPage = ref<number | ''>('')
+
+// 文件大小格式化函数
+const formatFileSize = (bytes: number): string => {
+  if (!bytes) return '-'
+  
+  const mb = bytes / (1024 * 1024)
+  if (mb >= 1) {
+    return `${mb.toFixed(2)} MB`
+  }
+  
+  const kb = bytes / 1024
+  if (kb >= 1) {
+    return `${kb.toFixed(2)} KB`
+  }
+  
+  return `${bytes} B`
+}
 
 // 获取列表
 const fetchList = async () => {

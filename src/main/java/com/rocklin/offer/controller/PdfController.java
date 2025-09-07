@@ -86,7 +86,7 @@ public class PdfController {
                     totalImageSize += imageFile.length();
                 }
             }
-            Long fileSizeMB = totalImageSize / (ONE_MB);
+            Long fileSizeMB = totalImageSize;
             
             // 向material表插入数据
             materialService.addMaterial(bookId, fileName, category, fileSizeMB, totalPages);

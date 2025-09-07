@@ -67,5 +67,4 @@ public final class Constants {
     public static final String ORIGIN_PDF ="origin.pdf";
     public static final String USER_DIR ="user.dir";
     public static final String DOT =".";
-    public static final int ONE_MB =1024 * 1024;
 }
