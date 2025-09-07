@@ -61,92 +61,133 @@
       </div>
     </transition>
 
-    <!-- 加载更多 / 观察哨 -->
-    <div ref="sentinelRef" class="h-10 flex items-center justify-center text-sm text-gray-500">
-      <button
-        v-if="hasMore && !autoLoading"
-        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        :disabled="loading"
-        @click="loadMore"
-      >
-        {{ loading ? '加载中...' : '加载更多' }}
-      </button>
-      <span v-else-if="!hasMore">没有更多了</span>
-    </div>
+    <!-- 无限滚动观察哨 -->
+    <div ref="sentinelRef" class="h-10"></div>
 
     <!-- 预览弹窗 -->
-    <div
-      v-if="previewing"
-      class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
-      @click.self="closePreview"
-    >
-      <div class="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden">
-        <div class="flex items-center justify-between px-6 py-4 border-b">
-          <div class="flex items-center space-x-4">
-            <h3 class="text-lg font-semibold text-gray-900 truncate">{{ previewItem?.fileName }}</h3>
-            <span class="text-sm text-gray-500">第 {{ currentPage }} 页 / 共 {{ previewItem?.totalPages || 0 }} 页</span>
+    <teleport to="body">
+      <div
+        v-if="previewing"
+        class="fixed inset-0 z-50 flex items-center justify-center px-4 overflow-y-auto"
+        style="z-index: 1000000;"
+      >
+        <!-- 遮罩层 - 参考RedeemMemberModal.vue -->
+        <div class="absolute inset-0 bg-black transition-opacity duration-300"
+          :class="previewing ? 'bg-opacity-70' : 'bg-opacity-0'" 
+          @click="closePreview">
+        </div>
+
+        <!-- 预览内容 -->
+        <div
+          class="relative bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 ease-out my-8"
+          :class="previewing ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-4'"
+        >
+          <div class="flex items-center justify-between px-6 py-4 border-b">
+            <div class="flex items-center space-x-4">
+              <h3 class="text-lg font-semibold text-gray-900 truncate">{{ previewItem?.fileName }}</h3>
+              <span class="text-sm text-gray-500">共 {{ previewItem?.totalPages || 0 }} 页</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button class="text-gray-500 hover:text-gray-700" @click.stop="closePreview">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              </button>
+            </div>
           </div>
-          <div class="flex items-center space-x-2">
-            <button class="text-gray-500 hover:text-gray-700" @click.stop="closePreview">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-              </svg>
+          <div class="p-6 overflow-auto max-h-[80vh]">
+            <!-- 单页无限滚动预览 -->
+            <div class="space-y-6">
+              <div
+                v-for="page in visiblePages"
+                :key="page"
+                :data-page="page"
+                class="relative bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm mx-auto"
+                style="max-width: 800px;"
+              >
+                <!-- A4 比例容器 -->
+                <div class="relative w-full bg-white" style="padding-top: 141.42%;">
+                  <img
+                    v-if="getPageImage(previewItem!, page)"
+                    :src="getPageImage(previewItem!, page)"
+                    :alt="`${previewItem?.fileName} - 第 ${page} 页`"
+                    class="absolute inset-0 w-full h-full block object-contain bg-white"
+                    loading="lazy"
+                    @error="onPreviewImgError(previewItem!, page)"
+                  />
+                  <!-- 加载动画 -->
+                  <div v-else class="absolute inset-0 flex items-center justify-center bg-gray-100">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                  </div>
+                </div>
+                <div class="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
+                  第 {{ page }} 页
+                </div>
+              </div>
+            </div>
+            
+            <!-- 无限滚动观察哨 -->
+            <div
+              v-if="hasMorePages"
+              ref="pageSentinelRef"
+              class="h-20 flex items-center justify-center"
+            >
+              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            </div>
+            <div
+              v-else-if="loadingPages"
+              class="h-20 flex items-center justify-center text-gray-500"
+            >
+              加载中...
+            </div>
+            <div
+              v-else-if="!hasMorePages"
+              class="h-20 flex items-center justify-center text-gray-500"
+            >
+              已加载所有页面
+            </div>
+          </div>
+
+          <!-- 右下角页面跳转功能 -->
+          <div class="absolute bottom-6 right-6 flex items-center space-x-2">
+            <input
+              v-model="jumpPageInput"
+              type="number"
+              min="1"
+              :max="previewItem?.totalPages || 1"
+              placeholder="页码"
+              class="w-20 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              @keyup.enter="jumpToPage"
+            />
+            <button
+              @click="jumpToPage"
+              class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
+            >
+              跳转
+            </button>
+          </div>
+
+          <!-- 右下角页面跳转功能 -->
+          <div class="absolute bottom-6 right-6 flex items-center space-x-2">
+            <input
+              v-model="jumpPageInput"
+              type="number"
+              min="1"
+              :max="previewItem?.totalPages || 1"
+              placeholder="页码"
+              class="w-20 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              @keyup.enter="jumpToPage"
+            />
+            <button
+              @click="jumpToPage"
+              class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
+            >
+              跳转
             </button>
           </div>
         </div>
-        <div class="p-6 overflow-auto max-h-[80vh]">
-          <!-- 单页无限滚动预览 -->
-          <div class="space-y-6">
-            <div
-              v-for="page in visiblePages"
-              :key="page"
-              class="relative bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm mx-auto"
-              style="max-width: 800px;"
-            >
-              <!-- A4 比例容器 -->
-              <div class="relative w-full bg-white" style="padding-top: 141.42%;">
-                <img
-                  v-if="getPageImage(previewItem!, page)"
-                  :src="getPageImage(previewItem!, page)"
-                  :alt="`${previewItem?.fileName} - 第 ${page} 页`"
-                  class="absolute inset-0 w-full h-full block object-contain bg-white"
-                  loading="lazy"
-                  @error="onPreviewImgError(previewItem!, page)"
-                />
-                <!-- 加载动画 -->
-                <div v-else class="absolute inset-0 flex items-center justify-center bg-gray-100">
-                  <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-                </div>
-              </div>
-              <div class="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
-                第 {{ page }} 页
-              </div>
-            </div>
-          </div>
-          
-          <!-- 无限滚动观察哨 -->
-          <div
-            v-if="hasMorePages"
-            ref="pageSentinelRef"
-            class="h-20 flex items-center justify-center"
-          >
-            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          </div>
-          <div
-            v-else-if="loadingPages"
-            class="h-20 flex items-center justify-center text-gray-500"
-          >
-            加载中...
-          </div>
-          <div
-            v-else-if="!hasMorePages"
-            class="h-20 flex items-center justify-center text-gray-500"
-          >
-            已加载所有页面
-          </div>
-        </div>
       </div>
-    </div>
+    </teleport>
   </div>
 </template>
 
@@ -179,6 +220,8 @@ const loadingPages = ref(false)
 const hasMorePages = ref(true)
 const pageSentinelRef = ref<HTMLDivElement | null>(null)
 let pageObserver: IntersectionObserver | null = null
+
+const jumpPageInput = ref<string>('')
 
 const placeholder =
   'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22><rect width=%22300%22 height=%22200%22 fill=%22%23f3f4f6%22/><text x=%2240%22 y=%22105%22 fill=%22%239ca3af%22 font-size=%2214%22>加载中...</text></svg>'
@@ -351,11 +394,7 @@ const changeCategory = async (c: string) => {
   await fetchList(true)
 }
 
-const loadMore = async () => {
-  if (!hasMore.value || loading.value) return
-  pageNum.value += 1
-  await fetchList(false)
-}
+
 
 
 
@@ -431,6 +470,60 @@ const loadPreviewPage = async (material: Material, page: number): Promise<number
   }
 }
 
+// 页面跳转功能
+const jumpToPage = () => {
+  if (!previewItem.value || !jumpPageInput.value) return
+  
+  const targetPage = parseInt(jumpPageInput.value)
+  const totalPages = previewItem.value.totalPages || 1
+  
+  if (isNaN(targetPage) || targetPage < 1 || targetPage > totalPages) {
+    // 可以添加错误提示
+    console.warn('请输入有效的页码')
+    return
+  }
+  
+  // 如果目标页面已经加载，直接滚动到该页面
+  if (visiblePages.value.includes(targetPage)) {
+    const element = document.querySelector(`[data-page="${targetPage}"]`)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
+  } else {
+    // 如果目标页面未加载，先加载该页面
+    loadSpecificPage(targetPage)
+  }
+}
+
+// 加载指定页面
+const loadSpecificPage = async (page: number) => {
+  if (!previewItem.value) return
+  
+  try {
+    loadingPages.value = true
+    const loadedPage = await loadPreviewPage(previewItem.value, page)
+    
+    if (loadedPage !== null) {
+      // 如果页面不在当前可见列表中，添加到列表并排序
+      if (!visiblePages.value.includes(page)) {
+        visiblePages.value = [...visiblePages.value, page].sort((a, b) => a - b)
+      }
+      
+      // 滚动到该页面
+      setTimeout(() => {
+        const element = document.querySelector(`[data-page="${page}"]`)
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' })
+        }
+      }, 100)
+    }
+  } catch (error) {
+    console.error(`加载第${page}页失败:`, error)
+  } finally {
+    loadingPages.value = false
+  }
+}
+
 // 初始化页面观察器
 const initPageObserver = () => {
   if (!('IntersectionObserver' in window)) return
@@ -448,7 +541,7 @@ const initPageObserver = () => {
   }
 }
 
-// 打开预览时初始化
+// 打开预览
 const openPreview = (item: Material) => {
   previewing.value = true
   previewItem.value = item
@@ -463,6 +556,7 @@ const openPreview = (item: Material) => {
   }, 100)
 }
 
+// 打开预览时初始化
 const initObserver = () => {
   if (!('IntersectionObserver' in window)) {
     autoLoading.value = false
