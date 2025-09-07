@@ -271,6 +271,7 @@ const getCardBgClass = (category?: string) => {
 }
 let cardObserver: IntersectionObserver | null = null
 const MAX_CONCURRENCY = 2
+const token = localStorage.getItem('user_token');
 const loadQueue: Material[] = []
 let loadingCount = 0
 
@@ -304,9 +305,7 @@ const processQueue = () => {
     axios.get(previewUrl(m), {
       responseType: 'blob',
       baseURL: '/api',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('user_token')}`
-      }
+      headers: token ? { Authorization: `Bearer ${token}` } : {}
     })
       .then(res => {
         // axios 成功响应，res.data 就是 blob
@@ -491,9 +490,7 @@ const loadPreviewPage = async (material: Material, page: number): Promise<number
     const previewUrl = `/pdf/preview/${material.fileUuid}/page/${page}`
     const response = await axios.get(previewUrl, {
       baseURL: '/api',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('user_token')}`
-      },
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
       responseType: 'blob'
     })
 

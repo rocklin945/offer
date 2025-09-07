@@ -27,6 +27,8 @@ public class WebConfig implements WebMvcConfigurer {
                         "/user/register",
                         "/jobInfo/list",
                         "/webInfo/member-image",
+                        "/material/**",
+                        "/pdf/preview/**",
                         "/health/**",
                         "/doc.html",
                         "/swagger-ui/**",

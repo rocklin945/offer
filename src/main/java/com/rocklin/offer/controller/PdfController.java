@@ -2,6 +2,7 @@ package com.rocklin.offer.controller;
 
 import cn.hutool.core.lang.UUID;
 import com.rocklin.offer.common.annotation.AuthCheck;
+import com.rocklin.offer.common.annotation.PageAccessLimit;
 import com.rocklin.offer.common.annotation.SlidingWindowRateLimit;
 import com.rocklin.offer.common.enums.UserRoleEnum;
 import com.rocklin.offer.common.utils.PdfToImageUtil;
@@ -99,14 +100,9 @@ public class PdfController {
 
     @Operation(summary = "获取 PDF 页面", description = "获取指定页面的图片")
     @GetMapping("/preview/{bookId}/page/{pageNum}")
+    @PageAccessLimit(maxPageForUser = 3, maxPageForAnonymous = 1)
     @SlidingWindowRateLimit(windowInSeconds = 10, maxCount = 1000)
     public ResponseEntity<FileSystemResource> getPage(@PathVariable String bookId, @PathVariable int pageNum) {
-        // 权限控制
-        UserLoginResponse currentUser = userService.getCurrentUser();
-        if (UserRoleEnum.USER.getValue().equals(currentUser.getUserRole()) && pageNum > 1) {
-            return ResponseEntity.status(403).body(null); // 非会员禁止访问
-        }
-
         // 处理 uploadDir（支持相对路径 & 绝对路径）
         File baseDir = new File(uploadDir);
         if (!baseDir.isAbsolute()) {
