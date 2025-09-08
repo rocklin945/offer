@@ -5,7 +5,7 @@ import Message from '../components/Message'
 // 创建axios实例
 const request: AxiosInstance = axios.create({
   baseURL: '/api',
-  timeout: 10000,
+  timeout: 10 * 60 * 1000,
   headers: {
     'Content-Type': 'application/json'
   }

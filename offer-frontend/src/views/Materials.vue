@@ -500,47 +500,57 @@ const loadMorePages = async (direction: 'up' | 'down' = 'down') => {
   const material = previewItem.value
 
   try {
-    // 计算下一个要加载的页面
-    let nextPage: number
+    // 计算要加载的页面范围
+    let pagesToLoad: number[] = []
 
     // 如果visiblePages为空，从第1页开始加载
     if (visiblePages.value.length === 0) {
-      nextPage = 1
+      pagesToLoad = [1, 2, 3] // 初始加载前3页
     } else {
       // 获取当前可见页面的最小和最大页码
       const minPage = Math.min(...visiblePages.value)
       const maxPage = Math.max(...visiblePages.value)
 
-      // 根据方向决定加载哪一页
+      // 根据方向决定加载哪些页面
       if (direction === 'down') {
-        // 向下加载
-        nextPage = maxPage + 1
+        // 向下加载：当前最大页 + 接下来2页
+        const startPage = maxPage + 1
+        pagesToLoad = [startPage, startPage + 1, startPage + 2]
       } else {
-        // 向上加载
-        nextPage = minPage - 1
+        // 向上加载：当前最小页 - 前面2页
+        const startPage = minPage - 1
+        pagesToLoad = [startPage, startPage - 1, startPage - 2].reverse() // 保持顺序
       }
     }
 
-    // 检查是否超出范围
-    if (nextPage < 1 || nextPage > (material.totalPages || 1)) {
+    // 过滤超出范围的页面
+    pagesToLoad = pagesToLoad.filter(page => 
+      page >= 1 && page <= (material.totalPages || 1)
+    )
+
+    // 过滤已经加载的页面
+    pagesToLoad = pagesToLoad.filter(page => !visiblePages.value.includes(page))
+
+    if (pagesToLoad.length === 0) {
       hasMorePages.value = false
       return
     }
 
-    const loadedPage = await loadPreviewPage(material, nextPage)
+    // 并行加载所有页面
+    const loadedPages = await Promise.all(
+      pagesToLoad.map(page => loadPreviewPage(material, page))
+    )
 
-    if (loadedPage === null) {
+    // 添加成功加载的页面
+    const successfulPages = loadedPages.filter(page => page !== null) as number[]
+    if (successfulPages.length > 0) {
+      visiblePages.value = [...new Set([...visiblePages.value, ...successfulPages])].sort((a, b) => a - b)
+    }
+
+    // 检查是否还有更多页面
+    const allPagesLoaded = visiblePages.value.length >= (material.totalPages || 1)
+    if (allPagesLoaded || (pagesToLoad.length > 0 && successfulPages.length === 0)) {
       hasMorePages.value = false
-    } else {
-      // 确保页面按顺序添加到visiblePages
-      if (!visiblePages.value.includes(loadedPage)) {
-        visiblePages.value = [...visiblePages.value, loadedPage].sort((a, b) => a - b)
-      }
-
-      // 检查是否还有更多页面
-      if (visiblePages.value.length >= (material.totalPages || 1)) {
-        hasMorePages.value = false
-      }
     }
   } catch (error) {
     console.error('加载更多页面失败:', error)
