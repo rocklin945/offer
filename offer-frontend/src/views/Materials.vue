@@ -52,7 +52,10 @@
     </transition>
 
     <!-- 无限滚动观察哨 -->
-    <div ref="sentinelRef" class="h-10"></div>
+    <div v-if="hasMore" ref="sentinelRef" class="h-10"></div>
+    <div v-else-if="materials.length > 0" class="h-20 flex items-center justify-center text-gray-500">
+      已加载全部
+    </div>
 
     <!-- 预览弹窗 -->
     <teleport to="body">
@@ -168,7 +171,7 @@ const categories = ref<string[]>([])
 const selectedCategory = ref<string>('')
 
 const pageNum = ref(1)
-const pageSize = ref(12)
+const pageSize = ref(15)
 const total = ref(0)
 const hasMore = ref(true)
 const loading = ref(false)
@@ -457,11 +460,22 @@ const fetchList = async (reset = false) => {
     } else {
       materials.value = materials.value.concat(list)
     }
-    hasMore.value = materials.value.length < total.value
+    
+    // 判断是否还有更多数据：当前返回的列表不为空且长度等于pageSize
+    hasMore.value = list.length > 0 && list.length === pageSize.value
+    
+    // 只有在成功获取数据后才递增页码
+    if (list.length > 0) {
+      pageNum.value++
+    }
   } catch (e) {
     console.error('获取资料失败', e)
   } finally {
     loading.value = false
+    // 数据加载完成后重新初始化观察器，因为观察哨元素可能被重新渲染
+    if (sentinelRef.value) {
+      initObserver()
+    }
   }
 }
 
@@ -831,13 +845,21 @@ const initObserver = () => {
     autoLoading.value = false
     return
   }
+  
+  // 先清理旧的观察器
+  if (observer && sentinelRef.value) {
+    observer.unobserve(sentinelRef.value)
+    observer.disconnect()
+  }
+  
   observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting && hasMore.value && !loading.value) {
-        loadMorePages('down')
+        fetchList()
       }
     })
   }, { root: null, rootMargin: '0px', threshold: 0.1 })
+  
   if (sentinelRef.value) {
     observer.observe(sentinelRef.value)
   }
