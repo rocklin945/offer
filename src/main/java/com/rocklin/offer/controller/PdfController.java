@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import static com.rocklin.offer.common.constants.Constants.*;
 
@@ -122,7 +124,12 @@ public class PdfController {
         // 返回图片
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, CONTENT_DISPOSITION + file.getName())
+                // 缓存3天
+                .cacheControl(CacheControl.maxAge(3, TimeUnit.DAYS).cachePrivate())
+                // 支持 304 Not Modified
+                .lastModified(file.lastModified())
                 .contentType(MediaType.IMAGE_JPEG)
                 .body(new FileSystemResource(file));
+
     }
 }

@@ -1,5 +1,6 @@
 package com.rocklin.offer.common.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
 
@@ -16,6 +17,7 @@ import java.util.Iterator;
 
 import static com.rocklin.offer.common.constants.Constants.*;
 
+@Slf4j
 public class PdfToImageUtil {
 
     /**
@@ -37,6 +39,9 @@ public class PdfToImageUtil {
         }
 
         try (PDDocument document = PDDocument.load(pdfFile)) {
+
+            log.info("开始将 {} 转换为 {}", pdfFile.getName(), outputDir.getName());
+
             int totalPages = document.getNumberOfPages();
             PDFRenderer pdfRenderer = new PDFRenderer(document);
 
@@ -66,10 +71,10 @@ public class PdfToImageUtil {
                     writer.write(null, new IIOImage(bim, null, null), param);
                     writer.dispose();
                 }
-
-                System.out.println("已生成并压缩: " + outputFile.getAbsolutePath());
             }
-            
+
+            log.info("{} 转换完成，共 {} 页", pdfFile.getName(), totalPages);
+
             return totalPages;
         }
     }
