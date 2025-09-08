@@ -50,10 +50,12 @@ export function buildPdfPreviewUrl(bookId: string, pageNum = 1): string {
 }
 
 // 上传PDF（管理员）
-export async function uploadPdf(file: File, category: string): Promise<string> {
+export async function uploadPdf(file: File, category: string, dpi: number = 120, quality: number = 0.7): Promise<string> {
   const form = new FormData()
   form.append('file', file)
   form.append('category', category)
+  form.append('dpi', dpi.toString())
+  form.append('quality', quality.toString())
   const res = await request.post('/pdf/upload', form, {
     headers: { 'Content-Type': 'multipart/form-data' }
   })

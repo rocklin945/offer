@@ -195,6 +195,18 @@
             <input type="file" accept="application/pdf" @change="onFileChange" class="w-full" />
             <p v-if="uploadFileName" class="text-sm text-gray-500 mt-1">已选择：{{ uploadFileName }}</p>
           </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">分辨率 (DPI)</label>
+              <input v-model="uploadDpi" type="number" min="72" max="300" step="1" placeholder="默认120"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">压缩质量</label>
+              <input v-model="uploadQuality" type="number" min="0.1" max="1.0" step="0.1" placeholder="默认0.7"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+            </div>
+          </div>
         </div>
         <div class="px-4 py-3 border-t flex justify-end gap-2">
           <button class="px-4 py-2 text-gray-700 bg-gray-100 rounded hover:bg-gray-200"
@@ -360,6 +372,8 @@ const handleDelete = async (id: string, fileName: string) => {
 const showUpload = ref(false)
 const uploadFileObj = ref<File | null>(null)
 const uploadFileName = ref('')
+const uploadDpi = ref(120)
+const uploadQuality = ref(0.7)
 const uploadCategory = ref('')
 const uploading = ref(false)
 
@@ -395,7 +409,7 @@ const submitUpload = async () => {
   }
   uploading.value = true
   try {
-    const msg = await uploadPdf(uploadFileObj.value, uploadCategory.value)
+    const msg = await uploadPdf(uploadFileObj.value, uploadCategory.value, uploadDpi.value, uploadQuality.value)
     // 上传成功后刷新列表
     showUpload.value = false
     uploadFileObj.value = null

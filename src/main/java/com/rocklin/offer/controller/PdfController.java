@@ -40,7 +40,9 @@ public class PdfController {
     @PostMapping("/upload")
     @AuthCheck(enableRole = UserRoleEnum.ADMIN)
     @SlidingWindowRateLimit(windowInSeconds = 10, maxCount = 3)
-    public ResponseEntity<String> uploadPdf(@RequestParam(FILE) MultipartFile file, @RequestParam String category) {
+    public ResponseEntity<String> uploadPdf(@RequestParam(FILE) MultipartFile file, @RequestParam String category,
+                                           @RequestParam(defaultValue = "120") int dpi,
+                                           @RequestParam(defaultValue = "0.7") float quality) {
         try {
             if (!file.getOriginalFilename().endsWith(PDF_SUFFIX)) {
                 return ResponseEntity.badRequest().body("只允许上传 PDF 文件");
@@ -65,7 +67,7 @@ public class PdfController {
             file.transferTo(pdfFile);
 
             // 转换 PDF → 图片，并获取总页数
-            int totalPages = PdfToImageUtil.convert(pdfFile, bookDir);
+            int totalPages = PdfToImageUtil.convert(pdfFile, bookDir, dpi, quality);
 
             // 转换完成后删除原始 PDF
             if (pdfFile.exists()) {

@@ -23,11 +23,13 @@ public class PdfToImageUtil {
      *
      * @param pdfFile   输入 PDF 文件
      * @param outputDir 输出目录
+     * @param dpi       分辨率，可调
+     * @param quality   压缩质量（0.0 最小体积 ~ 1.0 原画质）
      * @throws IOException
      */
-    public static int convert(File pdfFile, File outputDir) throws IOException {
-        final int DPI = 120;        // 分辨率，可调
-        final float QUALITY = 0.7f; // 压缩质量（0.0 最小体积 ~ 1.0 原画质）
+    public static int convert(File pdfFile, File outputDir, int dpi, float quality) throws IOException {
+        final int DPI = dpi;
+        final float QUALITY = quality;
 
         // 确保输出目录存在
         if (!outputDir.exists()) {
