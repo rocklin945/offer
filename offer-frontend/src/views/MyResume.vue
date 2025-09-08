@@ -2,7 +2,7 @@
     <div class="space-y-6">
         <!-- 页面标题 -->
         <div class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-gray-900 mb-2">个人简历</h1>
+            <h1 class="text-4xl font-bold text-gray-900 mb-2">网申助手</h1>
             <p class="text-gray-600">告别填写简历时繁琐的复制粘贴</p>
         </div>
 

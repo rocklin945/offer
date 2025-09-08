@@ -37,8 +37,8 @@
               <router-link to="/my-resume"
                 class="hover:text-gray-700 px-1 py-1 text-sm sm:px-3 sm:py-2 sm:text-sm rounded-md font-medium transition-colors whitespace-nowrap flex-shrink-0"
                 :style="getNavStyle('/my-resume')">
-                <span class="hidden sm:inline">个人简历</span>
-                <span class="sm:hidden">个人简历</span>
+                <span class="hidden sm:inline">网申助手</span>
+                <span class="sm:hidden">网申助手</span>
               </router-link>
               <router-link v-if="userStore.currentUser" to="/become-member" class="hidden sm:inline-flex" :class="[
                 'px-3 py-2 rounded-md text-sm font-medium transition-colors',
