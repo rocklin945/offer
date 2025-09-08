@@ -824,7 +824,7 @@ const initObserver = () => {
   observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting && hasMore.value && !loading.value) {
-        loadMore()
+        loadMorePages('down')
       }
     })
   }, { root: null, rootMargin: '0px', threshold: 0.1 })
