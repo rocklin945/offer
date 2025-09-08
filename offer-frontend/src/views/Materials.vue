@@ -40,7 +40,7 @@
               </div>
             </div>
             <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2 text-white">
-              <div class="text-base font-bold truncate text-gray-700" :title="m.fileName">{{ m.fileName }}</div>
+              <div class="text-base font-bold text-gray-700 break-words" :title="m.fileName">{{ m.fileName }}</div>
               <div class="text-[10px] opacity-90 mt-0.5 flex items-center justify-between">
                 <span></span>
                 <span v-if="m.totalPages">共 {{ m.totalPages }} 页</span>
