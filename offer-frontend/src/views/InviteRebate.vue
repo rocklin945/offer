@@ -2,10 +2,37 @@
   <div class="invite-rebate-container" style="width: 100%; overflow-x: hidden;">
     <div class="min-h-screen bg-gray-50 py-8">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        <!-- 我的返佣 Header Card -->
+
+
+        <!-- 佣金余额 Section -->
         <div class="bg-white rounded-2xl shadow-lg p-6">
-          <h1 class="text-2xl font-bold text-gray-900 mb-2">我的返佣</h1>
-          <p class="text-gray-600">邀请好友注册使用，获取佣金收入</p>
+          <h2 class="text-2xl font-bold text-gray-900 mb-4">我的余额</h2>
+          <div class="flex flex-col sm:flex-row justify-between items-center">
+            <div>
+              <p class="text-4xl font-bold text-gray-900">¥{{ commissionData.balanceCommission.toFixed(2) }}
+              </p>
+              <p class="text-sm text-gray-500 mt-2">邀请好友注册使用，获取佣金收入</p>
+            </div>
+            <div class="flex space-x-4 mt-4 sm:mt-0">
+              <button @click="openRedeemModal"
+                class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                </svg>
+                免费兑换会员
+              </button>
+              <button @click="openWithdrawModal"
+                class="px-6 py-3 border border-yellow-300 text-yellow-800 bg-yellow-300 rounded-lg hover:bg-yellow-400 transition-colors flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z">
+                  </path>
+                </svg>
+                提现
+              </button>
+            </div>
+          </div>
         </div>
 
         <!-- Stats Cards -->
@@ -64,7 +91,7 @@
               </svg>
             </div>
             <div>
-              <div class="text-3xl font-bold text-gray-900">10%</div>
+              <div class="text-3xl font-bold text-gray-900">20%</div>
               <div class="text-gray-600">佣金比例</div>
             </div>
           </div>
@@ -120,7 +147,7 @@
                 </svg>
               </div>
               <h3 class="text-lg font-semibold text-gray-900 mb-1">4. 返佣</h3>
-              <p class="text-gray-600 text-sm">获得10%返佣</p>
+              <p class="text-gray-600 text-sm">获得20%返佣</p>
             </div>
           </div>
         </div>
@@ -159,37 +186,6 @@
           </p>
         </div>
 
-        <!-- 佣金余额 Section -->
-        <div class="bg-white rounded-2xl shadow-lg p-6">
-          <h2 class="text-2xl font-bold text-gray-900 mb-4">佣金余额</h2>
-          <div class="flex flex-col sm:flex-row justify-between items-center">
-            <div>
-              <p class="text-gray-600">可用佣金</p>
-              <p class="text-4xl font-bold text-gray-900">¥{{ commissionData.balanceCommission.toFixed(2) }}
-              </p>
-              <p class="text-sm text-gray-500 mt-2">邀请好友获得的佣金，可以直接划转到消费余额</p>
-            </div>
-            <div class="flex space-x-4 mt-4 sm:mt-0">
-              <button @click="openRedeemModal"
-                class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
-                </svg>
-                兑换会员
-              </button>
-              <button @click="openWithdrawModal"
-                class="px-6 py-3 border border-yellow-300 text-yellow-800 bg-yellow-300 rounded-lg hover:bg-yellow-400 transition-colors flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z">
-                  </path>
-                </svg>
-                提现
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
     <!-- 弹窗：兑换会员 -->
