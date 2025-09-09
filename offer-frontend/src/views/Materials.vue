@@ -200,7 +200,7 @@ const closing = ref(false)
 const jumpPageInput = ref<string>('')
 
 const placeholder =
-  'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22><rect width=%22300%22 height=%22200%22 fill=%22%23f3f4f6%22/><text x=%2240%22 y=%22105%22 fill=%22%239ca3af%22 font-size=%2214%22>加载中...</text></svg>'
+  'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 300 200%22 preserveAspectRatio=%22xMidYMid meet%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23f3f4f6%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%239ca3af%22 font-size=%2214%22>加载中...</text></svg>'
 
 // 预定义的颜色数组（使用JobList的配色方案）
 const categoryColors = [
@@ -306,7 +306,7 @@ const getCardBgClass = (category?: string) => {
   return cardBgColors[colorIndex]
 }
 let cardObserver: IntersectionObserver | null = null
-const MAX_CONCURRENCY = 2
+const MAX_CONCURRENCY = 6
 const loadQueue: Material[] = []
 let loadingCount = 0
 
@@ -366,7 +366,7 @@ const processQueue = () => {
                 errorMessage = `请求失败: ${error.response.status}`;
               }
               console.warn('图片加载失败:', errorMessage);
-              srcMap.value[m.id] = `data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22 fill=%22%23f3f4f6%22/><text x=%2220%22 y=%22105%22 fill=%22%239ca3af%22 font-size=%2212%22>${encodeURIComponent(errorMessage)}</text></svg>`;
+              srcMap.value[m.id] = `data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 300 200%22 preserveAspectRatio=%22xMidYMid meet%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23f3f4f6%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%239ca3af%22 font-size=%2212%22>${encodeURIComponent(errorMessage)}</text></svg>`;
             };
             reader.readAsText(error.response.data);
             return; // Avoid further processing in this catch block
@@ -383,7 +383,7 @@ const processQueue = () => {
           errorMessage = error.message;
         }
         console.warn('图片加载失败:', errorMessage);
-        srcMap.value[m.id] = `data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22 fill=%22%23f3f4f6%22/><text x=%2220%22 y=%22105%22 fill=%22%239ca3af%22 font-size=%2212%22>${encodeURIComponent(errorMessage)}</text></svg>`;
+        srcMap.value[m.id] = `data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 300 200%22 preserveAspectRatio=%22xMidYMid meet%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23f3f4f6%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%239ca3af%22 font-size=%2212%22>${encodeURIComponent(errorMessage)}</text></svg>`;
       })
       .finally(() => {
         loadingCount--
@@ -406,7 +406,7 @@ const previewUrl = (m: Material) => {
 const onImgError = async (m: Material) => {
   if (srcMap.value[m.id]) {
     srcMap.value[m.id] =
-      'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200"><rect width="300" height="200" fill="#f3f4f6"/><text x="20" y="105" fill="#9ca3af" font-size="12">图片加载失败</text></svg>'
+      'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" preserveAspectRatio="xMidYMid meet"><rect width="100%" height="100%" fill="#f3f4f6"/><text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="#9ca3af" font-size="12">图片加载失败</text></svg>'
     return
   }
   try {
@@ -423,7 +423,7 @@ const onImgError = async (m: Material) => {
   } catch (err) {
     const errorMsg = err instanceof Error ? err.message : '预览加载失败'
     srcMap.value[m.id] =
-      `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200"><rect width="300" height="200" fill="#f3f4f6"/><text x="20" y="105" fill="#9ca3af" font-size="12">${encodeURIComponent(errorMsg)}</text></svg>`
+      `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" preserveAspectRatio="xMidYMid meet"><rect width="100%" height="100%" fill="#f3f4f6"/><text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="#9ca3af" font-size="12">${encodeURIComponent(errorMsg)}</text></svg>`
   }
 }
 
@@ -582,7 +582,7 @@ const onPreviewImgError = (material: Material, page: number) => {
   console.warn(`预览图片加载失败: ${material.fileName} 第 ${page} 页`)
   if (pageSrcMap.value[material.id]?.[page]) {
     pageSrcMap.value[material.id][page] =
-      'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200"><rect width="300" height="200" fill="#f3f4f6"/><text x="20" y="105" fill="#9ca3af" font-size="12">图片加载失败</text></svg>'
+      'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" preserveAspectRatio="xMidYMid meet"><rect width="100%" height="100%" fill="#f3f4f6"/><text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="#9ca3af" font-size="12">图片加载失败</text></svg>'
   }
 }
 
