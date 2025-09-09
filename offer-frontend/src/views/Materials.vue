@@ -306,7 +306,7 @@ const getCardBgClass = (category?: string) => {
   return cardBgColors[colorIndex]
 }
 let cardObserver: IntersectionObserver | null = null
-const MAX_CONCURRENCY = 6
+const MAX_CONCURRENCY = 15
 const loadQueue: Material[] = []
 let loadingCount = 0
 
@@ -855,6 +855,10 @@ const initObserver = () => {
   observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting && hasMore.value && !loading.value) {
+        // 触发加载后取消观察，避免重复触发
+        if (sentinelRef.value) {
+          observer?.unobserve(sentinelRef.value)
+        }
         fetchList()
       }
     })
