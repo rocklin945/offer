@@ -64,7 +64,7 @@
 
         <!-- 简历信息 -->
         <div v-if="userStore.currentUser" class="card">
-            <transition name="slide" mode="out-in">
+            <transition name="slide-x" mode="out-in">
                 <div :key="resumeType">
                     <div class="flex justify-between items-center mb-6">
                         <h2 class="text-xl font-semibold text-gray-900">简历信息</h2>
@@ -965,19 +965,25 @@ onDeactivated(() => {
     @apply shadow-sm;
 }
 
-/* Slide transition styles */
-.slide-enter-active,
-.slide-leave-active {
-  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+/* Horizontal slide transition styles */
+.slide-x-enter-active,
+.slide-x-leave-active {
+  transition: all 0.5s ease;
 }
 
-.slide-enter-from {
-  transform: translateX(100%);
+.slide-x-enter-from {
   opacity: 0;
+  transform: translateX(24px);
 }
 
-.slide-leave-to {
-  transform: translateX(-100%);
+.slide-x-leave-to {
   opacity: 0;
+  transform: translateX(-24px);
+}
+
+.slide-x-enter-to,
+.slide-x-leave-from {
+  opacity: 1;
+  transform: translateX(0);
 }
 </style>
