@@ -294,46 +294,49 @@
     </div>
 
     <!-- 更新状态弹窗 -->
-    <div v-if="showUpdateModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg p-6 w-96">
-        <h3 class="text-lg font-medium text-gray-900 mb-4">更新投递状态</h3>
-        <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-2">选择状态</label>
-          <select v-model="updateForm.applicationStatus"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-            <option value="未投递">未投递</option>
-            <option value="已投递">已投递</option>
-            <option value="笔试">笔试</option>
-            <option value="一面">一面</option>
-            <option value="二面">二面</option>
-            <option value="HR面">HR面</option>
-            <option value="已通过">已通过</option>
-            <option value="已拒绝">已拒绝</option>
-          </select>
-        </div>
-        <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-2">个人备注</label>
-          <div class="relative">
-            <textarea v-model="updateForm.personalNote"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24 resize-none"
-              placeholder="添加个人备注，如投递进度链接等（最多500字）" maxlength="500"></textarea>
-            <div class="absolute bottom-2 right-2 text-xs text-gray-500">
-              {{ updateForm.personalNote?.length || 0 }}/500
+    <teleport to="body">
+      <div v-if="showUpdateModal" class="fixed inset-0 z-50 flex items-center justify-center px-4 overflow-y-auto" style="z-index: 1000000;">
+        <div class="absolute inset-0 bg-black transition-opacity duration-300 bg-opacity-50" @click="showUpdateModal = false"></div>
+        <div class="relative bg-white rounded-lg p-6 w-96 my-8 transform transition-all duration-300 ease-out scale-100 opacity-100 translate-y-0">
+          <h3 class="text-lg font-medium text-gray-900 mb-4">更新投递状态</h3>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">选择状态</label>
+            <select v-model="updateForm.applicationStatus"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <option value="未投递">未投递</option>
+              <option value="已投递">已投递</option>
+              <option value="笔试">笔试</option>
+              <option value="一面">一面</option>
+              <option value="二面">二面</option>
+              <option value="HR面">HR面</option>
+              <option value="已通过">已通过</option>
+              <option value="已拒绝">已拒绝</option>
+            </select>
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">个人备注</label>
+            <div class="relative">
+              <textarea v-model="updateForm.personalNote"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24 resize-none"
+                placeholder="添加个人备注，如投递进度链接等（最多500字）" maxlength="500"></textarea>
+              <div class="absolute bottom-2 right-2 text-xs text-gray-500">
+                {{ updateForm.personalNote?.length || 0 }}/500
+              </div>
             </div>
           </div>
-        </div>
-        <div class="flex justify-end space-x-2">
-          <button @click="showUpdateModal = false"
-            class="px-4 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
-            取消
-          </button>
-          <button @click="confirmUpdate"
-            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors">
-            确认
-          </button>
+          <div class="flex justify-end space-x-2">
+            <button @click="showUpdateModal = false"
+              class="px-4 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
+              取消
+            </button>
+            <button @click="confirmUpdate"
+              class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors">
+              确认
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </teleport>
   </div>
 </template>
 

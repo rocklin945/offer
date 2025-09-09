@@ -224,78 +224,81 @@
     </div>
 
     <!-- 编辑用户对话框 -->
-    <div v-if="showEditDialog" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-semibold text-gray-800">编辑用户</h2>
-          <button @click="showEditDialog = false" class="text-gray-500 hover:text-gray-700">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
+    <teleport to="body">
+      <div v-if="showEditDialog" class="fixed inset-0 z-50 flex items-center justify-center px-4 overflow-y-auto" style="z-index: 1000000;">
+        <div class="absolute inset-0 bg-black transition-opacity duration-300 bg-opacity-50" @click="showEditDialog = false"></div>
+        <div class="relative bg-white rounded-lg shadow-xl w-full max-w-md p-6 my-8 transform transition-all duration-300 ease-out scale-100 opacity-100 translate-y-0">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold text-gray-800">编辑用户</h2>
+            <button @click="showEditDialog = false" class="text-gray-500 hover:text-gray-700">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+
+          <form @submit.prevent="submitEdit">
+            <div class="mb-4">
+              <label for="userName" class="block text-sm font-medium text-gray-700 mb-1">用户名</label>
+              <input type="text" id="userName" v-model="editForm.userName"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md" required />
+            </div>
+
+            <div class="mb-4">
+              <label for="userProfile" class="block text-sm font-medium text-gray-700 mb-1">用户简介</label>
+              <textarea id="userProfile" v-model="editForm.userProfile"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md" rows="3"></textarea>
+            </div>
+
+            <div class="mb-4">
+              <label for="userRole" class="block text-sm font-medium text-gray-700 mb-1">用户角色</label>
+              <select id="userRole" v-model="editForm.userRole" class="w-full px-3 py-2 border border-gray-300 rounded-md"
+                required @change="handleRoleChange">
+                <option :value="0">管理员</option>
+                <option :value="1">普通用户</option>
+                <option :value="2">会员</option>
+              </select>
+            </div>
+
+            <!-- 会员到期时间设置 -->
+            <div v-if="editForm.userRole === 2" class="mb-4">
+              <label for="memberExpireTime" class="block text-sm font-medium text-gray-700 mb-1">
+                会员到期时间
+              </label>
+              <input 
+                type="datetime-local" 
+                id="memberExpireTime" 
+                v-model="editForm.memberExpireTime"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md" 
+                min="" 
+                :min="getCurrentDateTime()"
+              />
+              <p class="text-xs text-gray-500 mt-1">请设置会员到期时间</p>
+            </div>
+
+            <div class="mb-4">
+              <label for="userPassword" class="block text-sm font-medium text-gray-700 mb-1">
+                密码（留空表示不修改）
+              </label>
+              <input type="password" id="userPassword" v-model="editForm.userPassword"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="请输入新密码" minlength="8"
+                maxlength="16" />
+            </div>
+
+            <div class="flex justify-end">
+              <button type="button" @click="showEditDialog = false"
+                class="px-4 py-2 border border-gray-300 rounded-md mr-2 hover:bg-gray-50">
+                取消
+              </button>
+              <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                :disabled="loading">
+                {{ loading ? '提交中...' : '确认' }}
+              </button>
+            </div>
+          </form>
         </div>
-
-        <form @submit.prevent="submitEdit">
-          <div class="mb-4">
-            <label for="userName" class="block text-sm font-medium text-gray-700 mb-1">用户名</label>
-            <input type="text" id="userName" v-model="editForm.userName"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md" required />
-          </div>
-
-          <div class="mb-4">
-            <label for="userProfile" class="block text-sm font-medium text-gray-700 mb-1">用户简介</label>
-            <textarea id="userProfile" v-model="editForm.userProfile"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md" rows="3"></textarea>
-          </div>
-
-          <div class="mb-4">
-            <label for="userRole" class="block text-sm font-medium text-gray-700 mb-1">用户角色</label>
-            <select id="userRole" v-model="editForm.userRole" class="w-full px-3 py-2 border border-gray-300 rounded-md"
-              required @change="handleRoleChange">
-              <option :value="0">管理员</option>
-              <option :value="1">普通用户</option>
-              <option :value="2">会员</option>
-            </select>
-          </div>
-
-          <!-- 会员到期时间设置 -->
-          <div v-if="editForm.userRole === 2" class="mb-4">
-            <label for="memberExpireTime" class="block text-sm font-medium text-gray-700 mb-1">
-              会员到期时间
-            </label>
-            <input 
-              type="datetime-local" 
-              id="memberExpireTime" 
-              v-model="editForm.memberExpireTime"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md" 
-              min="" 
-              :min="getCurrentDateTime()"
-            />
-            <p class="text-xs text-gray-500 mt-1">请设置会员到期时间</p>
-          </div>
-
-          <div class="mb-4">
-            <label for="userPassword" class="block text-sm font-medium text-gray-700 mb-1">
-              密码（留空表示不修改）
-            </label>
-            <input type="password" id="userPassword" v-model="editForm.userPassword"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="请输入新密码" minlength="8"
-              maxlength="16" />
-          </div>
-
-          <div class="flex justify-end">
-            <button type="button" @click="showEditDialog = false"
-              class="px-4 py-2 border border-gray-300 rounded-md mr-2 hover:bg-gray-50">
-              取消
-            </button>
-            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-              :disabled="loading">
-              {{ loading ? '提交中...' : '确认' }}
-            </button>
-          </div>
-        </form>
       </div>
-    </div>
+    </teleport>
   </div>
 </template>
 
@@ -304,6 +307,7 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { listUserByPage, updateUser, deleteUser } from '@/api/user'
 import type { UserLoginResponse, UserUpdateRequest } from '@/api/userTypes'
 import Message from '@/components/Message'
+import Confirm from '@/components/Confirm'
 
 // 查询参数
 const queryParams = reactive({
@@ -539,21 +543,27 @@ const submitEdit = async () => {
 
 // 删除用户
 const handleDelete = async (user: UserLoginResponse) => {
-  if (!confirm(`确定要删除用户 "${user.userName}" 吗？`)) {
-    return
-  }
+  const confirmed = await Confirm.show({
+    title: '确认删除',
+    message: `确定要删除用户 "${user.userName}" 吗？此操作不可恢复。`,
+    confirmText: '删除',
+    cancelText: '取消',
+    type: 'danger'
+  })
 
-  try {
-    loading.value = true
-    const res = await deleteUser(user.userId)
-    if (res.statusCode === 200) {
-      fetchUserList()
-      Message.success(res.message || '删除成功')
+  if (confirmed) {
+    try {
+      loading.value = true
+      const res = await deleteUser(user.userId)
+      if (res.statusCode === 200) {
+        fetchUserList()
+        Message.success(res.message || '删除成功')
+      }
+    } catch (error: any) {
+      console.error('删除失败:', error)
+    } finally {
+      loading.value = false
     }
-  } catch (error: any) {
-    console.error('删除失败:', error)
-  } finally {
-    loading.value = false
   }
 }
 
