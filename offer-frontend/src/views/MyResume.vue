@@ -6,60 +6,17 @@
             <p class="text-gray-600">告别填写简历时繁琐的复制粘贴</p>
         </div>
 
-        <!-- 存储方式选择 -->
-        <div class="card">
-            <h2 class="text-xl font-semibold text-gray-900 mb-4">存储方式</h2>
-            <div class="flex space-x-4">
-                <button @click="storageMode = 'local'"
-                    :class="storageMode === 'local' ? 'btn-primary' : 'btn-secondary'"
-                    class="flex items-center space-x-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
-                        </path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z">
-                        </path>
-                    </svg>
-                    <span>本地存储</span>
-                </button>
-                <button @click="storageMode = 'cloud'"
-                    :class="storageMode === 'cloud' ? 'btn-primary' : 'btn-secondary'"
-                    class="flex items-center space-x-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
-                        </path>
-                    </svg>
-                    <span>云端存储</span>
-                </button>
-            </div>
-            <div class="mt-2 text-sm text-gray-500">
-                <p v-if="storageMode === 'local'">⚙️ 本地存储：数据保存在浏览器中，换设备时需要重新填写</p>
-                <p v-else>☁️ 云端存储：数据保存在服务器，可在任意设备访问（需要登录）</p>
-            </div>
-        </div>
 
-        <!-- 未登录提示（仅云端模式显示） -->
-        <div v-if="storageMode === 'cloud' && !userStore.currentUser" class="card bg-yellow-50 border-yellow-200">
-            <div class="text-center py-8">
-                <p class="text-yellow-800 mb-4">使用云端存储需要先登录账户</p>
-                <button @click="showLoginModal = true"
-                    class="inline-block px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                    去登录
-                </button>
-            </div>
-        </div>
 
         <!-- 简历表单 -->
-        <div v-if="storageMode === 'local' || userStore.currentUser" class="card">
+        <div v-if="userStore.currentUser" class="card">
             <!-- 文档导入区域 -->
             <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                 <h3 class="text-lg font-medium text-gray-900 mb-3">📄 导入简历文档</h3>
                 <div class="flex items-center space-x-4">
                     <input ref="fileInput" type="file" accept=".pdf,.doc,.docx" @change="handleFileUpload"
                         class="hidden" />
-                    <button @click="$refs.fileInput?.click()"
+                    <button @click="triggerFileInputClick"
                         class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center space-x-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -81,29 +38,56 @@
                     <span class="text-sm">正在解析文档...</span>
                 </div>
             </div>
+        </div>
 
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-semibold text-gray-900">简历信息</h2>
-                <div class="flex space-x-2">
-                    <button v-if="hasResumeData" @click="clearResume" class="btn-secondary">
-                        清空简历
-                    </button>
-                    <button v-if="hasResumeData && storageMode === 'cloud' && cloudResume" @click="clearCloudResume"
-                        class="px-4 py-2 bg-red-400 text-white rounded-md hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 flex items-center space-x-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1H8a1 1 0 00-1 1v3M4 7h16">
-                            </path>
-                        </svg>
-                        <span>清除云端数据</span>
-                    </button>
-                    <button @click="saveResume" :disabled="isSaving" class="btn-primary">
-                        {{ isSaving ? '保存中...' : '保存简历' }}
-                    </button>
-                </div>
+        <!-- 简历类型选择 -->
+        <div class="card">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">简历类型</h2>
+            <div class="flex space-x-4">
+                <button @click="resumeType = '民企'"
+                    :class="resumeType === '民企' ? 'btn-primary' : 'btn-secondary'"
+                    class="flex items-center space-x-2">
+                    <span>民企</span>
+                </button>
+                <button @click="resumeType = '央国企'"
+                    :class="resumeType === '央国企' ? 'btn-primary' : 'btn-secondary'"
+                    class="flex items-center space-x-2">
+                    <span>央国企</span>
+                </button>
+                <button @click="resumeType = '银行'"
+                    :class="resumeType === '银行' ? 'btn-primary' : 'btn-secondary'"
+                    class="flex items-center space-x-2">
+                    <span>银行</span>
+                </button>
             </div>
+        </div>
 
-            <form @submit.prevent="saveResume" class="space-y-6">
+        <!-- 简历信息 -->
+        <div v-if="userStore.currentUser" class="card">
+            <transition name="slide" mode="out-in">
+                <div :key="resumeType">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold text-gray-900">简历信息</h2>
+                        <div class="flex space-x-2">
+                            <button v-if="hasResumeData" @click="clearResume" class="btn-secondary">
+                                清空简历
+                            </button>
+                            <button v-if="hasResumeData && cloudResume" @click="clearCloudResume"
+                                class="px-4 py-2 bg-red-400 text-white rounded-md hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 flex items-center space-x-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1H8a1 1 0 00-1 1v3M4 7h16">
+                                    </path>
+                                </svg>
+                                <span>清除云端数据</span>
+                            </button>
+                            <button @click="saveResume" :disabled="isSaving" class="btn-primary">
+                                {{ isSaving ? '保存中...' : '保存简历' }}
+                            </button>
+                        </div>
+                    </div>
+
+                    <form @submit.prevent="saveResume" class="space-y-6">
                 <!-- 基本信息 -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <div>
@@ -319,9 +303,10 @@
                 </div>
             </form>
         </div>
-
+    </transition>
+</div> <!-- Close the card div for "简历信息" -->
         <!-- 简历预览 -->
-        <div v-if="hasResumeData && (storageMode === 'local' || userStore.currentUser)" class="card">
+        <div v-if="hasResumeData && userStore.currentUser" class="card">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl font-semibold text-gray-900">简历预览</h2>
                 <button @click="copyFullResume" class="btn-secondary flex items-center space-x-2">
@@ -528,24 +513,7 @@
             </div>
         </div>
 
-        <!-- 存储信息 -->
-        <div v-if="storageMode === 'local' || userStore.currentUser" class="card bg-blue-50 border-blue-200">
-            <div class="flex items-center space-x-2 text-blue-800">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <div>
-                    <p class="font-medium">存储信息</p>
-                    <p class="text-sm" v-if="storageMode === 'local'">
-                        数据已保存在浏览器本地存储中，清除浏览器数据会导致简历丢失
-                    </p>
-                    <p class="text-sm" v-else>
-                        数据已保存在云端服务器，您可以在任意设备登录查看
-                    </p>
-                </div>
-            </div>
-        </div>
+
 
         <!-- 登录模态框 -->
         <LoginModal v-if="showLoginModal" @close="showLoginModal = false" />
@@ -571,12 +539,14 @@ import LoginModal from '@/components/LoginModal.vue'
 
 const userStore = useUserStore()
 const showLoginModal = ref(false)
-const storageMode = ref<'local' | 'cloud'>('local')
 const isSaving = ref(false)
 const cloudResume = ref<Resume | null>(null)
 // 文档解析相关状态
 const isProcessing = ref(false)
 const fileInput = ref<HTMLInputElement | null>(null)
+
+// 简历类型
+const resumeType = ref<'民企' | '央国企' | '银行'>('民企')
 
 // 简历表单数据
 const resumeForm = reactive<ResumeAddRequest>({
@@ -598,7 +568,15 @@ const resumeForm = reactive<ResumeAddRequest>({
 
 // 是否有简历数据
 const hasResumeData = computed(() => {
-    return Object.values(resumeForm).some(value => value && value.trim() !== '')
+    const stringFields: Array<keyof ResumeAddRequest> = [
+        'name', 'phone', 'wechat', 'email', 'gender', 'birthday', 'address',
+        'education', 'skills', 'workExperience', 'projectExperience',
+        'internshipExperience', 'certificates', 'selfEvaluation'
+    ];
+    return stringFields.some(key => {
+        const value = resumeForm[key];
+        return typeof value === 'string' && value.trim() !== '';
+    });
 })
 
 // 文档解析相关函数
@@ -645,6 +623,11 @@ const handleFileUpload = async (event: Event) => {
     }
 }
 
+// 触发文件输入点击
+const triggerFileInputClick = () => {
+    fileInput.value?.click();
+};
+
 // 将解析的数据映射到表单中
 const mapParsedDataToForm = (parsedData: Record<string, string>) => {
     // 映射字段
@@ -675,32 +658,6 @@ const mapParsedDataToForm = (parsedData: Record<string, string>) => {
             }
         }
     })
-}
-
-// 本地存储键名
-const LOCAL_STORAGE_KEY = 'my_resume_data'
-
-// 保存到本地存储
-const saveToLocalStorage = () => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(resumeForm))
-}
-
-// 从本地存储加载
-const loadFromLocalStorage = () => {
-    const saved = localStorage.getItem(LOCAL_STORAGE_KEY)
-    if (saved) {
-        try {
-            const data = JSON.parse(saved)
-            Object.assign(resumeForm, data)
-        } catch (error) {
-            console.error('加载本地简历数据失败:', error)
-        }
-    }
-}
-
-// 清空本地存储
-const clearLocalStorage = () => {
-    localStorage.removeItem(LOCAL_STORAGE_KEY)
 }
 
 // 从云端加载简历
@@ -780,12 +737,7 @@ const saveResume = async () => {
     isSaving.value = true
 
     try {
-        if (storageMode.value === 'local') {
-            saveToLocalStorage()
-            Message.success('简历已保存到本地')
-        } else {
-            await saveToCloud()
-        }
+        await saveToCloud()
     } catch (error) {
         console.error('保存简历失败:', error)
         Message.error('保存失败，请重试')
@@ -796,13 +748,9 @@ const saveResume = async () => {
 
 // 清空简历
 const clearResume = async () => {
-    const confirmMessage = storageMode.value === 'local'
-        ? '确定要清空所有简历数据吗？此操作不可恢复。'
-        : '确定要清空表单中的简历数据吗？这不会删除云端已保存的数据。'
-
     const confirmed = await Confirm.show({
         title: '清空简历',
-        message: confirmMessage,
+        message: '确定要清空表单中的简历数据吗？这不会删除云端已保存的数据。',
         type: 'warning',
         confirmText: '确定清空',
         cancelText: '取消'
@@ -812,13 +760,7 @@ const clearResume = async () => {
         Object.keys(resumeForm).forEach(key => {
             (resumeForm as any)[key] = ''
         })
-
-        if (storageMode.value === 'local') {
-            clearLocalStorage()
-            Message.success('简历数据已清空')
-        } else {
-            Message.success('表单数据已清空')
-        }
+        Message.success('表单数据已清空')
     }
 }
 
@@ -859,7 +801,7 @@ const clearCloudResume = async () => {
 }
 
 // 复制功能
-const copyToClipboard = async (text: string, fieldName: string) => {
+const copyToClipboard = async (text: string | undefined | null, fieldName: string) => {
     // 如果内容为空，提示用户
     if (!text || text.trim() === '') {
         Message.warning(`${fieldName}内容为空，无法复制`)
@@ -950,27 +892,16 @@ const generateResumeText = (): string => {
     return text.trim()
 }
 
-// 监听存储模式变化
-watch(storageMode, async (newMode) => {
-    if (newMode === 'local') {
-        loadFromLocalStorage()
-    } else if (newMode === 'cloud' && userStore.currentUser) {
-        await loadFromCloud()
-    }
-})
-
 // 监听用户登录状态变化
 watch(() => userStore.currentUser, async (user) => {
-    if (user && storageMode.value === 'cloud') {
+    if (user) {
         await loadFromCloud()
     }
 })
 
 // 页面加载时初始化
 onMounted(() => {
-    if (storageMode.value === 'local') {
-        loadFromLocalStorage()
-    } else if (userStore.currentUser) {
+    if (userStore.currentUser) {
         loadFromCloud()
     }
 })
@@ -983,9 +914,7 @@ onActivated(() => {
     }
 
     // 重新加载简历数据
-    if (storageMode.value === 'local') {
-        loadFromLocalStorage()
-    } else if (userStore.currentUser) {
+    if (userStore.currentUser) {
         loadFromCloud()
     }
 })
@@ -994,9 +923,7 @@ onActivated(() => {
 onDeactivated(() => {
     // 可以在这里添加清理逻辑
     // 例如保存当前表单数据
-    if (storageMode.value === 'local' && hasResumeData.value) {
-        saveToLocalStorage()
-    }
+    // 由于现在是完全云端存储，这里不需要额外保存逻辑
 })
 </script>
 
@@ -1036,5 +963,21 @@ onDeactivated(() => {
 
 .group:hover .copy-btn {
     @apply shadow-sm;
+}
+
+/* Slide transition styles */
+.slide-enter-active,
+.slide-leave-active {
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.slide-enter-from {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.slide-leave-to {
+  transform: translateX(-100%);
+  opacity: 0;
 }
 </style>
