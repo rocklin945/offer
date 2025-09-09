@@ -311,11 +311,21 @@ const loadQueue: Material[] = []
 let loadingCount = 0
 
 const observeCard = (el: Element | null, m: Material) => {
-  if (!el) return
+  if (!el) {
+    // 元素卸载时清理
+    return
+  }
+  
+  // 检查是否已经观察过这个元素
+  if ((el as any).__observed) {
+    return
+  }
+  
   if (!('IntersectionObserver' in window)) {
     enqueueLoad(m)
     return
   }
+  
   if (!cardObserver) {
     cardObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -328,7 +338,9 @@ const observeCard = (el: Element | null, m: Material) => {
       })
     }, { root: null, rootMargin: '100px', threshold: 0.01 })
   }
+  
   ; (el as any).__material = m
+  ; (el as any).__observed = true
   cardObserver.observe(el)
 }
 
@@ -387,7 +399,6 @@ const processQueue = () => {
       })
       .finally(() => {
         loadingCount--
-        processQueue()
       })
   }
 }
