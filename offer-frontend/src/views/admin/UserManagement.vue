@@ -172,7 +172,8 @@
 
             <!-- 页码按钮 -->
             <template v-for="page in getPageNumbers()" :key="page">
-              <button v-if="page === '...'" disabled class="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm text-gray-400 cursor-default">
+              <button v-if="page === '...'" disabled
+                class="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm text-gray-400 cursor-default">
                 ...
               </button>
               <button v-else @click="handlePageChange(page as number)" :class="[
@@ -225,9 +226,12 @@
 
     <!-- 编辑用户对话框 -->
     <teleport to="body">
-      <div v-if="showEditDialog" class="fixed inset-0 z-50 flex items-center justify-center px-4 overflow-y-auto" style="z-index: 1000000;">
-        <div class="absolute inset-0 bg-black transition-opacity duration-300 bg-opacity-50" @click="showEditDialog = false"></div>
-        <div class="relative bg-white rounded-lg shadow-xl w-full max-w-md p-6 my-8 transform transition-all duration-300 ease-out scale-100 opacity-100 translate-y-0">
+      <div v-if="showEditDialog" class="fixed inset-0 z-50 flex items-center justify-center px-4 overflow-y-auto"
+        style="z-index: 1000000;">
+        <div class="absolute inset-0 bg-black transition-opacity duration-300 bg-opacity-50"
+          @click="showEditDialog = false"></div>
+        <div
+          class="relative bg-white rounded-lg shadow-xl w-full max-w-md p-6 my-8 transform transition-all duration-300 ease-out scale-100 opacity-100 translate-y-0">
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-xl font-semibold text-gray-800">编辑用户</h2>
             <button @click="showEditDialog = false" class="text-gray-500 hover:text-gray-700">
@@ -252,8 +256,8 @@
 
             <div class="mb-4">
               <label for="userRole" class="block text-sm font-medium text-gray-700 mb-1">用户角色</label>
-              <select id="userRole" v-model="editForm.userRole" class="w-full px-3 py-2 border border-gray-300 rounded-md"
-                required @change="handleRoleChange">
+              <select id="userRole" v-model="editForm.userRole"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md" required @change="handleRoleChange">
                 <option :value="0">管理员</option>
                 <option :value="1">普通用户</option>
                 <option :value="2">会员</option>
@@ -265,14 +269,8 @@
               <label for="memberExpireTime" class="block text-sm font-medium text-gray-700 mb-1">
                 会员到期时间
               </label>
-              <input 
-                type="datetime-local" 
-                id="memberExpireTime" 
-                v-model="editForm.memberExpireTime"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md" 
-                min="" 
-                :min="getCurrentDateTime()"
-              />
+              <input type="datetime-local" id="memberExpireTime" v-model="editForm.memberExpireTime"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md" min="" :min="getCurrentDateTime()" />
               <p class="text-xs text-gray-500 mt-1">请设置会员到期时间</p>
             </div>
 

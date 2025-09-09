@@ -26,3 +26,14 @@ export function updateResume(data: ResumeUpdateRequest): Promise<BaseResponse<bo
 export function deleteResume(data: DeleteRequest): Promise<BaseResponse<boolean>> {
     return request.post('/resume/delete', data).then(res => res.data)
 }
+
+// 解析PDF简历
+export function parsePdfResume(file: File): Promise<BaseResponse<Record<string, string>>> {
+    const formData = new FormData()
+    formData.append('file', file)
+    return request.post('/resume/parse-pdf', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    }).then(res => res.data)
+}

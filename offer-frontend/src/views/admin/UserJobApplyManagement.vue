@@ -242,7 +242,8 @@
 
             <!-- 页码按钮 -->
             <template v-for="page in getPageNumbers()" :key="page">
-              <button v-if="page === '...'" disabled class="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm text-gray-400 cursor-default">
+              <button v-if="page === '...'" disabled
+                class="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm text-gray-400 cursor-default">
                 ...
               </button>
               <button v-else @click="handlePageChange(page as number)" :class="[
@@ -295,9 +296,12 @@
 
     <!-- 更新状态弹窗 -->
     <teleport to="body">
-      <div v-if="showUpdateModal" class="fixed inset-0 z-50 flex items-center justify-center px-4 overflow-y-auto" style="z-index: 1000000;">
-        <div class="absolute inset-0 bg-black transition-opacity duration-300 bg-opacity-50" @click="showUpdateModal = false"></div>
-        <div class="relative bg-white rounded-lg p-6 w-96 my-8 transform transition-all duration-300 ease-out scale-100 opacity-100 translate-y-0">
+      <div v-if="showUpdateModal" class="fixed inset-0 z-50 flex items-center justify-center px-4 overflow-y-auto"
+        style="z-index: 1000000;">
+        <div class="absolute inset-0 bg-black transition-opacity duration-300 bg-opacity-50"
+          @click="showUpdateModal = false"></div>
+        <div
+          class="relative bg-white rounded-lg p-6 w-96 my-8 transform transition-all duration-300 ease-out scale-100 opacity-100 translate-y-0">
           <h3 class="text-lg font-medium text-gray-900 mb-4">更新投递状态</h3>
           <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700 mb-2">选择状态</label>
