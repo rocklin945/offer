@@ -132,8 +132,8 @@
               class="h-20 flex items-center justify-center">
               <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             </div>
-            <div v-else-if="loadingPages" class="h-20 flex items-center justify-center text-gray-500">
-              加载中...
+            <div v-else-if="loadingPages" class="h-20 flex items-center justify-center">
+              <img :src="placeholder" alt="加载中" class="w-16 h-16 object-contain" />
             </div>
             <div v-else-if="!hasMorePages && !limitMessage && !limitMessageShown"
               class="h-20 flex items-center justify-center text-gray-500">

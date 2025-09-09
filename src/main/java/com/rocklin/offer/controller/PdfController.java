@@ -121,12 +121,6 @@ public class PdfController {
         }
         materialService.incrementViewCount(bookId);
 
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
         // 返回图片
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, CONTENT_DISPOSITION + file.getName())
