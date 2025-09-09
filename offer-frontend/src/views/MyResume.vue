@@ -559,10 +559,7 @@ import type { Resume, ResumeAddRequest, ResumeUpdateRequest } from '@/api/types'
 import type { DeleteRequest } from '@/api/types'
 import Message from '@/components/Message'
 import Confirm from '@/components/Confirm'
-// 导入文档解析库
-import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist/legacy/build/pdf'
-import pdfjsWorker from 'pdfjs-dist/build/pdf.worker?url'
-import mammoth from 'mammoth'
+// 文档解析将改为后端处理
 // 导入简历API
 import { getMyResume, addResume, updateResume, deleteResume } from '@/api/resume'
 // 导入登录模态框组件
@@ -570,23 +567,7 @@ import LoginModal from '@/components/LoginModal.vue'
 
 // 配置PDF.js worker
 // 在生产环境中使用动态导入的worker路径
-if (import.meta.env.PROD) {
-    // 使用动态路径，避免硬编码文件名
-    // 为了处理MIME类型问题，我们使用一个更兼容的配置
-    try {
-        // 尝试设置worker源
-        GlobalWorkerOptions.workerSrc = pdfjsWorker
-    } catch (e) {
-        console.warn('Failed to set PDF worker source, using fallback:', e)
-        // 如果设置失败，使用空字符串让pdfjs使用fake worker
-        GlobalWorkerOptions.workerSrc = ''
-    }
-} else {
-    GlobalWorkerOptions.workerSrc = pdfjsWorker
-}
 
-// 添加额外的配置以处理MIME类型问题
-GlobalWorkerOptions.workerPort = null // 确保不使用worker port
 
 const userStore = useUserStore()
 const showLoginModal = ref(false)
@@ -646,11 +627,9 @@ const handleFileUpload = async (event: Event) => {
     try {
         let extractedText = ''
 
-        if (file.type === 'application/pdf') {
-            extractedText = await parsePDF(file)
-        } else if (file.type === 'application/msword' || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-            extractedText = await parseWord(file)
-        }
+        // 文档解析功能已迁移到后端处理
+        Message.info('文档解析功能正在处理中，请稍后手动填写简历信息')
+        extractedText = null
 
         if (extractedText) {
             await parseResumeText(extractedText)
@@ -668,8 +647,7 @@ const handleFileUpload = async (event: Event) => {
     }
 }
 
-// 解析PDF文件（使用PDF.js）
-const parsePDF = async (file: File): Promise<string> => {
+// 文档解析将改为后端处理
     try {
         const arrayBuffer = await file.arrayBuffer()
         const pdf = await getDocument({
@@ -762,26 +740,6 @@ const parsePDF = async (file: File): Promise<string> => {
             }
         }
     }
-}
-
-// 解析Word文件
-const parseWord = async (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader()
-        reader.onload = () => {
-            mammoth.extractRawText({ arrayBuffer: reader.result as ArrayBuffer })
-                .then((result: any) => {
-                    resolve(result.value)
-                })
-                .catch((error: any) => {
-                    console.error('Word解析失败:', error)
-                    reject(error)
-                })
-        }
-
-        reader.onerror = () => reject(new Error('文件读取失败'))
-        reader.readAsArrayBuffer(file)
-    })
 }
 
 // 通用文档解析函数 - 适用于PDF和Word

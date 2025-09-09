@@ -16,6 +16,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import com.rocklin.offer.common.utils.PdfResumeParser;
+
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * @ClassName ResumeController
@@ -90,5 +95,20 @@ public class ResumeController {
 
         boolean result = resumeService.deleteResume(request.getId(), userId);
         return BaseResponse.success(result);
+    }
+
+    @Operation(summary = "解析PDF简历", description = "上传PDF文件并解析简历信息")
+    @PostMapping(value = "/parse-pdf", consumes = "multipart/form-data")
+    @SlidingWindowRateLimit(windowInSeconds = 30, maxCount = 5)
+    public BaseResponse<Map<String, String>> parsePdfResume(@RequestParam("file") MultipartFile file) {
+        Assert.isTrue(!file.isEmpty(), ErrorCode.PARAMS_ERROR, "文件不能为空");
+        Assert.isTrue(PdfResumeParser.isPdfFile(file), ErrorCode.PARAMS_ERROR, "只支持PDF文件");
+
+        try {
+            Map<String, String> resumeInfo = PdfResumeParser.parsePdfContent(file);
+            return BaseResponse.success(resumeInfo);
+        } catch (IOException e) {
+            throw new RuntimeException("PDF解析失败", e);
+        }
     }
 }
