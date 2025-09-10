@@ -43,7 +43,7 @@ public class PdfController {
     @AuthCheck(enableRole = UserRoleEnum.ADMIN)
     @SlidingWindowRateLimit(windowInSeconds = 10, maxCount = 3)
     public ResponseEntity<String> uploadPdf(@RequestParam(FILE) MultipartFile file, @RequestParam String category,
-                                           @RequestParam(defaultValue = "120") int dpi,
+                                           @RequestParam(defaultValue = "160") int dpi,
                                            @RequestParam(defaultValue = "0.7") float quality) {
         try {
             if (!file.getOriginalFilename().endsWith(PDF_SUFFIX)) {
