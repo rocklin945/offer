@@ -79,7 +79,7 @@
         </div>
         <div class="md:col-span-2 flex justify-end">
           <button @click="$emit('remove-internship', index)" type="button"
-            class="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600">
+            class="px-3 py-1 bg-red-400 text-white rounded-md hover:bg-red-600">
             删除
           </button>
         </div>
@@ -167,7 +167,7 @@
         </div>
         <div class="md:col-span-2 flex justify-end">
           <button @click="$emit('remove-project-experience', index)" type="button"
-            class="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600">
+            class="px-3 py-1 bg-red-400 text-white rounded-md hover:bg-red-600">
             删除
           </button>
         </div>

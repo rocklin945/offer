@@ -80,7 +80,7 @@
                             </button>
                             <button v-if="userStore.currentUser && hasResumeData && cloudResume"
                                 @click="clearCloudResume"
-                                class="px-4 py-2 bg-red-400 text-white rounded-md hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 flex items-center space-x-2">
+                                class="px-4 py-2 bg-red-400 text-white rounded-md hover:bg-red-400 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 flex items-center space-x-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1H8a1 1 0 00-1 1v3M4 7h16">
@@ -1604,15 +1604,15 @@ const cleanupComponentState = () => {
 }
 
 .copy-btn {
-    @apply p-1 bg-gray-100 text-gray-500 rounded hover:bg-gray-200 hover:text-gray-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+    @apply p-1 bg-gray-100 text-gray-500 rounded hover:bg-green-300 hover:text-green-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-200 focus:ring-offset-2;
 }
 
 .resume-copy-btn {
-    @apply px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center;
+    @apply px-3 py-2 bg-green-300 text-white rounded-md hover:bg-green-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-200 focus:ring-offset-2 flex items-center justify-center;
 }
 
 .copy-btn-small {
-    @apply p-0.5 bg-gray-100 text-gray-400 rounded hover:bg-gray-200 hover:text-gray-600 transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-blue-400;
+    @apply p-0.5 bg-gray-100 text-gray-400 rounded hover:bg-green-300 hover:text-green-600 transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-green-200;
 }
 
 .copy-btn:hover,
