@@ -128,17 +128,7 @@ CREATE TABLE resume (
                         bank_emergency_relation VARCHAR(100) COMMENT '紧急联络人与本人关系',
 
     -- 教育经历（民企、央国企、银行共用）
-                        edu_school_name VARCHAR(255) COMMENT '学校名称',
-                        edu_college_name VARCHAR(255) COMMENT '学院名称',
-                        edu_major_name VARCHAR(255) COMMENT '专业名称',
-                        edu_major_detail VARCHAR(255) COMMENT '研究方向',
-                        edu_degree VARCHAR(50) COMMENT '学历',
-                        edu_period VARCHAR(255) COMMENT '在校时间',
-                        edu_gpa VARCHAR(50) COMMENT 'GPA成绩',
-                        edu_rank VARCHAR(50) COMMENT '成绩排名',
-                        edu_full_time TINYINT(1) COMMENT '是否全日制',
-                        edu_lab VARCHAR(255) COMMENT '实验室',
-                        edu_supervisor VARCHAR(255) COMMENT '导师',
+                        edu_experiences JSON COMMENT '教育经历列表（JSON存储多条）',
 
     -- 实习经历（民企）
                         private_internship TEXT COMMENT '实习经历（JSON存多条）',

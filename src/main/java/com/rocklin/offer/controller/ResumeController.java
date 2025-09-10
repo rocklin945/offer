@@ -2,12 +2,14 @@ package com.rocklin.offer.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.rocklin.offer.common.annotation.SlidingWindowRateLimit;
+import com.rocklin.offer.common.convert.ResumeConverter;
 import com.rocklin.offer.common.enums.ErrorCode;
 import com.rocklin.offer.common.exception.Assert;
 import com.rocklin.offer.common.request.DeleteRequest;
 import com.rocklin.offer.common.response.BaseResponse;
 import com.rocklin.offer.model.dto.request.ResumeAddRequest;
 import com.rocklin.offer.model.dto.request.ResumeUpdateRequest;
+import com.rocklin.offer.model.dto.response.ResumeResponse;
 import com.rocklin.offer.model.entity.Resume;
 import com.rocklin.offer.service.ResumeService;
 import com.rocklin.offer.service.UserService;
@@ -53,24 +55,31 @@ public class ResumeController {
     @Operation(summary = "获取我的简历", description = "获取当前用户的简历")
     @GetMapping("/my")
     @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 3)
-    public BaseResponse<Resume> getMyResume() {
+    public BaseResponse<ResumeResponse> getMyResume() {
         String strUserId = userService.getUserIdFromRequest();
         Assert.isTrue(!StrUtil.isBlank(strUserId), ErrorCode.NOT_LOGIN_ERROR, "用户未登录");
         Long userId = Long.valueOf(strUserId);
 
         Resume resume = resumeService.getResumeByUserId(userId);
-        return BaseResponse.success(resume);
+        Assert.isTrue(resume != null, ErrorCode.NOT_FOUND, "简历不存在");
+        Assert.isTrue(resume.getUserId().equals(userId), ErrorCode.UNAUTHORIZED);
+        ResumeResponse response = ResumeConverter.toResponse(resume);
+        return BaseResponse.success(response);
     }
 
     @Operation(summary = "根据ID获取简历", description = "根据简历ID获取简历详情")
     @GetMapping("/get/{id}")
     @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 3)
-    public BaseResponse<Resume> getResumeById(@PathVariable Long id) {
+    public BaseResponse<ResumeResponse> getResumeById(@PathVariable Long id) {
         String strUserId = userService.getUserIdFromRequest();
         Assert.isTrue(!StrUtil.isBlank(strUserId), ErrorCode.NOT_LOGIN_ERROR, "用户未登录");
+        Long userId = Long.valueOf(strUserId);
 
         Resume resume = resumeService.getResumeById(id);
-        return BaseResponse.success(resume);
+        Assert.isTrue(resume != null, ErrorCode.NOT_FOUND, "简历不存在");
+        Assert.isTrue(resume.getUserId().equals(userId), ErrorCode.UNAUTHORIZED);
+        ResumeResponse response = ResumeConverter.toResponse(resume);
+        return BaseResponse.success(response);
     }
 
     @Operation(summary = "更新简历", description = "更新个人简历信息")

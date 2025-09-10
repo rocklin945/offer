@@ -1,5 +1,6 @@
 package com.rocklin.offer.service.impl;
 
+import com.rocklin.offer.common.convert.ResumeConverter;
 import com.rocklin.offer.common.enums.ErrorCode;
 import com.rocklin.offer.common.exception.Assert;
 import com.rocklin.offer.mapper.ResumeMapper;
@@ -33,8 +34,7 @@ public class ResumeServiceImpl implements ResumeService {
         Assert.isNull(existingResume, ErrorCode.OPERATION_ERROR, "您已有简历，请选择更新操作");
 
         // 创建简历实体
-        Resume resume = new Resume();
-        BeanUtils.copyProperties(request, resume);
+        Resume resume = ResumeConverter.requestToEntity(request);
         resume.setUserId(userId);
 
         Long result = resumeMapper.insert(resume);
@@ -65,8 +65,7 @@ public class ResumeServiceImpl implements ResumeService {
                 ErrorCode.UNAUTHORIZED, "无权限修改此简历");
 
         // 更新简历
-        Resume resume = new Resume();
-        BeanUtils.copyProperties(request, resume);
+        Resume resume = ResumeConverter.requestToEntity(request);
 
         Long result = resumeMapper.updateById(resume);
         Assert.isTrue(result > 0, ErrorCode.OPERATION_ERROR, "数据库异常，简历更新失败");

@@ -3,10 +3,13 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.rocklin.offer.mapper.ResumeMapper">
+
     <!-- 结果映射 -->
     <resultMap id="BaseResultMap" type="com.rocklin.offer.model.entity.Resume">
         <id property="id" column="id"/>
         <result property="userId" column="user_id"/>
+
+        <!-- 通用基本信息 -->
         <result property="name" column="name"/>
         <result property="phone" column="phone"/>
         <result property="wechat" column="wechat"/>
@@ -14,102 +17,181 @@
         <result property="gender" column="gender"/>
         <result property="birthday" column="birthday"/>
         <result property="address" column="address"/>
-        <result property="education" column="education"/>
-        <result property="skills" column="skills"/>
-        <result property="workExperience" column="work_experience"/>
-        <result property="projectExperience" column="project_experience"/>
-        <result property="internshipExperience" column="internship_experience"/>
+        <result property="idNumber" column="id_number"/>
+
+        <!-- 央国企 -->
+        <result property="govCurrentResidence" column="gov_current_residence"/>
+        <result property="govRegisteredResidence" column="gov_registered_residence"/>
+        <result property="govNativePlace" column="gov_native_place"/>
+        <result property="govGaokaoPlace" column="gov_gaokao_place"/>
+        <result property="govPoliticalStatus" column="gov_political_status"/>
+        <result property="govEmergencyName" column="gov_emergency_name"/>
+        <result property="govEmergencyPhone" column="gov_emergency_phone"/>
+        <result property="govEmergencyRelation" column="gov_emergency_relation"/>
+
+        <!-- 银行 -->
+        <result property="bankPoliticalStatus" column="bank_political_status"/>
+        <result property="bankHeight" column="bank_height"/>
+        <result property="bankWeight" column="bank_weight"/>
+        <result property="bankHealth" column="bank_health"/>
+        <result property="bankMarriageStatus" column="bank_marriage_status"/>
+        <result property="bankChildStatus" column="bank_child_status"/>
+        <result property="bankInfoChannel" column="bank_info_channel"/>
+        <result property="bankEmergencyName" column="bank_emergency_name"/>
+        <result property="bankEmergencyPhone" column="bank_emergency_phone"/>
+        <result property="bankEmergencyRelation" column="bank_emergency_relation"/>
+
+        <!-- JSON存储字段 -->
+        <result property="eduExperiences" column="edu_experiences"/>
+        <result property="privateInternship" column="private_internship"/>
+        <result property="govCampusPractice" column="gov_campus_practice"/>
+        <result property="govWorkExperience" column="gov_work_experience"/>
+        <result property="privateProjectExperience" column="private_project_experience"/>
+        <result property="bankSchoolExperience" column="bank_school_experience"/>
+        <result property="languageLevel" column="language_level"/>
+        <result property="honors" column="honors"/>
         <result property="certificates" column="certificates"/>
+        <result property="skillLevel" column="skill_level"/>
+        <result property="privatePaper" column="private_paper"/>
+        <result property="privateCompetition" column="private_competition"/>
+        <result property="familyInfo" column="family_info"/>
+        <result property="bankSalaryExpectation" column="bank_salary_expectation"/>
+        <result property="bankExpectedLocation" column="bank_expected_location"/>
+        <result property="bankProfessionalCert" column="bank_professional_cert"/>
+        <result property="bankComputerSkills" column="bank_computer_skills"/>
+        <result property="bankTrainingExperience" column="bank_training_experience"/>
+        <result property="bankRewardsPunishments" column="bank_rewards_punishments"/>
+
+        <!-- 自我评价 -->
         <result property="selfEvaluation" column="self_evaluation"/>
+
+        <!-- 时间 -->
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
     </resultMap>
-    
+
     <!-- 基础字段 -->
     <sql id="Base_Column_List">
-        id, user_id, name, phone, wechat, email, gender, birthday, address, 
-        education, skills, work_experience, project_experience, internship_experience, 
-        certificates, self_evaluation, create_time, update_time
+        id, user_id,
+        name, phone, wechat, email, gender, birthday, address, id_number,
+        gov_current_residence, gov_registered_residence, gov_native_place, gov_gaokao_place, gov_political_status,
+        gov_emergency_name, gov_emergency_phone, gov_emergency_relation,
+        bank_political_status, bank_height, bank_weight, bank_health, bank_marriage_status,
+        bank_child_status, bank_info_channel, bank_emergency_name, bank_emergency_phone, bank_emergency_relation,
+        edu_experiences,
+        private_internship, gov_campus_practice, gov_work_experience, private_project_experience, bank_school_experience,
+        language_level, honors, certificates, skill_level, private_paper, private_competition, family_info,
+        bank_salary_expectation, bank_expected_location, bank_professional_cert, bank_computer_skills,
+        bank_training_experience, bank_rewards_punishments,
+        self_evaluation, create_time, update_time
     </sql>
-    
+
     <!-- 插入简历 -->
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        insert into resume
-        (user_id, name, phone, wechat, email, gender, birthday, address,
-         education, skills, work_experience, project_experience, internship_experience,
-         certificates, self_evaluation, create_time, update_time)
-        values
-        (#{userId}, #{name}, #{phone}, #{wechat}, #{email}, #{gender}, #{birthday}, #{address},
-         #{education}, #{skills}, #{workExperience}, #{projectExperience}, #{internshipExperience},
-         #{certificates}, #{selfEvaluation}, now(), now())
+        insert into resume (
+        id, user_id, name, phone, wechat, email, gender, birthday, address, id_number,
+        gov_current_residence, gov_registered_residence, gov_native_place, gov_gaokao_place, gov_political_status,
+        gov_emergency_name, gov_emergency_phone, gov_emergency_relation,
+        bank_political_status, bank_height, bank_weight, bank_health, bank_marriage_status,
+        bank_child_status, bank_info_channel, bank_emergency_name, bank_emergency_phone, bank_emergency_relation,
+        edu_experiences,
+        private_internship, gov_campus_practice, gov_work_experience, private_project_experience, bank_school_experience,
+        language_level, honors, certificates, skill_level, private_paper, private_competition, family_info,
+        bank_salary_expectation, bank_expected_location, bank_professional_cert, bank_computer_skills,
+        bank_training_experience, bank_rewards_punishments,
+        self_evaluation, create_time, update_time
+        ) values (
+        UUID_SHORT(), #{userId}, #{name}, #{phone}, #{wechat}, #{email}, #{gender}, #{birthday}, #{address}, #{idNumber},
+        #{govCurrentResidence}, #{govRegisteredResidence}, #{govNativePlace}, #{govGaokaoPlace}, #{govPoliticalStatus},
+        #{govEmergencyName}, #{govEmergencyPhone}, #{govEmergencyRelation},
+        #{bankPoliticalStatus}, #{bankHeight}, #{bankWeight}, #{bankHealth}, #{bankMarriageStatus},
+        #{bankChildStatus}, #{bankInfoChannel}, #{bankEmergencyName}, #{bankEmergencyPhone}, #{bankEmergencyRelation},
+        #{eduExperiences},
+        #{privateInternship}, #{govCampusPractice}, #{govWorkExperience}, #{privateProjectExperience}, #{bankSchoolExperience},
+        #{languageLevel}, #{honors}, #{certificates}, #{skillLevel}, #{privatePaper}, #{privateCompetition}, #{familyInfo},
+        #{bankSalaryExpectation}, #{bankExpectedLocation}, #{bankProfessionalCert}, #{bankComputerSkills},
+        #{bankTrainingExperience}, #{bankRewardsPunishments},
+        #{selfEvaluation}, now(), now()
+        )
     </insert>
-    
+
     <!-- 根据ID查询简历 -->
     <select id="selectById" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"/> from resume where id = #{id}
     </select>
-    
+
     <!-- 根据用户ID查询简历 -->
     <select id="selectByUserId" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"/> from resume where user_id = #{userId}
     </select>
-    
+
     <!-- 更新简历 -->
     <update id="updateById">
-        update resume set
-        update_time = now()
-        <if test="name != null">
-            , name = #{name}
-        </if>
-        <if test="phone != null">
-            , phone = #{phone}
-        </if>
-        <if test="wechat != null">
-            , wechat = #{wechat}
-        </if>
-        <if test="email != null">
-            , email = #{email}
-        </if>
-        <if test="gender != null">
-            , gender = #{gender}
-        </if>
-        <if test="birthday != null">
-            , birthday = #{birthday}
-        </if>
-        <if test="address != null">
-            , address = #{address}
-        </if>
-        <if test="education != null">
-            , education = #{education}
-        </if>
-        <if test="skills != null">
-            , skills = #{skills}
-        </if>
-        <if test="workExperience != null">
-            , work_experience = #{workExperience}
-        </if>
-        <if test="projectExperience != null">
-            , project_experience = #{projectExperience}
-        </if>
-        <if test="internshipExperience != null">
-            , internship_experience = #{internshipExperience}
-        </if>
-        <if test="certificates != null">
-            , certificates = #{certificates}
-        </if>
-        <if test="selfEvaluation != null">
-            , self_evaluation = #{selfEvaluation}
-        </if>
+        update resume
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="wechat != null">wechat = #{wechat},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="birthday != null">birthday = #{birthday},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="idNumber != null">id_number = #{idNumber},</if>
+
+            <if test="govCurrentResidence != null">gov_current_residence = #{govCurrentResidence},</if>
+            <if test="govRegisteredResidence != null">gov_registered_residence = #{govRegisteredResidence},</if>
+            <if test="govNativePlace != null">gov_native_place = #{govNativePlace},</if>
+            <if test="govGaokaoPlace != null">gov_gaokao_place = #{govGaokaoPlace},</if>
+            <if test="govPoliticalStatus != null">gov_political_status = #{govPoliticalStatus},</if>
+            <if test="govEmergencyName != null">gov_emergency_name = #{govEmergencyName},</if>
+            <if test="govEmergencyPhone != null">gov_emergency_phone = #{govEmergencyPhone},</if>
+            <if test="govEmergencyRelation != null">gov_emergency_relation = #{govEmergencyRelation},</if>
+
+            <if test="bankPoliticalStatus != null">bank_political_status = #{bankPoliticalStatus},</if>
+            <if test="bankHeight != null">bank_height = #{bankHeight},</if>
+            <if test="bankWeight != null">bank_weight = #{bankWeight},</if>
+            <if test="bankHealth != null">bank_health = #{bankHealth},</if>
+            <if test="bankMarriageStatus != null">bank_marriage_status = #{bankMarriageStatus},</if>
+            <if test="bankChildStatus != null">bank_child_status = #{bankChildStatus},</if>
+            <if test="bankInfoChannel != null">bank_info_channel = #{bankInfoChannel},</if>
+            <if test="bankEmergencyName != null">bank_emergency_name = #{bankEmergencyName},</if>
+            <if test="bankEmergencyPhone != null">bank_emergency_phone = #{bankEmergencyPhone},</if>
+            <if test="bankEmergencyRelation != null">bank_emergency_relation = #{bankEmergencyRelation},</if>
+
+            <if test="eduExperiences != null">edu_experiences = #{eduExperiences},</if>
+            <if test="privateInternship != null">private_internship = #{privateInternship},</if>
+            <if test="govCampusPractice != null">gov_campus_practice = #{govCampusPractice},</if>
+            <if test="govWorkExperience != null">gov_work_experience = #{govWorkExperience},</if>
+            <if test="privateProjectExperience != null">private_project_experience = #{privateProjectExperience},</if>
+            <if test="bankSchoolExperience != null">bank_school_experience = #{bankSchoolExperience},</if>
+            <if test="languageLevel != null">language_level = #{languageLevel},</if>
+            <if test="honors != null">honors = #{honors},</if>
+            <if test="certificates != null">certificates = #{certificates},</if>
+            <if test="skillLevel != null">skill_level = #{skillLevel},</if>
+            <if test="privatePaper != null">private_paper = #{privatePaper},</if>
+            <if test="privateCompetition != null">private_competition = #{privateCompetition},</if>
+            <if test="familyInfo != null">family_info = #{familyInfo},</if>
+            <if test="bankSalaryExpectation != null">bank_salary_expectation = #{bankSalaryExpectation},</if>
+            <if test="bankExpectedLocation != null">bank_expected_location = #{bankExpectedLocation},</if>
+            <if test="bankProfessionalCert != null">bank_professional_cert = #{bankProfessionalCert},</if>
+            <if test="bankComputerSkills != null">bank_computer_skills = #{bankComputerSkills},</if>
+            <if test="bankTrainingExperience != null">bank_training_experience = #{bankTrainingExperience},</if>
+            <if test="bankRewardsPunishments != null">bank_rewards_punishments = #{bankRewardsPunishments},</if>
+
+            <if test="selfEvaluation != null">self_evaluation = #{selfEvaluation},</if>
+
+            update_time = now()
+        </set>
         where id = #{id}
     </update>
-    
-    <!-- 根据ID删除简历 -->
+
+    <!-- 删除简历 -->
     <delete id="deleteById">
         delete from resume where id = #{id}
     </delete>
-    
-    <!-- 根据用户ID删除简历 -->
+
     <delete id="deleteByUserId">
         delete from resume where user_id = #{userId}
     </delete>
+
 </mapper>

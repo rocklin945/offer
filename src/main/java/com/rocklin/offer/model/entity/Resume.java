@@ -1,110 +1,70 @@
 package com.rocklin.offer.model.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
-/**
- * @ClassName Resume
- * @Description 个人简历实体类
- * @Author: rocklin
- * @Date 2025/8/31
- * @Version 1.0
- */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class Resume implements Serializable {
-    /**
-     * 简历ID
-     */
+public class Resume {
     private Long id;
-
-    /**
-     * 用户ID
-     */
     private Long userId;
 
-    /**
-     * 姓名
-     */
+    // 通用基本信息
     private String name;
-
-    /**
-     * 手机号
-     */
     private String phone;
-
-    /**
-     * 微信号
-     */
     private String wechat;
-
-    /**
-     * 邮箱
-     */
     private String email;
-
-    /**
-     * 性别
-     */
     private String gender;
-
-    /**
-     * 出生日期
-     */
     private String birthday;
-
-    /**
-     * 地址
-     */
     private String address;
+    private String idNumber;
 
-    /**
-     * 教育背景（学校、专业、时间等）
-     */
-    private String education;
+    // 央国企特有基本信息
+    private String govCurrentResidence;
+    private String govRegisteredResidence;
+    private String govNativePlace;
+    private String govGaokaoPlace;
+    private String govPoliticalStatus;
+    private String govEmergencyName;
+    private String govEmergencyPhone;
+    private String govEmergencyRelation;
 
-    /**
-     * 专业技能
-     */
-    private String skills;
+    // 银行特有基本信息
+    private String bankPoliticalStatus;
+    private String bankHeight;
+    private String bankWeight;
+    private String bankHealth;
+    private String bankMarriageStatus;
+    private String bankChildStatus;
+    private String bankInfoChannel;
+    private String bankEmergencyName;
+    private String bankEmergencyPhone;
+    private String bankEmergencyRelation;
 
-    /**
-     * 工作经验
-     */
-    private String workExperience;
+    // JSON 存储字段
+    private String eduExperiences;           // 教育经历
+    private String privateInternship;        // 民企：实习经历
+    private String govCampusPractice;        // 央国企：校园实践经历
+    private String govWorkExperience;        // 央国企：工作经历
+    private String privateProjectExperience; // 民企：项目经历
+    private String bankSchoolExperience;     // 银行：在校经历
+    private String languageLevel;            // 语言水平
+    private String honors;                   // 荣誉
+    private String certificates;             // 证书
+    private String skillLevel;               // 技能水平
+    private String privatePaper;             // 民企：论文
+    private String privateCompetition;       // 民企：竞赛
+    private String familyInfo;               // 家庭情况
+    private String bankSalaryExpectation;    // 银行：期望薪酬
+    private String bankExpectedLocation;     // 银行：期望工作地点
+    private String bankProfessionalCert;     // 银行：职业资格认证
+    private String bankComputerSkills;       // 银行：计算机技能
+    private String bankTrainingExperience;   // 银行：培训经历
+    private String bankRewardsPunishments;   // 银行：奖惩情况
 
-    /**
-     * 项目经历
-     */
-    private String projectExperience;
-
-    /**
-     * 实习经历
-     */
-    private String internshipExperience;
-
-    /**
-     * 荣誉证书
-     */
-    private String certificates;
-
-    /**
-     * 自我评价
-     */
+    // 自我评价
     private String selfEvaluation;
 
-    /**
-     * 创建时间
-     */
+    // 时间
     private LocalDateTime createTime;
-
-    /**
-     * 更新时间
-     */
     private LocalDateTime updateTime;
 }
