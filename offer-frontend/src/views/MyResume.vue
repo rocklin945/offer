@@ -127,6 +127,50 @@
                             @add-school-experience="addSchoolExperience"
                             @remove-school-experience="removeSchoolExperience" @copy-to-clipboard="copyToClipboard" />
 
+                        <!-- 银行: 专业证书 -->
+                        <BankProfessionalCert v-if="resumeType === '银行'" :resume-form="resumeForm"
+                            @add-bank-professional-cert="addBankProfessionalCert"
+                            @remove-bank-professional-cert="removeBankProfessionalCert"
+                            @copy-to-clipboard="copyToClipboard" />
+
+                        <!-- 银行: 计算机技能 -->
+                        <BankComputerSkills v-if="resumeType === '银行'" :resume-form="resumeForm"
+                            @add-bank-computer-skill="addBankComputerSkill"
+                            @remove-bank-computer-skill="removeBankComputerSkill"
+                            @copy-to-clipboard="copyToClipboard" />
+
+                        <!-- 银行: 培训经历 -->
+                        <BankTrainingExperience v-if="resumeType === '银行'" :resume-form="resumeForm"
+                            @add-bank-training-experience="addBankTrainingExperience"
+                            @remove-bank-training-experience="removeBankTrainingExperience"
+                            @copy-to-clipboard="copyToClipboard" />
+
+                        <!-- 银行: 奖惩情况 -->
+                        <BankRewardsPunishments v-if="resumeType === '银行'" :resume-form="resumeForm"
+                            @add-bank-reward-punishment="addBankRewardPunishment"
+                            @remove-bank-reward-punishment="removeBankRewardPunishment"
+                            @copy-to-clipboard="copyToClipboard" />
+
+                        <!-- 银行: 期望信息 -->
+                        <BankExpectations v-if="resumeType === '银行'" :resume-form="resumeForm"
+                            @copy-to-clipboard="copyToClipboard" />
+
+                        <!-- 银行: 家庭信息 -->
+                        <FamilyInfo v-if="resumeType === '银行'" :resume-form="resumeForm"
+                            @add-family-info="addFamilyInfo" @remove-family-info="removeFamilyInfo"
+                            @copy-to-clipboard="copyToClipboard" />
+
+                        <!-- 私企: 论文/文章 -->
+                        <PrivatePaper v-if="resumeType === '民企'" :resume-form="resumeForm"
+                            @add-private-paper="addPrivatePaper" @remove-private-paper="removePrivatePaper"
+                            @copy-to-clipboard="copyToClipboard" />
+
+                        <!-- 私企: 竞赛经历 -->
+                        <PrivateCompetition v-if="resumeType === '民企'" :resume-form="resumeForm"
+                            @add-private-competition="addPrivateCompetition"
+                            @remove-private-competition="removePrivateCompetition"
+                            @copy-to-clipboard="copyToClipboard" />
+
                         <!-- 语言水平 (所有类型都显示) -->
                         <LanguageLevel :resume-form="resumeForm" @add-language-level="addLanguageLevel"
                             @remove-language-level="removeLanguageLevel" @copy-to-clipboard="copyToClipboard" />
@@ -148,363 +192,10 @@
                     </form>
                 </div>
             </transition>
-
-            <!-- 简历预览 -->
-            <div v-if="hasResumeData && userStore.currentUser" class="card mt-8">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-semibold text-gray-900">简历预览</h2>
-                    <button @click="copyFullResume" class="btn-secondary flex items-center space-x-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
-                            </path>
-                        </svg>
-                        <span>复制完整简历</span>
-                    </button>
-                </div>
-                <div class="bg-gray-50 p-6 rounded-lg">
-                    <div class="text-center mb-6">
-                        <div class="flex items-center justify-center space-x-2 mb-2">
-                            <h3 class="text-2xl font-bold text-gray-900">{{ resumeForm.name || '姓名' }}</h3>
-                            <button v-if="resumeForm.name" @click="copyToClipboard(resumeForm.name, '姓名')"
-                                class="copy-btn" title="复制姓名">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="flex flex-wrap justify-center gap-4 mt-2 text-sm text-gray-600">
-                            <div v-if="resumeForm.phone" class="flex items-center space-x-1">
-                                <span>📱 {{ resumeForm.phone }}</span>
-                                <button @click="copyToClipboard(resumeForm.phone, '手机号')" class="copy-btn-small">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
-                                        </path>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div v-if="resumeForm.wechat" class="flex items-center space-x-1">
-                                <span>💬 {{ resumeForm.wechat }}</span>
-                                <button @click="copyToClipboard(resumeForm.wechat, '微信号')" class="copy-btn-small">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
-                                        </path>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div v-if="resumeForm.email" class="flex items-center space-x-1">
-                                <span>📧 {{ resumeForm.email }}</span>
-                                <button @click="copyToClipboard(resumeForm.email, '邮箱')" class="copy-btn-small">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
-                                        </path>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div v-if="resumeForm.gender" class="flex items-center space-x-1">
-                                <span>👤 {{ resumeForm.gender }}</span>
-                                <button @click="copyToClipboard(resumeForm.gender, '性别')" class="copy-btn-small">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
-                                        </path>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div v-if="resumeForm.birthday" class="flex items-center space-x-1">
-                                <span>📅 {{ resumeForm.birthday }}</span>
-                                <button @click="copyToClipboard(resumeForm.birthday, '出生日期')" class="copy-btn-small">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
-                                        </path>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                        <div v-if="resumeForm.address"
-                            class="flex items-center justify-center space-x-1 text-sm text-gray-600 mt-1">
-                            <span>📍 {{ resumeForm.address }}</span>
-                            <button @click="copyToClipboard(resumeForm.address, '地址')" class="copy-btn-small">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- 教育经历预览 -->
-                    <div v-if="resumeForm.eduExperiences && resumeForm.eduExperiences.length > 0"
-                        class="border-l-4 border-blue-500 pl-4 mb-4 relative group">
-                        <div class="flex items-start justify-between">
-                            <div class="flex-1">
-                                <h4 class="font-semibold text-gray-900 mb-2">🎓 教育经历</h4>
-                                <div v-for="(edu, index) in resumeForm.eduExperiences" :key="index" class="mb-3">
-                                    <div class="font-medium">{{ edu.schoolName }} - {{ edu.majorName }} ({{ edu.degree
-                                    }})</div>
-                                    <div class="text-sm text-gray-600">{{ edu.period }}</div>
-                                    <div v-if="edu.gpa" class="text-sm text-gray-600">GPA: {{ edu.gpa }}</div>
-                                </div>
-                            </div>
-                            <button @click="copySectionToClipboard('eduExperiences')"
-                                class="copy-btn ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- 根据简历类型显示不同的经历预览 -->
-                    <!-- 民企: 实习经历和项目经历 -->
-                    <div v-if="resumeType === '民企' && resumeForm.privateInternship && resumeForm.privateInternship.length > 0"
-                        class="border-l-4 border-purple-500 pl-4 mb-4 relative group">
-                        <div class="flex items-start justify-between">
-                            <div class="flex-1">
-                                <h4 class="font-semibold text-gray-900 mb-2">💼 实习经历</h4>
-                                <div v-for="(internship, index) in resumeForm.privateInternship" :key="index"
-                                    class="mb-3">
-                                    <div class="font-medium">{{ internship.company }} - {{ internship.position }}</div>
-                                    <div class="text-sm text-gray-600">{{ internship.startTime }} - {{
-                                        internship.endTime }}</div>
-                                    <div v-if="internship.description"
-                                        class="text-sm text-gray-600 whitespace-pre-wrap">{{ internship.description }}
-                                    </div>
-                                </div>
-                            </div>
-                            <button @click="copySectionToClipboard('privateInternship')"
-                                class="copy-btn ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div v-if="resumeType === '民企' && resumeForm.privateProjectExperience && resumeForm.privateProjectExperience.length > 0"
-                        class="border-l-4 border-yellow-500 pl-4 mb-4 relative group">
-                        <div class="flex items-start justify-between">
-                            <div class="flex-1">
-                                <h4 class="font-semibold text-gray-900 mb-2">🚀 项目经历</h4>
-                                <div v-for="(project, index) in resumeForm.privateProjectExperience" :key="index"
-                                    class="mb-3">
-                                    <div class="font-medium">{{ project.projectName }} - {{ project.role }}</div>
-                                    <div class="text-sm text-gray-600">{{ project.projectTime }}</div>
-                                    <div v-if="project.description" class="text-sm text-gray-600 whitespace-pre-wrap">{{
-                                        project.description }}</div>
-                                </div>
-                            </div>
-                            <button @click="copySectionToClipboard('privateProjectExperience')"
-                                class="copy-btn ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- 央国企: 校园实践和工作经历 -->
-                    <div v-if="resumeType === '央国企' && resumeForm.govCampusPractice && resumeForm.govCampusPractice.length > 0"
-                        class="border-l-4 border-green-500 pl-4 mb-4 relative group">
-                        <div class="flex items-start justify-between">
-                            <div class="flex-1">
-                                <h4 class="font-semibold text-gray-900 mb-2">🏫 校园实践</h4>
-                                <div v-for="(practice, index) in resumeForm.govCampusPractice" :key="index"
-                                    class="mb-3">
-                                    <div class="text-sm text-gray-600">{{ practice.startTime }} - {{ practice.endTime }}
-                                    </div>
-                                    <div v-if="practice.description" class="text-sm text-gray-600 whitespace-pre-wrap">
-                                        {{ practice.description }}</div>
-                                </div>
-                            </div>
-                            <button @click="copySectionToClipboard('govCampusPractice')"
-                                class="copy-btn ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div v-if="resumeType === '央国企' && resumeForm.govWorkExperience && resumeForm.govWorkExperience.length > 0"
-                        class="border-l-4 border-indigo-500 pl-4 mb-4 relative group">
-                        <div class="flex items-start justify-between">
-                            <div class="flex-1">
-                                <h4 class="font-semibold text-gray-900 mb-2">🏢 工作经历</h4>
-                                <div v-for="(work, index) in resumeForm.govWorkExperience" :key="index" class="mb-3">
-                                    <div class="font-medium">{{ work.company }} - {{ work.position }}</div>
-                                    <div class="text-sm text-gray-600">{{ work.startTime }} - {{ work.endTime }}</div>
-                                    <div v-if="work.duty" class="text-sm text-gray-600">职责: {{ work.duty }}</div>
-                                </div>
-                            </div>
-                            <button @click="copySectionToClipboard('govWorkExperience')"
-                                class="copy-btn ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- 银行: 在校经历 -->
-                    <div v-if="resumeType === '银行' && resumeForm.bankSchoolExperience && resumeForm.bankSchoolExperience.length > 0"
-                        class="border-l-4 border-red-500 pl-4 mb-4 relative group">
-                        <div class="flex items-start justify-between">
-                            <div class="flex-1">
-                                <h4 class="font-semibold text-gray-900 mb-2">📚 在校经历</h4>
-                                <div v-for="(school, index) in resumeForm.bankSchoolExperience" :key="index"
-                                    class="mb-3">
-                                    <div class="font-medium">{{ school.name }}</div>
-                                    <div class="text-sm text-gray-600">{{ school.startTime }} - {{ school.endTime }}
-                                    </div>
-                                    <div v-if="school.description" class="text-sm text-gray-600 whitespace-pre-wrap">{{
-                                        school.description }}</div>
-                                </div>
-                            </div>
-                            <button @click="copySectionToClipboard('bankSchoolExperience')"
-                                class="copy-btn ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- 语言水平预览 -->
-                    <div v-if="resumeForm.languageLevel && resumeForm.languageLevel.length > 0"
-                        class="border-l-4 border-teal-500 pl-4 mb-4 relative group">
-                        <div class="flex items-start justify-between">
-                            <div class="flex-1">
-                                <h4 class="font-semibold text-gray-900 mb-2">🗣️ 语言水平</h4>
-                                <div v-for="(language, index) in resumeForm.languageLevel" :key="index" class="mb-1">
-                                    <span class="font-medium">{{ language.language }}</span>
-                                    <span v-if="language.level">- {{ language.level }}</span>
-                                    <span v-if="language.exam"> ({{ language.exam }}: {{ language.score }})</span>
-                                </div>
-                            </div>
-                            <button @click="copySectionToClipboard('languageLevel')"
-                                class="copy-btn ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- 专业技能预览 -->
-                    <div v-if="resumeForm.skillLevel && resumeForm.skillLevel.length > 0"
-                        class="border-l-4 border-orange-500 pl-4 mb-4 relative group">
-                        <div class="flex items-start justify-between">
-                            <div class="flex-1">
-                                <h4 class="font-semibold text-gray-900 mb-2">🔧 专业技能</h4>
-                                <div v-for="(skill, index) in resumeForm.skillLevel" :key="index" class="mb-1">
-                                    <span class="font-medium">{{ skill.skillType }}</span>
-                                    <span v-if="skill.level">- {{ skill.level }}</span>
-                                </div>
-                            </div>
-                            <button @click="copySectionToClipboard('skillLevel')"
-                                class="copy-btn ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- 荣誉奖项预览 -->
-                    <div v-if="resumeForm.honors && resumeForm.honors.length > 0"
-                        class="border-l-4 border-pink-500 pl-4 mb-4 relative group">
-                        <div class="flex items-start justify-between">
-                            <div class="flex-1">
-                                <h4 class="font-semibold text-gray-900 mb-2">🏆 荣誉奖项</h4>
-                                <div class="flex flex-wrap gap-2">
-                                    <span v-for="(honor, index) in resumeForm.honors" :key="index"
-                                        class="bg-pink-100 text-pink-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                                        {{ honor }}
-                                    </span>
-                                </div>
-                            </div>
-                            <button @click="copySectionToClipboard('honors')"
-                                class="copy-btn ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- 证书预览 -->
-                    <div v-if="resumeForm.certificates && resumeForm.certificates.length > 0"
-                        class="border-l-4 border-yellow-600 pl-4 mb-4 relative group">
-                        <div class="flex items-start justify-between">
-                            <div class="flex-1">
-                                <h4 class="font-semibold text-gray-900 mb-2">📜 证书</h4>
-                                <div class="flex flex-wrap gap-2">
-                                    <span v-for="(cert, index) in resumeForm.certificates" :key="index"
-                                        class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                                        {{ cert }}
-                                    </span>
-                                </div>
-                            </div>
-                            <button @click="copySectionToClipboard('certificates')"
-                                class="copy-btn ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- 自我评价预览 -->
-                    <div v-if="resumeForm.selfEvaluation" class="border-l-4 border-gray-500 pl-4 relative group">
-                        <div class="flex items-start justify-between">
-                            <div class="flex-1">
-                                <h4 class="font-semibold text-gray-900 mb-2">📝 自我评价</h4>
-                                <p class="text-gray-700 whitespace-pre-wrap">{{ resumeForm.selfEvaluation }}</p>
-                            </div>
-                            <button @click="copyToClipboard(resumeForm.selfEvaluation, '自我评价')"
-                                class="copy-btn ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- 登录模态框 -->
-            <LoginModal v-if="showLoginModal" @close="showLoginModal = false" />
         </div>
     </div>
+    <!-- 登录模态框 -->
+    <LoginModal v-if="showLoginModal" @close="showLoginModal = false" />
 </template>
 
 <script setup lang="ts">
@@ -534,9 +225,15 @@ import CampusPractice from '@/components/resume/CampusPractice.vue'
 import WorkExperience from '@/components/resume/WorkExperience.vue'
 import SchoolExperience from '@/components/resume/SchoolExperience.vue'
 
-// 配置PDF.js worker
-// 在生产环境中使用动态导入的worker路径
-
+// 添加银行相关的组件导入
+import BankComputerSkills from '@/components/resume/BankComputerSkills.vue'
+import BankExpectations from '@/components/resume/BankExpectations.vue'
+import BankProfessionalCert from '@/components/resume/BankProfessionalCert.vue'
+import BankRewardsPunishments from '@/components/resume/BankRewardsPunishments.vue'
+import BankTrainingExperience from '@/components/resume/BankTrainingExperience.vue'
+import FamilyInfo from '@/components/resume/FamilyInfo.vue'
+import PrivateCompetition from '@/components/resume/PrivateCompetition.vue'
+import PrivatePaper from '@/components/resume/PrivatePaper.vue'
 
 const userStore = useUserStore()
 const showLoginModal = ref(false)
@@ -1040,267 +737,6 @@ const copyToClipboard = async (text: string | undefined | null, fieldName: strin
     }
 }
 
-// 复制完整简历
-const copyFullResume = async () => {
-    const resumeText = generateResumeText()
-    await copyToClipboard(resumeText, '完整简历')
-}
-
-// 生成简历文本
-const generateResumeText = (): string => {
-    let text = ''
-
-    // 基本信息
-    text += `姓名：${resumeForm.name || ''}\n`
-    if (resumeForm.phone) text += `手机号：${resumeForm.phone}\n`
-    if (resumeForm.wechat) text += `微信号：${resumeForm.wechat}\n`
-    if (resumeForm.email) text += `邮箱：${resumeForm.email}\n`
-    if (resumeForm.gender) text += `性别：${resumeForm.gender}\n`
-    if (resumeForm.birthday) text += `出生日期：${resumeForm.birthday}\n`
-    if (resumeForm.address) text += `地址：${resumeForm.address}\n`
-
-    text += '\n'
-
-    // 教育经历
-    if (resumeForm.eduExperiences && resumeForm.eduExperiences.length > 0) {
-        text += '教育经历：\n'
-        resumeForm.eduExperiences.forEach((edu, index) => {
-            text += `${index + 1}. ${edu.schoolName || ''} - ${edu.majorName || ''} (${edu.degree || ''})\n`
-            if (edu.period) text += `   时间：${edu.period}\n`
-            if (edu.gpa) text += `   GPA：${edu.gpa}\n`
-            if (edu.majorDetail) text += `   研究方向：${edu.majorDetail}\n`
-            if (edu.supervisor) text += `   导师：${edu.supervisor}\n`
-            text += '\n'
-        })
-    }
-
-    // 根据简历类型显示不同的经历
-    if (resumeType.value === '民企') {
-        // 实习经历
-        if (resumeForm.privateInternship && resumeForm.privateInternship.length > 0) {
-            text += '实习经历：\n'
-            resumeForm.privateInternship.forEach((internship, index) => {
-                text += `${index + 1}. ${internship.company || ''} - ${internship.position || ''}\n`
-                if (internship.startTime || internship.endTime) text += `   时间：${internship.startTime || ''} - ${internship.endTime || ''}\n`
-                if (internship.description) text += `   描述：${internship.description}\n`
-                text += '\n'
-            })
-        }
-
-        // 项目经历
-        if (resumeForm.privateProjectExperience && resumeForm.privateProjectExperience.length > 0) {
-            text += '项目经历：\n'
-            resumeForm.privateProjectExperience.forEach((project, index) => {
-                text += `${index + 1}. ${project.projectName || ''} - ${project.role || ''}\n`
-                if (project.projectTime) text += `   时间：${project.projectTime}\n`
-                if (project.projectLink) text += `   链接：${project.projectLink}\n`
-                if (project.description) text += `   描述：${project.description}\n`
-                text += '\n'
-            })
-        }
-    } else if (resumeType.value === '央国企') {
-        // 校园实践
-        if (resumeForm.govCampusPractice && resumeForm.govCampusPractice.length > 0) {
-            text += '校园实践：\n'
-            resumeForm.govCampusPractice.forEach((practice, index) => {
-                text += `${index + 1}. ${practice.startTime || ''} - ${practice.endTime || ''}\n`
-                if (practice.description) text += `   描述：${practice.description}\n`
-                text += '\n'
-            })
-        }
-
-        // 工作经历
-        if (resumeForm.govWorkExperience && resumeForm.govWorkExperience.length > 0) {
-            text += '工作经历：\n'
-            resumeForm.govWorkExperience.forEach((work, index) => {
-                text += `${index + 1}. ${work.company || ''} - ${work.position || ''}\n`
-                if (work.startTime || work.endTime) text += `   时间：${work.startTime || ''} - ${work.endTime || ''}\n`
-                if (work.duty) text += `   职责：${work.duty}\n`
-                if (work.workType) text += `   类型：${work.workType}\n`
-                text += '\n'
-            })
-        }
-    } else if (resumeType.value === '银行') {
-        // 在校经历
-        if (resumeForm.bankSchoolExperience && resumeForm.bankSchoolExperience.length > 0) {
-            text += '在校经历：\n'
-            resumeForm.bankSchoolExperience.forEach((school, index) => {
-                text += `${index + 1}. ${school.name || ''}\n`
-                if (school.startTime || school.endTime) text += `   时间：${school.startTime || ''} - ${school.endTime || ''}\n`
-                if (school.description) text += `   描述：${school.description}\n`
-                text += '\n'
-            })
-        }
-    }
-
-    // 语言水平
-    if (resumeForm.languageLevel && resumeForm.languageLevel.length > 0) {
-        text += '语言水平：\n'
-        resumeForm.languageLevel.forEach((language, index) => {
-            text += `${index + 1}. ${language.language || ''}`
-            if (language.level) text += ` - ${language.level}`
-            if (language.exam) text += ` (${language.exam}: ${language.score || ''})`
-            text += '\n'
-        })
-        text += '\n'
-    }
-
-    // 专业技能
-    if (resumeForm.skillLevel && resumeForm.skillLevel.length > 0) {
-        text += '专业技能：\n'
-        resumeForm.skillLevel.forEach((skill, index) => {
-            text += `${index + 1}. ${skill.skillType || ''}`
-            if (skill.level) text += ` - ${skill.level}`
-            text += '\n'
-        })
-        text += '\n'
-    }
-
-    // 荣誉奖项
-    if (resumeForm.honors && resumeForm.honors.length > 0) {
-        text += '荣誉奖项：\n'
-        resumeForm.honors.forEach((honor, index) => {
-            text += `${index + 1}. ${honor}\n`
-        })
-        text += '\n'
-    }
-
-    // 证书
-    if (resumeForm.certificates && resumeForm.certificates.length > 0) {
-        text += '证书：\n'
-        resumeForm.certificates.forEach((cert, index) => {
-            text += `${index + 1}. ${cert}\n`
-        })
-        text += '\n'
-    }
-
-    // 自我评价
-    if (resumeForm.selfEvaluation) {
-        text += '自我评价：\n'
-        text += resumeForm.selfEvaluation + '\n\n'
-    }
-
-    return text.trim()
-}
-
-// 复制特定部分到剪贴板
-const copySectionToClipboard = async (section: string) => {
-    let text = ''
-
-    switch (section) {
-        case 'eduExperiences':
-            if (resumeForm.eduExperiences && resumeForm.eduExperiences.length > 0) {
-                text = '教育经历：\n'
-                resumeForm.eduExperiences.forEach((edu, index) => {
-                    text += `${index + 1}. ${edu.schoolName || ''} - ${edu.majorName || ''} (${edu.degree || ''})\n`
-                    if (edu.period) text += `   时间：${edu.period}\n`
-                    if (edu.gpa) text += `   GPA：${edu.gpa}\n`
-                    text += '\n'
-                })
-            }
-            break
-        case 'privateInternship':
-            if (resumeForm.privateInternship && resumeForm.privateInternship.length > 0) {
-                text = '实习经历：\n'
-                resumeForm.privateInternship.forEach((internship, index) => {
-                    text += `${index + 1}. ${internship.company || ''} - ${internship.position || ''}\n`
-                    if (internship.startTime || internship.endTime) text += `   时间：${internship.startTime || ''} - ${internship.endTime || ''}\n`
-                    if (internship.description) text += `   描述：${internship.description}\n`
-                    text += '\n'
-                })
-            }
-            break
-        case 'privateProjectExperience':
-            if (resumeForm.privateProjectExperience && resumeForm.privateProjectExperience.length > 0) {
-                text = '项目经历：\n'
-                resumeForm.privateProjectExperience.forEach((project, index) => {
-                    text += `${index + 1}. ${project.projectName || ''} - ${project.role || ''}\n`
-                    if (project.projectTime) text += `   时间：${project.projectTime}\n`
-                    if (project.description) text += `   描述：${project.description}\n`
-                    text += '\n'
-                })
-            }
-            break
-        case 'govCampusPractice':
-            if (resumeForm.govCampusPractice && resumeForm.govCampusPractice.length > 0) {
-                text = '校园实践：\n'
-                resumeForm.govCampusPractice.forEach((practice, index) => {
-                    text += `${index + 1}. ${practice.startTime || ''} - ${practice.endTime || ''}\n`
-                    if (practice.description) text += `   描述：${practice.description}\n`
-                    text += '\n'
-                })
-            }
-            break
-        case 'govWorkExperience':
-            if (resumeForm.govWorkExperience && resumeForm.govWorkExperience.length > 0) {
-                text = '工作经历：\n'
-                resumeForm.govWorkExperience.forEach((work, index) => {
-                    text += `${index + 1}. ${work.company || ''} - ${work.position || ''}\n`
-                    if (work.startTime || work.endTime) text += `   时间：${work.startTime || ''} - ${work.endTime || ''}\n`
-                    if (work.duty) text += `   职责：${work.duty}\n`
-                    text += '\n'
-                })
-            }
-            break
-        case 'bankSchoolExperience':
-            if (resumeForm.bankSchoolExperience && resumeForm.bankSchoolExperience.length > 0) {
-                text = '在校经历：\n'
-                resumeForm.bankSchoolExperience.forEach((school, index) => {
-                    text += `${index + 1}. ${school.name || ''}\n`
-                    if (school.startTime || school.endTime) text += `   时间：${school.startTime || ''} - ${school.endTime || ''}\n`
-                    if (school.description) text += `   描述：${school.description}\n`
-                    text += '\n'
-                })
-            }
-            break
-        case 'languageLevel':
-            if (resumeForm.languageLevel && resumeForm.languageLevel.length > 0) {
-                text = '语言水平：\n'
-                resumeForm.languageLevel.forEach((language, index) => {
-                    text += `${index + 1}. ${language.language || ''}`
-                    if (language.level) text += ` - ${language.level}`
-                    if (language.exam) text += ` (${language.exam}: ${language.score || ''})`
-                    text += '\n'
-                })
-            }
-            break
-        case 'skillLevel':
-            if (resumeForm.skillLevel && resumeForm.skillLevel.length > 0) {
-                text = '专业技能：\n'
-                resumeForm.skillLevel.forEach((skill, index) => {
-                    text += `${index + 1}. ${skill.skillType || ''}`
-                    if (skill.level) text += ` - ${skill.level}`
-                    text += '\n'
-                })
-            }
-            break
-        case 'honors':
-            if (resumeForm.honors && resumeForm.honors.length > 0) {
-                text = '荣誉奖项：\n'
-                resumeForm.honors.forEach((honor, index) => {
-                    text += `${index + 1}. ${honor}\n`
-                })
-            }
-            break
-        case 'certificates':
-            if (resumeForm.certificates && resumeForm.certificates.length > 0) {
-                text = '证书：\n'
-                resumeForm.certificates.forEach((cert, index) => {
-                    text += `${index + 1}. ${cert}\n`
-                })
-            }
-            break
-        default:
-            text = ''
-    }
-
-    if (text) {
-        await copyToClipboard(text, section)
-    } else {
-        Message.warning('该部分内容为空，无法复制')
-    }
-}
-
 // 添加教育经历
 const addEduExperience = () => {
     resumeForm.eduExperiences?.push({
@@ -1447,6 +883,100 @@ const addCertificate = () => {
 // 删除证书
 const removeCertificate = (index: number) => {
     resumeForm.certificates?.splice(index, 1)
+}
+
+// 添加银行专业证书
+const addBankProfessionalCert = () => {
+    resumeForm.bankProfessionalCert?.push('')
+}
+
+// 删除银行专业证书
+const removeBankProfessionalCert = (index: number) => {
+    resumeForm.bankProfessionalCert?.splice(index, 1)
+}
+
+// 添加银行计算机技能
+const addBankComputerSkill = () => {
+    resumeForm.bankComputerSkills?.push('')
+}
+
+// 删除银行计算机技能
+const removeBankComputerSkill = (index: number) => {
+    resumeForm.bankComputerSkills?.splice(index, 1)
+}
+
+// 添加银行培训经历
+const addBankTrainingExperience = () => {
+    resumeForm.bankTrainingExperience?.push({
+        startTime: '',
+        endTime: '',
+        trainingName: '',
+        trainingDesc: ''
+    })
+}
+
+// 删除银行培训经历
+const removeBankTrainingExperience = (index: number) => {
+    resumeForm.bankTrainingExperience?.splice(index, 1)
+}
+
+// 添加银行奖惩情况
+const addBankRewardPunishment = () => {
+    resumeForm.bankRewardsPunishments?.push({
+        time: '',
+        rewardPunishment: '',
+        desc: ''
+    })
+}
+
+// 删除银行奖惩情况
+const removeBankRewardPunishment = (index: number) => {
+    resumeForm.bankRewardsPunishments?.splice(index, 1)
+}
+
+// 添加家庭信息
+const addFamilyInfo = () => {
+    resumeForm.familyInfo?.push({
+        name: '',
+        relation: '',
+        politicalStatus: '',
+        company: '',
+        position: '',
+        phone: ''
+    })
+}
+
+// 删除家庭信息
+const removeFamilyInfo = (index: number) => {
+    resumeForm.familyInfo?.splice(index, 1)
+}
+
+// 添加私企论文/文章
+const addPrivatePaper = () => {
+    resumeForm.privatePaper?.push({
+        paperName: '',
+        paperType: '',
+        paperDesc: ''
+    })
+}
+
+// 删除私企论文/文章
+const removePrivatePaper = (index: number) => {
+    resumeForm.privatePaper?.splice(index, 1)
+}
+
+// 添加私企竞赛经历
+const addPrivateCompetition = () => {
+    resumeForm.privateCompetition?.push({
+        competitionName: '',
+        competitionTime: '',
+        competitionDesc: ''
+    })
+}
+
+// 删除私企竞赛经历
+const removePrivateCompetition = (index: number) => {
+    resumeForm.privateCompetition?.splice(index, 1)
 }
 
 // 处理保存按钮点击
