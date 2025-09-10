@@ -70,20 +70,23 @@
                     <div class="flex justify-between items-center mb-6">
                         <h2 class="text-xl font-semibold text-gray-900">简历信息</h2>
                         <div class="flex space-x-2">
-                            <button v-if="userStore.currentUser && hasResumeData" @click="clearResume" class="btn-secondary">
+                            <button v-if="userStore.currentUser && hasResumeData" @click="clearResume"
+                                class="btn-secondary">
                                 清空简历
                             </button>
-                            <button v-if="userStore.currentUser && !hasResumeData && cloudResume" @click="loadFromCloud" class="btn-primary">
-                                加载云端简历
+                            <button v-if="userStore.currentUser && !hasResumeData && cloudResume" @click="loadFromCloud"
+                                class="btn-primary">
+                                加载简历数据
                             </button>
-                            <button v-if="userStore.currentUser && hasResumeData && cloudResume" @click="clearCloudResume"
+                            <button v-if="userStore.currentUser && hasResumeData && cloudResume"
+                                @click="clearCloudResume"
                                 class="px-4 py-2 bg-red-400 text-white rounded-md hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 flex items-center space-x-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1H8a1 1 0 00-1 1v3M4 7h16">
                                     </path>
                                 </svg>
-                                <span>清除云端数据</span>
+                                <span>删除简历数据</span>
                             </button>
                             <button @click="handleSaveClick" :disabled="isSaving" class="btn-primary">
                                 {{ isSaving ? '保存中...' : '保存简历' }}
@@ -1365,7 +1368,7 @@ const loadFromCloud = async () => {
             cloudResume.value = null
         }
     } catch (error) {
-        console.error('加载云端简历失败:', error)
+        console.error('加载简历失败:', error)
     }
 }
 
@@ -1398,7 +1401,7 @@ const saveToCloud = async () => {
             }
         }
     } catch (error: any) {
-        console.error('保存云端简历失败:', error)
+        console.error('保存简历失败:', error)
         Message.error(error.message || '保存失败')
     }
 }
@@ -1426,7 +1429,7 @@ const saveResume = async () => {
 const clearResume = async () => {
     const confirmed = await Confirm.show({
         title: '清空简历',
-        message: '确定要清空表单中的简历数据吗？这不会删除云端已保存的数据。',
+        message: '确定要清空表单中的简历数据吗？这不会删除已保存的数据。',
         type: 'warning',
         confirmText: '确定清空',
         cancelText: '取消'
@@ -1499,13 +1502,13 @@ const clearResume = async () => {
 // 清除云端数据
 const clearCloudResume = async () => {
     if (!cloudResume.value) {
-        Message.warning('没有云端简历数据可清除')
+        Message.warning('没有简历数据可清除')
         return
     }
 
     const confirmed = await Confirm.show({
-        title: '删除云端数据',
-        message: '确定要永久删除云端简历数据吗？此操作不可恢复。',
+        title: '删除数据',
+        message: '确定要永久删除简历数据吗？此操作不可恢复。',
         type: 'danger',
         confirmText: '确定删除',
         cancelText: '取消'
@@ -1576,12 +1579,12 @@ const clearCloudResume = async () => {
                 })
                 // 清空云端简历引用
                 cloudResume.value = null
-                Message.success('云端简历数据已删除')
+                Message.success('简历数据已删除')
             } else {
                 Message.error(response.message || '删除失败')
             }
         } catch (error: any) {
-            console.error('删除云端简历失败:', error)
+            console.error('删除简历失败:', error)
             Message.error(error.message || '删除失败，请重试')
         }
     }
