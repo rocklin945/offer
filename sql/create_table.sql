@@ -95,26 +95,111 @@ CREATE TABLE resume (
                         id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '简历ID',
                         user_id BIGINT NOT NULL COMMENT '用户ID',
 
-    -- 基本信息
+    -- 通用基本信息
                         name VARCHAR(255) NOT NULL COMMENT '姓名',
                         phone VARCHAR(255) COMMENT '手机号',
                         wechat VARCHAR(255) COMMENT '微信号',
                         email VARCHAR(255) COMMENT '邮箱',
-                        gender VARCHAR(255) COMMENT '性别',
-                        birthday VARCHAR(255) COMMENT '出生日期',
+                        gender VARCHAR(50) COMMENT '性别',
+                        birthday VARCHAR(50) COMMENT '出生日期',
                         address VARCHAR(255) COMMENT '地址',
+                        id_number VARCHAR(100) COMMENT '证件号码',
 
-    -- 大段内容用 TEXT
-                        education TEXT COMMENT '教育背景（学校、专业、时间等）',
-                        skills TEXT COMMENT '专业技能',
-                        work_experience TEXT COMMENT '工作经验',
-                        project_experience TEXT COMMENT '项目经历',
-                        internship_experience TEXT COMMENT '实习经历',
-                        certificates TEXT COMMENT '荣誉证书',
+    -- 央国企特有基本信息
+                        gov_current_residence VARCHAR(255) COMMENT '现居住地',
+                        gov_registered_residence VARCHAR(255) COMMENT '户口所在地',
+                        gov_native_place VARCHAR(255) COMMENT '籍贯',
+                        gov_gaokao_place VARCHAR(255) COMMENT '高考所在地',
+                        gov_political_status VARCHAR(100) COMMENT '政治面貌',
+                        gov_emergency_name VARCHAR(255) COMMENT '紧急联络人姓名',
+                        gov_emergency_phone VARCHAR(100) COMMENT '紧急联络人手机号',
+                        gov_emergency_relation VARCHAR(100) COMMENT '紧急联络人与本人关系',
+
+    -- 银行特有基本信息
+                        bank_political_status VARCHAR(100) COMMENT '政治面貌',
+                        bank_height VARCHAR(20) COMMENT '身高',
+                        bank_weight VARCHAR(20) COMMENT '体重',
+                        bank_health VARCHAR(100) COMMENT '健康状况',
+                        bank_marriage_status VARCHAR(50) COMMENT '婚姻状况',
+                        bank_child_status VARCHAR(50) COMMENT '生育状况',
+                        bank_info_channel VARCHAR(255) COMMENT '获取信息渠道',
+                        bank_emergency_name VARCHAR(255) COMMENT '紧急联络人姓名',
+                        bank_emergency_phone VARCHAR(100) COMMENT '紧急联络人手机号',
+                        bank_emergency_relation VARCHAR(100) COMMENT '紧急联络人与本人关系',
+
+    -- 教育经历（民企、央国企、银行共用）
+                        edu_school_name VARCHAR(255) COMMENT '学校名称',
+                        edu_college_name VARCHAR(255) COMMENT '学院名称',
+                        edu_major_name VARCHAR(255) COMMENT '专业名称',
+                        edu_major_detail VARCHAR(255) COMMENT '研究方向',
+                        edu_degree VARCHAR(50) COMMENT '学历',
+                        edu_period VARCHAR(255) COMMENT '在校时间',
+                        edu_gpa VARCHAR(50) COMMENT 'GPA成绩',
+                        edu_rank VARCHAR(50) COMMENT '成绩排名',
+                        edu_full_time TINYINT(1) COMMENT '是否全日制',
+                        edu_lab VARCHAR(255) COMMENT '实验室',
+                        edu_supervisor VARCHAR(255) COMMENT '导师',
+
+    -- 实习经历（民企）
+                        private_internship TEXT COMMENT '实习经历（JSON存多条）',
+
+    -- 校园实践经历（央国企）
+                        gov_campus_practice TEXT COMMENT '校园实践经历（JSON存多条）',
+
+    -- 工作经历（央国企）
+                        gov_work_experience TEXT COMMENT '工作经历（JSON存多条）',
+
+    -- 项目经历（民企）
+                        private_project_experience TEXT COMMENT '项目经历（JSON存多条）',
+
+    -- 在校经历（银行）
+                        bank_school_experience TEXT COMMENT '在校经历（JSON存多条）',
+
+    -- 语言水平（共用）
+                        language_level TEXT COMMENT '语言水平（JSON存多条）',
+
+    -- 荣誉 & 证书（共用）
+                        honors TEXT COMMENT '荣誉',
+                        certificates TEXT COMMENT '证书',
+
+    -- 技能水平（共用）
+                        skill_level TEXT COMMENT '技能水平（JSON存多条）',
+
+    -- 论文（民企）
+                        private_paper TEXT COMMENT '论文（JSON存多条）',
+
+    -- 竞赛（民企）
+                        private_competition TEXT COMMENT '竞赛',
+
+    -- 家庭情况（央国企 & 银行）
+                        family_info TEXT COMMENT '家庭情况（JSON存多条）',
+
+    -- 薪酬福利（银行）
+                        bank_salary_expectation VARCHAR(100) COMMENT '期望薪酬',
+                        bank_expected_location VARCHAR(255) COMMENT '期望工作地点',
+
+    -- 职业资格认证（银行）
+                        bank_professional_cert TEXT COMMENT '职业资格认证（JSON存多条）',
+
+    -- 计算机技能（银行）
+                        bank_computer_skills TEXT COMMENT '计算机技能',
+
+    -- 培训经历（银行）
+                        bank_training_experience TEXT COMMENT '培训经历（JSON存多条）',
+
+    -- 奖惩情况（银行）
+                        bank_rewards_punishments TEXT COMMENT '奖惩情况（JSON存多条）',
+
+    -- 自我评价（共用）
                         self_evaluation TEXT COMMENT '自我评价',
-                        create_time    DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '创建时间',
-                        update_time    DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
-) COMMENT='个人简历信息表';
+
+    -- 时间字段
+                        create_time DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '创建时间',
+                        update_time DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+) COMMENT='个人简历信息表（民企/央国企/银行）';
+
+
+drop table resume;
 
 CREATE TABLE invite_commission (
                        id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
