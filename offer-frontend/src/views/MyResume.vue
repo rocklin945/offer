@@ -96,6 +96,7 @@
 
                     <form @submit.prevent="saveResume" class="space-y-6">
                         <!-- 基本信息 -->
+                        <h3 class="text-lg font-medium text-gray-900">个人信息</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">姓名 <span
@@ -199,9 +200,39 @@
                                     </button>
                                 </div>
                             </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">证件号码</label>
+                                <div class="flex items-center space-x-2">
+                                    <input v-model="resumeForm.idNumber" type="text" placeholder="请输入证件号码"
+                                        class="input-field flex-1" />
+                                    <button @click="copyToClipboard(resumeForm.idNumber, '证件号码')"
+                                        class="resume-copy-btn">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
 
                             <!-- 根据简历类型显示特有字段 -->
                             <!-- 央国企特有字段 -->
+                            <div v-if="resumeType === '央国企'">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">现居住地</label>
+                                <div class="flex items-center space-x-2">
+                                    <input v-model="resumeForm.govCurrentResidence" type="text" placeholder="请输入现居住地"
+                                        class="input-field flex-1" />
+                                    <button @click="copyToClipboard(resumeForm.govCurrentResidence, '现居住地')"
+                                        class="resume-copy-btn">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
                             <div v-if="resumeType === '央国企'">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">户籍所在地</label>
                                 <div class="flex items-center space-x-2">
@@ -262,8 +293,98 @@
                                     </button>
                                 </div>
                             </div>
+                            <div v-if="resumeType === '央国企'">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">紧急联系人关系</label>
+                                <div class="flex items-center space-x-2">
+                                    <input v-model="resumeForm.govEmergencyRelation" type="text"
+                                        placeholder="请输入与紧急联系人关系" class="input-field flex-1" />
+                                    <button @click="copyToClipboard(resumeForm.govEmergencyRelation, '紧急联系人关系')"
+                                        class="resume-copy-btn">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
 
-                            <!-- 银行特有字段 -->
+                            <!-- 央国企特有字段 -->
+                            <div v-if="resumeType === '央国企'">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">现居住地</label>
+                                <div class="flex items-center space-x-2">
+                                    <input v-model="resumeForm.govCurrentResidence" type="text" placeholder="请输入现居住地"
+                                        class="input-field flex-1" />
+                                    <button @click="copyToClipboard(resumeForm.govCurrentResidence, '现居住地')"
+                                        class="resume-copy-btn">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div v-if="resumeType === '央国企'">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">户籍所在地</label>
+                                <div class="flex items-center space-x-2">
+                                    <input v-model="resumeForm.govRegisteredResidence" type="text"
+                                        placeholder="请输入户籍所在地" class="input-field flex-1" />
+                                    <button @click="copyToClipboard(resumeForm.govRegisteredResidence, '户籍所在地')"
+                                        class="resume-copy-btn">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div v-if="resumeType === '央国企'">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">籍贯</label>
+                                <div class="flex items-center space-x-2">
+                                    <input v-model="resumeForm.govNativePlace" type="text" placeholder="请输入籍贯"
+                                        class="input-field flex-1" />
+                                    <button @click="copyToClipboard(resumeForm.govNativePlace, '籍贯')"
+                                        class="resume-copy-btn">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div v-if="resumeType === '央国企'">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">高考所在地</label>
+                                <div class="flex items-center space-x-2">
+                                    <input v-model="resumeForm.govGaokaoPlace" type="text" placeholder="请输入高考所在地"
+                                        class="input-field flex-1" />
+                                    <button @click="copyToClipboard(resumeForm.govGaokaoPlace, '高考所在地')"
+                                        class="resume-copy-btn">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div v-if="resumeType === '央国企'">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">政治面貌</label>
+                                <div class="flex items-center space-x-2">
+                                    <input v-model="resumeForm.govPoliticalStatus" type="text" placeholder="请输入政治面貌"
+                                        class="input-field flex-1" />
+                                    <button @click="copyToClipboard(resumeForm.govPoliticalStatus, '政治面貌')"
+                                        class="resume-copy-btn">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
                             <div v-if="resumeType === '银行'">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">政治面貌</label>
                                 <div class="flex items-center space-x-2">
@@ -315,6 +436,96 @@
                                     <input v-model="resumeForm.bankHealth" type="text" placeholder="请输入健康状况"
                                         class="input-field flex-1" />
                                     <button @click="copyToClipboard(resumeForm.bankHealth, '健康状况')"
+                                        class="resume-copy-btn">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div v-if="resumeType === '银行'">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">婚姻状况</label>
+                                <div class="flex items-center space-x-2">
+                                    <input v-model="resumeForm.bankMarriageStatus" type="text" placeholder="请输入婚姻状况"
+                                        class="input-field flex-1" />
+                                    <button @click="copyToClipboard(resumeForm.bankMarriageStatus, '婚姻状况')"
+                                        class="resume-copy-btn">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div v-if="resumeType === '银行'">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">生育状况</label>
+                                <div class="flex items-center space-x-2">
+                                    <input v-model="resumeForm.bankChildStatus" type="text" placeholder="请输入生育状况"
+                                        class="input-field flex-1" />
+                                    <button @click="copyToClipboard(resumeForm.bankChildStatus, '生育状况')"
+                                        class="resume-copy-btn">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div v-if="resumeType === '银行'">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">获取信息渠道</label>
+                                <div class="flex items-center space-x-2">
+                                    <input v-model="resumeForm.bankInfoChannel" type="text" placeholder="请输入获取信息渠道"
+                                        class="input-field flex-1" />
+                                    <button @click="copyToClipboard(resumeForm.bankInfoChannel, '获取信息渠道')"
+                                        class="resume-copy-btn">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div v-if="resumeType === '银行'">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">紧急联系人</label>
+                                <div class="flex items-center space-x-2">
+                                    <input v-model="resumeForm.bankEmergencyName" type="text" placeholder="请输入紧急联系人"
+                                        class="input-field flex-1" />
+                                    <button @click="copyToClipboard(resumeForm.bankEmergencyName, '紧急联系人')"
+                                        class="resume-copy-btn">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div v-if="resumeType === '银行'">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">紧急联系人电话</label>
+                                <div class="flex items-center space-x-2">
+                                    <input v-model="resumeForm.bankEmergencyPhone" type="tel" placeholder="请输入紧急联系人电话"
+                                        class="input-field flex-1" />
+                                    <button @click="copyToClipboard(resumeForm.bankEmergencyPhone, '紧急联系人电话')"
+                                        class="resume-copy-btn">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div v-if="resumeType === '银行'">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">紧急联系人关系</label>
+                                <div class="flex items-center space-x-2">
+                                    <input v-model="resumeForm.bankEmergencyRelation" type="text"
+                                        placeholder="请输入与紧急联系人关系" class="input-field flex-1" />
+                                    <button @click="copyToClipboard(resumeForm.bankEmergencyRelation, '紧急联系人关系')"
                                         class="resume-copy-btn">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -844,7 +1055,7 @@
                                 <h4 class="font-semibold text-gray-900 mb-2">🎓 教育经历</h4>
                                 <div v-for="(edu, index) in resumeForm.eduExperiences" :key="index" class="mb-3">
                                     <div class="font-medium">{{ edu.schoolName }} - {{ edu.majorName }} ({{ edu.degree
-                                        }})</div>
+                                    }})</div>
                                     <div class="text-sm text-gray-600">{{ edu.period }}</div>
                                     <div v-if="edu.gpa" class="text-sm text-gray-600">GPA: {{ edu.gpa }}</div>
                                 </div>
