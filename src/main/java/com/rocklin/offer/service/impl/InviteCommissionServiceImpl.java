@@ -142,28 +142,51 @@ public class InviteCommissionServiceImpl implements InviteCommissionService {
                 userId, plan.getLabel(), plan.getDays(), inviteCommission.getBalanceCommission().subtract(amount));
     }
 
+    @Override
     @Transactional
     public void handleUserBecomeMember(Long userId) {
+        // 查找用户的邀请人
+        User inviter = getUserAndInviter(userId);
+        if (inviter == null) return;
+
+        // 增加待结算佣金
+        WebInfo webInfo = webInfoMapper.selectWebInfo();
+        String commission = String.valueOf(webInfo.getCurrentPrice().multiply(BigDecimal.valueOf(ZERO_POINT_TWO)));
+        increasePendingCommission(commission, inviter);
+    }
+
+    private void increasePendingCommission(String commission, User inviter) {
+        BigDecimal amount = new BigDecimal(commission).setScale(TWO, RoundingMode.HALF_UP);
+        commissionMapper.increasePendingCommission(inviter.getId(), amount);
+        log.info("增加待结算佣金: userId={}, amount={}", inviter.getId(), amount);
+    }
+
+    @Override
+    @Transactional
+    public void handleUserBecomeMember(Long userId,BigDecimal price) {
+        User inviter = getUserAndInviter(userId);
+        if (inviter == null) return;
+
+        // 增加待结算佣金
+        String commission = String.valueOf(price.multiply(BigDecimal.valueOf(ZERO_POINT_TWO)));
+        increasePendingCommission(commission, inviter);
+    }
+
+    private User getUserAndInviter(Long userId) {
         // 查找用户的邀请人
         User user = userMapper.selectById(userId);
         if (user == null || user.getInviterCode() == null) {
             log.info("用户没有邀请人或用户不存在: userId={}", userId);
-            return;
+            return null;
         }
 
         // 根据邀请码查找邀请人
         User inviter = userMapper.selectByInviteCode(USER_PREFIX + user.getInviterCode());
         if (inviter == null) {
             log.info("邀请人不存在: inviteCode={}", user.getInviterCode());
-            return;
+            return null;
         }
-
-        // 增加待结算佣金
-        WebInfo webInfo = webInfoMapper.selectWebInfo();
-        String commission = String.valueOf(webInfo.getCurrentPrice().multiply(BigDecimal.valueOf(ZERO_POINT_TWO)));
-        BigDecimal amount = new BigDecimal(commission).setScale(TWO, RoundingMode.HALF_UP);
-        commissionMapper.increasePendingCommission(inviter.getId(), amount);
-        log.info("增加待结算佣金: userId={}, amount={}", inviter.getId(), amount);
+        return inviter;
     }
 
     @Override

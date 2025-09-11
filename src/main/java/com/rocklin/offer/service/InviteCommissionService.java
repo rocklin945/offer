@@ -20,6 +20,8 @@ public interface InviteCommissionService {
      */
     void handleUserBecomeMember(Long userId);
 
+    void handleUserBecomeMember(Long userId, BigDecimal amount);
+
     /**
      * 根据用户ID查询佣金记录
      */

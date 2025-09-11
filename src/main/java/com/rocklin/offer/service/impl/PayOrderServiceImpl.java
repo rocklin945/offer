@@ -1,17 +1,23 @@
 package com.rocklin.offer.service.impl;
 
 import com.rocklin.offer.common.enums.ErrorCode;
+import com.rocklin.offer.common.enums.UserRoleEnum;
 import com.rocklin.offer.common.exception.Assert;
 import com.rocklin.offer.common.utils.OrderNoGenerator;
 import com.rocklin.offer.mapper.PayOrderMapper;
 import com.rocklin.offer.mapper.UserMapper;
+import com.rocklin.offer.mapper.WebInfoMapper;
+import com.rocklin.offer.model.dto.request.UserUpdateRequest;
 import com.rocklin.offer.model.entity.PayOrder;
 import com.rocklin.offer.model.entity.User;
+import com.rocklin.offer.model.entity.WebInfo;
+import com.rocklin.offer.service.InviteCommissionService;
 import com.rocklin.offer.service.PayOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +25,8 @@ public class PayOrderServiceImpl implements PayOrderService {
 
     private final PayOrderMapper payOrderMapper;
     private final UserMapper userMapper;
+    private final WebInfoMapper webInfoMapper;
+    private final InviteCommissionService commissionService;
 
     @Override
     public PayOrder createOrder(Long userId, String name, String money, String type, String param) {
@@ -40,12 +48,51 @@ public class PayOrderServiceImpl implements PayOrderService {
 
     @Override
     public boolean markOrderPaid(String outTradeNo, String tradeNo) {
+        PayOrder payOrder = payOrderMapper.selectByOutTradeNo(outTradeNo);
+        Assert.notNull(payOrder, ErrorCode.OPERATION_ERROR, "订单不存在");
         int rows = payOrderMapper.updateStatusAndTradeNo(outTradeNo, tradeNo, 1);
+        try {
+            BigDecimal money = payOrder.getMoney();
+            WebInfo webInfo = webInfoMapper.selectWebInfo();
+            if (money.compareTo(webInfo.getCurrentPrice()) >= 0) {
+                becomeMember(payOrder.getUserId(), 120);
+            }else if (money.compareTo(webInfo.getOriginalPrice()) >= 0) {
+                becomeMember(payOrder.getUserId(), 365);
+            }else {
+                throw new Exception("金额错误");
+            }
+            commissionService.handleUserBecomeMember(payOrder.getUserId(), money);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return rows > 0;
     }
 
     @Override
     public PayOrder getOrderByOutTradeNo(String outTradeNo) {
         return payOrderMapper.selectByOutTradeNo(outTradeNo);
+    }
+
+    private void becomeMember(Long userId, int days) {
+        // 添加用户会员天数
+        User user = userMapper.selectById(userId);
+        Assert.notNull(user, ErrorCode.NOT_FOUND, "用户不存在");
+
+        // 计算新的会员过期时间
+        LocalDateTime newExpireTime;
+        if (user.getMemberExpireTime() == null || user.getMemberExpireTime().isBefore(LocalDateTime.now())) {
+            // 如果用户不是会员或会员已过期，则从现在开始计算
+            newExpireTime = LocalDateTime.now().plusDays(days);
+        } else {
+            // 如果用户仍是会员，则在现有过期时间基础上增加天数
+            newExpireTime = user.getMemberExpireTime().plusDays(days);
+        }
+
+        // 更新用户会员信息
+        UserUpdateRequest userUpdateRequest = new UserUpdateRequest();
+        userUpdateRequest.setId(userId);
+        userUpdateRequest.setMemberExpireTime(newExpireTime);
+        userUpdateRequest.setUserRole(UserRoleEnum.VIP.getValue());
+        userMapper.updateById(userUpdateRequest);
     }
 }
