@@ -972,9 +972,11 @@ const removeFamilyInfo = (index: number) => {
 // 添加私企论文/文章
 const addPrivatePaper = () => {
     resumeForm.privatePaper?.push({
-        paperName: '',
-        paperType: '',
-        paperDesc: ''
+        name: '',
+        publishChannel: '',
+        authorOrder: '',
+        impactFactor: '',
+        link: ''
     })
 }
 

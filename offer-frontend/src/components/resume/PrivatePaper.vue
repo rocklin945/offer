@@ -2,7 +2,7 @@
     <div class="mt-8">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-lg font-medium text-gray-900">论文</h3>
-            <button @click="$emit('add-paper')" type="button" class="btn-secondary">
+            <button @click="$emit('add-private-paper')" type="button" class="btn-secondary">
                 + 添加论文
             </button>
         </div>
@@ -78,7 +78,7 @@
                     </div>
                 </div>
                 <div class="md:col-span-2 flex justify-end">
-                    <button @click="$emit('remove-paper', index)" type="button"
+                    <button @click="$emit('remove-private-paper', index)" type="button"
                         class="px-3 py-1 bg-red-400 text-white rounded-md hover:bg-red-600">
                         删除
                     </button>
@@ -97,8 +97,8 @@ defineProps({
 })
 
 defineEmits([
-    'add-paper',
-    'remove-paper',
+    'add-private-paper',
+    'remove-private-paper',
     'copy-to-clipboard'
 ])
 </script>
