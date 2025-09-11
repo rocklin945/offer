@@ -229,3 +229,19 @@ CREATE TABLE IF NOT EXISTS material (
                                  INDEX idx_category (category),
                                  INDEX idx_file_uuid (file_uuid)
 ) COMMENT '笔试面试资料表';
+
+CREATE TABLE `pay_order` (
+                             `id` BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+                             `out_trade_no` VARCHAR(64) NOT NULL COMMENT '商户订单号（你系统生成，唯一）',
+                             `trade_no` VARCHAR(64) DEFAULT NULL COMMENT '支付平台订单号',
+                             `user_id` BIGINT NOT NULL COMMENT '下单用户ID',
+                             `name` VARCHAR(100) NOT NULL COMMENT '商品名称',
+                             `money` DECIMAL(10,2) NOT NULL COMMENT '订单金额',
+                             `type` VARCHAR(10) NOT NULL COMMENT '支付方式(alipay / wxpay)',
+                             `status` TINYINT NOT NULL DEFAULT 0 COMMENT '支付状态 0未支付 1已支付 2退款中 3已退款',
+                             `param` VARCHAR(255) DEFAULT NULL COMMENT '扩展参数（回调会原样返回）',
+                             `notify_time` DATETIME DEFAULT NULL COMMENT '支付平台通知时间',
+                             `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '订单创建时间',
+                             `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '订单更新时间',
+                             UNIQUE KEY `uk_out_trade_no` (`out_trade_no`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='支付订单表';

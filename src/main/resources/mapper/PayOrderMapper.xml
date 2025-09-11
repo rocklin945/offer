@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rocklin.offer.mapper.PayOrderMapper">
+
+    <insert id="insert" parameterType="com.rocklin.offer.model.entity.PayOrder" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO pay_order (id, out_trade_no, trade_no, user_id, name, money, type, status, param, notify_time)
+        VALUES (UUID_SHORT(), #{outTradeNo}, #{tradeNo}, #{userId}, #{name}, #{money}, #{type}, #{status}, #{param}, #{notifyTime})
+    </insert>
+
+    <select id="selectByOutTradeNo" parameterType="string" resultType="com.rocklin.offer.model.entity.PayOrder">
+        SELECT * FROM pay_order WHERE out_trade_no = #{outTradeNo}
+    </select>
+
+    <update id="updateStatusAndTradeNo">
+        UPDATE pay_order
+        SET trade_no = #{tradeNo},
+        status = #{status},
+        update_time = NOW()
+        WHERE out_trade_no = #{outTradeNo}
+    </update>
+
+</mapper>
