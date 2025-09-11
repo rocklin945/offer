@@ -32,6 +32,33 @@
                             </button>
                         </div>
                     </div>
+                    <!-- 检索跳转功能 -->
+                    <div class="ml-8 p-3 rounded-md mt-4 relative">
+                        <div class="flex items-center">
+                            <div class="relative min-w-[360px]">
+                                <input type="text" v-model="searchKeyword" @input="querySearch"
+                                    @focus="showSuggestions = true" @blur="hideSuggestions"
+                                    @keyup.enter="handleSearchEnter" placeholder="搜索简历内容（如：个人信息、项目经历）"
+                                    class="search-input" />
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <button @click="handleSearchClick" class="search-button">
+                                搜索
+                            </button>
+                        </div>
+                        <div v-if="showSuggestions && filteredSuggestions.length > 0" class="search-suggestions">
+                            <div v-for="item in filteredSuggestions" :key="item.value"
+                                @mousedown.prevent="handleSelect(item)" class="search-suggestion-item">
+                                <span>{{ item.value }}</span>
+                                <span class="text-gray-400 text-sm">{{ item.type }}</span>
+                            </div>
+                        </div>
+                    </div>
                     <!-- 文档导入区域 -->
                     <div class="ml-8 p-3 rounded-md mt-4">
                         <input ref="fileInput" type="file" accept=".pdf,.doc,.docx" @change="handleFileUpload"
@@ -96,104 +123,107 @@
 
                     <form @submit.prevent="saveResume" class="space-y-6">
                         <!-- 基本信息 -->
-                        <BasicInfo :resume-form="resumeForm" :resume-type="resumeType"
+                        <BasicInfo id="basic-info" :resume-form="resumeForm" :resume-type="resumeType"
                             @copy-to-clipboard="copyToClipboard" />
 
                         <!-- 教育经历 (所有类型都显示) -->
-                        <EducationExperience :resume-form="resumeForm" @add-edu-experience="addEduExperience"
-                            @remove-edu-experience="removeEduExperience" @copy-to-clipboard="copyToClipboard" />
+                        <EducationExperience id="education" :resume-form="resumeForm"
+                            @add-edu-experience="addEduExperience" @remove-edu-experience="removeEduExperience"
+                            @copy-to-clipboard="copyToClipboard" />
 
                         <!-- 根据简历类型显示不同的经历字段 -->
                         <!-- 民企: 实习经历和项目经历 -->
-                        <InternshipExperience v-if="resumeType === '民企'" :resume-form="resumeForm"
-                            @add-internship="addInternship" @remove-internship="removeInternship"
-                            @copy-to-clipboard="copyToClipboard" />
+                        <InternshipExperience id="internship-experience" v-if="resumeType === '民企'"
+                            :resume-form="resumeForm" @add-internship="addInternship"
+                            @remove-internship="removeInternship" @copy-to-clipboard="copyToClipboard" />
 
-                        <ProjectExperience v-if="resumeType === '民企'" :resume-form="resumeForm"
+                        <ProjectExperience id="project-experience" v-if="resumeType === '民企'" :resume-form="resumeForm"
                             @add-project-experience="addProjectExperience"
                             @remove-project-experience="removeProjectExperience" @copy-to-clipboard="copyToClipboard" />
 
                         <!-- 央国企: 校园实践和工作经历 -->
-                        <CampusPractice v-if="resumeType === '央国企'" :resume-form="resumeForm"
+                        <CampusPractice id="campus-practice" v-if="resumeType === '央国企'" :resume-form="resumeForm"
                             @add-campus-practice="addCampusPractice" @remove-campus-practice="removeCampusPractice"
                             @copy-to-clipboard="copyToClipboard" />
 
-                        <WorkExperience v-if="resumeType === '央国企'" :resume-form="resumeForm"
+                        <WorkExperience id="work-experience" v-if="resumeType === '央国企'" :resume-form="resumeForm"
                             @add-work-experience="addWorkExperience" @remove-work-experience="removeWorkExperience"
                             @copy-to-clipboard="copyToClipboard" />
 
                         <!-- 央国企: 家庭信息 -->
-                        <FamilyInfo v-if="resumeType === '央国企'" :resume-form="resumeForm"
+                        <FamilyInfo id="family-info" v-if="resumeType === '央国企'" :resume-form="resumeForm"
                             @add-family-info="addFamilyInfo" @remove-family-info="removeFamilyInfo"
                             @copy-to-clipboard="copyToClipboard" />
 
                         <!-- 银行: 在校经历 -->
-                        <SchoolExperience v-if="resumeType === '银行'" :resume-form="resumeForm"
+                        <SchoolExperience id="school-experience" v-if="resumeType === '银行'" :resume-form="resumeForm"
                             @add-school-experience="addSchoolExperience"
                             @remove-school-experience="removeSchoolExperience" @copy-to-clipboard="copyToClipboard" />
 
                         <!-- 银行: 专业证书 -->
-                        <BankProfessionalCert v-if="resumeType === '银行'" :resume-form="resumeForm"
-                            @add-bank-professional-cert="addBankProfessionalCert"
+                        <BankProfessionalCert id="bank-professional-cert" v-if="resumeType === '银行'"
+                            :resume-form="resumeForm" @add-bank-professional-cert="addBankProfessionalCert"
                             @remove-bank-professional-cert="removeBankProfessionalCert"
                             @copy-to-clipboard="copyToClipboard" />
 
                         <!-- 银行: 计算机技能 -->
-                        <BankComputerSkills v-if="resumeType === '银行'" :resume-form="resumeForm"
-                            @add-bank-computer-skill="addBankComputerSkill"
+                        <BankComputerSkills id="bank-computer-skills" v-if="resumeType === '银行'"
+                            :resume-form="resumeForm" @add-bank-computer-skill="addBankComputerSkill"
                             @remove-bank-computer-skill="removeBankComputerSkill"
                             @copy-to-clipboard="copyToClipboard" />
 
                         <!-- 银行: 培训经历 -->
-                        <BankTrainingExperience v-if="resumeType === '银行'" :resume-form="resumeForm"
-                            @add-bank-training-experience="addBankTrainingExperience"
+                        <BankTrainingExperience id="bank-training-experience" v-if="resumeType === '银行'"
+                            :resume-form="resumeForm" @add-bank-training-experience="addBankTrainingExperience"
                             @remove-bank-training-experience="removeBankTrainingExperience"
                             @copy-to-clipboard="copyToClipboard" />
 
                         <!-- 银行: 奖惩情况 -->
-                        <BankRewardsPunishments v-if="resumeType === '银行'" :resume-form="resumeForm"
-                            @add-bank-reward-punishment="addBankRewardPunishment"
+                        <BankRewardsPunishments id="bank-rewards-punishments" v-if="resumeType === '银行'"
+                            :resume-form="resumeForm" @add-bank-reward-punishment="addBankRewardPunishment"
                             @remove-bank-reward-punishment="removeBankRewardPunishment"
                             @copy-to-clipboard="copyToClipboard" />
 
                         <!-- 银行: 期望信息 -->
-                        <BankExpectations v-if="resumeType === '银行'" :resume-form="resumeForm"
+                        <BankExpectations id="bank-expectations" v-if="resumeType === '银行'" :resume-form="resumeForm"
                             @copy-to-clipboard="copyToClipboard" />
 
                         <!-- 银行: 家庭信息 -->
-                        <FamilyInfo v-if="resumeType === '银行'" :resume-form="resumeForm"
+                        <FamilyInfo id="family-info-bank" v-if="resumeType === '银行'" :resume-form="resumeForm"
                             @add-family-info="addFamilyInfo" @remove-family-info="removeFamilyInfo"
                             @copy-to-clipboard="copyToClipboard" />
 
                         <!-- 私企: 论文/文章 -->
-                        <PrivatePaper v-if="resumeType === '民企'" :resume-form="resumeForm"
+                        <PrivatePaper id="private-paper" v-if="resumeType === '民企'" :resume-form="resumeForm"
                             @add-private-paper="addPrivatePaper" @remove-private-paper="removePrivatePaper"
                             @copy-to-clipboard="copyToClipboard" />
 
                         <!-- 私企: 竞赛经历 -->
-                        <PrivateCompetition v-if="resumeType === '民企'" :resume-form="resumeForm"
-                            @add-private-competition="addPrivateCompetition"
+                        <PrivateCompetition id="private-competition" v-if="resumeType === '民企'"
+                            :resume-form="resumeForm" @add-private-competition="addPrivateCompetition"
                             @remove-private-competition="removePrivateCompetition"
                             @copy-to-clipboard="copyToClipboard" />
 
                         <!-- 语言水平 (所有类型都显示) -->
-                        <LanguageLevel :resume-form="resumeForm" @add-language-level="addLanguageLevel"
-                            @remove-language-level="removeLanguageLevel" @copy-to-clipboard="copyToClipboard" />
+                        <LanguageLevel id="language-level" :resume-form="resumeForm"
+                            @add-language-level="addLanguageLevel" @remove-language-level="removeLanguageLevel"
+                            @copy-to-clipboard="copyToClipboard" />
 
                         <!-- 专业技能 (所有类型都显示) -->
-                        <SkillLevel :resume-form="resumeForm" @add-skill-level="addSkillLevel"
+                        <SkillLevel id="skills" :resume-form="resumeForm" @add-skill-level="addSkillLevel"
                             @remove-skill-level="removeSkillLevel" @copy-to-clipboard="copyToClipboard" />
 
                         <!-- 荣誉奖项 (所有类型都显示) -->
-                        <Honors :resume-form="resumeForm" @add-honor="addHonor" @remove-honor="removeHonor"
+                        <Honors id="honors" :resume-form="resumeForm" @add-honor="addHonor" @remove-honor="removeHonor"
                             @copy-to-clipboard="copyToClipboard" />
 
                         <!-- 证书 (所有类型都显示) -->
-                        <Certificates :resume-form="resumeForm" @add-certificate="addCertificate"
+                        <Certificates id="certificates" :resume-form="resumeForm" @add-certificate="addCertificate"
                             @remove-certificate="removeCertificate" @copy-to-clipboard="copyToClipboard" />
 
                         <!-- 自我评价 (所有类型都显示) -->
-                        <SelfEvaluation :resume-form="resumeForm" @copy-to-clipboard="copyToClipboard" />
+                        <SelfEvaluation id="self-evaluation" :resume-form="resumeForm"
+                            @copy-to-clipboard="copyToClipboard" />
                     </form>
                 </div>
             </transition>
@@ -250,6 +280,35 @@ const fileInput = ref<HTMLInputElement | null>(null)
 
 // 简历类型
 const resumeType = ref<'民企' | '央国企' | '银行'>('民企')
+
+// 搜索相关状态
+const searchKeyword = ref('')
+const showSuggestions = ref(false)
+const filteredSuggestions = ref<Array<{ value: string, type: string }>>([])
+
+// 搜索建议数据
+const searchSuggestions = [
+    { value: '个人信息', type: '基本信息' },
+    { value: '教育经历', type: '教育背景' },
+    { value: '语言水平', type: '技能' },
+    { value: '专业技能', type: '技能' },
+    { value: '荣誉奖项', type: '成就' },
+    { value: '证书', type: '资质' },
+    { value: '自我评价', type: '个人描述' },
+    { value: '实习经历', type: '工作经历' },
+    { value: '项目经历', type: '工作经历' },
+    { value: '校园实践', type: '活动经历' },
+    { value: '工作经历', type: '工作经历' },
+    { value: '在校经历', type: '教育背景' },
+    { value: '专业证书', type: '资质' },
+    { value: '计算机技能', type: '技能' },
+    { value: '培训经历', type: '教育背景' },
+    { value: '奖惩情况', type: '成就' },
+    { value: '期望信息', type: '求职意向' },
+    { value: '家庭信息', type: '个人信息' },
+    { value: '论文/文章', type: '学术成果' },
+    { value: '竞赛经历', type: '活动经历' }
+]
 
 // 简历表单数据
 const resumeForm = reactive<ResumeAddRequest>({
@@ -1048,15 +1107,200 @@ onActivated(() => {
     }
 })
 
-// 组件失活时清理数据
+// 组件失活时清理临时状态（保留表单数据）
 onDeactivated(() => {
-    cleanupComponentState()
+    cleanupTemporaryState()
 })
 
-// 组件卸载时清理数据
+// 组件卸载时清理所有数据
 onUnmounted(() => {
     cleanupComponentState()
 })
+
+// 搜索功能实现
+const querySearch = () => {
+    if (!searchKeyword.value.trim()) {
+        filteredSuggestions.value = []
+        return
+    }
+
+    const keyword = searchKeyword.value.toLowerCase()
+    filteredSuggestions.value = searchSuggestions.filter(item =>
+        item.value.toLowerCase().includes(keyword) || item.type.toLowerCase().includes(keyword)
+    )
+}
+
+// 处理搜索建议选择
+const handleSelect = (item: { value: string, type: string }) => {
+    searchKeyword.value = item.value
+    showSuggestions.value = false
+
+    // 滚动到对应的组件
+    scrollToComponent(item.value)
+}
+
+// 隐藏搜索建议
+const hideSuggestions = () => {
+    // 使用setTimeout确保点击事件先处理
+    setTimeout(() => {
+        showSuggestions.value = false
+    }, 200)
+}
+
+// 回车键搜索
+const handleSearchEnter = () => {
+    if (filteredSuggestions.value.length > 0) {
+        handleSelect(filteredSuggestions.value[0])
+    }
+}
+
+// 点击搜索按钮
+const handleSearchClick = () => {
+    if (searchKeyword.value.trim() === '') {
+        return
+    }
+
+    if (filteredSuggestions.value.length > 0) {
+        handleSelect(filteredSuggestions.value[0])
+    } else {
+        // 全文搜索：搜索页面上的所有文本内容
+        performFullTextSearch(searchKeyword.value)
+    }
+}
+
+// 全文搜索功能
+const performFullTextSearch = (keyword: string) => {
+    // 获取页面上的所有文本内容
+    const pageText = document.body.innerText || document.body.textContent
+    if (!pageText) return
+
+    const searchTerm = keyword.toLowerCase()
+    const pageContent = pageText.toLowerCase()
+
+    // 检查是否包含搜索关键词
+    if (pageContent.includes(searchTerm)) {
+        // 高亮所有匹配的文本
+        highlightAllMatches(keyword)
+
+        // 滚动到第一个匹配项
+        scrollToFirstMatch()
+    } else {
+        // 如果没有找到匹配项，显示提示信息
+        Message.error(`未找到包含"${keyword}"的内容`)
+    }
+}
+
+// 高亮所有匹配的文本
+const highlightAllMatches = (keyword: string) => {
+    // 移除之前的高亮
+    removeHighlights()
+
+    // 创建高亮样式
+    const style = document.createElement('style')
+    style.textContent = `
+        .search-highlight {
+            background-color: yellow;
+            color: black;
+            padding: 2px 0;
+            border-radius: 2px;
+        }
+    `
+    document.head.appendChild(style)
+
+    // 高亮所有匹配的文本
+    const walker = document.createTreeWalker(
+        document.body,
+        NodeFilter.SHOW_TEXT,
+        {
+            acceptNode: (node) => {
+                return node.textContent?.toLowerCase().includes(keyword.toLowerCase()) ?
+                    NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT
+            }
+        }
+    )
+
+    const nodes = []
+    let node
+    while (node = walker.nextNode()) {
+        nodes.push(node)
+    }
+
+    nodes.forEach(textNode => {
+        const span = document.createElement('span')
+        span.className = 'search-highlight'
+        span.textContent = textNode.textContent
+        textNode.parentNode?.replaceChild(span, textNode)
+    })
+}
+
+// 移除所有高亮
+const removeHighlights = () => {
+    const highlights = document.querySelectorAll('.search-highlight')
+    highlights.forEach(highlight => {
+        const parent = highlight.parentNode
+        if (parent) {
+            parent.replaceChild(document.createTextNode(highlight.textContent || ''), highlight)
+        }
+    })
+}
+
+// 滚动到第一个匹配项
+const scrollToFirstMatch = () => {
+    const firstHighlight = document.querySelector('.search-highlight')
+    if (firstHighlight) {
+        firstHighlight.scrollIntoView({ behavior: 'smooth', block: 'center' })
+
+        // 添加闪烁动画效果
+        firstHighlight.animate([
+            { backgroundColor: 'yellow' },
+            { backgroundColor: 'orange' },
+            { backgroundColor: 'yellow' }
+        ], {
+            duration: 1000,
+            iterations: 3
+        })
+    }
+}
+
+// 滚动到对应的组件
+const scrollToComponent = (componentName: string) => {
+    const componentMap: Record<string, string> = {
+        '个人信息': 'basic-info',
+        '教育经历': 'education',
+        '语言水平': 'language-level',
+        '专业技能': 'skills',
+        '荣誉奖项': 'honors',
+        '证书': 'certificates',
+        '自我评价': 'self-evaluation',
+        '实习经历': 'internship-experience',
+        '项目经历': 'project-experience',
+        '校园实践': 'campus-practice',
+        '工作经历': 'work-experience',
+        '在校经历': 'school-experience',
+        '专业证书': 'bank-professional-cert',
+        '计算机技能': 'bank-computer-skills',
+        '培训经历': 'bank-training-experience',
+        '奖惩情况': 'bank-rewards-punishments',
+        '期望信息': 'bank-expectations',
+        '家庭信息': 'family-info',
+        '论文/文章': 'private-paper',
+        '竞赛经历': 'private-competition'
+    }
+
+    const elementId = componentMap[componentName]
+    if (elementId) {
+        const element = document.getElementById(elementId)
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+
+            // 添加高亮效果
+            element.classList.add('highlight-search-result')
+            setTimeout(() => {
+                element.classList.remove('highlight-search-result')
+            }, 2000)
+        }
+    }
+}
 
 // 清理组件状态
 const cleanupComponentState = () => {
@@ -1124,11 +1368,24 @@ const cleanupComponentState = () => {
     isProcessing.value = false
     cloudResume.value = null
     resumeType.value = '民企'
+    searchKeyword.value = ''
+    showSuggestions.value = false
+    filteredSuggestions.value = []
 
     // 清理文件输入
     if (fileInput.value) {
         fileInput.value.value = ''
     }
+}
+
+// 清理临时状态（保留表单数据）
+const cleanupTemporaryState = () => {
+    // 只清理临时状态，不重置表单数据
+    isProcessing.value = false
+    cloudResume.value = null
+    searchKeyword.value = ''
+    showSuggestions.value = false
+    filteredSuggestions.value = []
 }
 </script>
 
@@ -1142,11 +1399,11 @@ const cleanupComponentState = () => {
 }
 
 .btn-primary {
-    @apply px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200;
 }
 
 .btn-secondary {
-    @apply px-4 py-2 bg-gray-200 text-gray-900 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
+    @apply px-4 py-2 bg-gray-200 text-gray-900 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition duration-200;
 }
 
 .copy-btn {
@@ -1190,5 +1447,47 @@ const cleanupComponentState = () => {
 .slide-x-leave-from {
     opacity: 1;
     transform: translateX(0);
+}
+
+/* 搜索高亮效果 */
+.highlight-search-result {
+    animation: highlight-pulse 2s ease-in-out;
+    box-shadow: 0 0 0 2px #3b82f6;
+    border-radius: 8px;
+}
+
+@keyframes highlight-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+    }
+
+    50% {
+        box-shadow: 0 0 0 8px rgba(59, 130, 246, 0.3);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+    }
+}
+
+/* 搜索框样式优化 */
+.search-input {
+    @apply w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200;
+}
+
+.search-button {
+    @apply ml-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 flex items-center;
+}
+
+.search-icon {
+    @apply w-5 h-5 text-gray-400;
+}
+
+.search-suggestions {
+    @apply absolute z-10 w-80 bg-white border border-gray-200 rounded-lg shadow-lg mt-1 max-h-60 overflow-y-auto;
+}
+
+.search-suggestion-item {
+    @apply px-4 py-2 cursor-pointer hover:bg-gray-100 flex justify-between items-center;
 }
 </style>

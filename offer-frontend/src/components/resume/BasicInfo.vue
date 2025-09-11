@@ -81,7 +81,7 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">出生日期</label>
                 <div class="flex items-center space-x-2">
-                    <input v-model="resumeForm.birthday" type="date" class="input-field flex-1" />
+                    <input v-model="resumeForm.birthday" type="text" class="input-field flex-1" placeholder="例如：2004/05/30" />
                     <button @click.stop.prevent="$emit('copy-to-clipboard', resumeForm.birthday, '出生日期')"
                         class="text-blue-600 hover:text-blue-800" type="button">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
