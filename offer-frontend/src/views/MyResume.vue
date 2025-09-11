@@ -122,6 +122,11 @@
                             @add-work-experience="addWorkExperience" @remove-work-experience="removeWorkExperience"
                             @copy-to-clipboard="copyToClipboard" />
 
+                        <!-- 央国企: 家庭信息 -->
+                        <FamilyInfo v-if="resumeType === '央国企'" :resume-form="resumeForm"
+                            @add-family-info="addFamilyInfo" @remove-family-info="removeFamilyInfo"
+                            @copy-to-clipboard="copyToClipboard" />
+
                         <!-- 银行: 在校经历 -->
                         <SchoolExperience v-if="resumeType === '银行'" :resume-form="resumeForm"
                             @add-school-experience="addSchoolExperience"
