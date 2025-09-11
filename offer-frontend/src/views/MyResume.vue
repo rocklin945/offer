@@ -228,9 +228,10 @@
                 </div>
             </transition>
         </div>
+
+        <!-- 登录模态框 -->
+        <LoginModal v-if="showLoginModal" @close="showLoginModal = false" />
     </div>
-    <!-- 登录模态框 -->
-    <LoginModal v-if="showLoginModal" @close="showLoginModal = false" />
 </template>
 
 <script setup lang="ts">
