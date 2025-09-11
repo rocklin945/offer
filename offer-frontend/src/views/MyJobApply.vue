@@ -18,7 +18,7 @@
           <label class="block text-sm font-medium text-gray-700 mb-1">公司类型</label>
           <select v-model="searchForm.companyType" @change="handleSearch" class="input-field">
             <option value="">全部</option>
-            <option value="国企">国企</option>
+            <option value="央国企">央国企</option>
             <option value="外企">外企</option>
             <option value="民企">民企</option>
             <option value="合资">合资</option>
