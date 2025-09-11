@@ -35,10 +35,10 @@
                     <!-- 检索跳转功能 -->
                     <div class="ml-8 p-3 rounded-md mt-4 relative">
                         <div class="flex items-center">
-                            <div class="relative min-w-[360px]">
+                            <div class="relative min-w-[320px]">
                                 <input type="text" v-model="searchKeyword" @input="querySearch"
                                     @focus="showSuggestions = true" @blur="hideSuggestions"
-                                    @keyup.enter="handleSearchEnter" placeholder="搜索简历内容（如：个人信息、项目经历）"
+                                    @keyup.enter="handleSearchEnter" placeholder="搜索简历内容（如：项目经历、考试）"
                                     class="search-input" />
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -307,7 +307,7 @@ const searchSuggestions = [
     { value: '奖惩情况', type: '成就' },
     { value: '期望信息', type: '求职意向' },
     { value: '家庭信息', type: '个人信息' },
-    { value: '论文/文章', type: '学术成果' },
+    { value: '论文', type: '学术成果' },
     { value: '竞赛经历', type: '活动经历' }
 ]
 
@@ -1150,13 +1150,6 @@ const hideSuggestions = () => {
 
 // 回车键搜索
 const handleSearchEnter = () => {
-    if (filteredSuggestions.value.length > 0) {
-        handleSelect(filteredSuggestions.value[0])
-    }
-}
-
-// 点击搜索按钮
-const handleSearchClick = () => {
     if (searchKeyword.value.trim() === '') {
         return
     }
@@ -1169,22 +1162,62 @@ const handleSearchClick = () => {
     }
 }
 
+// 点击搜索按钮
+const handleSearchClick = () => {
+    if (searchKeyword.value.trim() === '') {
+        return
+    }
+
+    // 总是执行全文搜索，而不仅仅是在没有建议时才搜索
+    performFullTextSearch(searchKeyword.value)
+}
+
 // 全文搜索功能
 const performFullTextSearch = (keyword: string) => {
-    // 获取页面上的所有文本内容
-    const pageText = document.body.innerText || document.body.textContent
-    if (!pageText) return
+    // 移除之前的高亮
+    removeHighlights()
 
+    if (!keyword.trim()) {
+        Message.error('请输入搜索关键词')
+        return
+    }
+
+    // 获取简历内容区域的文本（排除搜索框本身）
+    const resumeContent = document.querySelector('.card.mt-4')
+    if (!resumeContent) {
+        Message.error('未找到简历内容')
+        return
+    }
+
+    const contentText = resumeContent.textContent?.toLowerCase() || ''
     const searchTerm = keyword.toLowerCase()
-    const pageContent = pageText.toLowerCase()
 
     // 检查是否包含搜索关键词
-    if (pageContent.includes(searchTerm)) {
-        // 高亮所有匹配的文本
-        highlightAllMatches(keyword)
+    if (contentText.includes(searchTerm)) {
+        // 查找所有匹配的元素
+        const matchedElements: HTMLElement[] = []
+        const allElements = resumeContent.querySelectorAll('*')
 
-        // 滚动到第一个匹配项
-        scrollToFirstMatch()
+        allElements.forEach(element => {
+            if (element.childNodes.length === 1 && element.childNodes[0].nodeType === Node.TEXT_NODE) {
+                const text = element.textContent?.toLowerCase() || ''
+                if (text.includes(searchTerm)) {
+                    matchedElements.push(element as HTMLElement)
+                }
+            }
+        })
+
+        if (matchedElements.length > 0) {
+            // 高亮所有匹配的文本
+            highlightAllMatches(keyword)
+
+            // 滚动到第一个匹配项
+            scrollToFirstMatch()
+
+            Message.success(`找到 ${matchedElements.length} 个匹配项`)
+        } else {
+            Message.error(`未找到包含"${keyword}"的内容`)
+        }
     } else {
         // 如果没有找到匹配项，显示提示信息
         Message.error(`未找到包含"${keyword}"的内容`)
@@ -1196,42 +1229,88 @@ const highlightAllMatches = (keyword: string) => {
     // 移除之前的高亮
     removeHighlights()
 
-    // 创建高亮样式
-    const style = document.createElement('style')
-    style.textContent = `
-        .search-highlight {
-            background-color: yellow;
-            color: black;
-            padding: 2px 0;
-            border-radius: 2px;
-        }
-    `
-    document.head.appendChild(style)
+    // 创建高亮样式（如果还不存在）
+    let style = document.getElementById('search-highlight-style')
+    if (!style) {
+        style = document.createElement('style')
+        style.id = 'search-highlight-style'
+        style.textContent = `
+            .search-highlight {
+                background-color: #ffeb3b;
+                color: #000;
+                padding: 2px 0;
+                border-radius: 2px;
+                font-weight: bold;
+            }
+            .search-highlight-animation {
+                animation: highlightAnimation 1s ease-in-out;
+            }
+            @keyframes highlightAnimation {
+                0% { background-color: #ffeb3b; }
+                50% { background-color: #ffc107; }
+                100% { background-color: #ffeb3b; }
+            }
+        `
+        document.head.appendChild(style)
+    }
 
-    // 高亮所有匹配的文本
+    // 获取简历内容区域
+    const resumeContent = document.querySelector('.card.mt-4')
+    if (!resumeContent) return
+
+    // 查找并高亮所有匹配的文本节点
     const walker = document.createTreeWalker(
-        document.body,
+        resumeContent,
         NodeFilter.SHOW_TEXT,
         {
             acceptNode: (node) => {
+                // 排除脚本标签和样式标签中的文本
+                if (node.parentElement?.tagName === 'SCRIPT' ||
+                    node.parentElement?.tagName === 'STYLE' ||
+                    node.parentElement?.classList.contains('search-highlight')) {
+                    return NodeFilter.FILTER_REJECT
+                }
                 return node.textContent?.toLowerCase().includes(keyword.toLowerCase()) ?
                     NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT
             }
         }
     )
 
-    const nodes = []
+    const textNodes: Text[] = []
     let node
     while (node = walker.nextNode()) {
-        nodes.push(node)
+        if (node.nodeType === Node.TEXT_NODE) {
+            textNodes.push(node as Text)
+        }
     }
 
-    nodes.forEach(textNode => {
-        const span = document.createElement('span')
-        span.className = 'search-highlight'
-        span.textContent = textNode.textContent
-        textNode.parentNode?.replaceChild(span, textNode)
-    })
+    // 反向处理节点以避免修改DOM时影响后续操作
+    for (let i = textNodes.length - 1; i >= 0; i--) {
+        const textNode = textNodes[i]
+        const text = textNode.textContent || ''
+        const lowerText = text.toLowerCase()
+        const lowerKeyword = keyword.toLowerCase()
+
+        if (lowerText.includes(lowerKeyword)) {
+            const parts = text.split(new RegExp(`(${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'))
+            const fragment = document.createDocumentFragment()
+
+            parts.forEach((part, index) => {
+                if (index % 2 === 0) {
+                    // 普通文本
+                    if (part) fragment.appendChild(document.createTextNode(part))
+                } else {
+                    // 匹配的关键词
+                    const span = document.createElement('span')
+                    span.className = 'search-highlight search-highlight-animation'
+                    span.textContent = part
+                    fragment.appendChild(span)
+                }
+            })
+
+            textNode.parentNode?.replaceChild(fragment, textNode)
+        }
+    }
 }
 
 // 移除所有高亮
@@ -1240,9 +1319,16 @@ const removeHighlights = () => {
     highlights.forEach(highlight => {
         const parent = highlight.parentNode
         if (parent) {
+            // 将高亮元素替换为其文本内容
             parent.replaceChild(document.createTextNode(highlight.textContent || ''), highlight)
         }
     })
+
+    // 合并相邻的文本节点
+    const resumeContent = document.querySelector('.card.mt-4')
+    if (resumeContent) {
+        resumeContent.normalize()
+    }
 }
 
 // 滚动到第一个匹配项
@@ -1252,14 +1338,12 @@ const scrollToFirstMatch = () => {
         firstHighlight.scrollIntoView({ behavior: 'smooth', block: 'center' })
 
         // 添加闪烁动画效果
-        firstHighlight.animate([
-            { backgroundColor: 'yellow' },
-            { backgroundColor: 'orange' },
-            { backgroundColor: 'yellow' }
-        ], {
-            duration: 1000,
-            iterations: 3
-        })
+        firstHighlight.classList.add('search-highlight-animation')
+
+        // 3秒后移除动画类
+        setTimeout(() => {
+            firstHighlight.classList.remove('search-highlight-animation')
+        }, 3000)
     }
 }
 
@@ -1284,7 +1368,7 @@ const scrollToComponent = (componentName: string) => {
         '奖惩情况': 'bank-rewards-punishments',
         '期望信息': 'bank-expectations',
         '家庭信息': 'family-info',
-        '论文/文章': 'private-paper',
+        '论文': 'private-paper',
         '竞赛经历': 'private-competition'
     }
 
