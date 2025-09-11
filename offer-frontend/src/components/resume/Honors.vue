@@ -1,9 +1,9 @@
 <template>
     <div class="mt-8">
         <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-medium text-gray-900">荣誉奖项</h3>
+            <h3 class="text-lg font-medium text-gray-900">荣誉</h3>
             <button @click="$emit('add-honor')" type="button" class="btn-secondary">
-                + 添加荣誉奖项
+                + 添加荣誉
             </button>
         </div>
         <div class="flex flex-wrap gap-2">
@@ -11,7 +11,7 @@
                 class="flex items-center bg-blue-100 rounded-full px-3 py-1">
                 <input v-model="resumeForm.honors[index]" type="text"
                     class="bg-transparent border-none focus:outline-none flex-1" />
-                <button @click.stop.prevent="$emit('copy-to-clipboard', resumeForm.honors[index], '荣誉奖项')"
+                <button @click.stop.prevent="$emit('copy-to-clipboard', resumeForm.honors[index], '荣誉')"
                     class="ml-2 text-blue-600 hover:text-blue-800" type="button">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

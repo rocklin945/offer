@@ -139,11 +139,41 @@
                 </div>
             </div>
             <div v-if="resumeType === '央国企'">
-                <label class="block text-sm font-medium text-gray-700 mb-1">户籍所在地</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">户口所在地</label>
                 <div class="flex items-center space-x-2">
-                    <input v-model="resumeForm.govRegisteredResidence" type="text" placeholder="请输入户籍所在地"
+                    <input v-model="resumeForm.govRegisteredResidence" type="text" placeholder="请输入户口所在地"
                         class="input-field flex-1" />
-                    <button @click.stop.prevent="$emit('copy-to-clipboard', resumeForm.govRegisteredResidence, '户籍所在地')"
+                    <button @click.stop.prevent="$emit('copy-to-clipboard', resumeForm.govRegisteredResidence, '户口所在地')"
+                        class="text-blue-600 hover:text-blue-800" type="button">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div v-if="resumeType === '央国企'">
+                <label class="block text-sm font-medium text-gray-700 mb-1">籍贯</label>
+                <div class="flex items-center space-x-2">
+                    <input v-model="resumeForm.govNativePlace" type="text" placeholder="请输入籍贯"
+                        class="input-field flex-1" />
+                    <button @click.stop.prevent="$emit('copy-to-clipboard', resumeForm.govNativePlace, '籍贯')"
+                        class="text-blue-600 hover:text-blue-800" type="button">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div v-if="resumeType === '央国企'">
+                <label class="block text-sm font-medium text-gray-700 mb-1">高考所在地</label>
+                <div class="flex items-center space-x-2">
+                    <input v-model="resumeForm.govGaokaoPlace" type="text" placeholder="请输入高考所在地"
+                        class="input-field flex-1" />
+                    <button @click.stop.prevent="$emit('copy-to-clipboard', resumeForm.govGaokaoPlace, '高考所在地')"
                         class="text-blue-600 hover:text-blue-800" type="button">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -199,11 +229,11 @@
                 </div>
             </div>
             <div v-if="resumeType === '央国企'">
-                <label class="block text-sm font-medium text-gray-700 mb-1">紧急联系人关系</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">紧急联系人与本人关系</label>
                 <div class="flex items-center space-x-2">
-                    <input v-model="resumeForm.govEmergencyRelation" type="text" placeholder="请输入与紧急联系人关系"
+                    <input v-model="resumeForm.govEmergencyRelation" type="text" placeholder="请输入与紧急联系人与本人关系"
                         class="input-field flex-1" />
-                    <button @click.stop.prevent="$emit('copy-to-clipboard', resumeForm.govEmergencyRelation, '紧急联系人关系')"
+                    <button @click.stop.prevent="$emit('copy-to-clipboard', resumeForm.govEmergencyRelation, '紧急联系人与本人关系')"
                         class="text-blue-600 hover:text-blue-800" type="button">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -348,11 +378,11 @@
                 </div>
             </div>
             <div v-if="resumeType === '银行'">
-                <label class="block text-sm font-medium text-gray-700 mb-1">紧急联系人关系</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">紧急联系人与本人关系</label>
                 <div class="flex items-center space-x-2">
-                    <input v-model="resumeForm.bankEmergencyRelation" type="text" placeholder="请输入与紧急联系人关系"
+                    <input v-model="resumeForm.bankEmergencyRelation" type="text" placeholder="请输入与紧急联系人与本人关系"
                         class="input-field flex-1" />
-                    <button @click.stop.prevent="$emit('copy-to-clipboard', resumeForm.bankEmergencyRelation, '紧急联系人关系')"
+                    <button @click.stop.prevent="$emit('copy-to-clipboard', resumeForm.bankEmergencyRelation, '紧急联系人与本人关系')"
                         class="text-blue-600 hover:text-blue-800" type="button">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
