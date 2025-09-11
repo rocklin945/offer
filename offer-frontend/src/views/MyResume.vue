@@ -428,9 +428,10 @@ const handleFileUpload = async (event: Event) => {
         // 调用后端接口解析PDF
         const response = await parsePdfResume(file)
 
-        if (response.statusCode === 200 && response.data) {
+        // 处理后端返回的数据结构
+        if (response.statusCode === 200) {
             // 将解析结果映射到表单中
-            mapParsedDataToForm(response.data)
+            mapParsedDataToForm(response)
             Message.success('文档解析成功，已自动填入简历信息')
         } else {
             Message.error(response.message || '文档解析失败')
@@ -451,7 +452,19 @@ const triggerFileInputClick = () => {
 };
 
 // 将解析的数据映射到表单中
-const mapParsedDataToForm = (parsedData: Record<string, string>) => {
+const mapParsedDataToForm = (parsedData: any) => {
+    // 检查返回的数据结构，根据实际后端返回格式进行处理
+    let data = parsedData;
+
+    // 如果是嵌套结构，则提取实际数据
+    if (parsedData.data && parsedData.data.data) {
+        // 三层嵌套结构 { statusCode: 200, data: { statusCode: 200, data: {...}, message: "success" }, message: "success" }
+        data = parsedData.data.data;
+    } else if (parsedData.data) {
+        // 两层嵌套结构 { statusCode: 200, data: {...}, message: "success" }
+        data = parsedData.data;
+    }
+
     // 映射字段
     const fieldMapping: Record<string, keyof ResumeAddRequest> = {
         'name': 'name',
@@ -466,12 +479,30 @@ const mapParsedDataToForm = (parsedData: Record<string, string>) => {
     }
 
     // 遍历解析的数据并填入表单
-    Object.keys(parsedData).forEach(key => {
+    Object.keys(data).forEach(key => {
         const formKey = fieldMapping[key]
         if (formKey && (resumeForm as any)[formKey] !== undefined) {
             // 只填入空字段，保留用户已填写的内容
             if (!(resumeForm as any)[formKey] || (resumeForm as any)[formKey].trim() === '') {
-                (resumeForm as any)[formKey] = parsedData[key]
+                // 处理null值，转换为默认空字符串
+                (resumeForm as any)[formKey] = data[key] || ''
+            }
+        }
+    })
+
+    // 特殊处理数组字段
+    const arrayFields: Array<keyof ResumeAddRequest> = [
+        'eduExperiences', 'privateInternship', 'govCampusPractice', 'govWorkExperience',
+        'privateProjectExperience', 'bankSchoolExperience', 'languageLevel', 'honors',
+        'certificates', 'skillLevel', 'privatePaper', 'privateCompetition', 'familyInfo',
+        'bankProfessionalCert', 'bankComputerSkills', 'bankTrainingExperience', 'bankRewardsPunishments'
+    ]
+
+    arrayFields.forEach(field => {
+        if (data[field] && Array.isArray(data[field])) {
+            // 只在当前表单字段为空时填入数据
+            if (!(resumeForm[field] && (resumeForm[field] as Array<any>).length > 0)) {
+                (resumeForm[field] as Array<any>) = data[field] || []
             }
         }
     })
