@@ -2,7 +2,7 @@
     <div class="mt-8">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-lg font-medium text-gray-900">职业资格认证</h3>
-            <button @click="$emit('add-professional-cert')" type="button" class="btn-secondary">
+            <button @click="$emit('add-bank-professional-cert')" type="button" class="btn-secondary">
                 + 添加职业资格认证
             </button>
         </div>
@@ -76,7 +76,7 @@
                     </div>
                 </div>
                 <div class="md:col-span-2 flex justify-end">
-                    <button @click="$emit('remove-professional-cert', index)" type="button"
+                    <button @click="$emit('remove-bank-professional-cert', index)" type="button"
                         class="px-3 py-1 bg-red-400 text-white rounded-md hover:bg-red-600">
                         删除
                     </button>
@@ -95,8 +95,8 @@ defineProps({
 })
 
 defineEmits([
-    'add-professional-cert',
-    'remove-professional-cert',
+    'add-bank-professional-cert',
+    'remove-bank-professional-cert',
     'copy-to-clipboard'
 ])
 </script>

@@ -2,7 +2,7 @@
     <div class="mt-8">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-lg font-medium text-gray-900">奖惩情况</h3>
-            <button @click="$emit('add-rewards-punishments')" type="button" class="btn-secondary">
+            <button @click="$emit('add-bank-reward-punishment')" type="button" class="btn-secondary">
                 + 添加奖惩情况
             </button>
         </div>
@@ -92,7 +92,7 @@
                     </div>
                 </div>
                 <div class="md:col-span-2 flex justify-end">
-                    <button @click="$emit('remove-rewards-punishments', index)" type="button"
+                    <button @click="$emit('remove-bank-reward-punishment', index)" type="button"
                         class="px-3 py-1 bg-red-400 text-white rounded-md hover:bg-red-600">
                         删除
                     </button>
@@ -111,8 +111,8 @@ defineProps({
 })
 
 defineEmits([
-    'add-rewards-punishments',
-    'remove-rewards-punishments',
+    'add-bank-reward-punishment',
+    'remove-bank-reward-punishment',
     'copy-to-clipboard'
 ])
 </script>

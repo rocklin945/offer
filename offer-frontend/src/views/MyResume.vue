@@ -892,7 +892,13 @@ const removeCertificate = (index: number) => {
 
 // 添加银行专业证书
 const addBankProfessionalCert = () => {
-    resumeForm.bankProfessionalCert?.push('')
+    resumeForm.bankProfessionalCert?.push({
+        name: '',
+        issueDate: '',
+        issuer: '',
+        score: '',
+        description: ''
+    })
 }
 
 // 删除银行专业证书
@@ -913,10 +919,12 @@ const removeBankComputerSkill = (index: number) => {
 // 添加银行培训经历
 const addBankTrainingExperience = () => {
     resumeForm.bankTrainingExperience?.push({
+        trainingName: '',
         startTime: '',
         endTime: '',
-        trainingName: '',
-        trainingDesc: ''
+        institution: '',
+        certificate: '',
+        description: ''
     })
 }
 
@@ -928,9 +936,12 @@ const removeBankTrainingExperience = (index: number) => {
 // 添加银行奖惩情况
 const addBankRewardPunishment = () => {
     resumeForm.bankRewardsPunishments?.push({
-        time: '',
-        rewardPunishment: '',
-        desc: ''
+        type: '',
+        level: '',
+        name: '',
+        date: '',
+        unit: '',
+        reason: ''
     })
 }
 
@@ -944,10 +955,12 @@ const addFamilyInfo = () => {
     resumeForm.familyInfo?.push({
         name: '',
         relation: '',
-        politicalStatus: '',
-        company: '',
-        position: '',
-        phone: ''
+        workplace: '',
+        department: '',
+        jobTitle: '',
+        age: 0,
+        phone: '',
+        foreignIdentity: false
     })
 }
 
@@ -972,11 +985,7 @@ const removePrivatePaper = (index: number) => {
 
 // 添加私企竞赛经历
 const addPrivateCompetition = () => {
-    resumeForm.privateCompetition?.push({
-        competitionName: '',
-        competitionTime: '',
-        competitionDesc: ''
-    })
+    resumeForm.privateCompetition?.push('')
 }
 
 // 删除私企竞赛经历
