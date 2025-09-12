@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 /**
  * @ClassName PayOrderPageRequest
- * @Description TODO
+ * @Description 支付订单分页查询参数
  * @Author: rocklin
  * @Date 2025/9/12 10:32
  * @Version 1.0

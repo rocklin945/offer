@@ -54,6 +54,7 @@ public final class Constants {
     public static final double ZERO_POINT_ONE = 0.1;
     public static final double ZERO_POINT_TWO = 0.2;
     public static final int TWO =2;
+    public static final String ONE_STRING ="1";
 
     /**
      * pdf
@@ -106,4 +107,17 @@ public final class Constants {
     // 符号
     public static final String AMPERSAND = "&";
     public static final String EQUAL = "=";
+
+    // URL 分隔符
+    public static final String URL_PARAM_START = "?";
+    public static final String URL_PARAM_JOIN = "&";
+
+    // 第三方订单详情接口
+    public static final String ORDER_DETAIL_URL = "https://zpayz.cn/api.php";
+    public static final String PARAM_ACT = "act=order";
+    public static final String PARAM_PID = "pid=";
+    public static final String PARAM_KEY = "key=";
+    public static final String PARAM_OUT_TRADE_NO = "out_trade_no=";
+    public static final String PARAM_TRADE_NO = "trade_no=";
+
 }

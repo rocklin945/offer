@@ -7,11 +7,14 @@ import com.rocklin.offer.common.config.PayProperties;
 import com.rocklin.offer.common.enums.ErrorCode;
 import com.rocklin.offer.common.enums.UserRoleEnum;
 import com.rocklin.offer.common.exception.Assert;
+import com.rocklin.offer.common.exception.BusinessException;
 import com.rocklin.offer.common.response.BaseResponse;
 import com.rocklin.offer.common.response.PageResponse;
+import com.rocklin.offer.common.utils.OrderParser;
 import com.rocklin.offer.model.dto.request.CreateOrderRequest;
 import com.rocklin.offer.model.dto.request.PayOrderPageRequest;
 import com.rocklin.offer.model.dto.request.PayOrderQueryRequest;
+import com.rocklin.offer.model.dto.response.OrderDetailResponse;
 import com.rocklin.offer.model.entity.PayOrder;
 import com.rocklin.offer.service.PayOrderService;
 import com.rocklin.offer.service.UserService;
@@ -20,9 +23,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -138,13 +141,49 @@ public class PayController {
      * 管理员查询第三方支付订单信息
      */
     @Operation(summary = "管理员查询第三方支付订单信息", description = "管理员查询第三方支付订单信息")
-    @GetMapping("/getOrderDetail")
+    @PostMapping("/getOrderDetail")
     @AuthCheck(enableRole = UserRoleEnum.ADMIN)
     @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 10)
-    public BaseResponse<PayOrder> adminGetOrderInfo(@RequestBody PayOrderQueryRequest req) {
+    public BaseResponse<OrderDetailResponse> adminGetOrderInfo(@RequestBody PayOrderQueryRequest req) {
         Assert.notNull(req, ErrorCode.PARAMS_ERROR, "查询参数不能为空");
-        PayOrder order = payOrderService.getOrderByOutTradeNo(req.getOutTradeNo());
-        return BaseResponse.success(order);
+        if (req.getOutTradeNo() == null && req.getTradeNo() == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "out_trade_no 或 trade_no 至少一个不能为空");
+        }
+
+        // 第三方接口参数
+        String pid = payProperties.getPid();
+        String key = payProperties.getKey();
+
+        // 拼接URL
+        StringBuilder url = new StringBuilder(ORDER_DETAIL_URL)
+                .append(URL_PARAM_START).append(PARAM_ACT)
+                .append(URL_PARAM_JOIN).append(PARAM_PID).append(pid)
+                .append(URL_PARAM_JOIN).append(PARAM_KEY).append(key);
+
+        if (req.getOutTradeNo() != null) {
+            url.append(URL_PARAM_JOIN).append(PARAM_OUT_TRADE_NO).append(req.getOutTradeNo());
+        }
+        if (req.getTradeNo() != null) {
+            url.append(URL_PARAM_JOIN).append(PARAM_TRADE_NO).append(req.getTradeNo());
+        }
+
+        try {
+            // 用 RestTemplate 调用
+            RestTemplate restTemplate = new RestTemplate();
+            String result = restTemplate.getForObject(url.toString(), String.class);
+
+            // 解析返回 JSON
+            OrderDetailResponse orderDetail = OrderParser.parse(result);
+
+            // 返回封装后的对象
+            if(ONE_STRING.equals(orderDetail.getCode())){
+                return BaseResponse.success(orderDetail);
+            }else{
+                return BaseResponse.error(666501, orderDetail.getMsg());
+            }
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.OPERATION_ERROR, "调用支付平台失败: " + e.getMessage());
+        }
     }
 
     /**

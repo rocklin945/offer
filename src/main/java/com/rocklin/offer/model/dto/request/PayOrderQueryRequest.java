@@ -4,7 +4,7 @@ import lombok.Data;
 
 /**
  * @ClassName PayOrderQueryRequest
- * @Description TODO
+ * @Description 查询支付订单参数
  * @Author: rocklin
  * @Date 2025/9/12 10:33
  * @Version 1.0
