@@ -3,13 +3,106 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.rocklin.offer.mapper.PayOrderMapper">
 
+    <!-- PayOrder 映射 -->
+    <resultMap id="PayOrderResultMap" type="com.rocklin.offer.model.entity.PayOrder">
+        <id column="id" property="id" />
+        <result column="out_trade_no" property="outTradeNo" />
+        <result column="trade_no" property="tradeNo" />
+        <result column="user_id" property="userId" />
+        <result column="name" property="name" />
+        <result column="money" property="money" jdbcType="DECIMAL" />
+        <result column="type" property="type" />
+        <result column="status" property="status" />
+        <result column="param" property="param" />
+        <result column="notify_time" property="notifyTime" jdbcType="TIMESTAMP" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <!-- 基础字段 -->
+    <sql id="Base_Column_List">
+        id, out_trade_no, trade_no, user_id, name, money, type, status, param, notify_time, create_time, update_time
+    </sql>
+
     <insert id="insert" parameterType="com.rocklin.offer.model.entity.PayOrder" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO pay_order (id, out_trade_no, trade_no, user_id, name, money, type, status, param, notify_time)
         VALUES (UUID_SHORT(), #{outTradeNo}, #{tradeNo}, #{userId}, #{name}, #{money}, #{type}, #{status}, #{param}, #{notifyTime})
     </insert>
 
-    <select id="selectByOutTradeNo" parameterType="string" resultType="com.rocklin.offer.model.entity.PayOrder">
-        SELECT * FROM pay_order WHERE out_trade_no = #{outTradeNo}
+    <select id="selectByOutTradeNo" resultMap="PayOrderResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM pay_order
+        WHERE out_trade_no = #{outTradeNo}
+    </select>
+    <select id="countByCondition" resultType="java.lang.Long">
+        select count(*) from pay_order
+        <where>
+            <if test="req.id != null">
+                and id = #{req.id}
+            </if>
+            <if test="req.outTradeNo != null and req.outTradeNo != ''">
+                and out_trade_no = #{req.outTradeNo}
+            </if>
+            <if test="req.tradeNo != null and req.tradeNo != ''">
+                and trade_no = #{req.tradeNo}
+            </if>
+            <if test="req.userId != null">
+                and user_id = #{req.userId}
+            </if>
+            <if test="req.money != null">
+                and money = #{req.money}
+            </if>
+            <if test="req.status != null">
+                and status = #{req.status}
+            </if>
+        </where>
+    </select>
+    <select id="selectByCondition" resultMap="PayOrderResultMap">
+        select <include refid="Base_Column_List"/>
+        from pay_order
+        <where>
+            <if test="req.id != null">
+                and id = #{req.id}
+            </if>
+            <if test="req.outTradeNo != null and req.outTradeNo != ''">
+                and out_trade_no = #{req.outTradeNo}
+            </if>
+            <if test="req.tradeNo != null and req.tradeNo != ''">
+                and trade_no = #{req.tradeNo}
+            </if>
+            <if test="req.userId != null">
+                and user_id = #{req.userId}
+            </if>
+            <if test="req.money != null">
+                and money = #{req.money}
+            </if>
+            <if test="req.status != null">
+                and status = #{req.status}
+            </if>
+        </where>
+        <choose>
+            <when test="req.sortField != null and req.sortField != ''">
+                ORDER BY
+                <choose>
+                    <when test="req.sortField == 'id'">id</when>
+                    <when test="req.sortField == 'outTradeNo'">out_trade_no</when>
+                    <when test="req.sortField == 'tradeNo'">trade_no</when>
+                    <when test="req.sortField == 'userId'">user_id</when>
+                    <when test="req.sortField == 'money'">money</when>
+                    <when test="req.sortField == 'status'">status</when>
+                    <when test="req.sortField == 'createTime'">create_time</when>
+                    <otherwise>create_time</otherwise>
+                </choose>
+                <choose>
+                    <when test="req.sortOrder != null and req.sortOrder.toLowerCase() == 'asc'">ASC</when>
+                    <otherwise>DESC</otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                ORDER BY create_time DESC
+            </otherwise>
+        </choose>
+        limit #{offset}, #{req.pageSize}
     </select>
 
     <update id="updateStatusAndTradeNo">

@@ -3,11 +3,14 @@ package com.rocklin.offer.service.impl;
 import com.rocklin.offer.common.enums.ErrorCode;
 import com.rocklin.offer.common.enums.UserRoleEnum;
 import com.rocklin.offer.common.exception.Assert;
+import com.rocklin.offer.common.response.PageResponse;
 import com.rocklin.offer.common.utils.OrderNoGenerator;
 import com.rocklin.offer.mapper.PayOrderMapper;
 import com.rocklin.offer.mapper.UserMapper;
 import com.rocklin.offer.mapper.WebInfoMapper;
+import com.rocklin.offer.model.dto.request.PayOrderPageRequest;
 import com.rocklin.offer.model.dto.request.UserUpdateRequest;
+import com.rocklin.offer.model.entity.Material;
 import com.rocklin.offer.model.entity.PayOrder;
 import com.rocklin.offer.model.entity.User;
 import com.rocklin.offer.model.entity.WebInfo;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -71,6 +75,14 @@ public class PayOrderServiceImpl implements PayOrderService {
     @Override
     public PayOrder getOrderByOutTradeNo(String outTradeNo) {
         return payOrderMapper.selectByOutTradeNo(outTradeNo);
+    }
+
+    @Override
+    public PageResponse<PayOrder> listPayOrderByPageWithFilter(PayOrderPageRequest req) {
+        long total = payOrderMapper.countByCondition(req);
+        int offset = (req.getPageNum() - 1) * req.getPageSize();
+        List<PayOrder> records = payOrderMapper.selectByCondition(req, offset);
+        return new PageResponse<>(records, total, req.getPageSize(), req.getPageNum());
     }
 
     private void becomeMember(Long userId, int days) {

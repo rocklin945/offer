@@ -67,4 +67,43 @@ public final class Constants {
     public static final String ORIGIN_PDF ="origin.pdf";
     public static final String USER_DIR ="user.dir";
     public static final String DOT =".";
+
+    /**
+     * 支付相关常量
+     */
+    // 支付参数
+    public static final String PID = "pid";
+    public static final String TYPE = "type";
+    public static final String OUT_TRADE_NO = "out_trade_no";
+    public static final String NOTIFY_URL = "notify_url";
+    public static final String RETURN_URL = "return_url";
+    public static final String NAME = "name";
+    public static final String MONEY = "money";
+    public static final String PARAM = "param";
+    public static final String CID = "cid";
+    public static final String SIGN = "sign";
+    public static final String SIGN_TYPE = "sign_type";
+    public static final String TRADE_NO = "trade_no";
+    public static final String TRADE_STATUS = "trade_status";
+
+    // 固定值
+    public static final String MD5 = "MD5";
+    public static final String TRADE_SUCCESS = "TRADE_SUCCESS";
+    public static final String FAIL = "fail";
+
+    // HTML 表单
+    public static final String FORM_NAME = "paying";
+    public static final String FORM_METHOD = "post";
+    public static final String FORM_SUBMIT_VALUE = "正在跳转...";
+
+    // HTML 标签模板
+    public static final String TAG_FORM_OPEN = "<form id='%s' action='%s' method='%s'>";
+    public static final String TAG_FORM_CLOSE = "</form>";
+    public static final String TAG_INPUT_HIDDEN = "<input type='hidden' name='%s' value='%s'/>";
+    public static final String TAG_INPUT_SUBMIT = "<input type='submit' value='%s'>";
+    public static final String TAG_SCRIPT_AUTO_SUBMIT = "<script>document.forms['%s'].submit();</script>";
+
+    // 符号
+    public static final String AMPERSAND = "&";
+    public static final String EQUAL = "=";
 }

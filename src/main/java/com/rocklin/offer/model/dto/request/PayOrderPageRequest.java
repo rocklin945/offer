@@ -1,0 +1,23 @@
+package com.rocklin.offer.model.dto.request;
+
+import com.rocklin.offer.common.request.PageRequest;
+import lombok.Data;
+
+import java.math.BigDecimal;
+
+/**
+ * @ClassName PayOrderPageRequest
+ * @Description TODO
+ * @Author: rocklin
+ * @Date 2025/9/12 10:32
+ * @Version 1.0
+ */
+@Data
+public class PayOrderPageRequest extends PageRequest {
+    private Long id;
+    private String outTradeNo;
+    private String tradeNo;
+    private Long userId;
+    private BigDecimal money;
+    private Integer status;
+}
