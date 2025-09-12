@@ -58,9 +58,9 @@ public class PayOrderServiceImpl implements PayOrderService {
         try {
             BigDecimal money = payOrder.getMoney();
             WebInfo webInfo = webInfoMapper.selectWebInfo();
-            if (money.compareTo(webInfo.getCurrentPrice()) >= 0) {
+            if (money.compareTo(webInfo.getCurrentPrice()) == 0) {
                 becomeMember(payOrder.getUserId(), 120);
-            }else if (money.compareTo(webInfo.getOriginalPrice()) >= 0) {
+            }else if (money.compareTo(webInfo.getOriginalPrice()) == 0) {
                 becomeMember(payOrder.getUserId(), 365);
             }else {
                 throw new Exception("金额错误");
