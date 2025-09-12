@@ -52,7 +52,12 @@
                   d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z">
                 </path>
                 <path v-else-if="item.name === 'material-management'" stroke-linecap="round" stroke-linejoin="round"
-                  stroke-width="2" d="M19 11H5a2 2 0 01-2-2V7a2 2 0 012-2h14a2 2 0 012 2v2a2 2 0 01-2 2zm0 7H5a2 2 0 01-2-2v-2a2 2 0 012-2h14a2 2 0 012 2v2a2 2 0 01-2 2z">
+                  stroke-width="2"
+                  d="M19 11H5a2 2 0 01-2-2V7a2 2 0 012-2h14a2 2 0 012 2v2a2 2 0 01-2 2zm0 7H5a2 2 0 01-2-2v-2a2 2 0 012-2h14a2 2 0 012 2v2a2 2 0 01-2 2z">
+                </path>
+                <path v-else-if="item.name === 'order-management'" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
                 </path>
               </svg>
             </div>
@@ -212,6 +217,11 @@ const menuItems = [
     name: 'material-management',
     path: '/admin/material-management',
     label: '资料管理'
+  },
+  {
+    name: 'order-management',
+    path: '/admin/order-management',
+    label: '订单管理'
   }
 ]
 

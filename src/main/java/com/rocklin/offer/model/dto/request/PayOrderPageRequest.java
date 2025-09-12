@@ -14,7 +14,7 @@ import java.math.BigDecimal;
  */
 @Data
 public class PayOrderPageRequest extends PageRequest {
-    private Long id;
+    private String id; // 改为String类型以避免大数字精度丢失
     private String outTradeNo;
     private String tradeNo;
     private Long userId;

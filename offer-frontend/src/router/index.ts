@@ -99,6 +99,12 @@ const router = createRouter({
           name: 'MaterialManagement',
           component: () => import('@/views/admin/MaterialManagement.vue'),
           meta: { title: '资料管理', icon: 'material', requiresAuth: true, requiresAdmin: true }
+        },
+        {
+          path: 'order-management',
+          name: 'OrderManagement',
+          component: () => import('@/views/admin/OrderManagement.vue'),
+          meta: { title: '订单管理', icon: 'order', requiresAuth: true, requiresAdmin: true }
         }
       ]
     }
@@ -119,8 +125,6 @@ router.beforeEach(async (to, from, next) => {
     next({ path: '/', query: {} })
     return
   }
-
-
 
   // 检查是否需要认证
   if (to.meta.requiresAuth) {
