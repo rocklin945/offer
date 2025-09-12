@@ -534,7 +534,7 @@
               <svg :class="['w-5 h-5 text-gray-500 transition-transform duration-200', faq.open ? 'rotate-180' : '']"
                 fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd"
-                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  d="M5.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
                   clip-rule="evenodd" />
               </svg>
             </button>
@@ -668,7 +668,7 @@ const selectPaymentMethod = async (method: string) => {
     // 重新获取二维码图片
     await fetchMemberImageUrl()
   } else {
-    // 支付宝支付，在当前页面内打开支付页面
+    // 支付宝支付，处理表单跳转
     try {
       const money = selectedPlan.value === 'current' ? priceInfo.value.currentPrice.toString() : priceInfo.value.originalPrice.toString()
       const response = await payApi.createOrder({
@@ -677,21 +677,25 @@ const selectPaymentMethod = async (method: string) => {
         name: selectedPlan.value === 'current' ? '秋招会员' : '校招直通会员'
       })
 
-      if (response.statusCode === 200 && response.data) {
-        // 在新窗口中打开支付宝支付页面，而不是在当前页面跳转
-        const newWindow = window.open(response.data, '_blank')
-        if (!newWindow) {
-          Message.warning('请允许弹窗以完成支付')
-        }
+      if (response) {
+        // 处理返回的HTML表单，直接在当前页面提交
+        handlePaymentForm(response)
       } else {
         Message.error('创建订单失败，请稍后重试')
       }
     } catch (error) {
       console.error('创建订单失败:', error)
-      Message.error('创建订单失败，请稍后重试')
+      Message.error('创建订单失败')
     }
   }
 }
+
+const handlePaymentForm = (htmlContent: string) => {
+  document.open()
+  document.write(htmlContent)
+  document.close()
+}
+
 
 // 关闭微信支付弹窗
 const closeWechatModal = () => {
