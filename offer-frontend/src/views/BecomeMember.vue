@@ -86,7 +86,7 @@
                   d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
                   clip-rule="evenodd"></path>
               </svg>
-              <span class="text-gray-700">无优先内推机会</span>
+              <span class="text-gray-700">笔试面试资料限制</span>
             </li>
             <li class="flex items-center">
               <svg class="w-5 h-5 text-red-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
@@ -94,7 +94,7 @@
                   d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
                   clip-rule="evenodd"></path>
               </svg>
-              <span class="text-gray-700">无投递数据分析</span>
+              <span class="text-gray-700">无优先内推机会</span>
             </li>
             <li class="flex items-center">
               <svg class="w-5 h-5 text-red-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
@@ -112,7 +112,7 @@
           </button>
         </div>
 
-        <!-- 会员版 -->
+        <!-- 秋招会员版 -->
         <div class="bg-white rounded-2xl shadow-xl border-2 border-blue-500 p-8 relative">
           <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
             <span class="bg-blue-500 text-white px-6 py-2 rounded-full text-sm font-semibold">
@@ -121,12 +121,81 @@
           </div>
 
           <div class="text-center mb-8">
-            <h3 class="text-2xl font-bold text-gray-900 mb-2">会员版</h3>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">秋招会员</h3>
             <div class="mb-4">
-              <span class="text-4xl font-bold text-gray-900">¥{{ priceInfo.originalPrice }}</span>
-              <span class="text-gray-500">/年</span>
+              <span class="text-4xl font-bold text-gray-900">¥{{ priceInfo.currentPrice }}</span>
+              <span class="text-gray-500">/120天</span>
             </div>
             <p class="text-gray-600">解锁全部功能</p>
+          </div>
+
+          <ul class="space-y-4 mb-8">
+            <li class="flex items-center">
+              <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+              <span class="text-gray-700">无限制浏览所有职位</span>
+            </li>
+            <li class="flex items-center">
+              <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+              <span class="text-gray-700">享受投递记录功能</span>
+            </li>
+            <li class="flex items-center">
+              <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+              <span class="text-gray-700">笔试面试资料无限看</span>
+            </li>
+            <li class="flex items-center">
+              <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+              <span class="text-gray-700">优先内推机会</span>
+            </li>
+            <li class="flex items-center">
+              <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+              <span class="text-gray-700">简历优化建议</span>
+            </li>
+            <li class="flex items-center">
+              <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+              <span class="text-gray-700">专属客服支持</span>
+            </li>
+          </ul>
+
+          <button @click="openPaymentModal('current')"
+            class="w-full py-3 px-6 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5">
+            成为会员
+          </button>
+        </div>
+
+        <!-- 校招直通会员 -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 relative">
+          <div class="text-center mb-8">
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">校招直通会员</h3>
+            <div class="mb-4">
+              <span class="text-4xl font-bold text-gray-900">¥{{ priceInfo.originalPrice }}</span>
+              <span class="text-gray-500">/365天</span>
+            </div>
+            <p class="text-gray-600">持续一年，校招无忧</p>
+
           </div>
 
           <ul class="space-y-4 mb-8">
@@ -179,42 +248,11 @@
               <span class="text-gray-700">专属客服支持</span>
             </li>
           </ul>
-        </div>
 
-        <!-- 扫码支付 -->
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 relative">
-          <div class="text-center mb-8">
-            <h3 class="text-2xl font-bold text-gray-900 mb-2">秋招求职季特惠¥{{ priceInfo.currentPrice }}</h3>
-            <div class="mb-4">
-              <span class="text-lg text-gray-600">入群限时享特惠</span>
-            </div>
-            <p class="text-gray-600">专业售后+就业咨询</p>
-          </div>
-
-          <div class="text-center mb-8">
-            <div class="inline-block p-4 bg-gray-100 rounded-xl">
-              <!-- 加载状态 -->
-              <div v-if="loading"
-                class="w-48 h-48 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg flex items-center justify-center border-2 border-dashed border-blue-300">
-                <div class="text-center">
-                  <div
-                    class="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-2">
-                  </div>
-                  <p class="text-blue-600 text-sm font-medium">加载中...</p>
-                </div>
-              </div>
-
-              <!-- 显示二维码图片 -->
-              <div v-else-if="imageUrl" class="w-48 h-48 rounded-lg overflow-hidden border-2 border-blue-300">
-                <img :src="imageUrl" alt="会员二维码" class="w-full h-full object-cover" @error="onImageError" />
-              </div>
-            </div>
-          </div>
-
-          <div class="bg-blue-50 rounded-xl p-4 text-center">
-            <div class="text-blue-800 font-semibold mb-1">¥{{ priceInfo.currentPrice }}/年</div>
-            <div class="text-blue-600 text-sm">享受所有会员特权</div>
-          </div>
+          <button @click="openPaymentModal('original')"
+            class="w-full py-3 px-6 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5">
+            成为会员
+          </button>
         </div>
       </div>
     </div>
@@ -514,17 +552,148 @@
         </div>
       </div>
     </div>
+
+    <!-- 支付方式选择弹窗 -->
+    <div v-if="showPaymentModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-2xl w-full max-w-md">
+        <div class="p-6">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold text-gray-900">选择支付方式</h3>
+            <button @click="closePaymentModal" class="text-gray-400 hover:text-gray-500">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+
+          <div class="mb-6">
+            <p class="text-gray-600 mb-2">支付金额：</p>
+            <p class="text-2xl font-bold text-gray-900">¥{{ selectedPrice }}</p>
+          </div>
+
+          <div class="space-y-4">
+            <button @click="selectPaymentMethod('alipay')"
+              class="w-full flex items-center p-4 border border-gray-200 rounded-xl hover:border-blue-500 hover:bg-blue-50 transition-colors">
+              <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center mr-4">
+                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.6 0 12 0zm0 22.8c-5.9 0-10.8-4.9-10.8-10.8S6.1 1.2 12 1.2s10.8 4.9 10.8 10.8-4.9 10.8-10.8 10.8z" />
+                  <path
+                    d="M15.6 10.8c0 .6-.5 1.1-1.1 1.1h-1.1v4.4c0 .6-.5 1.1-1.1 1.1s-1.1-.5-1.1-1.1v-4.4H8.9c-.6 0-1.1-.5-1.1-1.1s.5-1.1 1.1-1.1h4.4c.6 0 1.1.5 1.1 1.1z" />
+                </svg>
+              </div>
+              <div class="text-left">
+                <div class="font-semibold text-gray-900">支付宝支付</div>
+                <div class="text-sm text-gray-500">推荐使用支付宝支付</div>
+              </div>
+            </button>
+
+            <button @click="selectPaymentMethod('wxpay')"
+              class="w-full flex items-center p-4 border border-gray-200 rounded-xl hover:border-green-500 hover:bg-green-50 transition-colors">
+              <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center mr-4">
+                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.6 0 12 0zm5.9 15.6c-.2.3-.6.4-.9.2-.3-.1-.4-.5-.2-.8.7-1 1.1-2.2 1.1-3.5 0-3.9-3.1-7-7-7s-7 3.1-7 7c0 1.3.4 2.5 1.1 3.5.2.3.1.7-.2.8-.3.2-.7.1-.9-.2-1-1.3-1.6-2.9-1.6-4.6 0-4.6 3.7-8.3 8.3-8.3s8.3 3.7 8.3 8.3c0 1.7-.6 3.3-1.6 4.6z" />
+                  <path
+                    d="M12 6c-3.3 0-6 2.7-6 6s2.7 6 6 6 6-2.7 6-6-2.7-6-6-6zm0 10.8c-2.7 0-4.8-2.1-4.8-4.8s2.1-4.8 4.8-4.8 4.8 2.1 4.8 4.8-2.1 4.8-4.8 4.8z" />
+                </svg>
+              </div>
+              <div class="text-left">
+                <div class="font-semibold text-gray-900">微信支付</div>
+                <div class="text-sm text-gray-500">微信扫码支付</div>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 微信支付提示弹窗 -->
+    <div v-if="showWechatModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-2xl w-full max-w-md">
+        <div class="p-6">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold text-gray-900">微信支付</h3>
+            <button @click="closeWechatModal" class="text-gray-400 hover:text-gray-500">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+
+          <div class="text-center mb-6">
+            <div class="inline-block p-4 bg-gray-100 rounded-xl mb-4">
+              <div v-if="loading"
+                class="w-48 h-48 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg flex items-center justify-center border-2 border-dashed border-blue-300">
+                <div class="text-center">
+                  <div
+                    class="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-2">
+                  </div>
+                  <p class="text-blue-600 text-sm font-medium">加载中...</p>
+                </div>
+              </div>
+              <div v-else-if="imageUrl" class="w-48 h-48 rounded-lg overflow-hidden border-2 border-blue-300">
+                <img :src="imageUrl" alt="微信支付二维码" class="w-full h-full object-cover" @error="onImageError" />
+              </div>
+            </div>
+            <p class="text-gray-600">请用微信扫上面二维码支付</p>
+            <p class="text-gray-600 mt-2">支付完成后请联系群主确认</p>
+          </div>
+
+          <div class="bg-blue-50 rounded-xl p-4">
+            <div class="flex items-start">
+              <svg class="w-5 h-5 text-blue-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                  clip-rule="evenodd" />
+              </svg>
+              <p class="text-blue-700 text-sm">添加微信群联系群主购买，微信号：MyOfferVIP</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 恭喜成为会员动画 -->
+    <div v-if="showWelcomeAnimation"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-2xl w-full max-w-md p-8 text-center animate-bounce">
+        <div
+          class="w-24 h-24 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-6">
+          <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-900 mb-2">恭喜成为会员！</h3>
+        <p class="text-gray-600 mb-6">您已成功解锁所有会员特权</p>
+        <button @click="closeWelcomeAnimation"
+          class="py-3 px-6 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold">
+          立即体验
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { useRouter } from 'vue-router'
 import { webInfoApi } from '@/api/webInfo'
+import { payApi } from '@/api/pay'
+import Message from '@/components/Message'
 
+const router = useRouter()
 const isYearly = ref(false)
 const imageUrl = ref<string | null>(null)
 const priceInfo = ref({ originalPrice: 29.9, currentPrice: 9.9 })
 const loading = ref(true)
+
+// 支付弹窗相关
+const showPaymentModal = ref(false)
+const showWechatModal = ref(false)
+const showWelcomeAnimation = ref(false)
+const selectedPrice = ref(0)
+const selectedPlan = ref('') // 'current' 或 'original'
 
 // 获取价格信息
 const fetchPriceInfo = async () => {
@@ -592,9 +761,104 @@ const onImageError = (event: Event) => {
   // 可以在这里设置默认图片或者隐藏图片
 }
 
-// 组件挂载时获取会员图片URL
+// 打开支付方式选择弹窗
+const openPaymentModal = (plan: string) => {
+  selectedPlan.value = plan
+  selectedPrice.value = plan === 'current' ? priceInfo.value.currentPrice : priceInfo.value.originalPrice
+  showPaymentModal.value = true
+}
+
+// 关闭支付方式选择弹窗
+const closePaymentModal = () => {
+  showPaymentModal.value = false
+}
+
+// 选择支付方式
+const selectPaymentMethod = async (method: string) => {
+  closePaymentModal()
+
+  if (method === 'wxpay') {
+    // 微信支付，显示二维码
+    showWechatModal.value = true
+    // 重新获取二维码图片
+    await fetchMemberImageUrl()
+  } else {
+    // 支付宝支付，调用后端接口创建订单
+    try {
+      const money = selectedPlan.value === 'current' ? priceInfo.value.currentPrice.toString() : priceInfo.value.originalPrice.toString()
+      const response = await payApi.createOrder({
+        type: 'alipay',
+        money: money,
+        name: selectedPlan.value === 'current' ? '秋招会员' : '校招直通会员'
+      })
+
+      // 创建一个临时的form元素并提交
+      const form = document.createElement('form')
+      form.method = 'POST'
+      form.action = '/api/pay/createOrder'
+      form.target = '_blank'
+
+      const typeInput = document.createElement('input')
+      typeInput.type = 'hidden'
+      typeInput.name = 'type'
+      typeInput.value = 'alipay'
+      form.appendChild(typeInput)
+
+      const moneyInput = document.createElement('input')
+      moneyInput.type = 'hidden'
+      moneyInput.name = 'money'
+      moneyInput.value = money
+      form.appendChild(moneyInput)
+
+      const nameInput = document.createElement('input')
+      nameInput.type = 'hidden'
+      nameInput.name = 'name'
+      nameInput.value = selectedPlan.value === 'current' ? '秋招会员' : '校招直通会员'
+      form.appendChild(nameInput)
+
+      document.body.appendChild(form)
+      form.submit()
+      document.body.removeChild(form)
+    } catch (error) {
+      console.error('创建订单失败:', error)
+      Message.error('创建订单失败，请稍后重试')
+    }
+  }
+}
+
+// 关闭微信支付弹窗
+const closeWechatModal = () => {
+  showWechatModal.value = false
+}
+
+// 显示欢迎动画
+const showWelcome = () => {
+  showWelcomeAnimation.value = true
+}
+
+// 关闭欢迎动画
+const closeWelcomeAnimation = () => {
+  showWelcomeAnimation.value = false
+}
+
+// 检查URL参数，如果是支付成功跳转则显示欢迎动画
+const checkPaymentSuccess = () => {
+  const urlParams = new URLSearchParams(window.location.search)
+  const status = urlParams.get('status')
+  if (status === 'vip') {
+    showWelcome()
+  }
+}
+
+// 组件挂载时获取会员图片URL和检查支付状态
 onMounted(() => {
   fetchPriceInfo()
   fetchMemberImageUrl()
+  checkPaymentSuccess()
+})
+
+// 组件销毁前清理
+onBeforeUnmount(() => {
+  // 清理可能的定时器或其他资源
 })
 </script>

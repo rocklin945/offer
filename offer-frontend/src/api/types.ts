@@ -5,6 +5,35 @@ export interface BaseResponse<T = any> {
     data: T;
 }
 
+// 网站信息响应类型
+export interface WebInfoResponse {
+    id: number;
+    pv: number;
+    imageUrl: string;
+    userCount: number;
+    memberCount: number;
+    jobCount: number;
+    originalPrice: number;
+    currentPrice: number;
+    activity1: string;
+    activity2: string;
+    activity3: string;
+    activity4: string;
+    activity5: string;
+    activity1Time: string;
+    activity2Time: string;
+    activity3Time: string;
+    activity4Time: string;
+    activity5Time: string;
+    updateTime: string;
+}
+
+// 网站价格响应类型
+export interface WebPriceResponse {
+    originalPrice: number;
+    currentPrice: number;
+}
+
 // 简历类型
 export interface Resume {
     id: number;
