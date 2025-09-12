@@ -1,9 +1,11 @@
 <template>
     <teleport to="body">
-        <div class="modal-backdrop fixed inset-0 bg-black bg-opacity-50" style="z-index: 99999;"></div>
-        <div class="modal-container fixed inset-0 flex items-center justify-center" style="z-index: 100000;"
+        <div class="modal-backdrop fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-500 ease-out"
+            :class="isVisible ? 'opacity-100' : 'opacity-0'" style="z-index: 99999;"></div>
+        <div class="modal-container fixed inset-0 flex items-center justify-center p-4" style="z-index: 100000;"
             @click.self="close">
-            <div class="bg-white rounded-2xl w-full max-w-md">
+            <div class="bg-white rounded-2xl w-full max-w-md transform transition-all duration-500 ease-out"
+                :class="isVisible ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 -translate-y-4'">
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-xl font-bold text-gray-900">选择支付方式</h3>
@@ -62,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from 'vue'
+import { ref, defineProps, defineEmits, onMounted, nextTick } from 'vue'
 
 const props = defineProps<{
     price: number
@@ -73,11 +75,22 @@ const emit = defineEmits<{
     (e: 'selectPayment', method: string): void
 }>()
 
+const isVisible = ref(false)
+
 const close = () => {
-    emit('close')
+    isVisible.value = false
+    setTimeout(() => emit('close'), 300)
 }
 
 const selectPaymentMethod = (method: string) => {
     emit('selectPayment', method)
 }
+
+onMounted(async () => {
+    // 给一点延迟确保DOM已经渲染
+    await nextTick()
+    setTimeout(() => {
+        isVisible.value = true
+    }, 10)
+})
 </script>

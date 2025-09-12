@@ -1,10 +1,11 @@
 <template>
     <teleport to="body">
-        <div class="modal-backdrop fixed inset-0 bg-black bg-opacity-50" style="z-index: 99999;"></div>
-        <div class="modal-container fixed inset-0 flex items-center justify-center" style="z-index: 100000;"
+        <div class="modal-backdrop fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-500 ease-out"
+            :class="isVisible ? 'opacity-100' : 'opacity-0'" style="z-index: 99999;"></div>
+        <div class="modal-container fixed inset-0 flex items-center justify-center p-4" style="z-index: 100000;"
             @click.self="close">
-            <div
-                class="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-2xl w-full max-w-md p-8 text-center relative overflow-hidden shadow-xl">
+            <div class="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-2xl w-full max-w-md p-8 text-center relative overflow-hidden shadow-xl transform transition-all duration-500 ease-out"
+                :class="isVisible ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 -translate-y-4'">
                 <!-- 彩带动画 -->
                 <div class="confetti-container absolute inset-0 pointer-events-none">
                     <div v-for="i in 150" :key="i" class="confetti-piece" :style="getConfettiStyle(i)"></div>
@@ -36,14 +37,17 @@
 </template>
 
 <script setup lang="ts">
-import { defineEmits, onMounted } from 'vue'
+import { ref, defineEmits, onMounted, nextTick } from 'vue'
 
 const emit = defineEmits<{
     (e: 'close'): void
 }>()
 
+const isVisible = ref(false)
+
 const close = () => {
-    emit('close')
+    isVisible.value = false
+    setTimeout(() => emit('close'), 300)
 }
 
 // 生成彩带样式
@@ -62,9 +66,12 @@ const getConfettiStyle = (index: number) => {
     }
 }
 
-// 组件挂载时触发动画
-onMounted(() => {
-    // 可以在这里添加其他初始化逻辑
+onMounted(async () => {
+    // 给一点延迟确保DOM已经渲染
+    await nextTick()
+    setTimeout(() => {
+        isVisible.value = true
+    }, 10)
 })
 </script>
 

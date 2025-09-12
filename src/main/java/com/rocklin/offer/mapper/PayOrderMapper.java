@@ -21,4 +21,6 @@ public interface PayOrderMapper {
     long countByCondition(@Param("req") PayOrderPageRequest req);
 
     List<PayOrder> selectByCondition(@Param("req") PayOrderPageRequest req,@Param("offset") int offset);
+
+    int deleteById(Long id);
 }

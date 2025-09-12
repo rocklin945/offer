@@ -88,7 +88,7 @@
             <div v-else-if="list.length === 0" class="text-center py-12">
                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002-2h2a2 2 0 002 2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
                 <p class="mt-2 text-gray-500">暂无数据</p>
             </div>
@@ -157,7 +157,7 @@
                                 </td>
                                 <td class="px-4 py-4 text-center text-sm text-gray-500">{{ formatDate(order.createTime)
                                 }}</td>
-                                <td class="px-4 py-4 text-center">
+                                <td class="px-4 py-4 text-center flex justify-center space-x-2">
                                     <button @click="viewOrderDetail(order)"
                                         class="text-blue-500 hover:text-blue-700 p-1 rounded-full hover:bg-blue-50 transition-colors"
                                         title="查看订单详情">
@@ -167,6 +167,14 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
                                             </path>
+                                        </svg>
+                                    </button>
+                                    <button @click="deleteOrder(order)"
+                                        class="text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-50 transition-colors"
+                                        title="删除订单">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1v3M4 7h16" />
                                         </svg>
                                     </button>
                                 </td>
@@ -294,13 +302,18 @@
                 </div>
             </div>
         </teleport>
+
+        <!-- 删除确认对话框 -->
+        <Confirm v-if="showDeleteConfirm" :title="'删除订单'" :message="`确定要删除订单 ${orderToDelete?.outTradeNo} 吗？此操作不可恢复。`"
+            type="danger" @confirm="confirmDeleteOrder" @cancel="cancelDeleteOrder" />
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { adminGetOrderInfo, adminGetOrderDetail, type PayOrder, type PageResponse, type PayOrderPageRequest, type OrderDetailResponse } from '@/api/payOrder'
+import { adminGetOrderInfo, adminGetOrderDetail, adminDeleteOrder, type PayOrder, type PageResponse, type PayOrderPageRequest, type OrderDetailResponse } from '@/api/payOrder'
 import Message from '@/components/Message'
+import Confirm from '@/components/Confirm/Confirm.vue'
 
 // 列表与查询
 const list = ref<PayOrder[]>([])
@@ -310,6 +323,7 @@ const total = ref(0)
 const currentPage = ref(1)
 const pageSize = ref(10)
 const totalPages = computed(() => Math.max(1, Math.ceil(total.value / pageSize.value)))
+const jumpPage = ref('')
 
 const query = ref<PayOrderPageRequest>({
     pageNum: 1,
@@ -439,6 +453,45 @@ const viewOrderDetail = async (order: PayOrder) => {
         console.error('获取订单详情失败', e)
         orderDetailMsg.value = e.message || '获取订单详情失败'
     }
+}
+
+// 删除订单相关状态
+const showDeleteConfirm = ref(false)
+const orderToDelete = ref<PayOrder | null>(null)
+
+// 删除订单
+const deleteOrder = (order: PayOrder) => {
+    orderToDelete.value = order
+    showDeleteConfirm.value = true
+}
+
+// 确认删除订单
+const confirmDeleteOrder = async () => {
+    if (!orderToDelete.value) return
+
+    showDeleteConfirm.value = false
+
+    try {
+        const result = await adminDeleteOrder({ id: orderToDelete.value.id })
+        if (result) {
+            Message.success('订单删除成功')
+            // 重新加载列表
+            await fetchList()
+        } else {
+            Message.error('订单删除失败')
+        }
+    } catch (e: any) {
+        console.error('删除订单失败', e)
+        Message.error(e.message || '订单删除失败')
+    } finally {
+        orderToDelete.value = null
+    }
+}
+
+// 取消删除订单
+const cancelDeleteOrder = () => {
+    showDeleteConfirm.value = false
+    orderToDelete.value = null
 }
 
 onMounted(async () => {

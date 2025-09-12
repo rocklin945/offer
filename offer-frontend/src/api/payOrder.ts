@@ -1,4 +1,5 @@
 import request from './request'
+import type { DeleteRequest } from './types'
 
 export interface PayOrder {
     id: number
@@ -67,4 +68,9 @@ export function adminGetOrderInfo(params: PayOrderPageRequest): Promise<PageResp
 // 管理员查询第三方支付订单信息
 export function adminGetOrderDetail(params: PayOrderQueryRequest): Promise<OrderDetailResponse> {
     return request.post('/pay/getOrderDetail', params).then(res => res.data.data)
+}
+
+// 管理员删除订单信息
+export function adminDeleteOrder(data: DeleteRequest): Promise<boolean> {
+    return request.post('/pay/deleteOrder', data).then(res => res.data.data)
 }

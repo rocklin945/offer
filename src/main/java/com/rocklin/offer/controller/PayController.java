@@ -8,6 +8,7 @@ import com.rocklin.offer.common.enums.ErrorCode;
 import com.rocklin.offer.common.enums.UserRoleEnum;
 import com.rocklin.offer.common.exception.Assert;
 import com.rocklin.offer.common.exception.BusinessException;
+import com.rocklin.offer.common.request.DeleteRequest;
 import com.rocklin.offer.common.response.BaseResponse;
 import com.rocklin.offer.common.response.PageResponse;
 import com.rocklin.offer.common.utils.OrderParser;
@@ -184,6 +185,19 @@ public class PayController {
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "调用支付平台失败: " + e.getMessage());
         }
+    }
+
+    /**
+     * 管理员删除订单信息
+     */
+    @Operation(summary = "管理员删除订单信息", description = "管理员删除订单信息")
+    @PostMapping("/deleteOrder")
+    @AuthCheck(enableRole = UserRoleEnum.ADMIN)
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 10)
+    public BaseResponse<Boolean> deleteOrder(@RequestBody DeleteRequest req) {
+        Assert.notNull(req, ErrorCode.PARAMS_ERROR, "查询参数不能为空");
+        boolean result = payOrderService.deleteOrder(req.getId());
+        return BaseResponse.success(result);
     }
 
     /**

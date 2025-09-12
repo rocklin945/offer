@@ -73,16 +73,16 @@ public class PayOrderServiceImpl implements PayOrderService {
     }
 
     @Override
-    public PayOrder getOrderByOutTradeNo(String outTradeNo) {
-        return payOrderMapper.selectByOutTradeNo(outTradeNo);
-    }
-
-    @Override
     public PageResponse<PayOrder> listPayOrderByPageWithFilter(PayOrderPageRequest req) {
         long total = payOrderMapper.countByCondition(req);
         int offset = (req.getPageNum() - 1) * req.getPageSize();
         List<PayOrder> records = payOrderMapper.selectByCondition(req, offset);
         return new PageResponse<>(records, total, req.getPageSize(), req.getPageNum());
+    }
+
+    @Override
+    public boolean deleteOrder(Long id) {
+        return payOrderMapper.deleteById(id) > 0;
     }
 
     private void becomeMember(Long userId, int days) {

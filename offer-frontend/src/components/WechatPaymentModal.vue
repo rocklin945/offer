@@ -1,9 +1,11 @@
 <template>
     <teleport to="body">
-        <div class="modal-backdrop fixed inset-0 bg-black bg-opacity-50" style="z-index: 99999;"></div>
-        <div class="modal-container fixed inset-0 flex items-center justify-center" style="z-index: 100000;"
+        <div class="modal-backdrop fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-500 ease-out"
+            :class="isVisible ? 'opacity-100' : 'opacity-0'" style="z-index: 99999;"></div>
+        <div class="modal-container fixed inset-0 flex items-center justify-center p-4" style="z-index: 100000;"
             @click.self="close">
-            <div class="bg-white rounded-2xl w-full max-w-md">
+            <div class="bg-white rounded-2xl w-full max-w-md transform transition-all duration-500 ease-out"
+                :class="isVisible ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 -translate-y-4'">
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-xl font-bold text-gray-900">微信支付</h3>
@@ -32,19 +34,19 @@
                                     @error="onImageError" />
                             </div>
                         </div>
-                        <p class="text-gray-600">请用微信扫上面二维码支付</p>
-                        <p class="text-gray-600 mt-2">支付完成后请联系群主确认</p>
+                        <p class="text-gray-600">微信扫码进群</p>
+                        <p class="text-gray-600 mt-2">专业售后+就业咨询</p>
                     </div>
 
                     <div class="bg-blue-50 rounded-xl p-4">
                         <div class="flex items-start">
-                            <svg class="w-5 h-5 text-blue-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor"
+                            <svg class="w-5 h-5 text-blue-500 mt-0 mr-2 flex-shrink-0" fill="currentColor"
                                 viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
                                     d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
                                     clip-rule="evenodd" />
                             </svg>
-                            <p class="text-blue-700 text-sm">添加微信群联系群主购买，微信号：MyOfferVIP</p>
+                            <p class="text-blue-700 text-sm">添加微信群联系群主购买，群聊每天更新内推信息</p>
                         </div>
                     </div>
                 </div>
@@ -54,7 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from 'vue'
+import { ref, defineProps, defineEmits, onMounted, nextTick } from 'vue'
 
 const props = defineProps<{
     imageUrl: string | null,
@@ -65,11 +67,22 @@ const emit = defineEmits<{
     (e: 'close'): void
 }>()
 
+const isVisible = ref(false)
+
 const close = () => {
-    emit('close')
+    isVisible.value = false
+    setTimeout(() => emit('close'), 300)
 }
 
 const onImageError = (event: Event) => {
     console.warn('二维码图片加载失败')
 }
+
+onMounted(async () => {
+    // 给一点延迟确保DOM已经渲染
+    await nextTick()
+    setTimeout(() => {
+        isVisible.value = true
+    }, 10)
+})
 </script>

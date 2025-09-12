@@ -28,6 +28,10 @@
         INSERT INTO pay_order (id, out_trade_no, trade_no, user_id, name, money, type, status, param, notify_time)
         VALUES (UUID_SHORT(), #{outTradeNo}, #{tradeNo}, #{userId}, #{name}, #{money}, #{type}, #{status}, #{param}, #{notifyTime})
     </insert>
+    <delete id="deleteById">
+        DELETE FROM pay_order
+        WHERE id = #{id}
+    </delete>
 
     <select id="selectByOutTradeNo" resultMap="PayOrderResultMap">
         SELECT <include refid="Base_Column_List"/>
