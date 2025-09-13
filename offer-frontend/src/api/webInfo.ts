@@ -16,8 +16,14 @@ export function getPrice(): Promise<BaseResponse<WebPriceResponse>> {
     return request.get('/webInfo/price').then(res => res.data)
 }
 
+// 获取佣金比例
+export function getCommissionRate(): Promise<BaseResponse<string>> {
+    return request.get('/webInfo/commission-rate').then(res => res.data)
+}
+
 export const webInfoApi = {
     getWebInfo,
     getMemberImageUrl,
-    getPrice
+    getPrice,
+    getCommissionRate
 }

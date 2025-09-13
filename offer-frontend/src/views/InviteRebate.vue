@@ -26,7 +26,7 @@
                 class="px-6 py-3 border border-yellow-300 text-yellow-800 bg-yellow-300 rounded-lg hover:bg-yellow-400 transition-colors flex items-center">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z">
+                    d="M17 9V7a2 2 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
                   </path>
                 </svg>
                 提现
@@ -91,7 +91,8 @@
               </svg>
             </div>
             <div>
-              <div class="text-3xl font-bold text-gray-900">20%</div>
+              <div class="text-3xl font-bold text-gray-900">{{ commissionRate }}%
+              </div>
               <div class="text-gray-600">佣金比例</div>
             </div>
           </div>
@@ -106,7 +107,7 @@
               <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-3">
                 <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6.632l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z">
+                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6.632l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 0V5a3 3 0 012-2h2a3 3 0 012 2v14a3 3 0 01-2 2h-2a3 3 0 01-2-2z">
                   </path>
                 </svg>
               </div>
@@ -147,7 +148,7 @@
                 </svg>
               </div>
               <h3 class="text-lg font-semibold text-gray-900 mb-1">4. 返佣</h3>
-              <p class="text-gray-600 text-sm">获得20%返佣</p>
+              <p class="text-gray-600 text-sm">获得{{ commissionRate !== '' ? commissionRate : '...' }}%返佣</p>
             </div>
           </div>
         </div>
@@ -189,13 +190,10 @@
       </div>
     </div>
     <!-- 弹窗：兑换会员 -->
-    <RedeemMemberModal v-if="showRedeemModal" 
-      :available-commission="commissionData.balanceCommission"
-      @close="showRedeemModal = false" 
-      @confirm="handleRedeemConfirm" />
+    <RedeemMemberModal v-if="showRedeemModal" :available-commission="commissionData.balanceCommission"
+      @close="showRedeemModal = false" @confirm="handleRedeemConfirm" />
     <!-- 弹窗：提现 -->
-    <WithdrawCashModal v-if="showWithdrawModal" 
-      @close="showWithdrawModal = false" />
+    <WithdrawCashModal v-if="showWithdrawModal" @close="showWithdrawModal = false" />
   </div>
 </template>
 
@@ -205,6 +203,7 @@ import { useUserStore } from '@/stores/user'
 import { Message } from '@/components/Message'
 import { getInviteCommission } from '@/api/invite'
 import { inviteCommissionApi } from '@/api/inviteCommission'
+import { getCommissionRate } from '@/api/webInfo'
 import RedeemMemberModal from '@/components/RedeemMemberModal.vue'
 import WithdrawCashModal from '@/components/WithdrawCashModal.vue'
 
@@ -260,6 +259,9 @@ const commissionData = reactive({
   totalCommission: 0,
   balanceCommission: 0
 })
+
+// 添加佣金比例响应式变量
+const commissionRate = ref('') // 移除默认值，初始为空字符串
 
 // 生成邀请链接
 const inviteLink = computed(() => {
@@ -321,7 +323,23 @@ onMounted(async () => {
     await userStore.initUserInfo()
   }
   await loadCommissionData()
+  await loadCommissionRate() // 加载佣金比例
 })
+
+// 添加加载佣金比例的函数
+const loadCommissionRate = async () => {
+  try {
+    const response = await getCommissionRate()
+    if (response.statusCode === 200 && response.data) {
+      // 将返回的0.15转换为15
+      const rate = parseFloat(response.data) * 100
+      commissionRate.value = rate.toString()
+    }
+  } catch (error) {
+    console.error('加载佣金比例失败:', error)
+    Message.error('加载佣金比例失败')
+  }
+}
 
 // 组件卸载时清理状态
 onUnmounted(() => {
