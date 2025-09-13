@@ -39,4 +39,9 @@ public interface WebInfoService {
      * @return 价格信息
      */
     WebPriceResponse getPrice();
+
+    /**
+     * 获取佣金比例（公开接口）
+     */
+    String getCommissionRate();
 }

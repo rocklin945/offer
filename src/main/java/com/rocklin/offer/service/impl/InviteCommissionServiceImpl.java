@@ -151,7 +151,7 @@ public class InviteCommissionServiceImpl implements InviteCommissionService {
 
         // 增加待结算佣金
         WebInfo webInfo = webInfoMapper.selectWebInfo();
-        String commission = String.valueOf(webInfo.getCurrentPrice().multiply(BigDecimal.valueOf(ZERO_POINT_TWO)));
+        String commission = String.valueOf(webInfo.getCurrentPrice().multiply(webInfo.getCommissionRate()));
         increasePendingCommission(commission, inviter);
     }
 
@@ -168,7 +168,8 @@ public class InviteCommissionServiceImpl implements InviteCommissionService {
         if (inviter == null) return;
 
         // 增加待结算佣金
-        String commission = String.valueOf(price.multiply(BigDecimal.valueOf(ZERO_POINT_TWO)));
+        WebInfo webInfo = webInfoMapper.selectWebInfo();
+        String commission = String.valueOf(price.multiply(webInfo.getCommissionRate()));
         increasePendingCommission(commission, inviter);
     }
 

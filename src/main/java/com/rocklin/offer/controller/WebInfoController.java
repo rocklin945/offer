@@ -35,7 +35,7 @@ public class WebInfoController {
     @Operation(summary = "获取网站信息", description = "获取网站概览信息")
     @GetMapping("/get")
     @AuthCheck(enableRole = UserRoleEnum.ADMIN)
-    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 3)
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 10)
     public BaseResponse<WebInfoResponse> getWebInfo() {
         WebInfoResponse webInfo = webInfoService.getWebInfo();
         return BaseResponse.success(webInfo);
@@ -46,7 +46,7 @@ public class WebInfoController {
      */
     @Operation(summary = "获取会员图片URL", description = "获取会员二维码图片URL，无需管理员权限")
     @GetMapping("/member-image")
-    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 3)
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 10)
     public BaseResponse<String> getMemberImageUrl() {
         String imageUrl = webInfoService.getMemberImageUrl();
         return BaseResponse.success(imageUrl);
@@ -57,9 +57,20 @@ public class WebInfoController {
      */
     @Operation(summary = "获取价格", description = "获取价格，无需管理员权限")
     @GetMapping("/price")
-    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 3)
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 10)
     public BaseResponse<WebPriceResponse> getPrice() {
         WebPriceResponse price = webInfoService.getPrice();
+        return BaseResponse.success(price);
+    }
+
+    /**
+     * 获取佣金比例
+     */
+    @Operation(summary = "获取佣金比例", description = "获取佣金比例，无需管理员权限")
+    @GetMapping("/commission-rate")
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 10)
+    public BaseResponse<String> getCommissionRate() {
+        String price = webInfoService.getCommissionRate();
         return BaseResponse.success(price);
     }
 }

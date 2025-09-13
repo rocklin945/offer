@@ -13,6 +13,7 @@
         <result property="jobCount" column="job_count"/>
         <result property="originalPrice" column="original_price"/>
         <result property="currentPrice" column="current_price"/>
+        <result property="commissionRate" column="commission_rate"/>
         <result property="activity1" column="activity1"/>
         <result property="activity1Time" column="activity1_time"/>
         <result property="activity2" column="activity2"/>
@@ -28,7 +29,7 @@
 
     <!-- 基础字段 -->
     <sql id="Base_Column_List">
-        id, pv, image_url, user_count, job_count, original_price, current_price,
+        id, pv, image_url, user_count, job_count, original_price, current_price,commission_rate,
         activity1, activity2, activity3, activity4,activity5,
         activity1_time,activity2_time,activity3_time,activity4_time,activity5_time,update_time
     </sql>

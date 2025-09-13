@@ -99,4 +99,11 @@ public class WebInfoServiceImpl implements WebInfoService {
         resp.setCurrentPrice(webInfo.getCurrentPrice());
         return resp;
     }
+
+    @Override
+    public String getCommissionRate() {
+        WebInfo webInfo = webInfoMapper.selectWebInfo();
+        Assert.notNull(webInfo, ErrorCode.NOT_FOUND, "网站信息不存在");
+        return String.valueOf(webInfo.getCommissionRate());
+    }
 }

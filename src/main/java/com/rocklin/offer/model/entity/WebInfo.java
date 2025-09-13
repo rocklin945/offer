@@ -58,6 +58,11 @@ public class WebInfo implements Serializable {
     private BigDecimal currentPrice;
 
     /**
+     * 佣金比例
+     */
+    private BigDecimal commissionRate;
+
+    /**
      * 最近活动1
      */
     private String activity1;
