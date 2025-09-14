@@ -7,10 +7,9 @@ import com.rocklin.offer.common.enums.UserRoleEnum;
 import com.rocklin.offer.common.exception.Assert;
 import com.rocklin.offer.common.response.BaseResponse;
 import com.rocklin.offer.common.response.PageResponse;
-import com.rocklin.offer.model.dto.request.UserLoginRequest;
-import com.rocklin.offer.model.dto.request.UserPageQueryRequest;
-import com.rocklin.offer.model.dto.request.UserRegisterRequest;
-import com.rocklin.offer.model.dto.request.UserUpdateRequest;
+import com.rocklin.offer.common.utils.EncryptPasswordUtil;
+import com.rocklin.offer.mapper.UserMapper;
+import com.rocklin.offer.model.dto.request.*;
 import com.rocklin.offer.model.dto.response.UserLoginResponse;
 import com.rocklin.offer.model.entity.User;
 import com.rocklin.offer.service.UserService;
@@ -38,6 +37,8 @@ import static com.rocklin.offer.common.constants.Constants.USER_ID;
 public class UserController {
 
     private final UserService userService;
+    private final UserMapper userMapper;
+    private final EncryptPasswordUtil encryptPasswordUtil;
 
     /**
      * 注册
@@ -86,6 +87,25 @@ public class UserController {
     public BaseResponse<Void> logout(@RequestAttribute(USER_ID) String userId) {
         Assert.notNull(userId, ErrorCode.PARAMS_ERROR, "用户ID不能为空");
         userService.logout(Long.valueOf(userId));
+        return BaseResponse.success();
+    }
+
+    /**
+     * 用户修改信息
+     */
+    @Operation(summary = "用户修改信息", description = "用户修改信息")
+    @PostMapping("/update-user")
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 3)
+    public BaseResponse<Boolean> updateUserInfo(@RequestBody @Validated UserUpdateInfoRequest req) {
+        Assert.notNull(req, ErrorCode.PARAMS_ERROR, "用户更新数据不能为空");
+        User userById = userService.getUserById(req.getId());
+        Assert.notNull(userById, ErrorCode.OPERATION_ERROR, "用户不存在");
+        User userQuery = userMapper.query(req.getUserAccount());
+        Assert.isNull(userQuery, ErrorCode.OPERATION_ERROR, "用户名已存在");
+        Assert.isTrue(userById.getUserAccount().equals(req.getOldUserAccount())
+                && userById.getUserPassword().equals(encryptPasswordUtil.getEncryptPassword(req.getOldUserPassword())),
+                ErrorCode.OPERATION_ERROR, "用户旧账号或密码错误");
+        userService.updateUserInfo(req);
         return BaseResponse.success();
     }
 

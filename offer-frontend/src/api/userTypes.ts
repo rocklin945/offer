@@ -53,3 +53,13 @@ export interface UserPageQueryRequest {
   sortField?: string
   sortOrder?: string
 }
+
+// 用户修改信息请求
+export interface UserUpdateInfoRequest {
+  id: number
+  oldUserAccount: string
+  oldUserPassword: string
+  userAccount: string
+  userPassword: string
+  userProfile: string
+}

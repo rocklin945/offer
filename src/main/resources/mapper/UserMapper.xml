@@ -66,6 +66,19 @@
             member_expire_time = #{memberExpireTime}
         where id = #{id}
     </update>
+    <update id="updateUserInfo">
+        update user set
+        <if test="userAccount != null">
+            user_account = #{userAccount},
+        </if>
+        <if test="userProfile != null">
+            user_profile = #{userProfile},
+        </if>
+        <if test="userPassword != null">
+            user_password = #{userPassword}
+        </if>
+        where id = #{id}
+    </update>
 
     <delete id="deleteById">
         delete from user where id = #{id}

@@ -11,10 +11,7 @@ import com.rocklin.offer.common.utils.IpUtil;
 import com.rocklin.offer.common.utils.JwtUtils;
 import com.rocklin.offer.mapper.UserMapper;
 import com.rocklin.offer.mapper.WebInfoMapper;
-import com.rocklin.offer.model.dto.request.UserLoginRequest;
-import com.rocklin.offer.model.dto.request.UserPageQueryRequest;
-import com.rocklin.offer.model.dto.request.UserRegisterRequest;
-import com.rocklin.offer.model.dto.request.UserUpdateRequest;
+import com.rocklin.offer.model.dto.request.*;
 import com.rocklin.offer.model.dto.response.UserLoginResponse;
 import com.rocklin.offer.model.entity.User;
 import com.rocklin.offer.model.entity.WebInfo;
@@ -182,6 +179,15 @@ public class UserServiceImpl implements UserService {
                 .getRequestAttributes().resolveReference(REFERENCE_REQUEST));
         // 从请求属性中获取用户ID
         return (String) request.getAttribute(USER_ID);
+    }
+
+    @Override
+    public void updateUserInfo(UserUpdateInfoRequest req) {
+        if (req.getUserPassword() != null) {
+            req.setUserPassword(encryptPasswordUtil.getEncryptPassword(req.getUserPassword()));
+        }
+        Long result = userMapper.updateUserInfo(req);
+        Assert.isTrue(result > 0, ErrorCode.OPERATION_ERROR, "数据库异常，用户更新失败");
     }
 
     @Override

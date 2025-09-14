@@ -1,6 +1,6 @@
 import request from './request'
 import type { BaseResponse } from './types'
-import type { UserLoginRequest, UserLoginResponse, UserPageQueryRequest, UserUpdateRequest, UserRegisterRequest } from '@/api/userTypes'
+import type { UserLoginRequest, UserLoginResponse, UserPageQueryRequest, UserUpdateRequest, UserRegisterRequest, UserUpdateInfoRequest } from '@/api/userTypes'
 
 // 用户登录
 export function login(data: UserLoginRequest): Promise<BaseResponse<UserLoginResponse>> {
@@ -44,4 +44,9 @@ export function updateUser(data: UserUpdateRequest, price?: string): Promise<Bas
 // 管理员接口：分页获取用户列表
 export function listUserByPage(data: UserPageQueryRequest): Promise<BaseResponse<any>> {
   return request.post('/user/list/page', data).then(res => res.data)
+}
+
+// 用户修改信息
+export function updateUserInfo(data: UserUpdateInfoRequest): Promise<BaseResponse<boolean>> {
+  return request.post('/user/update-user', data).then(res => res.data)
 }

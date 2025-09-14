@@ -1,6 +1,7 @@
 package com.rocklin.offer.mapper;
 
 import com.rocklin.offer.model.dto.request.UserPageQueryRequest;
+import com.rocklin.offer.model.dto.request.UserUpdateInfoRequest;
 import com.rocklin.offer.model.dto.request.UserUpdateRequest;
 import com.rocklin.offer.model.entity.User;
 import org.apache.ibatis.annotations.Mapper;
@@ -45,4 +46,6 @@ public interface UserMapper {
      * 根据邀请码查询用户
      */
     User selectByInviteCode(@Param("inviteCode") String inviteCode);
+
+    Long updateUserInfo(UserUpdateInfoRequest req);
 }

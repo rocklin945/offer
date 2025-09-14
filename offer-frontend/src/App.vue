@@ -110,7 +110,7 @@
             </div>
             <!-- 已登录状态 -->
             <div v-if="userStore.currentUser" class="hidden sm:flex items-center space-x-4">
-              <div class="flex items-center space-x-2">
+              <div class="flex items-center space-x-2" @click="showUserProfileModal = true" style="cursor: pointer;">
                 <!-- 用户身份标识 -->
                 <span v-if="userStore.currentUser.userRole === 0"
                   class="text-xs px-2 py-1 bg-red-100 text-red-700 rounded-full font-medium">
@@ -173,6 +173,14 @@
       <!-- 首页弹窗 -->
       <HomeModal v-if="showHomeModal" @close="closeHomeModal" />
 
+      <!-- 用户信息弹窗 -->
+      <UserProfileModal v-if="showUserProfileModal" @close="showUserProfileModal = false"
+        @open-edit="openEditUserModal" />
+
+      <!-- 修改用户信息弹窗 -->
+      <EditUserModal v-if="showEditUserModal" :user-info="userStore.currentUser" @close="showEditUserModal = false"
+        @success="handleUserUpdateSuccess" />
+
       <!-- 全局页脚 -->
       <footer class="bg-white border-t border-gray-200">
         <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -191,12 +199,16 @@ import { useRoute } from 'vue-router'
 import { useUserStore } from './stores/user'
 import LoginModal from './components/LoginModal.vue'
 import HomeModal from './components/HomeModal.vue'
+import UserProfileModal from './components/UserProfileModal.vue'
+import EditUserModal from './components/EditUserModal.vue'
 
 const route = useRoute()
 const userStore = useUserStore()
 const showLoginModal = ref(false)
 const showMobileMenu = ref(false)
 const showHomeModal = ref(false)
+const showUserProfileModal = ref(false)
+const showEditUserModal = ref(false)
 
 // 判断是否为管理页面路由
 const isAdminRoute = computed(() => {
@@ -289,6 +301,18 @@ const checkShowHomeModal = () => {
 // 关闭弹窗的处理函数
 const closeHomeModal = () => {
   showHomeModal.value = false
+}
+
+// 打开编辑用户信息弹窗
+const openEditUserModal = () => {
+  showEditUserModal.value = true
+}
+
+// 处理用户信息更新成功
+const handleUserUpdateSuccess = () => {
+  showEditUserModal.value = false
+  // 重新获取用户信息
+  userStore.initUserInfo()
 }
 
 // 监听路由变化并强制刷新

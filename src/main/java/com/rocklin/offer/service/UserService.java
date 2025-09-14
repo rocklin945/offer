@@ -2,10 +2,7 @@ package com.rocklin.offer.service;
 
 
 import com.rocklin.offer.common.response.PageResponse;
-import com.rocklin.offer.model.dto.request.UserLoginRequest;
-import com.rocklin.offer.model.dto.request.UserPageQueryRequest;
-import com.rocklin.offer.model.dto.request.UserRegisterRequest;
-import com.rocklin.offer.model.dto.request.UserUpdateRequest;
+import com.rocklin.offer.model.dto.request.*;
 import com.rocklin.offer.model.dto.response.UserLoginResponse;
 import com.rocklin.offer.model.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,4 +37,6 @@ public interface UserService {
     PageResponse<UserLoginResponse> listUserByPageWithFilter(UserPageQueryRequest request);
 
     String getUserIdFromRequest();
+
+    void updateUserInfo(UserUpdateInfoRequest req);
 }
