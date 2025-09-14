@@ -64,7 +64,7 @@ public class PageAccessLimitAspect {
 
         // 已登录用户
         token = token.substring(TOKEN_START_INDEX);
-        String userIdStr = jwtUtils.getUserIdFromToken(token);
+        String userIdStr = jwtUtils.validateAndGetUserId(token);
         if (userIdStr == null) {
             throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
         }

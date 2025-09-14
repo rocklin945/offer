@@ -119,4 +119,8 @@ public final class Constants {
     public static final String PARAM_OUT_TRADE_NO = "out_trade_no=";
     public static final String PARAM_TRADE_NO = "trade_no=";
 
+    /**
+     * 单点登录
+     */
+    public static final String LOGIN_TOKEN_KEY_PREFIX ="LOGIN:TOKEN:";
 }

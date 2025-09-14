@@ -23,12 +23,14 @@ import com.rocklin.offer.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.rocklin.offer.common.constants.Constants.*;
@@ -49,6 +51,7 @@ public class UserServiceImpl implements UserService {
     private final EncryptPasswordUtil encryptPasswordUtil;
     private final WebInfoMapper webInfoMapper;
     private final InviteCommissionService commissionService;
+    private final StringRedisTemplate redisTemplate;
 
     @Override
     public Long register(UserRegisterRequest req, HttpServletRequest httpServletRequest) {
@@ -105,6 +108,12 @@ public class UserServiceImpl implements UserService {
 
         // 生成JWT token
         String token = jwtUtils.generateToken(queryUser.getId().toString(), queryUser.getUserAccount());
+        // 解析出jti
+        String jti = jwtUtils.getJtiFromToken(token);
+
+        // 3. 存入 Redis，key=用户ID，value=最新的 jti
+        long expireSeconds = jwtUtils.getExpireSeconds(); // JWT 的过期时间
+        redisTemplate.opsForValue().set(LOGIN_TOKEN_KEY_PREFIX + queryUser.getId(), jti, expireSeconds, TimeUnit.SECONDS);
 
         // 构建响应对象
         UserLoginResponse response = buildUserResponse(queryUser);

@@ -75,7 +75,7 @@ public class MemberCheckAspect {
      */
     private Object handleLoggedInUser(HttpServletRequest request, ProceedingJoinPoint joinPoint, MemberCheck memberCheck, String token) throws Throwable {
         token = token.substring(TOKEN_START_INDEX);
-        String userIdStr = jwtUtils.getUserIdFromToken(token);
+        String userIdStr = jwtUtils.validateAndGetUserId(token);
         if (userIdStr == null) {
             throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
         }
