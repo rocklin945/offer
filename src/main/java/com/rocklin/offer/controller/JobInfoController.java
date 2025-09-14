@@ -81,7 +81,7 @@ public class JobInfoController {
     @Operation(summary = "获取招聘信息列表", description = "分页查询招聘信息列表")
     @PostMapping("/list")
     @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 10)
-    @MemberCheck(maxPage = 5, maxPageSize = 10, message = "普通用户免费查看前5页，成为会员查看所有")
+    @MemberCheck(maxPage = 2, maxPageSize = 10, message = "普通用户免费查看前2页，成为会员查看所有")
     public BaseResponse<PageResponse<JobInfo>> getJobInfoList(@RequestBody JobInfoQueryRequest queryRequest) {
         List<JobInfo> jobInfoList = jobInfoService.getJobInfoList(queryRequest);
         int total = jobInfoService.getJobInfoCount(queryRequest);

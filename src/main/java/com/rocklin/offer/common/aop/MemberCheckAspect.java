@@ -113,9 +113,9 @@ public class MemberCheckAspect {
         if (pageNumStr != null) {
             try {
                 int pageNum = Integer.parseInt(pageNumStr);
-                // 未登录用户只能看前2页
-                if (pageNum > 2) {
-                    throw new BusinessException(ErrorCode.UNAUTHORIZED, "未登录用户只能查看前2页，请登录查看更多职位");
+                // 未登录用户只能看前1页
+                if (pageNum > 1) {
+                    throw new BusinessException(ErrorCode.UNAUTHORIZED, "未登录用户只能查看前1页，请登录查看更多职位");
                 }
             } catch (NumberFormatException e) {
                 log.warn("GET请求页码参数格式错误: {}", pageNumStr);
@@ -151,8 +151,8 @@ public class MemberCheckAspect {
                     pageNumField.setAccessible(true);
                     Integer pageNum = (Integer) pageNumField.get(arg);
 
-                    if (pageNum != null && pageNum > 2) {
-                        throw new BusinessException(ErrorCode.UNAUTHORIZED, "未登录用户只能查看前2页，请登录查看更多职位");
+                    if (pageNum != null && pageNum > 1) {
+                        throw new BusinessException(ErrorCode.UNAUTHORIZED, "未登录用户只能查看前1页，请登录查看更多职位");
                     }
                 }
 

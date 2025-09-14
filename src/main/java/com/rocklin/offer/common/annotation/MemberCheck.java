@@ -16,7 +16,7 @@ public @interface MemberCheck {
     /**
      * 允许的最大页数（非会员用户）
      */
-    int maxPage() default 5;
+    int maxPage() default 2;
     
     /**
      * 允许的最大页面大小（非会员用户）
