@@ -14,6 +14,10 @@
           {{ c }}
         </button>
       </div>
+      <!-- 在切换按钮下方添加资料总数显示 -->
+      <div class="mt-2 text-sm text-gray-600">
+        共 {{ total }} 份资料
+      </div>
     </div>
 
     <!-- 空状态 -->
@@ -315,17 +319,17 @@ const observeCard = (el: Element | null, m: Material) => {
     // 元素卸载时清理
     return
   }
-  
+
   // 检查是否已经观察过这个元素
   if ((el as any).__observed) {
     return
   }
-  
+
   if (!('IntersectionObserver' in window)) {
     enqueueLoad(m)
     return
   }
-  
+
   if (!cardObserver) {
     cardObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -338,9 +342,9 @@ const observeCard = (el: Element | null, m: Material) => {
       })
     }, { root: null, rootMargin: '100px', threshold: 0.01 })
   }
-  
+
   ; (el as any).__material = m
-  ; (el as any).__observed = true
+    ; (el as any).__observed = true
   cardObserver.observe(el)
 }
 
@@ -471,10 +475,10 @@ const fetchList = async (reset = false) => {
     } else {
       materials.value = materials.value.concat(list)
     }
-    
+
     // 判断是否还有更多数据：当前返回的列表不为空且长度等于pageSize
     hasMore.value = list.length > 0 && list.length === pageSize.value
-    
+
     // 只有在成功获取数据后才递增页码
     if (list.length > 0) {
       pageNum.value++
@@ -549,7 +553,7 @@ const loadMorePages = async (direction: 'up' | 'down' = 'down') => {
     }
 
     // 过滤超出范围的页面
-    pagesToLoad = pagesToLoad.filter(page => 
+    pagesToLoad = pagesToLoad.filter(page =>
       page >= 1 && page <= (material.totalPages || 1)
     )
 
@@ -856,13 +860,13 @@ const initObserver = () => {
     autoLoading.value = false
     return
   }
-  
+
   // 先清理旧的观察器
   if (observer && sentinelRef.value) {
     observer.unobserve(sentinelRef.value)
     observer.disconnect()
   }
-  
+
   observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting && hasMore.value && !loading.value) {
@@ -874,7 +878,7 @@ const initObserver = () => {
       }
     })
   }, { root: null, rootMargin: '0px', threshold: 0.1 })
-  
+
   if (sentinelRef.value) {
     observer.observe(sentinelRef.value)
   }
