@@ -40,8 +40,8 @@
           <select v-model="query.sortOrder"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             <option value="">默认</option>
-            <option value="asc">从小到大</option>
-            <option value="desc">从大到小</option>
+            <option value="asc">升序</option>
+            <option value="desc">降序</option>
           </select>
         </div>
       </div>
@@ -257,17 +257,17 @@ const jumpPage = ref<number | ''>('')
 // 文件大小格式化函数
 const formatFileSize = (bytes: number): string => {
   if (!bytes) return '-'
-  
+
   const mb = bytes / (1024 * 1024)
   if (mb >= 1) {
     return `${mb.toFixed(2)} MB`
   }
-  
+
   const kb = bytes / 1024
   if (kb >= 1) {
     return `${kb.toFixed(2)} KB`
   }
-  
+
   return `${bytes} B`
 }
 

@@ -90,8 +90,8 @@
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">排序方式</label>
           <select v-model="searchForm.sortOrder" class="input-field">
-            <option value="desc">从大到小</option>
-            <option value="asc">从小到大</option>
+            <option value="desc">降序</option>
+            <option value="asc">升序</option>
           </select>
         </div>
       </div>

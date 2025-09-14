@@ -61,8 +61,8 @@
                     <select v-model="query.sortOrder"
                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="">默认</option>
-                        <option value="asc">从小到大</option>
-                        <option value="desc">从大到小</option>
+                        <option value="asc">升序</option>
+                        <option value="desc">降序</option>
                     </select>
                 </div>
             </div>
