@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -197,12 +198,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUser(UserUpdateRequest req) {
+    public void updateUser(UserUpdateRequest req, String price) {
         if (req.getUserPassword() != null) {
             req.setUserPassword(encryptPasswordUtil.getEncryptPassword(req.getUserPassword()));
         }
         if(req.getUserRole() == UserRoleEnum.VIP.getValue()){
-            commissionService.handleUserBecomeMember(req.getId());
+            commissionService.handleUserBecomeMember(req.getId(), new BigDecimal(price));
         }
         Long result = userMapper.updateById(req);
         Assert.isTrue(result > 0, ErrorCode.OPERATION_ERROR, "数据库异常，用户更新失败");
@@ -217,6 +218,7 @@ public class UserServiceImpl implements UserService {
         response.setUserProfile(user.getUserProfile());
         response.setUserRole(user.getUserRole());
         response.setMemberExpireTime(user.getMemberExpireTime());
+        response.setInviterCode(user.getInviterCode());
         response.setCreateTime(user.getCreateTime());
         response.setUpdateTime(user.getUpdateTime());
         return response;

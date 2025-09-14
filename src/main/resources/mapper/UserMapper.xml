@@ -99,8 +99,8 @@
                 <if test="req.userAccount != null and req.userAccount != ''">
                     and user_account like concat('%', #{req.userAccount}, '%')
                 </if>
-                <if test="req.userProfile != null and req.userProfile != ''">
-                    and user_profile like concat('%', #{req.userProfile}, '%')
+                <if test="req.inviterCode != null and req.inviterCode != ''">
+                    and inviter_code = #{req.inviterCode}
                 </if>
             </if>
         </where>
@@ -112,6 +112,8 @@
                     <when test="req.sortField == 'userName'">user_name</when>
                     <when test="req.sortField == 'userAccount'">user_account</when>
                     <when test="req.sortField == 'userRole'">user_role</when>
+                    <when test="req.sortField == 'inviterCode'">inviter_code</when>
+                    <when test="req.sortField == 'memberExpireTime'">member_expire_time</when>
                     <when test="req.sortField == 'createTime'">create_time</when>
                     <when test="req.sortField == 'updateTime'">update_time</when>
                     <otherwise>update_time</otherwise>

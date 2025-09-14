@@ -33,7 +33,11 @@ export function deleteUser(id: string): Promise<BaseResponse<boolean>> {
 }
 
 // 管理员接口：更新用户
-export function updateUser(data: UserUpdateRequest): Promise<BaseResponse<boolean>> {
+export function updateUser(data: UserUpdateRequest, price?: string): Promise<BaseResponse<boolean>> {
+  // 如果提供了价格参数，则作为查询参数传递
+  if (price !== undefined) {
+    return request.post(`/user/update?price=${price}`, data).then(res => res.data)
+  }
   return request.post('/user/update', data).then(res => res.data)
 }
 

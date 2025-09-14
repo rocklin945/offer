@@ -26,6 +26,7 @@ export interface UserLoginResponse {
   createTime: string
   updateTime: string
   memberExpireTime?: string
+  inviterCode?: string
 }
 
 // 用户更新请求
@@ -48,6 +49,7 @@ export interface UserPageQueryRequest {
   userAccount?: string
   userProfile?: string
   userRole?: number
+  inviterCode?: string
   sortField?: string
   sortOrder?: string
 }

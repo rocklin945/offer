@@ -32,7 +32,7 @@ public interface UserService {
 
     void deleteUser(Long id);
 
-    void updateUser(UserUpdateRequest req);
+    void updateUser(UserUpdateRequest req, String price);
 
     /**
      * 分页获取用户列表（带过滤条件）

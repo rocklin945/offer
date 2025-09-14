@@ -38,4 +38,9 @@ public class UserPageQueryRequest extends PageRequest implements Serializable {
      * 用户角色：0:管理员 1:普通用户
      */
     private Integer userRole;
+
+    /**
+     * 邀请码
+     */
+    private String inviterCode;
 }

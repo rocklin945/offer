@@ -18,7 +18,6 @@ public interface InviteCommissionService {
     /**
      * 处理用户成为会员
      */
-    void handleUserBecomeMember(Long userId);
 
     void handleUserBecomeMember(Long userId, BigDecimal amount);
 

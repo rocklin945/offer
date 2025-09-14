@@ -142,19 +142,6 @@ public class InviteCommissionServiceImpl implements InviteCommissionService {
                 userId, plan.getLabel(), plan.getDays(), inviteCommission.getBalanceCommission().subtract(amount));
     }
 
-    @Override
-    @Transactional
-    public void handleUserBecomeMember(Long userId) {
-        // 查找用户的邀请人
-        User inviter = getUserAndInviter(userId);
-        if (inviter == null) return;
-
-        // 增加待结算佣金
-        WebInfo webInfo = webInfoMapper.selectWebInfo();
-        String commission = String.valueOf(webInfo.getCurrentPrice().multiply(webInfo.getCommissionRate()));
-        increasePendingCommission(commission, inviter);
-    }
-
     private void increasePendingCommission(String commission, User inviter) {
         BigDecimal amount = new BigDecimal(commission).setScale(TWO, RoundingMode.HALF_UP);
         commissionMapper.increasePendingCommission(inviter.getId(), amount);

@@ -52,6 +52,11 @@ public class UserLoginResponse implements Serializable {
     private String token;
 
     /**
+     * 邀请码
+     */
+    private String inviterCode;
+
+    /**
      * 创建时间
      */
     private LocalDateTime createTime;

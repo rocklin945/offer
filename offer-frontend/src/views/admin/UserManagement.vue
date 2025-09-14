@@ -7,7 +7,7 @@
 
     <!-- 搜索筛选区域 -->
     <div class="bg-white rounded-lg border border-gray-200 p-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">用户ID</label>
           <input v-model="queryParams.id" type="text" placeholder="请输入用户ID"
@@ -24,6 +24,11 @@
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
         </div>
         <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">邀请码</label>
+          <input v-model="queryParams.inviterCode" type="text" placeholder="请输入邀请码"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+        </div>
+        <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">用户角色</label>
           <select v-model="queryParams.userRole"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
@@ -31,6 +36,29 @@
             <option :value="0">管理员</option>
             <option :value="1">普通用户</option>
             <option :value="2">会员</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">排序字段</label>
+          <select v-model="queryParams.sortField"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="">默认排序</option>
+            <option value="id">用户ID</option>
+            <option value="userName">用户名</option>
+            <option value="userAccount">用户账号</option>
+            <option value="userRole">用户角色</option>
+            <option value="inviterCode">邀请码</option>
+            <option value="memberExpireTime">会员到期时间</option>
+            <option value="createTime">创建时间</option>
+            <option value="updateTime">更新时间</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">排序方式</label>
+          <select v-model="queryParams.sortOrder"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="desc">降序</option>
+            <option value="asc">升序</option>
           </select>
         </div>
       </div>
@@ -83,6 +111,9 @@
                   角色
                 </th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  邀请码
+                </th>
+                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                   会员到期时间
                 </th>
                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -121,7 +152,9 @@
                     {{ user.userRole === 0 ? '管理员' : user.userRole === 1 ? '普通用户' : '会员' }}
                   </span>
                 </td>
-
+                <td class="px-4 py-4 text-center text-sm text-gray-500">
+                  {{ user.inviteCode || '-' }}
+                </td>
                 <td class="px-4 py-4 text-center text-sm text-gray-500">
                   <span v-if="user.userRole === 2">
                     <span v-if="user.memberExpireTime" :class="[
@@ -264,6 +297,26 @@
               </select>
             </div>
 
+            <!-- 会员价格选择 -->
+            <div v-if="editForm.userRole === 2" class="mb-4">
+              <label for="memberPrice" class="block text-sm font-medium text-gray-700 mb-1">
+                会员价格
+              </label>
+              <select id="memberPrice" v-model="editForm.selectedPriceOption"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md" required @change="handlePriceOptionChange">
+                <option v-for="price in priceOptions" :key="price.value" :value="price.value">
+                  {{ price.label }}
+                </option>
+                <option value="other">其他</option>
+              </select>
+              <!-- 自定义价格输入框 -->
+              <div v-if="editForm.selectedPriceOption === 'other'" class="mt-2">
+                <input type="number" v-model="editForm.customPrice" placeholder="请输入自定义价格"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md" min="0" step="0.01" />
+              </div>
+              <p class="text-xs text-gray-500 mt-1">请选择会员价格</p>
+            </div>
+
             <!-- 会员到期时间设置 -->
             <div v-if="editForm.userRole === 2" class="mb-4">
               <label for="memberExpireTime" class="block text-sm font-medium text-gray-700 mb-1">
@@ -303,7 +356,9 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue'
 import { listUserByPage, updateUser, deleteUser } from '@/api/user'
-import type { UserLoginResponse, UserUpdateRequest } from '@/api/userTypes'
+import { getPrice } from '@/api/webInfo'
+import type { UserLoginResponse, UserUpdateRequest, UserPageQueryRequest } from '@/api/userTypes'
+import type { WebPriceResponse } from '@/api/types'
 import Message from '@/components/Message'
 import Confirm from '@/components/Confirm'
 
@@ -314,7 +369,10 @@ const queryParams = reactive({
   id: '',
   userName: '',
   userAccount: '',
-  userRole: null as number | null
+  inviterCode: '',
+  userRole: null as number | null,
+  sortField: '',
+  sortOrder: 'desc'
 })
 
 // 用户列表数据
@@ -327,6 +385,9 @@ const loading = ref(false)
 const jumpPage = ref<number | string>('')
 const isChangingPage = ref(false)
 
+// 价格选项
+const priceOptions = ref<{ value: string; label: string }[]>([])
+
 // 计算属性
 const totalPages = computed(() => Math.ceil(total.value / pageSize.value))
 
@@ -338,19 +399,43 @@ const editForm = reactive({
   userProfile: '',
   userRole: 0,
   userPassword: '',
-  memberExpireTime: ''
+  memberExpireTime: '',
+  selectedPriceOption: '', // 价格选项
+  customPrice: '' // 自定义价格
 })
 
 // 初始化加载数据
 onMounted(() => {
   fetchUserList()
+  fetchPriceOptions()
 })
+
+// 获取价格选项
+const fetchPriceOptions = async () => {
+  try {
+    const res = await getPrice()
+    if (res.statusCode === 200 && res.data) {
+      const priceData: WebPriceResponse = res.data
+      // 构造价格选项
+      priceOptions.value = [
+        { value: priceData.originalPrice.toString(), label: `${priceData.originalPrice}元` },
+        { value: priceData.currentPrice.toString(), label: `${priceData.currentPrice}元` }
+      ]
+
+      // 默认选择现价
+      editForm.selectedPriceOption = priceData.currentPrice.toString()
+    }
+  } catch (error) {
+    console.error('获取价格信息失败', error)
+    Message.error('获取价格信息失败')
+  }
+}
 
 // 获取用户列表
 const fetchUserList = async () => {
   try {
     loading.value = true
-    const params = {
+    const params: UserPageQueryRequest = {
       ...queryParams,
       userRole: queryParams.userRole === null ? undefined : queryParams.userRole
     }
@@ -380,7 +465,10 @@ const resetQuery = () => {
   queryParams.id = ''
   queryParams.userName = ''
   queryParams.userAccount = ''
+  queryParams.inviterCode = ''
   queryParams.userRole = null
+  queryParams.sortField = ''
+  queryParams.sortOrder = 'desc'
   queryParams.pageNum = 1
   fetchUserList()
 }
@@ -504,6 +592,13 @@ const handleEdit = (user: UserLoginResponse) => {
   showEditDialog.value = true
 }
 
+// 处理价格选项变更
+const handlePriceOptionChange = () => {
+  if (editForm.selectedPriceOption !== 'other') {
+    editForm.customPrice = ''
+  }
+}
+
 // 提交编辑
 const submitEdit = async () => {
   try {
@@ -526,7 +621,18 @@ const submitEdit = async () => {
       updateData.memberExpireTime = formatToBackendString(editForm.memberExpireTime)
     }
 
-    const res = await updateUser(updateData)
+    // 确定最终价格
+    let finalPrice = ''
+    if (editForm.userRole === 2) {
+      if (editForm.selectedPriceOption === 'other') {
+        finalPrice = editForm.customPrice
+      } else {
+        finalPrice = editForm.selectedPriceOption
+      }
+    }
+
+    // 调用更新接口，传递选择的价格
+    const res = await updateUser(updateData, editForm.userRole === 2 ? finalPrice : undefined)
     if (res.statusCode === 200) {
       showEditDialog.value = false
       fetchUserList()
@@ -641,9 +747,16 @@ const isMemberExpired = (expireTime: string) => {
 
 // 处理角色变更
 const handleRoleChange = () => {
-  // 如果不是会员，清空会员到期时间
+  // 如果不是会员，清空会员到期时间和价格选择
   if (editForm.userRole !== 2) {
     editForm.memberExpireTime = ''
+    editForm.selectedPriceOption = ''
+    editForm.customPrice = ''
+  } else {
+    // 如果是会员且还没有选择价格，设置默认价格
+    if (!editForm.selectedPriceOption && priceOptions.value.length > 0) {
+      editForm.selectedPriceOption = priceOptions.value[1].value // 默认选择现价
+    }
   }
 }
 </script>
