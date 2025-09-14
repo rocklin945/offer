@@ -87,10 +87,31 @@
             <option value="asc">升序</option>
           </select>
         </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">&nbsp;</label>
+          <button @click="toggleInnerCompany" type="button"
+            class="inline-flex items-center px-4 py-2 rounded-lg transition-all duration-200 ease-in-out"
+            :class="showInnerCompany ? 'bg-green-300 hover:bg-green-400 text-green-800' : 'bg-gray-200 hover:bg-gray-300 text-gray-700'">
+            <span class="mr-2">内推企业</span>
+            <div class="relative inline-block w-10 h-5">
+              <div class="w-10 h-5 rounded-full" :class="showInnerCompany ? 'bg-green-500' : 'bg-gray-400'"></div>
+              <span
+                class="absolute bg-white rounded-full shadow-md transform transition-transform duration-200 ease-in-out w-4 h-4 top-0.5 left-0.5"
+                :class="showInnerCompany ? 'translate-x-5' : 'translate-x-0'">
+              </span>
+            </div>
+          </button>
+        </div>
+
+
       </div>
-      <div class="flex justify-end space-x-2">
-        <button @click="resetSearch" class="btn-secondary">重置</button>
-        <button @click="handleSearch" class="btn-primary">搜索</button>
+
+      <div class="flex justify-end items-center mb-4">
+        <div class="flex space-x-2">
+          <button @click="resetSearch" class="btn-secondary">重置</button>
+          <button @click="handleSearch" class="btn-primary">搜索</button>
+        </div>
       </div>
     </div>
 
@@ -432,6 +453,7 @@ const jumpPage = ref<number | string>('')
 const isChangingPage = ref(false)
 const showMemberOverlay = ref(false)
 const memberLimitMessage = ref('')
+const showInnerCompany = ref(false) // 添加内推企业开关状态
 
 // 添加展开状态管理
 const expandedItems = ref<{ [key: string]: { workLocation: boolean, positionName: boolean } }>({})
@@ -448,12 +470,24 @@ const searchForm = reactive<JobInfoQueryRequest>({
   startTime: '',
   deadline: '',
   sortField: '',
-  sortOrder: 'desc'
+  sortOrder: 'desc',
+  onlyShowInnerCompany: false // 添加内推企业筛选字段
 })
 
 // 计算属性
 const hasJobs = computed(() => jobList.value.length > 0)
 const totalPages = computed(() => Math.ceil(total.value / pageSize.value))
+
+// 内推企业开关切换方法
+const toggleInnerCompany = async () => {
+  console.log('切换内推企业状态，当前状态:', searchForm.onlyShowInnerCompany);
+  searchForm.onlyShowInnerCompany = !searchForm.onlyShowInnerCompany;
+  showInnerCompany.value = searchForm.onlyShowInnerCompany;
+  console.log('切换后状态:', searchForm.onlyShowInnerCompany);
+
+  // 切换后自动调用搜索
+  await handleSearch();
+}
 
 // 方法
 const handleSearch = async () => {
@@ -463,7 +497,10 @@ const handleSearch = async () => {
 
 const resetSearch = () => {
   Object.keys(searchForm).forEach(key => {
-    searchForm[key as keyof JobInfoQueryRequest] = ''
+    // 重置时保留内推企业开关的状态
+    if (key !== 'onlyShowInnerCompany') {
+      searchForm[key as keyof JobInfoQueryRequest] = ''
+    }
   })
   handleSearch()
 }
@@ -575,9 +612,10 @@ const fetchData = async () => {
       params.startTime = new Date(params.startTime).toISOString()
     }
 
-    // 过滤空值
+    // 过滤空值，但保留布尔值false
     Object.keys(params).forEach(key => {
-      if (params[key as keyof JobInfoQueryRequest] === '' || params[key as keyof JobInfoQueryRequest] === null) {
+      const value = params[key as keyof JobInfoQueryRequest]
+      if (value === '' || value === null || value === undefined) {
         delete params[key as keyof JobInfoQueryRequest]
       }
     })

@@ -48,4 +48,7 @@ public class JobInfoQueryRequest extends PageRequest implements Serializable {
 
     @Schema(description = "投递截止")
     private String deadline;
+
+    @Schema(description = "是否仅展示内推企业")
+    private Boolean onlyShowInnerCompany;
 }

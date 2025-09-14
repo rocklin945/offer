@@ -102,6 +102,9 @@
         SELECT <include refid="Base_Column_List"/>
         FROM job_info
         <where>
+            <if test="query.onlyShowInnerCompany == true">
+                referral_code is not null
+            </if>
             <if test="query.companyName != null and query.companyName != ''">
                 AND company_name LIKE CONCAT('%', #{query.companyName}, '%')
             </if>
@@ -160,6 +163,9 @@
         SELECT COUNT(1)
         FROM job_info
         <where>
+            <if test="query.onlyShowInnerCompany == true">
+                referral_code is not null
+            </if>
             <if test="query.companyName != null and query.companyName != ''">
                 AND company_name LIKE CONCAT('%', #{query.companyName}, '%')
             </if>

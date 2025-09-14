@@ -5,6 +5,15 @@ export interface BaseResponse<T = any> {
     data: T;
 }
 
+// 分页响应类型
+export interface PageResponse<T> {
+    list: T[];
+    total: number;
+    pageNum: number;
+    pageSize: number;
+    hasNext: boolean;
+}
+
 // 网站信息响应类型
 export interface WebInfoResponse {
     id: number;
@@ -32,6 +41,68 @@ export interface WebInfoResponse {
 export interface WebPriceResponse {
     originalPrice: number;
     currentPrice: number;
+}
+
+// 招聘信息类型
+export interface JobInfo {
+    id: string;
+    companyName: string;
+    companyType?: string;
+    industry?: string;
+    recruitType?: string;
+    workLocation?: string;
+    recruitTarget?: string;
+    positionName?: string;
+    startTime?: string;
+    deadline?: string;
+    relatedLink?: string;
+    announcement?: string;
+    referralCode?: string;
+    remark?: string;
+    applicationStatus?: string;
+    createTime?: string;
+    updateTime?: string;
+}
+
+// 招聘信息查询请求类型
+export interface JobInfoQueryRequest {
+    pageNum?: number;
+    pageSize?: number;
+    companyName?: string;
+    companyType?: string;
+    industry?: string;
+    recruitType?: string;
+    workLocation?: string;
+    recruitTarget?: string;
+    positionName?: string;
+    applicationStatus?: string;
+    startTime?: string;
+    deadline?: string;
+    sortField?: string;
+    sortOrder?: string;
+    onlyShowInnerCompany?: boolean; // 内推企业筛选字段
+}
+
+// 招聘信息添加请求类型
+export interface JobInfoAddRequest {
+    companyName: string;
+    companyType?: string;
+    industry?: string;
+    recruitType?: string;
+    workLocation?: string;
+    recruitTarget?: string;
+    positionName?: string;
+    startTime?: string;
+    deadline?: string;
+    relatedLink?: string;
+    announcement?: string;
+    referralCode?: string;
+    remark?: string;
+}
+
+// 招聘信息更新请求类型
+export interface JobInfoUpdateRequest extends JobInfoAddRequest {
+    id: string;
 }
 
 // 简历类型
