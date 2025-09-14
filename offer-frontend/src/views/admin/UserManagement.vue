@@ -7,7 +7,7 @@
 
     <!-- 搜索筛选区域 -->
     <div class="bg-white rounded-lg border border-gray-200 p-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">用户ID</label>
           <input v-model="queryParams.id" type="text" placeholder="请输入用户ID"
@@ -153,7 +153,7 @@
                   </span>
                 </td>
                 <td class="px-4 py-4 text-center text-sm text-gray-500">
-                  {{ user.inviteCode || '-' }}
+                  {{ user.inviterCode || '-' }}
                 </td>
                 <td class="px-4 py-4 text-center text-sm text-gray-500">
                   <span v-if="user.userRole === 2">
