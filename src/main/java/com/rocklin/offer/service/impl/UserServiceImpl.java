@@ -30,8 +30,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.rocklin.offer.common.constants.Constants.USER_ID;
-import static com.rocklin.offer.common.constants.Constants.USER_PREFIX;
+import static com.rocklin.offer.common.constants.Constants.*;
 import static org.springframework.web.context.request.RequestAttributes.REFERENCE_REQUEST;
 
 /**
@@ -61,7 +60,11 @@ public class UserServiceImpl implements UserService {
         // 加密密码
         user.setUserPassword(encryptPasswordUtil.getEncryptPassword(req.getUserPassword()));
         user.setUserName(USER_PREFIX + RandomUtil.randomString(6));
-        user.setUserRole(UserRoleEnum.USER.getValue());
+
+        //赠送3天会员
+        user.setUserRole(UserRoleEnum.VIP.getValue());
+        user.setMemberExpireTime(LocalDateTime.now().plusDays(THREE));
+
         user.setUserAvatar(AvatarUtil.generateRandomAvatarUrl(req.getUserAccount()));
         user.setUserProfile("这个人很懒，什么都没有留下。");
         // 设置邀请码
