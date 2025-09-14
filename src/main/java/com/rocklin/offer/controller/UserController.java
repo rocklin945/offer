@@ -126,7 +126,7 @@ public class UserController {
     @PostMapping("/update")
     @AuthCheck(enableRole = UserRoleEnum.ADMIN)
     @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 3)
-    public BaseResponse<Boolean> updateUser(@RequestBody @Validated UserUpdateRequest req, @RequestParam String price) {
+    public BaseResponse<Boolean> updateUser(@RequestBody @Validated UserUpdateRequest req, String price) {
         Assert.notNull(req, ErrorCode.PARAMS_ERROR, "用户更新数据不能为空");
         User userById = userService.getUserById(req.getId());
         Assert.notNull(userById, ErrorCode.OPERATION_ERROR, "用户不存在");
