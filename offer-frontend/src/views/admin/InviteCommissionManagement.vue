@@ -79,49 +79,52 @@
           <h3 class="mt-2 text-sm font-medium text-gray-900">暂无数据</h3>
           <p class="mt-1 text-sm text-gray-500">没有找到任何返利记录</p>
         </div>
-        <div v-else class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">用户ID</th>
-                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">邀请人数</th>
-                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">累计佣金</th>
-                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">待确认</th>
-                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">余额</th>
-                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
-                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr v-for="item in commissionList" :key="item.id">
-                <td class="px-4 py-4 text-center text-sm text-gray-900">{{ item.id }}</td>
-                <td class="px-4 py-4 text-center text-sm text-gray-900">{{ item.userId }}</td>
-                <td class="px-4 py-4 text-center text-sm text-gray-900">{{ item.invitedCount }}</td>
-                <td class="px-4 py-4 text-center text-sm text-gray-900">¥{{ item.totalCommission }}</td>
-                <td class="px-4 py-4 text-center text-sm text-gray-900">¥{{ item.pendingCommission }}</td>
-                <td class="px-4 py-4 text-center text-sm text-gray-900">¥{{ item.balanceCommission }}</td>
-                <td class="px-4 py-4 text-center text-sm text-gray-900">
-                  <span v-if="item.status === 0"
-                    class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">待确认</span>
-                  <span v-else-if="item.status === 1"
-                    class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">已确认</span>
-                  <span v-else
-                    class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">已拒绝</span>
-                </td>
-                <td class="px-4 py-4 text-center text-sm text-gray-900">
-                  <div class="flex justify-center space-x-2">
-                    <button v-if="item.pendingCommission > 0" @click="handleConfirm(item)"
-                      class="text-green-600 hover:text-green-900 text-sm font-medium">确认</button>
-                    <button v-if="item.pendingCommission > 0" @click="handleReject(item)"
-                      class="text-red-600 hover:text-red-900 text-sm font-medium">拒绝</button>
-                    <button v-if="item.balanceCommission > 0" @click="handleWithdraw(item)"
-                      class="text-blue-600 hover:text-blue-900 text-sm font-medium">提现</button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div v-else>
+          <!-- 在移动端隐藏横向滚动条，但保留滚动功能 -->
+          <div class="overflow-x-auto md:overflow-x-visible">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                  <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">用户ID</th>
+                  <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">邀请人数</th>
+                  <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">累计佣金</th>
+                  <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">待确认</th>
+                  <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">余额</th>
+                  <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                  <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr v-for="item in commissionList" :key="item.id">
+                  <td class="px-4 py-4 text-center text-sm text-gray-900">{{ item.id }}</td>
+                  <td class="px-4 py-4 text-center text-sm text-gray-900">{{ item.userId }}</td>
+                  <td class="px-4 py-4 text-center text-sm text-gray-900">{{ item.invitedCount }}</td>
+                  <td class="px-4 py-4 text-center text-sm text-gray-900">¥{{ item.totalCommission }}</td>
+                  <td class="px-4 py-4 text-center text-sm text-gray-900">¥{{ item.pendingCommission }}</td>
+                  <td class="px-4 py-4 text-center text-sm text-gray-900">¥{{ item.balanceCommission }}</td>
+                  <td class="px-4 py-4 text-center text-sm text-gray-900">
+                    <span v-if="item.status === 0"
+                      class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">待确认</span>
+                    <span v-else-if="item.status === 1"
+                      class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">已确认</span>
+                    <span v-else
+                      class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">已拒绝</span>
+                  </td>
+                  <td class="px-4 py-4 text-center text-sm text-gray-900">
+                    <div class="flex justify-center space-x-2">
+                      <button v-if="item.pendingCommission > 0" @click="handleConfirm(item)"
+                        class="text-green-600 hover:text-green-900 text-sm font-medium">确认</button>
+                      <button v-if="item.pendingCommission > 0" @click="handleReject(item)"
+                        class="text-red-600 hover:text-red-900 text-sm font-medium">拒绝</button>
+                      <button v-if="item.balanceCommission > 0" @click="handleWithdraw(item)"
+                        class="text-blue-600 hover:text-blue-900 text-sm font-medium">提现</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 

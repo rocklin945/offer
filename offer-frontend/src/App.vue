@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="min-h-screen" style="width: 100%; overflow-x: hidden;">
+  <div id="app" class="min-h-screen" :style="{ width: '100%', overflowX: isAdminRoute ? 'auto' : 'hidden' }">
     <!-- 管理页面布局 -->
     <div v-if="isAdminRoute">
       <router-view />

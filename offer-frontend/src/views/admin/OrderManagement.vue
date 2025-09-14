@@ -93,8 +93,10 @@
                 <p class="mt-2 text-gray-500">暂无数据</p>
             </div>
 
-            <div v-else class="overflow-x-auto">
-                <div class="table-container" :class="{ 'table-loading': isChangingPage }">
+            <div v-else>
+                <!-- 在移动端隐藏横向滚动条，但保留滚动功能 -->
+                <div class="table-container overflow-x-auto md:overflow-x-visible"
+                    :class="{ 'table-loading': isChangingPage }">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
@@ -156,7 +158,7 @@
                                     </span>
                                 </td>
                                 <td class="px-4 py-4 text-center text-sm text-gray-500">{{ formatDate(order.createTime)
-                                }}</td>
+                                    }}</td>
                                 <td class="px-4 py-4 text-center flex justify-center space-x-2">
                                     <button @click="viewOrderDetail(order)"
                                         class="text-blue-500 hover:text-blue-700 p-1 rounded-full hover:bg-blue-50 transition-colors"

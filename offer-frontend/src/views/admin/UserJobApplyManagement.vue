@@ -2,10 +2,7 @@
   <div class="space-y-6">
     <!-- 页面标题 -->
     <div class="flex justify-between items-center">
-      <div>
-        <h1 class="text-2xl font-bold text-gray-900">投递记录管理</h1>
-        <p class="text-sm text-gray-600 mt-1">管理所有用户的职位投递记录</p>
-      </div>
+      <h2 class="text-2xl font-bold text-gray-900">投递记录管理</h2>
     </div>
 
     <!-- 搜索筛选区域 -->
@@ -135,8 +132,9 @@
         <p class="mt-2 text-gray-500">暂无投递记录</p>
       </div>
 
-      <div v-else class="overflow-x-auto">
-        <div class="table-container" :class="{ 'table-loading': isChangingPage }">
+      <div v-else>
+        <!-- 在移动端隐藏横向滚动条，但保留滚动功能 -->
+        <div class="table-container overflow-x-auto md:overflow-x-visible" :class="{ 'table-loading': isChangingPage }">
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
               <tr>

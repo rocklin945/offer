@@ -1,10 +1,8 @@
 <template>
   <div class="min-h-screen bg-gray-100 flex">
     <!-- 左侧深色汉堡菜单 -->
-    <aside :class="[
-      'bg-gray-800 text-white transition-all duration-300 flex flex-col min-h-screen',
-      sidebarCollapsed ? 'w-16' : 'w-64'
-    ]">
+    <aside :class="[sidebarCollapsed ? 'w-16' : 'w-64']"
+      class="bg-gray-800 text-white transition-all duration-300 flex flex-col min-h-screen flex-shrink-0">
       <!-- 菜单头部 -->
       <div class="p-4 border-b border-gray-700">
         <div class="flex items-center justify-center">
@@ -70,7 +68,7 @@
     </aside>
 
     <!-- 右侧主内容区域 -->
-    <main class="flex-1 flex flex-col">
+    <main class="flex-1 flex flex-col min-w-0">
       <!-- 面包屑导航 -->
       <div class="bg-white border-b border-gray-200 px-6 py-4">
         <div class="flex items-center justify-between">
