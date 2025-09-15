@@ -43,6 +43,16 @@ const router = createRouter({
       name: 'InviteCode',
       component: () => import('@/views/JobList.vue')
     },
+    {
+      path: '/code-redeem',
+      name: 'CodeRedeem',
+      component: () => import('@/views/CodeRedeem.vue')
+    },
+    {
+      path: '/code-purchase',
+      name: 'CodePurchase',
+      component: () => import('@/views/CodePurchase.vue')
+    },
     // 后台管理路由
     {
       path: '/admin',
