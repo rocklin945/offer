@@ -2,15 +2,130 @@
     <div>
         <teleport to="body">
             <div class="fixed inset-0 bg-gradient-to-br from-orange-100 to-amber-100">
-                <div class="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+                <!-- 登录状态下的大尺寸布局 -->
+                <div v-if="isLoggedIn" class="min-h-full flex items-center justify-center p-4">
+                    <div class="w-full max-w-4xl bg-white rounded-2xl shadow-xl overflow-hidden">
+                        <div class="bg-gradient-to-r from-orange-300 to-amber-300 py-8 px-6 text-center">
+                            <h1 class="text-3xl font-bold text-gray-800">卡密购买</h1>
+                            <p class="mt-2 text-orange-800">选择您需要的卡密商品并完成购买</p>
+                        </div>
+
+                        <div class="bg-white py-8 px-6 text-center border-b border-gray-200">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h2 class="text-2xl font-bold text-gray-800">选择卡密商品</h2>
+                                    <p class="mt-1 text-gray-600">欢迎，{{ getMerchantAccount() }}</p>
+                                </div>
+                                <button @click="handleLogout"
+                                    class="py-2 px-4 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-200 transition duration-300">
+                                    退出登录
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="py-8 px-6 sm:px-10">
+                            <!-- 商品列表 -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <!-- 秋招会员卡密 -->
+                                <div v-for="product in products" :key="product.id" @click="selectProduct(product)"
+                                    :class="[
+                                        'border rounded-xl p-6 cursor-pointer transition-all duration-300 transform hover:scale-[1.02]',
+                                        selectedProduct && selectedProduct.id === product.id
+                                            ? 'ring-2 ring-amber-300 border-amber-300' : 'border-gray-200 hover:border-amber-200'
+                                    ]">
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0">
+                                            <div :class="[
+                                                'rounded-lg p-3',
+                                                product.id === 1 ? 'bg-blue-100' : 'bg-purple-100'
+                                            ]">
+                                                <svg v-if="product.id === 1" class="h-8 w-8 text-blue-600" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                                <svg v-else class="h-8 w-8 text-purple-600" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4 flex-1">
+                                            <h3 class="text-lg font-semibold text-gray-900">{{ product.name }}</h3>
+                                            <p class="mt-1 text-sm text-gray-500">{{ product.description }}</p>
+                                            <div class="mt-3 flex items-center">
+                                                <span class="text-xl font-bold text-gray-900">¥{{ product.price }}</span>
+                                                <!-- 显示被划掉的原价 -->
+                                                <span v-if="webPrices && product.id === 2" class="ml-2 text-gray-500 line-through">¥{{ webPrices.originalPrice }}</span>
+                                                <span v-else-if="webPrices && product.id === 1" class="ml-2 text-gray-500 line-through">¥{{ webPrices.currentPrice }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 精简的购买控件 -->
+                            <div v-if="selectedProduct" class="mt-8 bg-gray-50 rounded-xl p-6">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="text-gray-700 mr-4">数量:</span>
+                                        <div class="flex items-center">
+                                            <button @click="decreaseQuantity" 
+                                                class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                                                <svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+                                                </svg>
+                                            </button>
+                                            <span class="mx-3 text-lg font-semibold text-gray-900 w-8 text-center">{{ quantity }}</span>
+                                            <button @click="increaseQuantity" 
+                                                class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                                                <svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="text-gray-700 mr-4">总价:</span>
+                                        <span class="text-xl font-bold text-gray-900 mr-6">¥{{ (selectedProduct.price * quantity).toFixed(2) }}</span>
+                                        <button @click="handlePurchase" :disabled="loading"
+                                            class="py-2 px-6 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-medium rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2 transition duration-300 flex items-center">
+                                            <svg v-if="loading" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                                    stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor"
+                                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                </path>
+                                            </svg>
+                                            购买
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div v-if="message" :class="[
+                                'mt-6 p-4 rounded-lg text-center',
+                                success ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'
+                            ]">
+                                {{ message }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 未登录状态下的小尺寸布局 -->
+                <div v-else class="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
                     <div class="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden">
                         <div class="bg-gradient-to-r from-orange-300 to-amber-300 py-8 px-6 text-center">
                             <h1 class="text-3xl font-bold text-gray-800">卡密购买</h1>
                             <p class="mt-2 text-orange-800">选择您需要的卡密商品并完成购买</p>
                         </div>
 
-                        <!-- 未登录状态 -->
-                        <div v-if="!isLoggedIn" class="py-8 px-6 sm:px-10">
+                        <div class="py-8 px-6 sm:px-10">
                             <form @submit.prevent="handleLogin" class="space-y-6">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">账号</label>
@@ -69,123 +184,6 @@
                                 </div>
                             </form>
                         </div>
-
-                        <!-- 已登录状态 -->
-                        <div v-else class="bg-white rounded-2xl shadow-xl overflow-hidden">
-                            <div class="bg-white py-8 px-6 text-center border-b border-gray-200">
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <h2 class="text-2xl font-bold text-gray-800">选择卡密商品</h2>
-                                        <p class="mt-1 text-gray-600">欢迎，{{ getMerchantAccount() }}</p>
-                                    </div>
-                                    <button @click="handleLogout"
-                                        class="py-2 px-4 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-200 transition duration-300">
-                                        退出登录
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="py-8 px-6 sm:px-10">
-                                <!-- 商品列表 -->
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <!-- 秋招会员卡密 -->
-                                    <div v-for="product in products" :key="product.id" @click="selectProduct(product)"
-                                        :class="[
-                                            'border rounded-xl p-6 cursor-pointer transition-all duration-300 transform hover:scale-[1.02]',
-                                            selectedProduct && selectedProduct.id === product.id
-                                                ? 'ring-2 ring-green-500 border-green-500'
-                                                : 'border-gray-200 hover:border-green-300'
-                                        ]">
-                                        <div class="flex items-start">
-                                            <div class="flex-shrink-0">
-                                                <div :class="[
-                                                    'rounded-lg p-3',
-                                                    product.id === 1 ? 'bg-blue-100' : 'bg-purple-100'
-                                                ]">
-                                                    <svg v-if="product.id === 1" class="h-8 w-8 text-blue-600"
-                                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                    </svg>
-                                                    <svg v-else class="h-8 w-8 text-purple-600" fill="none"
-                                                        stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                    </svg>
-                                                </div>
-                                            </div>
-                                            <div class="ml-4 flex-1">
-                                                <h3 class="text-lg font-semibold text-gray-900">{{ product.name }}</h3>
-                                                <p class="mt-1 text-sm text-gray-500">{{ product.description }}</p>
-                                                <div class="mt-3 flex items-center justify-between">
-                                                    <span class="text-xl font-bold text-gray-900">¥{{ product.price
-                                                        }}</span>
-                                                    <span v-if="product.stock < 10"
-                                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                                        仅剩{{ product.stock }}件
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- 购买表单 -->
-                                <div v-if="selectedProduct" class="mt-10 border-t border-gray-200 pt-8">
-                                    <h3 class="text-lg font-medium text-gray-900 mb-6">购买信息</h3>
-
-                                    <form @submit.prevent="handlePurchase" class="space-y-6 max-w-md">
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-1">购买数量</label>
-                                            <div class="mt-1 relative rounded-md shadow-sm">
-                                                <input v-model.number="quantity" type="number" min="1"
-                                                    :max="selectedProduct.stock"
-                                                    class="focus:ring-green-500 focus:border-green-500 block w-full py-3 border-gray-300 rounded-lg shadow-sm transition duration-300 ease-in-out transform hover:scale-[1.01]"
-                                                    placeholder="请输入购买数量" required />
-                                            </div>
-                                            <p class="mt-1 text-sm text-gray-500">库存：{{ selectedProduct.stock }}件</p>
-                                        </div>
-
-                                        <div class="bg-gray-50 rounded-lg p-4">
-                                            <div class="flex justify-between items-center">
-                                                <span class="text-gray-600">总计：</span>
-                                                <span class="text-xl font-bold text-gray-900">
-                                                    ¥{{ (selectedProduct.price * quantity).toFixed(2) }}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        <div class="flex space-x-4">
-                                            <button type="button" @click="selectedProduct = null"
-                                                class="flex-1 py-3 px-4 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-200 transition duration-300">
-                                                重新选择
-                                            </button>
-                                            <button type="submit" :disabled="loading"
-                                                class="flex-1 flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-200 transition duration-300 ease-in-out disabled:opacity-50">
-                                                <svg v-if="loading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                    <circle class="opacity-25" cx="12" cy="12" r="10"
-                                                        stroke="currentColor" stroke-width="4"></circle>
-                                                    <path class="opacity-75" fill="currentColor"
-                                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                                                    </path>
-                                                </svg>
-                                                {{ loading ? '处理中...' : '立即购买' }}
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-
-                                <div v-if="message" :class="[
-                                    'mt-6 p-4 rounded-lg text-center',
-                                    success ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'
-                                ]">
-                                    {{ message }}
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -215,19 +213,18 @@ const products = ref<any[]>([
         id: 1,
         name: '秋招会员卡密',
         description: '适用于秋季招聘季，有效期120天',
-        price: 0, // 价格将从接口获取
-        stock: 999
+        price: 0 // 价格将从接口获取
     },
     {
         id: 2,
         name: '校招会员卡密',
         description: '适用于校园招聘，有效期365天',
-        price: 0, // 价格将从接口获取
-        stock: 999
+        price: 0 // 价格将从接口获取
     }
 ])
 const selectedProduct = ref<any>(null)
 const quantity = ref(1)
+const webPrices = ref<any>(null) // 网站价格信息
 
 // 状态控制
 const loginLoading = ref(false)
@@ -253,6 +250,30 @@ const selectProduct = (product: any) => {
     quantity.value = 1
 }
 
+// 增加数量
+const increaseQuantity = () => {
+    quantity.value++
+}
+
+// 减少数量
+const decreaseQuantity = () => {
+    if (quantity.value > 1) {
+        quantity.value--
+    }
+}
+
+// 获取网站价格信息
+const fetchWebPrices = async () => {
+    try {
+        const res = await codeApi.getWebPrice()
+        if (res.statusCode === 200) {
+            webPrices.value = res.data
+        }
+    } catch (error) {
+        console.error('获取网站价格失败', error)
+    }
+}
+
 // 获取卡密商品价格
 const fetchProductPrices = async (account: string, password: string) => {
     try {
@@ -270,8 +291,11 @@ const fetchProductPrices = async (account: string, password: string) => {
     }
 }
 
-// 页面加载时检查是否已登录
+// 页面加载时检查是否已登录并获取价格信息
 onMounted(() => {
+    // 获取网站价格信息
+    fetchWebPrices()
+    
     const account = localStorage.getItem(MERCHANT_ACCOUNT_KEY)
     const password = localStorage.getItem(MERCHANT_PASSWORD_KEY)
 
@@ -351,12 +375,6 @@ const handlePurchase = async () => {
         return
     }
 
-    if (quantity.value < 1 || quantity.value > selectedProduct.value.stock) {
-        message.value = `购买数量必须在1-${selectedProduct.value.stock}之间`
-        success.value = false
-        return
-    }
-
     loading.value = true
     message.value = ''
     success.value = false
@@ -376,18 +394,16 @@ const handlePurchase = async () => {
 
         // 调用购买API，传递账号密码作为查询参数
         const res = await codeApi.purchaseCode({
-            productId: selectedProduct.value.id,
+            price: selectedProduct.value.price.toString(),
             quantity: quantity.value
         }, account, password)
 
         if (res.statusCode === 200) {
-            message.value = '购买成功，请前往支付页面完成支付'
+            message.value = '购买成功，卡密已生成'
             success.value = true
-
-            // 可以在这里跳转到支付页面
-            // setTimeout(() => {
-            //   window.open(res.data.payUrl, '_blank')
-            // }, 1500)
+            
+            // 可以在这里处理返回的卡密列表
+            console.log('购买的卡密列表:', res.data)
         } else {
             message.value = res.message || '购买失败'
             success.value = false

@@ -21,18 +21,22 @@ export interface CodePriceResponse {
     campusPrice: number
 }
 
+// 网站价格响应数据
+export interface WebPriceResponse {
+    originalPrice: number
+    currentPrice: number
+}
+
 // 卡密购买请求参数
 export interface PurchaseCodeRequest {
-    productId: number
+    price: string
     quantity: number
-    // 可以根据实际需求添加更多字段
 }
 
 // 卡密购买响应数据
 export interface PurchaseCodeResponse {
-    orderId: string
-    payUrl: string
-    // 可以根据实际需求添加更多字段
+    // 根据实际返回的数据结构进行调整
+    [key: string]: any
 }
 
 /**
@@ -55,12 +59,19 @@ export function getCodePrice(account: string, password: string): Promise<BaseRes
 }
 
 /**
+ * 获取网站价格信息
+ */
+export function getWebPrice(): Promise<BaseResponse<WebPriceResponse>> {
+    return request.get('/web/price').then(res => res.data)
+}
+
+/**
  * 购买卡密
  * @param data 购买请求参数
  * @param account 商家账号
  * @param password 商家密码
  */
-export function purchaseCode(data: PurchaseCodeRequest, account?: string, password?: string): Promise<BaseResponse<PurchaseCodeResponse>> {
+export function purchaseCode(data: PurchaseCodeRequest, account?: string, password?: string): Promise<BaseResponse<any[]>> {
     // 如果提供了账号和密码，则作为查询参数传递
     const config: any = {};
     if (account !== undefined && password !== undefined) {
@@ -72,5 +83,6 @@ export function purchaseCode(data: PurchaseCodeRequest, account?: string, passwo
 export const codeApi = {
     redeemCode,
     getCodePrice,
+    getWebPrice,
     purchaseCode
 }
