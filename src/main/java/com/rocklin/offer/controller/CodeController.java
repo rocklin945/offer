@@ -1,0 +1,70 @@
+package com.rocklin.offer.controller;
+
+import com.rocklin.offer.common.annotation.SlidingWindowRateLimit;
+import com.rocklin.offer.common.enums.ErrorCode;
+import com.rocklin.offer.common.exception.Assert;
+import com.rocklin.offer.common.response.BaseResponse;
+import com.rocklin.offer.model.dto.request.CodePurchaseRequest;
+import com.rocklin.offer.model.dto.request.CodeRedeemRequest;
+import com.rocklin.offer.model.dto.response.CodePriceResponse;
+import com.rocklin.offer.service.CodeService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * @ClassName CodeController
+ * @Description 卡密相关接口
+ * @Author: rocklin
+ * @Date 2025/9/15
+ * @Version 1.0
+ */
+@Tag(name = "卡密", description = "卡密相关接口")
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/code")
+public class CodeController {
+
+    private final CodeService codeService;
+
+    /**
+     * 卡密兑换
+     */
+    @Operation(summary = "卡密兑换", description = "用户使用卡密兑换会员权益")
+    @PostMapping("/redeem")
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 10)
+    public BaseResponse<String> redeemCode(@RequestBody @Valid CodeRedeemRequest req) {
+        Assert.notNull(req, ErrorCode.PARAMS_ERROR, "参数为空");
+        codeService.redeemCode(req);
+        return BaseResponse.success();
+    }
+
+    /**
+     * 根据商家账号获取卡密商品价格
+     */
+    @Operation(summary = "获取卡密商品价格", description = "根据商家账号获取卡密商品价格")
+    @GetMapping("/price")
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 10)
+    public BaseResponse<CodePriceResponse> getCodePrice(@RequestParam("account") String account,
+                                                                       @RequestParam("password") String password) {
+        CodePriceResponse response = codeService.getCodePrice(account, password);
+        return BaseResponse.success(response);
+    }
+
+    /**
+     * 购买卡密
+     */
+    @Operation(summary = "购买卡密", description = "商家购买卡密商品")
+    @PostMapping("/purchase")
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 10)
+    public BaseResponse<List<String>> purchaseCode(@RequestBody @Valid CodePurchaseRequest req,
+                                                           @RequestParam("account") String account,
+                                                           @RequestParam("password") String password) {
+        List<String> response = codeService.purchaseCode(req, account, password);
+        return BaseResponse.success(response);
+    }
+}

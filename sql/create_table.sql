@@ -266,7 +266,7 @@ CREATE TABLE IF NOT EXISTS code (
                                 price  decimal(10, 2)   not null comment '价格',
                                 merchant_id BIGINT NOT NULL COMMENT '关联的商家ID',
                                 is_used TINYINT DEFAULT 0 NOT NULL COMMENT '是否已使用：0-未使用，1-已使用',
-                                user_account BIGINT COMMENT '使用者账号',
+                                user_account VARCHAR(255) COMMENT '使用者账号',
                                 used_time DATETIME COMMENT '使用时间',
                                 create_time DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '创建时间',
                                 update_time DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

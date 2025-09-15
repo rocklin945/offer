@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rocklin.offer.mapper.MerchantMapper">
+
+    <resultMap id="BaseResultMap" type="com.rocklin.offer.model.entity.Merchant">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="account" property="account" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="autumn_price" property="autumnPrice" jdbcType="DECIMAL"/>
+        <result column="campus_price" property="campusPrice" jdbcType="DECIMAL"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="is_delete" property="isDelete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, account, password, autumn_price, campus_price, create_time, update_time, is_delete
+    </sql>
+
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM code_merchant
+        WHERE id = #{id} AND is_delete = 0
+    </select>
+
+    <select id="selectByAccount" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM code_merchant
+        WHERE account = #{account}
+        AND password = #{password}
+        AND is_delete = 0
+    </select>
+
+    <update id="updateById" parameterType="com.rocklin.offer.model.entity.Merchant">
+        UPDATE code_merchant
+        SET 
+            account = #{account},
+            password = #{password},
+            autumn_price = #{autumnPrice},
+            campus_price = #{campusPrice},
+            update_time = NOW()
+        WHERE id = #{id} AND is_delete = 0
+    </update>
+
+    <insert id="insert" parameterType="com.rocklin.offer.model.entity.Merchant">
+        INSERT INTO code_merchant (id, account, password, autumn_price, campus_price, create_time, update_time, is_delete)
+        VALUES (#{id}, #{account}, #{password}, #{autumnPrice}, #{campusPrice}, NOW(), NOW(), #{isDelete})
+    </insert>
+
+</mapper>
