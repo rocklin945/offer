@@ -62,7 +62,7 @@ export function getCodePrice(account: string, password: string): Promise<BaseRes
  * 获取网站价格信息
  */
 export function getWebPrice(): Promise<BaseResponse<WebPriceResponse>> {
-    return request.get('/web/price').then(res => res.data)
+    return request.get('/webInfo/price').then(res => res.data)
 }
 
 /**
@@ -71,7 +71,7 @@ export function getWebPrice(): Promise<BaseResponse<WebPriceResponse>> {
  * @param account 商家账号
  * @param password 商家密码
  */
-export function purchaseCode(data: PurchaseCodeRequest, account?: string, password?: string): Promise<BaseResponse<any[]>> {
+export function purchaseCode(data: PurchaseCodeRequest, account?: string, password?: string): Promise<BaseResponse<string[]>> {
     // 如果提供了账号和密码，则作为查询参数传递
     const config: any = {};
     if (account !== undefined && password !== undefined) {

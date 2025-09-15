@@ -57,10 +57,15 @@
                                             <h3 class="text-lg font-semibold text-gray-900">{{ product.name }}</h3>
                                             <p class="mt-1 text-sm text-gray-500">{{ product.description }}</p>
                                             <div class="mt-3 flex items-center">
-                                                <span class="text-xl font-bold text-gray-900">¥{{ product.price }}</span>
+                                                <span class="text-xl font-bold text-gray-900">¥{{ product.price
+                                                    }}</span>
                                                 <!-- 显示被划掉的原价 -->
-                                                <span v-if="webPrices && product.id === 2" class="ml-2 text-gray-500 line-through">¥{{ webPrices.originalPrice }}</span>
-                                                <span v-else-if="webPrices && product.id === 1" class="ml-2 text-gray-500 line-through">¥{{ webPrices.currentPrice }}</span>
+                                                <span v-if="webPrices && product.id === 2"
+                                                    class="ml-2 text-gray-500 line-through">¥{{ webPrices.originalPrice
+                                                    }}</span>
+                                                <span v-else-if="webPrices && product.id === 1"
+                                                    class="ml-2 text-gray-500 line-through">¥{{ webPrices.currentPrice
+                                                    }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -73,24 +78,30 @@
                                     <div class="flex items-center">
                                         <span class="text-gray-700 mr-4">数量:</span>
                                         <div class="flex items-center">
-                                            <button @click="decreaseQuantity" 
+                                            <button @click="decreaseQuantity"
                                                 class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
-                                                <svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+                                                <svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M20 12H4" />
                                                 </svg>
                                             </button>
-                                            <span class="mx-3 text-lg font-semibold text-gray-900 w-8 text-center">{{ quantity }}</span>
-                                            <button @click="increaseQuantity" 
+                                            <span class="mx-3 text-lg font-semibold text-gray-900 w-8 text-center">{{
+                                                quantity }}</span>
+                                            <button @click="increaseQuantity"
                                                 class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
-                                                <svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                                <svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                                 </svg>
                                             </button>
                                         </div>
                                     </div>
                                     <div class="flex items-center">
                                         <span class="text-gray-700 mr-4">总价:</span>
-                                        <span class="text-xl font-bold text-gray-900 mr-6">¥{{ (selectedProduct.price * quantity).toFixed(2) }}</span>
+                                        <span class="text-xl font-bold text-gray-900 mr-6">¥{{ (selectedProduct.price *
+                                            quantity).toFixed(2) }}</span>
                                         <button @click="handlePurchase" :disabled="loading"
                                             class="py-2 px-6 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-medium rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2 transition duration-300 flex items-center">
                                             <svg v-if="loading" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
@@ -188,6 +199,37 @@
                 </div>
             </div>
         </teleport>
+
+        <!-- 卡密显示弹窗 -->
+        <teleport to="body">
+            <div v-if="showCodesModal"
+                class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
+                    <div class="bg-gradient-to-r from-amber-500 to-amber-600 py-4 px-6">
+                        <h3 class="text-xl font-bold text-white">购买成功</h3>
+                    </div>
+                    <div class="p-6 overflow-y-auto max-h-[60vh]">
+                        <p class="text-gray-700 mb-4">您的卡密已生成，请妥善保管：</p>
+                        <div class="space-y-3">
+                            <div v-for="(code, index) in purchasedCodes" :key="index"
+                                class="flex items-center justify-between bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <span class="font-mono text-gray-800">{{ code }}</span>
+                                <button @click="copyCode(code)"
+                                    class="ml-4 py-1 px-3 text-sm bg-amber-100 hover:bg-amber-200 text-amber-700 rounded-lg transition duration-200">
+                                    复制
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex justify-end">
+                            <button @click="closeCodesModal"
+                                class="py-2 px-6 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-medium rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2 transition duration-300">
+                                确定
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </teleport>
     </div>
 </template>
 
@@ -196,6 +238,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { codeApi } from '@/api/code'
+import { Message } from '@/components/Message'
 
 // 用户状态管理
 const userStore = useUserStore()
@@ -235,6 +278,10 @@ const loginSuccess = ref(false)
 const success = ref(false)
 const isLoggedIn = ref(false) // 商家登录状态
 
+// 卡密弹窗控制
+const showCodesModal = ref(false)
+const purchasedCodes = ref<string[]>([])
+
 // 商家账号密码存储键名
 const MERCHANT_ACCOUNT_KEY = 'merchant_account'
 const MERCHANT_PASSWORD_KEY = 'merchant_password'
@@ -260,6 +307,23 @@ const decreaseQuantity = () => {
     if (quantity.value > 1) {
         quantity.value--
     }
+}
+
+// 复制卡密到剪贴板
+const copyCode = (code: string) => {
+    navigator.clipboard.writeText(code).then(() => {
+        // 使用Message组件显示复制成功的提示
+        Message.success('卡密已复制到剪贴板')
+    }).catch(err => {
+        console.error('复制失败', err)
+        Message.error('复制失败，请手动复制')
+    })
+}
+
+// 关闭卡密弹窗
+const closeCodesModal = () => {
+    showCodesModal.value = false
+    purchasedCodes.value = []
 }
 
 // 获取网站价格信息
@@ -295,7 +359,7 @@ const fetchProductPrices = async (account: string, password: string) => {
 onMounted(() => {
     // 获取网站价格信息
     fetchWebPrices()
-    
+
     const account = localStorage.getItem(MERCHANT_ACCOUNT_KEY)
     const password = localStorage.getItem(MERCHANT_PASSWORD_KEY)
 
@@ -330,6 +394,7 @@ const handleLogin = async () => {
         const isValid = await fetchProductPrices(loginForm.value.userAccount, loginForm.value.userPassword)
 
         if (isValid) {
+            Message.success('登录成功')
             loginMessage.value = '登录成功'
             loginSuccess.value = true
             isLoggedIn.value = true
@@ -399,11 +464,16 @@ const handlePurchase = async () => {
         }, account, password)
 
         if (res.statusCode === 200) {
-            message.value = '购买成功，卡密已生成'
-            success.value = true
-            
-            // 可以在这里处理返回的卡密列表
-            console.log('购买的卡密列表:', res.data)
+            // 显示卡密弹窗
+            purchasedCodes.value = res.data
+            showCodesModal.value = true
+
+            // 使用Message组件显示购买成功的提示
+            Message.success('购买成功！卡密已生成')
+
+            // 清除消息提示
+            message.value = ''
+            success.value = false
         } else {
             message.value = res.message || '购买失败'
             success.value = false
