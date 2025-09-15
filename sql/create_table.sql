@@ -263,6 +263,7 @@ CREATE TABLE IF NOT EXISTS code_merchant (
 CREATE TABLE IF NOT EXISTS code (
                                 id BIGINT PRIMARY KEY COMMENT '主键ID',
                                 code VARCHAR(255) NOT NULL COMMENT '卡密',
+                                price  decimal(10, 2)   not null comment '价格',
                                 merchant_id BIGINT NOT NULL COMMENT '关联的商家ID',
                                 is_used TINYINT DEFAULT 0 NOT NULL COMMENT '是否已使用：0-未使用，1-已使用',
                                 user_account BIGINT COMMENT '使用者账号',
