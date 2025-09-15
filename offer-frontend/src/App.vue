@@ -173,6 +173,9 @@
       <!-- 首页弹窗 -->
       <HomeModal v-if="showHomeModal" @close="closeHomeModal" />
 
+      <!-- 更新通知弹窗 -->
+      <UpdateNoticeModal v-if="showUpdateNoticeModal" @close="closeUpdateNoticeModal" />
+
       <!-- 用户信息弹窗 -->
       <UserProfileModal v-if="showUserProfileModal" @close="showUserProfileModal = false"
         @open-edit="openEditUserModal" />
@@ -199,6 +202,7 @@ import { useRoute } from 'vue-router'
 import { useUserStore } from './stores/user'
 import LoginModal from './components/LoginModal.vue'
 import HomeModal from './components/HomeModal.vue'
+import UpdateNoticeModal from './components/UpdateNoticeModal.vue'
 import UserProfileModal from './components/UserProfileModal.vue'
 import EditUserModal from './components/EditUserModal.vue'
 
@@ -207,7 +211,7 @@ const userStore = useUserStore()
 const showLoginModal = ref(false)
 const showMobileMenu = ref(false)
 const showHomeModal = ref(false)
-const showUserProfileModal = ref(false)
+const showUpdateNoticeModal = ref(false)
 const showEditUserModal = ref(false)
 
 // 判断是否为管理页面路由
@@ -265,6 +269,8 @@ onMounted(async () => {
   }
   // 检查是否需要显示首页弹窗
   checkShowHomeModal()
+  // 检查是否需要显示更新通知弹窗
+  checkShowUpdateNoticeModal()
 })
 
 onUnmounted(() => {
@@ -287,8 +293,11 @@ const checkShowHomeModal = () => {
 
     // 检查是否已经显示过弹窗（本次会话内）
     const sessionShown = sessionStorage.getItem('homeModalShown')
+    // 检查是否已经显示过更新通知弹窗
+    const hasShownUpdateNotice = localStorage.getItem('hasShownUpdateNotice_v1.1')
 
-    if (!sessionShown) {
+    // 只有在显示过更新通知弹窗后才显示首页弹窗
+    if (!sessionShown && hasShownUpdateNotice) {
       // 延迟1秒显示弹窗，让页面加载完成
       setTimeout(() => {
         showHomeModal.value = true
@@ -298,9 +307,33 @@ const checkShowHomeModal = () => {
   }
 }
 
+// 检查是否显示更新通知弹窗
+const checkShowUpdateNoticeModal = () => {
+  // 检查是否已经显示过更新通知弹窗
+  const hasShownUpdateNotice = localStorage.getItem('hasShownUpdateNotice_v1.1')
+
+  if (!hasShownUpdateNotice) {
+    // 延迟1.5秒显示更新通知弹窗，让页面加载完成
+    setTimeout(() => {
+      showUpdateNoticeModal.value = true
+    }, 500)
+  }
+}
+
 // 关闭弹窗的处理函数
 const closeHomeModal = () => {
   showHomeModal.value = false
+}
+
+// 关闭更新通知弹窗的处理函数
+const closeUpdateNoticeModal = () => {
+  showUpdateNoticeModal.value = false
+  // 标记已经显示过更新通知
+  localStorage.setItem('hasShownUpdateNotice_v1.1', 'true')
+  // 显示首页弹窗
+  setTimeout(() => {
+    checkShowHomeModal()
+  }, 300)
 }
 
 // 打开编辑用户信息弹窗
