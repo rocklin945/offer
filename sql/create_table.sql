@@ -246,3 +246,30 @@ CREATE TABLE `pay_order` (
                              `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '订单更新时间',
                              UNIQUE KEY `uk_out_trade_no` (`out_trade_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='支付订单表';
+
+-- 卡密商家表
+CREATE TABLE IF NOT EXISTS code_merchant (
+                                id BIGINT PRIMARY KEY COMMENT '主键ID',
+                                account VARCHAR(255) NOT NULL COMMENT '卡密商家账号',
+                                password VARCHAR(255) NOT NULL COMMENT '密码',
+                                autumn_price DECIMAL(10,2) NOT NULL COMMENT '秋招会员价格',
+                                campus_price DECIMAL(10,2) NOT NULL COMMENT '校招会员价格',
+                                create_time DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '创建时间',
+                                update_time DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                                is_delete TINYINT DEFAULT 0 NOT NULL COMMENT '是否删除'
+) COMMENT='卡密商家表';
+
+-- 卡密表
+CREATE TABLE IF NOT EXISTS code (
+                                id BIGINT PRIMARY KEY COMMENT '主键ID',
+                                code VARCHAR(255) NOT NULL COMMENT '卡密',
+                                merchant_id BIGINT NOT NULL COMMENT '关联的商家ID',
+                                is_used TINYINT DEFAULT 0 NOT NULL COMMENT '是否已使用：0-未使用，1-已使用',
+                                user_account BIGINT COMMENT '使用者账号',
+                                used_time DATETIME COMMENT '使用时间',
+                                create_time DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '创建时间',
+                                update_time DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                                is_delete TINYINT DEFAULT 0 NOT NULL COMMENT '是否删除',
+                                UNIQUE KEY uk_code (code),
+                                INDEX idx_product_id (merchant_id)
+) COMMENT='卡密表';
