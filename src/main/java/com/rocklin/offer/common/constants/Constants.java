@@ -131,4 +131,6 @@ public final class Constants {
     public static final String CODE_NOTIFY_URL = "https://offer.rocklin.top/api/code/notify";
     public static final String LEFT_BRACKET = "[";
     public static final String RIGHT_BRACKET = "]";
+    public static final String CODE_PURCHASE_URL = "/code-purchase";
+    public static final String CODE_PURCHASE_URL_PREFIX ="/code-purchase?codes=";
 }

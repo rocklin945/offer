@@ -64,7 +64,7 @@
                                             <p class="mt-1 text-sm text-gray-500">{{ product.description }}</p>
                                             <div class="mt-3 flex items-center">
                                                 <span class="text-xl font-bold text-gray-900">¥{{ product.price
-                                                    }}</span>
+                                                }}</span>
                                                 <!-- 显示被划掉的原价 -->
                                                 <span v-if="webPrices && product.id === 2"
                                                     class="ml-2 text-gray-500 line-through">¥{{ webPrices.originalPrice
@@ -258,7 +258,8 @@
                                         <div class="font-mono text-lg font-bold text-gray-800">{{ code.code }}</div>
                                         <div class="mt-1 text-sm text-gray-600">价格: ¥{{ code.price }}</div>
                                     </div>
-                                    <span v-if="code.isUsed" class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
+                                    <span v-if="code.isUsed"
+                                        class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
                                         已使用
                                     </span>
                                     <span v-else class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">
@@ -356,12 +357,12 @@ const handleShowCodesList = async () => {
     try {
         const account = localStorage.getItem(MERCHANT_ACCOUNT_KEY)
         const password = localStorage.getItem(MERCHANT_PASSWORD_KEY)
-        
+
         if (!account || !password) {
             Message.error('商家账号信息不存在，请重新登录')
             return
         }
-        
+
         const res = await codeApi.listCode(account, password)
         if (res.statusCode === 200) {
             codesList.value = res.data || []
@@ -413,10 +414,10 @@ const copyCode = (code: string) => {
 // 格式化日期时间
 const formatDateTime = (dateString: string | number | undefined) => {
     if (!dateString) return ''
-    
+
     const date = new Date(dateString)
     if (isNaN(date.getTime())) return ''
-    
+
     return date.toLocaleString('zh-CN', {
         year: 'numeric',
         month: '2-digit',
@@ -606,24 +607,27 @@ const handleReturnCodes = async () => {
     try {
         // 从URL参数中获取卡密数据
         const urlParams = new URLSearchParams(window.location.search)
-        const params: Record<string, string> = {}
+        const codesParam = urlParams.get('codes')
 
-        // 将所有URL参数转换为对象
-        for (const [key, value] of urlParams.entries()) {
-            params[key] = value
-        }
+        // 如果有卡密数据，解析并显示
+        if (codesParam) {
+            // URL解码
+            const decodedCodes = decodeURIComponent(codesParam)
+            // 解析JSON
+            const codes = JSON.parse(decodedCodes)
 
-        // 如果有参数，调用返回接口获取卡密
-        if (Object.keys(params).length > 0) {
-            const codes = await codeApi.returnCode(params)
             if (Array.isArray(codes) && codes.length > 0) {
                 purchasedCodes.value = codes
                 showCodesModal.value = true
                 Message.success('购买成功！卡密已生成')
+
+                // 清除URL中的参数，避免刷新时重复显示
+                window.history.replaceState({}, document.title, window.location.pathname)
             }
         }
     } catch (e) {
         console.error('处理返回卡密数据失败', e)
+        Message.error('处理卡密数据失败')
     }
 }
 

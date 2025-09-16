@@ -1,9 +1,7 @@
 package com.rocklin.offer.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rocklin.offer.common.annotation.SlidingWindowRateLimit;
-import com.rocklin.offer.common.enums.ErrorCode;
-import com.rocklin.offer.common.exception.Assert;
 import com.rocklin.offer.common.response.BaseResponse;
 import com.rocklin.offer.model.dto.request.CodePurchaseRequest;
 import com.rocklin.offer.model.dto.request.CodeRedeemRequest;
@@ -12,13 +10,16 @@ import com.rocklin.offer.model.entity.Code;
 import com.rocklin.offer.service.CodeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -33,8 +34,8 @@ import static com.rocklin.offer.common.constants.Constants.*;
  */
 @Tag(name = "卡密", description = "卡密相关接口")
 @RestController
-@Slf4j
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/code")
 public class CodeController {
 
@@ -43,11 +44,10 @@ public class CodeController {
     /**
      * 卡密兑换
      */
-    @Operation(summary = "卡密兑换", description = "用户使用卡密兑换会员权益")
+    @Operation(summary = "卡密兑换", description = "用户兑换卡密")
     @PostMapping("/redeem")
     @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 10)
-    public BaseResponse<String> redeemCode(@RequestBody @Valid CodeRedeemRequest req) {
-        Assert.notNull(req, ErrorCode.PARAMS_ERROR, "参数为空");
+    public BaseResponse<Void> redeemCode(@RequestBody @Valid CodeRedeemRequest req) {
         codeService.redeemCode(req);
         return BaseResponse.success();
     }
@@ -59,7 +59,7 @@ public class CodeController {
     @GetMapping("/price")
     @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 10)
     public BaseResponse<CodePriceResponse> getCodePrice(@RequestParam("account") String account,
-                                                                       @RequestParam("password") String password) {
+            @RequestParam("password") String password) {
         CodePriceResponse response = codeService.getCodePrice(account, password);
         return BaseResponse.success(response);
     }
@@ -71,8 +71,8 @@ public class CodeController {
     @PostMapping("/purchase")
     @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 10)
     public BaseResponse<String> purchaseCode(@RequestBody @Valid CodePurchaseRequest req,
-                                                           @RequestParam("account") String account,
-                                                           @RequestParam("password") String password) {
+            @RequestParam("account") String account,
+            @RequestParam("password") String password) {
         String html = codeService.purchaseCode(req, account, password);
         return BaseResponse.success(html);
     }
@@ -96,11 +96,14 @@ public class CodeController {
      */
     @Operation(summary = "卡密返回接口", description = "卡密返回接口")
     @GetMapping("/return")
-    public List<String> returnCode(@RequestParam Map<String, String> params) throws JsonProcessingException {
+    public String returnCode(@RequestParam Map<String, String> params, HttpServletResponse response)
+            throws IOException {
         log.info("returnCode params: {}", params);
         String codes = params.get(PARAM);
         if (codes == null || codes.isBlank()) {
-            return Collections.emptyList();
+            // 如果没有卡密数据，重定向到卡密购买页面
+            response.sendRedirect(CODE_PURCHASE_URL);
+            return null;
         }
 
         // 去掉前后方括号
@@ -110,10 +113,21 @@ public class CodeController {
         }
 
         // 按逗号分割，并去掉多余空格
-        return Arrays.stream(codes.split(COMMA))
+        List<String> codeList = Arrays.stream(codes.split(COMMA))
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
                 .toList();
+
+        // 将卡密列表转换为JSON字符串
+        ObjectMapper mapper = new ObjectMapper();
+        String codesJson = mapper.writeValueAsString(codeList);
+
+        // URL编码
+        String encodedCodes = URLEncoder.encode(codesJson, StandardCharsets.UTF_8);
+
+        // 重定向到卡密购买页面，并传递卡密数据
+        response.sendRedirect(CODE_PURCHASE_URL_PREFIX + encodedCodes);
+        return null;
     }
 
     /**
@@ -122,7 +136,7 @@ public class CodeController {
     @Operation(summary = "获取卡密列表", description = "商家获取卡密列表")
     @GetMapping("/list")
     public BaseResponse<List<Code>> listCode(@RequestParam("account") String account,
-                                             @RequestParam("password") String password) {
+            @RequestParam("password") String password) {
         List<Code> codes = codeService.listCode(account, password);
         return BaseResponse.success(codes);
     }

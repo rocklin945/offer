@@ -80,14 +80,6 @@ export function getWebPrice(): Promise<BaseResponse<WebPriceResponse>> {
 }
 
 /**
- * 卡密返回接口
- * @param params 返回参数
- */
-export function returnCode(params: Record<string, string>): Promise<string[]> {
-    return request.get('/code/return', { params }).then(res => res.data)
-}
-
-/**
  * 购买卡密
  * @param data 购买请求参数
  * @param account 商家账号
@@ -117,7 +109,6 @@ export const codeApi = {
     redeemCode,
     getCodePrice,
     getWebPrice,
-    returnCode,
     purchaseCode,
     listCode
 }
