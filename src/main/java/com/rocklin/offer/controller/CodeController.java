@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -32,6 +33,7 @@ import static com.rocklin.offer.common.constants.Constants.PARAM;
  */
 @Tag(name = "卡密", description = "卡密相关接口")
 @RestController
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/code")
 public class CodeController {
@@ -81,6 +83,7 @@ public class CodeController {
     @Operation(summary = "卡密返回接口", description = "卡密返回接口")
     @GetMapping("/return")
     public List<String> returnCode(@RequestParam Map<String, String> params) throws JsonProcessingException {
+        log.info("returnCode params: {}", params);
         String codesJson = params.get(PARAM);
         if (codesJson == null) {
             return Collections.emptyList();

@@ -66,12 +66,20 @@ export function getWebPrice(): Promise<BaseResponse<WebPriceResponse>> {
 }
 
 /**
+ * 卡密返回接口
+ * @param params 返回参数
+ */
+export function returnCode(params: Record<string, string>): Promise<string[]> {
+    return request.get('/code/return', { params }).then(res => res.data)
+}
+
+/**
  * 购买卡密
  * @param data 购买请求参数
  * @param account 商家账号
  * @param password 商家密码
  */
-export function purchaseCode(data: PurchaseCodeRequest, account?: string, password?: string): Promise<BaseResponse<string[]>> {
+export function purchaseCode(data: PurchaseCodeRequest, account?: string, password?: string): Promise<BaseResponse<string>> {
     // 如果提供了账号和密码，则作为查询参数传递
     const config: any = {};
     if (account !== undefined && password !== undefined) {
@@ -84,5 +92,6 @@ export const codeApi = {
     redeemCode,
     getCodePrice,
     getWebPrice,
+    returnCode,
     purchaseCode
 }

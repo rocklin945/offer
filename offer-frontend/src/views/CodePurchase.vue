@@ -368,6 +368,8 @@ onMounted(() => {
         fetchProductPrices(account, password).then(isValid => {
             if (isValid) {
                 isLoggedIn.value = true
+                // 检查是否有返回的卡密数据
+                handleReturnCodes()
             } else {
                 // 如果验证失败，清除存储的账号密码
                 localStorage.removeItem(MERCHANT_ACCOUNT_KEY)
@@ -463,17 +465,9 @@ const handlePurchase = async () => {
             quantity: quantity.value
         }, account, password)
 
-        if (res.statusCode === 200) {
-            // 显示卡密弹窗
-            purchasedCodes.value = res.data
-            showCodesModal.value = true
-
-            // 使用Message组件显示购买成功的提示
-            Message.success('购买成功！卡密已生成')
-
-            // 清除消息提示
-            message.value = ''
-            success.value = false
+        if (res) {
+            // 处理返回的HTML表单，在新窗口中打开支付页面
+            handlePaymentForm(res.data)
         } else {
             message.value = res.message || '购买失败'
             success.value = false
@@ -486,6 +480,69 @@ const handlePurchase = async () => {
         loading.value = false
     }
 }
+
+// 处理支付表单，在新窗口中打开支付页面
+const handlePaymentForm = (htmlContent: string) => {
+    const newWindow = window.open('', '_blank')
+    if (newWindow) {
+        newWindow.document.open()
+        newWindow.document.write(htmlContent)
+        newWindow.document.close()
+    } else {
+        message.value = '无法打开新窗口，请检查浏览器设置'
+        success.value = false
+    }
+}
+
+// 处理返回的卡密数据
+const handleReturnCodes = async () => {
+    try {
+        // 从URL参数中获取卡密数据
+        const urlParams = new URLSearchParams(window.location.search)
+        const params: Record<string, string> = {}
+
+        // 将所有URL参数转换为对象
+        for (const [key, value] of urlParams.entries()) {
+            params[key] = value
+        }
+
+        // 如果有参数，调用返回接口获取卡密
+        if (Object.keys(params).length > 0) {
+            const codes = await codeApi.returnCode(params)
+            if (Array.isArray(codes) && codes.length > 0) {
+                purchasedCodes.value = codes
+                showCodesModal.value = true
+                Message.success('购买成功！卡密已生成')
+            }
+        }
+    } catch (e) {
+        console.error('处理返回卡密数据失败', e)
+    }
+}
+
+// 在组件挂载时检查是否有返回的卡密数据
+onMounted(() => {
+    // 获取网站价格信息
+    fetchWebPrices()
+
+    const account = localStorage.getItem(MERCHANT_ACCOUNT_KEY)
+    const password = localStorage.getItem(MERCHANT_PASSWORD_KEY)
+
+    if (account && password) {
+        // 验证账号密码是否有效
+        fetchProductPrices(account, password).then(isValid => {
+            if (isValid) {
+                isLoggedIn.value = true
+                // 检查是否有返回的卡密数据
+                handleReturnCodes()
+            } else {
+                // 如果验证失败，清除存储的账号密码
+                localStorage.removeItem(MERCHANT_ACCOUNT_KEY)
+                localStorage.removeItem(MERCHANT_PASSWORD_KEY)
+            }
+        })
+    }
+})
 </script>
 
 <style scoped>
