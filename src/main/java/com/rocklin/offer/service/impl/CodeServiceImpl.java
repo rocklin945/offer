@@ -10,15 +10,13 @@ import com.rocklin.offer.common.utils.EncryptPasswordUtil;
 import com.rocklin.offer.common.utils.SignUtil;
 import com.rocklin.offer.mapper.CodeMapper;
 import com.rocklin.offer.mapper.MerchantMapper;
+import com.rocklin.offer.mapper.PayOrderMapper;
 import com.rocklin.offer.mapper.UserMapper;
 import com.rocklin.offer.model.dto.request.CodePurchaseRequest;
 import com.rocklin.offer.model.dto.request.CodeRedeemRequest;
 import com.rocklin.offer.model.dto.request.UserUpdateRequest;
 import com.rocklin.offer.model.dto.response.CodePriceResponse;
-import com.rocklin.offer.model.entity.Code;
-import com.rocklin.offer.model.entity.Merchant;
-import com.rocklin.offer.model.entity.PayOrder;
-import com.rocklin.offer.model.entity.User;
+import com.rocklin.offer.model.entity.*;
 import com.rocklin.offer.service.CodeService;
 import com.rocklin.offer.service.PayOrderService;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +50,7 @@ public class CodeServiceImpl implements CodeService {
     private final MerchantMapper merchantMapper;
     private final EncryptPasswordUtil encryptPasswordUtil;
     private final PayOrderService payOrderService;
+    private final PayOrderMapper payOrderMapper;
     private final PayProperties payProperties;
 
     @Override
@@ -156,6 +155,40 @@ public class CodeServiceImpl implements CodeService {
         return codeList;
     }
 
+    @Override
+    public boolean markOrderPaid(Map<String, String> params) {
+        // 1. 验签
+        String sign = params.get(SIGN);
+        Map<String, String> verifyParams = new HashMap<>(params);
+        verifyParams.remove(SIGN);
+        verifyParams.remove(SIGN_TYPE);
+
+        String localSign = SignUtil.getSign(verifyParams, payProperties.getKey());
+        if (!localSign.equalsIgnoreCase(sign)) {
+            log.error("支付平台异步回调签名验证失败,平台签名:{},本地签名:{}", sign, localSign);
+            return false; // 签名不一致
+        }
+
+        // 2. 处理订单逻辑
+        String outTradeNo = params.get(OUT_TRADE_NO);
+        String tradeNo = params.get(TRADE_NO);          // 平台订单号
+        String tradeStatus = params.get(TRADE_STATUS);  // "TRADE_SUCCESS" 表示成功
+
+        if (TRADE_SUCCESS.equals(tradeStatus)) {
+            boolean updated = updateOrder(outTradeNo, tradeNo);
+            log.info("更新订单状态：{}", updated ? "成功" : "失败");
+            return updated ? true : false;
+        }
+        return false;
+    }
+
+    private boolean updateOrder(String outTradeNo, String tradeNo) {
+        PayOrder payOrder = payOrderMapper.selectByOutTradeNo(outTradeNo);
+        Assert.notNull(payOrder, ErrorCode.OPERATION_ERROR, "订单不存在");
+        int rows = payOrderMapper.updateStatusAndTradeNo(outTradeNo, tradeNo, 1);
+        return rows > 0;
+    }
+
     private String createOrder(Long userId, String name, String money, String type, List<String> param) {
         // 1. 创建本地订单
         PayOrder order = payOrderService.createOrder(false, userId, name, money, type, null);
@@ -167,7 +200,7 @@ public class CodeServiceImpl implements CodeService {
         params.put(PID, payProperties.getPid());
         params.put(TYPE, type);
         params.put(OUT_TRADE_NO, order.getOutTradeNo());
-        params.put(NOTIFY_URL, payProperties.getNotifyUrl());
+        params.put(NOTIFY_URL, CODE_NOTIFY_URL);
         params.put(RETURN_URL, CODE_RETURN_URL);
         params.put(NAME, name);
         params.put(MONEY, money);

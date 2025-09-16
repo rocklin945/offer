@@ -6,6 +6,7 @@ import com.rocklin.offer.model.dto.response.CodePriceResponse;
 import com.rocklin.offer.model.entity.Code;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName CodeService
@@ -35,4 +36,6 @@ public interface CodeService {
      * 获取卡密列表
      */
     List<Code> listCode(String account, String password);
+
+    boolean markOrderPaid(Map<String, String> params);
 }

@@ -128,4 +128,7 @@ public final class Constants {
      * 卡密返回url
      */
     public static final String CODE_RETURN_URL = "https://offer.rocklin.top/api/code/return";
+    public static final String CODE_NOTIFY_URL = "https://offer.rocklin.top/api/code/notify";
+    public static final String LEFT_BRACKET = "[";
+    public static final String RIGHT_BRACKET = "]";
 }

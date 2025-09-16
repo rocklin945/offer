@@ -1,8 +1,6 @@
 package com.rocklin.offer.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rocklin.offer.common.annotation.SlidingWindowRateLimit;
 import com.rocklin.offer.common.enums.ErrorCode;
 import com.rocklin.offer.common.exception.Assert;
@@ -19,11 +17,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static com.rocklin.offer.common.constants.Constants.PARAM;
+import static com.rocklin.offer.common.constants.Constants.*;
 
 /**
  * @ClassName CodeController
@@ -79,18 +78,42 @@ public class CodeController {
     }
 
     /**
+     * 支付平台异步回调（notify_url）
+     */
+    @Operation(summary = "支付平台异步回调", description = "支付平台异步回调")
+    @GetMapping("/notify")
+    public String notifyCallback(@RequestParam Map<String, String> params) {
+        log.info("支付平台异步回调：{}", params);
+        boolean result = codeService.markOrderPaid(params);
+        if (result) {
+            return SUCCESS;
+        }
+        return FAIL;
+    }
+
+    /**
      * 卡密返回接口
      */
     @Operation(summary = "卡密返回接口", description = "卡密返回接口")
     @GetMapping("/return")
     public List<String> returnCode(@RequestParam Map<String, String> params) throws JsonProcessingException {
         log.info("returnCode params: {}", params);
-        String codesJson = params.get(PARAM);
-        if (codesJson == null) {
+        String codes = params.get(PARAM);
+        if (codes == null || codes.isBlank()) {
             return Collections.emptyList();
         }
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(codesJson, new TypeReference<List<String>>() {});
+
+        // 去掉前后方括号
+        codes = codes.trim();
+        if (codes.startsWith(LEFT_BRACKET) && codes.endsWith(RIGHT_BRACKET)) {
+            codes = codes.substring(1, codes.length() - 1);
+        }
+
+        // 按逗号分割，并去掉多余空格
+        return Arrays.stream(codes.split(COMMA))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .toList();
     }
 
     /**
