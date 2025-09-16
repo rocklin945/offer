@@ -12,6 +12,7 @@ import com.rocklin.offer.common.request.DeleteRequest;
 import com.rocklin.offer.common.response.BaseResponse;
 import com.rocklin.offer.common.response.PageResponse;
 import com.rocklin.offer.common.utils.OrderParser;
+import com.rocklin.offer.common.utils.SignUtil;
 import com.rocklin.offer.model.dto.request.CreateOrderRequest;
 import com.rocklin.offer.model.dto.request.PayOrderPageRequest;
 import com.rocklin.offer.model.dto.request.PayOrderQueryRequest;
@@ -24,14 +25,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import static com.rocklin.offer.common.constants.Constants.*;
 
@@ -59,7 +58,7 @@ public class PayController {
         Long userId = Long.valueOf(strUserId);
 
         // 1. 创建本地订单
-        PayOrder order = payOrderService.createOrder(userId, req.getName(), req.getMoney(), req.getType(), req.getParam());
+        PayOrder order = payOrderService.createOrder(true, userId, req.getName(), req.getMoney(), req.getType(), req.getParam());
 
         log.info("用户:{}创建订单:{}", userId, order.getOutTradeNo());
 
@@ -76,7 +75,7 @@ public class PayController {
         if (req.getCid() != null) params.put(CID, req.getCid());
 
         // 3. 生成签名
-        String sign = getSign(params);
+        String sign = SignUtil.getSign(params, payProperties.getKey());
         params.put(SIGN_TYPE, MD5);
         params.put(SIGN, sign);
 
@@ -107,7 +106,7 @@ public class PayController {
         verifyParams.remove(SIGN);
         verifyParams.remove(SIGN_TYPE);
 
-        String localSign = getSign(verifyParams);
+        String localSign = SignUtil.getSign(verifyParams, payProperties.getKey());
         if (!localSign.equalsIgnoreCase(sign)) {
             log.error("支付平台异步回调签名验证失败,平台签名:{},本地签名:{}", sign, localSign);
             return FAIL; // 签名不一致
@@ -200,27 +199,4 @@ public class PayController {
         return BaseResponse.success(result);
     }
 
-    /**
-     * 生成签名（ZPAY 规则：按 ASCII 升序拼接 + key，MD5 小写）
-     */
-    private String getSign(Map<String, String> params) {
-        params = sortByKey(params);
-        String signStr = params.entrySet().stream()
-                .filter(e -> e.getValue() != null && !e.getValue().isEmpty())
-                .map(e -> e.getKey() + EQUAL + e.getValue())
-                .reduce((a, b) -> a + AMPERSAND + b)
-                .orElse("");
-        signStr += payProperties.getKey();
-
-        return DigestUtils.md5DigestAsHex(signStr.getBytes(StandardCharsets.UTF_8));
-    }
-
-    // 工具方法：按 key 升序排序
-    private static <K extends Comparable<? super K>, V> Map<K, V> sortByKey(Map<K, V> map) {
-        Map<K, V> result = new LinkedHashMap<>();
-        map.entrySet().stream()
-                .sorted(Map.Entry.comparingByKey())
-                .forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
-        return result;
-    }
 }

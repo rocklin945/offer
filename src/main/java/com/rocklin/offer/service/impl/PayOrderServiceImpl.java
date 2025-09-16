@@ -3,14 +3,16 @@ package com.rocklin.offer.service.impl;
 import com.rocklin.offer.common.enums.ErrorCode;
 import com.rocklin.offer.common.enums.UserRoleEnum;
 import com.rocklin.offer.common.exception.Assert;
+import com.rocklin.offer.common.exception.BusinessException;
 import com.rocklin.offer.common.response.PageResponse;
 import com.rocklin.offer.common.utils.OrderNoGenerator;
+import com.rocklin.offer.mapper.MerchantMapper;
 import com.rocklin.offer.mapper.PayOrderMapper;
 import com.rocklin.offer.mapper.UserMapper;
 import com.rocklin.offer.mapper.WebInfoMapper;
 import com.rocklin.offer.model.dto.request.PayOrderPageRequest;
 import com.rocklin.offer.model.dto.request.UserUpdateRequest;
-import com.rocklin.offer.model.entity.Material;
+import com.rocklin.offer.model.entity.Merchant;
 import com.rocklin.offer.model.entity.PayOrder;
 import com.rocklin.offer.model.entity.User;
 import com.rocklin.offer.model.entity.WebInfo;
@@ -29,13 +31,23 @@ public class PayOrderServiceImpl implements PayOrderService {
 
     private final PayOrderMapper payOrderMapper;
     private final UserMapper userMapper;
+    private final MerchantMapper merchantMapper;
     private final WebInfoMapper webInfoMapper;
     private final InviteCommissionService commissionService;
 
     @Override
-    public PayOrder createOrder(Long userId, String name, String money, String type, String param) {
-        User user = userMapper.selectById(userId);
-        Assert.notNull(user, ErrorCode.OPERATION_ERROR, "用户不存在");
+    public PayOrder createOrder(Boolean isUser, Long userId, String name, String money, String type, String param) {
+        if (isUser) {
+            User user = userMapper.selectById(userId);
+            if (user == null) {
+                throw new BusinessException(ErrorCode.OPERATION_ERROR, "用户不存在");
+            }
+        } else{
+            Merchant merchant = merchantMapper.selectById(userId);
+            if (merchant == null) {
+                throw new BusinessException(ErrorCode.OPERATION_ERROR, "商家不存在");
+            }
+        }
 
         PayOrder order = new PayOrder();
         order.setOutTradeNo(OrderNoGenerator.generate());

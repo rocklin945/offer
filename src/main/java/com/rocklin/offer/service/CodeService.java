@@ -28,5 +28,5 @@ public interface CodeService {
     /**
      * 购买卡密
      */
-    List<String> purchaseCode(CodePurchaseRequest req, String account, String password);
+    String purchaseCode(CodePurchaseRequest req, String account, String password);
 }

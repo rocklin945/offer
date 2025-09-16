@@ -123,4 +123,9 @@ public final class Constants {
      * 单点登录
      */
     public static final String LOGIN_TOKEN_KEY_PREFIX ="LOGIN:TOKEN:";
+
+    /**
+     * 卡密返回url
+     */
+    public static final String CODE_RETURN_URL = "https://offer.rocklin.top/api/code/return";
 }

@@ -9,7 +9,7 @@ public interface PayOrderService {
     /**
      * 创建订单
      */
-    PayOrder createOrder(Long userId, String name, String money, String type, String param);
+    PayOrder createOrder(Boolean isUser, Long userId, String name, String money, String type, String param);
 
     /**
      * 支付成功回调
