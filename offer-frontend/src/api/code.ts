@@ -39,6 +39,20 @@ export interface PurchaseCodeResponse {
     [key: string]: any
 }
 
+// 卡密列表项
+export interface CodeItem {
+    id: number;
+    code: string;
+    price: number;
+    merchantId: number;
+    isUsed: number;
+    userAccount?: string;
+    usedTime?: string;
+    createTime: string;
+    updateTime?: number;
+    isDelete: number;
+}
+
 /**
  * 卡密兑换
  * @param data 兑换请求参数
@@ -88,10 +102,22 @@ export function purchaseCode(data: PurchaseCodeRequest, account?: string, passwo
     return request.post('/code/purchase', data, config).then(res => res.data)
 }
 
+/**
+ * 获取卡密列表
+ * @param account 商家账号
+ * @param password 商家密码
+ */
+export function listCode(account: string, password: string): Promise<BaseResponse<CodeItem[]>> {
+    return request.get('/code/list', {
+        params: { account, password }
+    }).then(res => res.data)
+}
+
 export const codeApi = {
     redeemCode,
     getCodePrice,
     getWebPrice,
     returnCode,
-    purchaseCode
+    purchaseCode,
+    listCode
 }

@@ -16,10 +16,16 @@
                                     <h2 class="text-2xl font-bold text-gray-800">选择卡密商品</h2>
                                     <p class="mt-1 text-gray-600">欢迎，{{ getMerchantAccount() }}</p>
                                 </div>
-                                <button @click="handleLogout"
-                                    class="py-2 px-4 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-200 transition duration-300">
-                                    退出登录
-                                </button>
+                                <div class="flex space-x-2">
+                                    <button @click="handleShowCodesList"
+                                        class="py-2 px-4 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-200 transition duration-300">
+                                        我的卡密
+                                    </button>
+                                    <button @click="handleLogout"
+                                        class="py-2 px-4 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-200 transition duration-300">
+                                        退出登录
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
@@ -230,6 +236,56 @@
                 </div>
             </div>
         </teleport>
+
+        <!-- 卡密列表弹窗 -->
+        <teleport to="body">
+            <div v-if="showCodesListModal"
+                class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[80vh] overflow-hidden flex flex-col">
+                    <div class="bg-gradient-to-r from-amber-500 to-amber-600 py-4 px-6">
+                        <h3 class="text-xl font-bold text-white">我的卡密</h3>
+                    </div>
+                    <div class="p-6 overflow-y-auto flex-grow">
+                        <div v-if="codesList.length === 0" class="text-center py-8 text-gray-500">
+                            暂无卡密数据
+                        </div>
+                        <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div v-for="code in codesList" :key="code.id"
+                                class="border rounded-lg p-4 hover:shadow-md transition-shadow"
+                                :class="code.isUsed ? 'border-green-200 bg-green-50' : 'border-gray-200'">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <div class="font-mono text-lg font-bold text-gray-800">{{ code.code }}</div>
+                                        <div class="mt-1 text-sm text-gray-600">价格: ¥{{ code.price }}</div>
+                                    </div>
+                                    <span v-if="code.isUsed" class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
+                                        已使用
+                                    </span>
+                                    <span v-else class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">
+                                        未使用
+                                    </span>
+                                </div>
+                                <div v-if="code.isUsed" class="mt-3 pt-3 border-t border-gray-200">
+                                    <div class="text-sm text-gray-600">
+                                        <div>使用者: {{ code.userAccount }}</div>
+                                        <div>使用时间: {{ formatDateTime(code.usedTime) }}</div>
+                                    </div>
+                                </div>
+                                <div class="mt-3 text-xs text-gray-500">
+                                    创建时间: {{ formatDateTime(code.createTime) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 border-t border-gray-200 flex justify-end">
+                        <button @click="closeCodesListModal"
+                            class="py-2 px-6 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-medium rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2 transition duration-300">
+                            关闭
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </teleport>
     </div>
 </template>
 
@@ -237,7 +293,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import { codeApi } from '@/api/code'
+import { codeApi, type CodeItem } from '@/api/code'
 import { Message } from '@/components/Message'
 
 // 用户状态管理
@@ -269,6 +325,10 @@ const selectedProduct = ref<any>(null)
 const quantity = ref(1)
 const webPrices = ref<any>(null) // 网站价格信息
 
+// 卡密列表相关数据
+const showCodesListModal = ref(false)
+const codesList = ref<CodeItem[]>([])
+
 // 状态控制
 const loginLoading = ref(false)
 const loading = ref(false)
@@ -289,6 +349,36 @@ const MERCHANT_PASSWORD_KEY = 'merchant_password'
 // 获取商家账号
 const getMerchantAccount = () => {
     return localStorage.getItem(MERCHANT_ACCOUNT_KEY) || loginForm.value.userAccount
+}
+
+// 显示卡密列表
+const handleShowCodesList = async () => {
+    try {
+        const account = localStorage.getItem(MERCHANT_ACCOUNT_KEY)
+        const password = localStorage.getItem(MERCHANT_PASSWORD_KEY)
+        
+        if (!account || !password) {
+            Message.error('商家账号信息不存在，请重新登录')
+            return
+        }
+        
+        const res = await codeApi.listCode(account, password)
+        if (res.statusCode === 200) {
+            codesList.value = res.data || []
+            showCodesListModal.value = true
+        } else {
+            Message.error(res.message || '获取卡密列表失败')
+        }
+    } catch (error: any) {
+        console.error('获取卡密列表失败', error)
+        Message.error(error.message || '获取卡密列表失败')
+    }
+}
+
+// 关闭卡密列表弹窗
+const closeCodesListModal = () => {
+    showCodesListModal.value = false
+    codesList.value = []
 }
 
 // 选择商品
@@ -317,6 +407,23 @@ const copyCode = (code: string) => {
     }).catch(err => {
         console.error('复制失败', err)
         Message.error('复制失败，请手动复制')
+    })
+}
+
+// 格式化日期时间
+const formatDateTime = (dateString: string | number | undefined) => {
+    if (!dateString) return ''
+    
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) return ''
+    
+    return date.toLocaleString('zh-CN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
     })
 }
 
