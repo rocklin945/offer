@@ -10,6 +10,7 @@ import com.rocklin.offer.common.response.BaseResponse;
 import com.rocklin.offer.model.dto.request.CodePurchaseRequest;
 import com.rocklin.offer.model.dto.request.CodeRedeemRequest;
 import com.rocklin.offer.model.dto.response.CodePriceResponse;
+import com.rocklin.offer.model.entity.Code;
 import com.rocklin.offer.service.CodeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -90,5 +91,16 @@ public class CodeController {
         }
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(codesJson, new TypeReference<List<String>>() {});
+    }
+
+    /**
+     * 商家获取卡密列表
+     */
+    @Operation(summary = "获取卡密列表", description = "商家获取卡密列表")
+    @GetMapping("/list")
+    public BaseResponse<List<Code>> listCode(@RequestParam("account") String account,
+                                             @RequestParam("password") String password) {
+        List<Code> codes = codeService.listCode(account, password);
+        return BaseResponse.success(codes);
     }
 }

@@ -148,6 +148,14 @@ public class CodeServiceImpl implements CodeService {
         return html;
     }
 
+    @Override
+    public List<Code> listCode(String account, String password) {
+        Merchant merchant = merchantMapper.selectByAccount(account, password);
+        Assert.notNull(merchant, ErrorCode.OPERATION_ERROR, "商家不存在");
+        List<Code> codeList= codeMapper.selectListByMerchantId(merchant.getId());
+        return codeList;
+    }
+
     private String createOrder(Long userId, String name, String money, String type, List<String> param) {
         // 1. 创建本地订单
         PayOrder order = payOrderService.createOrder(false, userId, name, money, type, null);

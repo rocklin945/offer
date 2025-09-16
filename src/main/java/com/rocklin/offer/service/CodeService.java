@@ -3,6 +3,7 @@ package com.rocklin.offer.service;
 import com.rocklin.offer.model.dto.request.CodePurchaseRequest;
 import com.rocklin.offer.model.dto.request.CodeRedeemRequest;
 import com.rocklin.offer.model.dto.response.CodePriceResponse;
+import com.rocklin.offer.model.entity.Code;
 
 import java.util.List;
 
@@ -29,4 +30,9 @@ public interface CodeService {
      * 购买卡密
      */
     String purchaseCode(CodePurchaseRequest req, String account, String password);
+
+    /**
+     * 获取卡密列表
+     */
+    List<Code> listCode(String account, String password);
 }

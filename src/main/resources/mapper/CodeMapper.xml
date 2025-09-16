@@ -30,6 +30,12 @@
         FROM code
         WHERE code = #{code} AND is_used = 0 AND is_delete = 0
     </select>
+    <select id="selectListByMerchantId" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM code
+        WHERE merchant_id = #{id} AND is_delete = 0
+        ORDER BY create_time DESC
+    </select>
 
     <update id="updateById" parameterType="com.rocklin.offer.model.entity.Code">
         UPDATE code

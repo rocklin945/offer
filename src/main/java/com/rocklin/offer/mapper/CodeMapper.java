@@ -47,4 +47,6 @@ public interface CodeMapper {
      * @return 插入结果
      */
     int insert(Code code);
+
+    List<Code> selectListByMerchantId(Long id);
 }
