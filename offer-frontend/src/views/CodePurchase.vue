@@ -1,10 +1,10 @@
 <template>
     <div>
         <teleport to="body">
-            <div class="fixed inset-0 bg-gradient-to-br from-orange-100 to-amber-100">
+            <div class="fixed inset-0 bg-gradient-to-br from-orange-100 to-amber-100 overflow-y-auto">
                 <!-- 登录状态下的大尺寸布局 -->
                 <div v-if="isLoggedIn" class="min-h-full flex items-center justify-center p-4">
-                    <div class="w-full max-w-4xl bg-white rounded-2xl shadow-xl overflow-hidden">
+                    <div class="w-full max-w-4xl bg-white rounded-2xl shadow-xl overflow-hidden my-8">
                         <div class="bg-gradient-to-r from-orange-300 to-amber-300 py-8 px-6 text-center">
                             <h1 class="text-3xl font-bold text-gray-800">卡密购买</h1>
                             <p class="mt-2 text-orange-800">选择您需要的卡密商品并完成购买</p>
@@ -80,7 +80,7 @@
 
                             <!-- 精简的购买控件 -->
                             <div v-if="selectedProduct" class="mt-8 bg-gray-50 rounded-xl p-6">
-                                <div class="flex items-center justify-between">
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                     <div class="flex items-center">
                                         <span class="text-gray-700 mr-4">数量:</span>
                                         <div class="flex items-center">
@@ -109,7 +109,7 @@
                                         <span class="text-xl font-bold text-gray-900 mr-6">¥{{ (selectedProduct.price *
                                             quantity).toFixed(2) }}</span>
                                         <button @click="handlePurchase" :disabled="loading"
-                                            class="py-2 px-6 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-medium rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2 transition duration-300 flex items-center">
+                                            class="w-full sm:w-auto py-2 px-6 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-medium rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2 transition duration-300 flex items-center justify-center">
                                             <svg v-if="loading" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
                                                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
@@ -136,7 +136,7 @@
 
                 <!-- 未登录状态下的小尺寸布局 -->
                 <div v-else class="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-                    <div class="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden">
+                    <div class="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden my-8">
                         <div class="bg-gradient-to-r from-orange-300 to-amber-300 py-8 px-6 text-center">
                             <h1 class="text-3xl font-bold text-gray-800">卡密购买</h1>
                             <p class="mt-2 text-orange-800">选择您需要的卡密商品并完成购买</p>
