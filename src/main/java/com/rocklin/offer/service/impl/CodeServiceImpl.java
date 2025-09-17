@@ -174,17 +174,38 @@ public class CodeServiceImpl implements CodeService {
         String tradeNo = params.get(TRADE_NO);          // 平台订单号
         String tradeStatus = params.get(TRADE_STATUS);  // "TRADE_SUCCESS" 表示成功
 
+        // 获取卡密
+        String codes = params.get(PARAM).trim();
+        if (codes.startsWith(LEFT_BRACKET) && codes.endsWith(RIGHT_BRACKET)) {
+            codes = codes.substring(1, codes.length() - 1);
+        }
+
+        // 按逗号分割，并去掉多余空格
+        List<String> codeList = Arrays.stream(codes.split(COMMA))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .toList();
+
         if (TRADE_SUCCESS.equals(tradeStatus)) {
-            boolean updated = updateOrder(outTradeNo, tradeNo);
+            boolean updated = updateOrder(outTradeNo, tradeNo, codeList);
             log.info("更新订单状态：{}", updated ? "成功" : "失败");
             return updated ? true : false;
         }
         return false;
     }
 
-    private boolean updateOrder(String outTradeNo, String tradeNo) {
+    private boolean updateOrder(String outTradeNo, String tradeNo, List<String> codeList) {
         PayOrder payOrder = payOrderMapper.selectByOutTradeNo(outTradeNo);
         Assert.notNull(payOrder, ErrorCode.OPERATION_ERROR, "订单不存在");
+        //更新卡密逻辑删除
+        try {
+            for (String code : codeList) {
+                codeMapper.updateCodeIsDelete(code);
+            }
+        } catch (Exception e) {
+            log.error("更新卡密逻辑删除失败:{}", e.getMessage());
+            return false;
+        }
         int rows = payOrderMapper.updateStatusAndTradeNo(outTradeNo, tradeNo, 1);
         return rows > 0;
     }
@@ -235,6 +256,7 @@ public class CodeServiceImpl implements CodeService {
             code.setCode(codes[i]);
             code.setPrice(autumnPrice);
             code.setMerchantId(id);
+            code.setIsDelete(1);
             codeMapper.insert(code);
             responses.add(code.getCode());
         }

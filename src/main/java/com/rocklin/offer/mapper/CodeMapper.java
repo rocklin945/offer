@@ -49,4 +49,6 @@ public interface CodeMapper {
     int insert(Code code);
 
     List<Code> selectListByMerchantId(Long id);
+
+    void updateCodeIsDelete(String code);
 }

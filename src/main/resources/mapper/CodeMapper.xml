@@ -45,10 +45,16 @@
             used_time = #{usedTime}
         WHERE id = #{id}
     </update>
+    <update id="updateCodeIsDelete">
+        UPDATE code
+        SET
+            is_delete = 0
+        WHERE code = #{code}
+    </update>
 
     <insert id="insert" parameterType="com.rocklin.offer.model.entity.Code">
-        INSERT INTO code (id, code, price, merchant_id)
-        VALUES (UUID_SHORT(), #{code}, #{price}, #{merchantId})
+        INSERT INTO code (id, code, price, merchant_id, is_delete)
+        VALUES (UUID_SHORT(), #{code}, #{price}, #{merchantId}, #{isDelete})
     </insert>
 
 </mapper>
