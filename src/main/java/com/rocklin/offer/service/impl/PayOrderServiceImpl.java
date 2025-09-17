@@ -97,6 +97,11 @@ public class PayOrderServiceImpl implements PayOrderService {
         return payOrderMapper.deleteById(id) > 0;
     }
 
+    @Override
+    public PayOrder getOrderInfo(String outTradeNo) {
+        return payOrderMapper.selectByOutTradeNo(outTradeNo);
+    }
+
     private void becomeMember(Long userId, int days) {
         // 添加用户会员天数
         User user = userMapper.selectById(userId);

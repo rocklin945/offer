@@ -19,4 +19,6 @@ public interface PayOrderService {
     PageResponse<PayOrder> listPayOrderByPageWithFilter(PayOrderPageRequest req);
 
     boolean deleteOrder(Long id);
+
+    PayOrder getOrderInfo(String outTradeNo);
 }

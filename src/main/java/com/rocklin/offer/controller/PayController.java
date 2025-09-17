@@ -117,6 +117,16 @@ public class PayController {
         String tradeNo = params.get(TRADE_NO);          // 平台订单号
         String tradeStatus = params.get(TRADE_STATUS);  // "TRADE_SUCCESS" 表示成功
 
+        PayOrder orderInfo = payOrderService.getOrderInfo(outTradeNo);
+        if (orderInfo == null) {
+            log.error("订单不存在,订单号:{}", outTradeNo);
+            return FAIL;
+        }
+        if (orderInfo.getStatus() > 0) {
+            log.error("订单已支付,订单号:{}", outTradeNo);
+            return SUCCESS;
+        }
+
         if (TRADE_SUCCESS.equals(tradeStatus)) {
             boolean updated = payOrderService.markOrderPaid(outTradeNo, tradeNo);
             log.info("更新订单状态：{}", updated ? "成功" : "失败");

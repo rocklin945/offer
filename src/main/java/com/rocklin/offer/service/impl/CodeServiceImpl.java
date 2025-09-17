@@ -174,6 +174,16 @@ public class CodeServiceImpl implements CodeService {
         String tradeNo = params.get(TRADE_NO);          // 平台订单号
         String tradeStatus = params.get(TRADE_STATUS);  // "TRADE_SUCCESS" 表示成功
 
+        PayOrder orderInfo = payOrderService.getOrderInfo(outTradeNo);
+        if (orderInfo == null) {
+            log.error("订单不存在,订单号:{}", outTradeNo);
+            return false;
+        }
+        if (orderInfo.getStatus() > 0) {
+            log.error("订单已支付,订单号:{}", outTradeNo);
+            return true;
+        }
+
         // 获取卡密
         String codes = params.get(PARAM).trim();
         if (codes.startsWith(LEFT_BRACKET) && codes.endsWith(RIGHT_BRACKET)) {
@@ -195,8 +205,6 @@ public class CodeServiceImpl implements CodeService {
     }
 
     private boolean updateOrder(String outTradeNo, String tradeNo, List<String> codeList) {
-        PayOrder payOrder = payOrderMapper.selectByOutTradeNo(outTradeNo);
-        Assert.notNull(payOrder, ErrorCode.OPERATION_ERROR, "订单不存在");
         //更新卡密逻辑删除
         try {
             for (String code : codeList) {
