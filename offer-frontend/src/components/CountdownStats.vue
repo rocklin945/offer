@@ -43,7 +43,7 @@
     <div class="absolute -right-20 top-1/2 transform -translate-y-1/2 mt-2 stats-container">
       <div class="flex gap-2">
         <div class="bg-white rounded-lg p-2 text-center shadow-sm min-w-[95px]">
-          <div class="text-sm font-semibold text-blue-600 mb-1">26届校招累计新开</div>
+          <div class="text-sm font-semibold text-blue-600 mb-1">26届累计新开校招</div>
           <div class="text-2xl font-extrabold text-blue-600">{{ formatNumber(countdownData.totalOpenCount) }}</div>
         </div>
         <div class="bg-white rounded-lg p-2 text-center shadow-sm min-w-[95px]">
