@@ -2,8 +2,7 @@
   <div class="space-y-6">
     <!-- 页面标题 -->
     <div class="text-center mb-8">
-      <h1 class="text-4xl font-bold text-gray-900 mb-2">全网最全招聘信息</h1>
-      <p class="text-gray-600">最新招聘信息汇总</p>
+      <CountdownStats />
     </div>
 
     <!-- 搜索筛选区域 -->
@@ -419,6 +418,7 @@ import type { JobInfoQueryRequest, JobInfo } from '@/api/types'
 import Message from '@/components/Message'
 import { useUserStore } from '@/stores/user'
 import LoginModal from '@/components/LoginModal.vue'
+import CountdownStats from '@/components/CountdownStats.vue'
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -449,7 +449,7 @@ const validatePageSize = () => {
 const jobList = ref<JobInfo[]>([])
 const total = ref(0)
 const loading = ref(false)
-const jumpPage = ref<number | string>('')
+const jumpPage = ref<number | string>()
 const isChangingPage = ref(false)
 const showMemberOverlay = ref(false)
 const memberLimitMessage = ref('')
@@ -520,19 +520,19 @@ const handlePageChange = async (page: number) => {
 
 const handleJumpPage = async () => {
   const page = Number(jumpPage.value)
-  if (page >= 1 && page <= totalPages.value && !isChangingPage.value) {
+  if (jumpPage.value && page >= 1 && page <= totalPages.value && !isChangingPage.value) {
     // 检查是否是普通用户且超过5页
     if (userStore.currentUser?.userRole === 1 && page > 5) {
       // 显示会员限制覆盖层
       memberLimitMessage.value = '普通用户最多只能查看前5页，需要成为会员才能查看更多招聘信息'
       showMemberOverlay.value = true
-      jumpPage.value = ''
+      jumpPage.value = undefined
       return
     }
 
     isChangingPage.value = true
     currentPage.value = page
-    jumpPage.value = ''
+    jumpPage.value = undefined
 
     // 添加动画延迟
     await new Promise(resolve => setTimeout(resolve, 300))

@@ -21,9 +21,15 @@ export function getCommissionRate(): Promise<BaseResponse<string>> {
     return request.get('/webInfo/commission-rate').then(res => res.data)
 }
 
+// 获取倒计时和网站信息
+export function getCountdown(): Promise<BaseResponse<any>> {
+    return request.get('/webInfo/countdown').then(res => res.data)
+}
+
 export const webInfoApi = {
     getWebInfo,
     getMemberImageUrl,
     getPrice,
-    getCommissionRate
+    getCommissionRate,
+    getCountdown
 }

@@ -43,6 +43,24 @@ export interface WebPriceResponse {
     currentPrice: number;
 }
 
+// 倒计时响应类型
+export interface CountResponse {
+    // 26届校招结束时间（时间戳，毫秒）
+    endTime: number;
+    
+    // 26届校招累计新开数量
+    totalOpenCount: number;
+    
+    // 本月新开校招数量
+    monthOpenCount: number;
+    
+    // 近三天新开校招数量
+    lastThreeDaysOpenCount: number;
+    
+    // 内推企业总量
+    referralCompanyCount: number;
+}
+
 // 招聘信息类型
 export interface JobInfo {
     id: string;
