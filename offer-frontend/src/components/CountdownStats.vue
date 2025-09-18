@@ -91,61 +91,74 @@ const formatNumber = (num: number): string => {
 }
 
 const calculateTimeLeft = () => {
-  if (!countdownData.endTime) return
+  if (!countdownData.endTime || countdownData.endTime === 0) return;
 
-  const now = dayjs()
-  const endTime = dayjs(countdownData.endTime)
+  const now = dayjs();
+  const endTime = dayjs(countdownData.endTime);
   
   if (endTime.isBefore(now)) {
-    Object.assign(timeLeft, { months: '00', days: '00', hours: '00', minutes: '00', seconds: '00' })
-    return
+    if (timer) clearInterval(timer);
+    Object.assign(timeLeft, { months: '00', days: '00', hours: '00', minutes: '00', seconds: '00' });
+    return;
   }
 
-  const months = endTime.diff(now, 'month')
-  const dateAfterMonths = now.add(months, 'month')
-  const remainingDuration = endTime.diff(dateAfterMonths)
+  const months = endTime.diff(now, 'month');
+  const dateAfterMonths = now.add(months, 'month');
+  
+  const remainingDuration = endTime.diff(dateAfterMonths);
 
-  const days = Math.floor(remainingDuration / (1000 * 60 * 60 * 24))
-  const hours = Math.floor((remainingDuration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-  const minutes = Math.floor((remainingDuration % (1000 * 60 * 60)) / (1000 * 60))
-  const seconds = Math.floor((remainingDuration % (1000 * 60)) / 1000)
+  const days = Math.floor(remainingDuration / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((remainingDuration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((remainingDuration % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((remainingDuration % (1000 * 60)) / 1000);
 
-  timeLeft.months = String(months).padStart(2, '0')
-  timeLeft.days = String(days).padStart(2, '0')
-  timeLeft.hours = String(hours).padStart(2, '0')
-  timeLeft.minutes = String(minutes).padStart(2, '0')
-  timeLeft.seconds = String(seconds).padStart(2, '0')
+  timeLeft.months = String(months).padStart(2, '0');
+  timeLeft.days = String(days).padStart(2, '0');
+  timeLeft.hours = String(hours).padStart(2, '0');
+  timeLeft.minutes = String(minutes).padStart(2, '0');
+  timeLeft.seconds = String(seconds).padStart(2, '0');
+}
+
+const startTimer = () => {
+  if (timer) clearInterval(timer);
+  if (countdownData.endTime > 0) {
+    calculateTimeLeft(); // Initial calculation
+    timer = setInterval(calculateTimeLeft, 1000);
+  }
 }
 
 const fetchCountdownData = async () => {
   try {
-    const response = await webInfoApi.getCountdown()
-    if (response.data) {
-      Object.assign(countdownData, response.data)
+    const response = await webInfoApi.getCountdown();
+    if (response.data && response.data.endTime) {
+      // 将API返回的字符串转换为数字
+      const data = {
+        endTime: Number(response.data.endTime),
+        totalOpenCount: Number(response.data.totalOpenCount),
+        monthOpenCount: Number(response.data.monthOpenCount),
+        lastThreeDaysOpenCount: Number(response.data.lastThreeDaysOpenCount),
+        referralCompanyCount: Number(response.data.referralCompanyCount)
+      };
+      Object.assign(countdownData, data);
     } else {
-      throw new Error("No data received");
+      throw new Error("Invalid data from API");
     }
   } catch (error) {
-    console.error('获取倒计时数据失败:', error)
-    countdownData.endTime = 1782835199000 // Fallback to correct end time
-    // Other counts will be 0
+    console.error('获取倒计时数据失败:', error);
+    countdownData.endTime = 1782835199000; // Use fallback
+  } finally {
+    // ALWAYS start the timer after attempting to fetch data
+    startTimer();
   }
-  calculateTimeLeft() // Initial calculation
 }
 
-const startTimer = () => {
-  if (timer) clearInterval(timer)
-  timer = setInterval(calculateTimeLeft, 1000)
-}
-
-onMounted(async () => {
-  await fetchCountdownData()
-  startTimer()
-})
+onMounted(() => {
+  fetchCountdownData();
+});
 
 onUnmounted(() => {
-  if (timer) clearInterval(timer)
-})
+  if (timer) clearInterval(timer);
+});
 </script>
 
 <style scoped>
@@ -229,4 +242,3 @@ onUnmounted(() => {
   }
 }
 </style>
-]]>
