@@ -2,6 +2,7 @@ package com.rocklin.offer.service;
 
 import com.rocklin.offer.model.dto.JobInfoImportDTO;
 import com.rocklin.offer.model.dto.request.JobInfoQueryRequest;
+import com.rocklin.offer.model.dto.response.CountResponse;
 import com.rocklin.offer.model.entity.JobInfo;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -70,4 +71,6 @@ public interface JobInfoService {
      * @return 导入结果信息
      */
     String batchImportJobInfo(MultipartFile file);
+
+    CountResponse getCountdown();
 }

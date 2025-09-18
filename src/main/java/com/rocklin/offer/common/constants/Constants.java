@@ -1,5 +1,7 @@
 package com.rocklin.offer.common.constants;
 
+import java.time.LocalDateTime;
+
 /**
  * @ClassName Constants
  * @Description 常量类
@@ -133,4 +135,11 @@ public final class Constants {
     public static final String RIGHT_BRACKET = "]";
     public static final String CODE_PURCHASE_URL = "/code-purchase";
     public static final String CODE_PURCHASE_URL_PREFIX ="/code-purchase?codes=";
+
+    /**
+     * 26 届校招结束时间
+     */
+    public static final LocalDateTime END_TIME = LocalDateTime.of(2026, 6, 30, 23, 59, 59);
+    public static final String TIME_ZONE ="Asia/Shanghai";
+    public static final String RECRUIT_TARGET ="26";
 }

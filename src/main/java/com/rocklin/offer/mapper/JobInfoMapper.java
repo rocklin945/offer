@@ -5,6 +5,7 @@ import com.rocklin.offer.model.entity.JobInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -64,4 +65,6 @@ public interface JobInfoMapper {
      * @return 所有招聘信息列表
      */
     List<JobInfo> selectAll();
+
+    Long getOpenCountBetween(@Param("startTime") LocalDateTime startTime,@Param("endTime") LocalDateTime endTime);
 }

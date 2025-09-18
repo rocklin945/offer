@@ -203,4 +203,10 @@
         ORDER BY id DESC
     </select>
 
+    <select id="getOpenCountBetween" resultType="long">
+        SELECT COUNT(*)
+        FROM job_info
+        WHERE
+        start_time BETWEEN #{startTime} AND #{endTime}
+    </select>
 </mapper>

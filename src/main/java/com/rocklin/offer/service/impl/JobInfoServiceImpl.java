@@ -5,6 +5,7 @@ import com.rocklin.offer.mapper.JobInfoMapper;
 import com.rocklin.offer.mapper.WebInfoMapper;
 import com.rocklin.offer.model.dto.JobInfoImportDTO;
 import com.rocklin.offer.model.dto.request.JobInfoQueryRequest;
+import com.rocklin.offer.model.dto.response.CountResponse;
 import com.rocklin.offer.model.entity.JobInfo;
 import com.rocklin.offer.model.entity.WebInfo;
 import com.rocklin.offer.service.JobInfoService;
@@ -15,10 +16,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static com.rocklin.offer.common.constants.Constants.*;
 
 /**
  * @ClassName JobInfoServiceImpl
@@ -145,6 +149,41 @@ public class JobInfoServiceImpl implements JobInfoService {
         } catch (Exception e) {
             return "导入失败：" + e.getMessage();
         }
+    }
+
+    @Override
+    public CountResponse getCountdown() {
+        CountResponse countResponse = new CountResponse();
+        // 设置截止时间
+        countResponse.setEndTime(END_TIME.atZone(ZoneId.of(TIME_ZONE)).toInstant().toEpochMilli());
+        // 获取26届秋招招聘信息总数
+        JobInfoQueryRequest totalCountReq = new JobInfoQueryRequest();
+        totalCountReq.setRecruitTarget(RECRUIT_TARGET);
+        countResponse.setTotalOpenCount(Long.valueOf(getJobInfoCount(totalCountReq)));
+
+        // 当前时间
+        LocalDateTime now = LocalDateTime.now();
+
+        // 本月起止时间
+        LocalDateTime monthStart = now.withDayOfMonth(1)
+                .withHour(0).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime monthEnd = now.withDayOfMonth(now.toLocalDate().lengthOfMonth())
+                .withHour(23).withMinute(59).withSecond(59).withNano(999_999_999);
+
+        // 最近三天
+        LocalDateTime lastThreeDaysStart = now.minusDays(3)
+                .withHour(0).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime lastThreeDaysEnd = now;
+
+        // 获取当前月招聘信息总数
+        countResponse.setMonthOpenCount(jobInfoMapper.getOpenCountBetween(monthStart, monthEnd));
+        // 获取最近三天的招聘信息总数
+        countResponse.setLastThreeDaysOpenCount(jobInfoMapper.getOpenCountBetween(lastThreeDaysStart, lastThreeDaysEnd));
+        // 获取内推公司数量
+        JobInfoQueryRequest referralCompanyCountReq = new JobInfoQueryRequest();
+        referralCompanyCountReq.setOnlyShowInnerCompany(true);
+        countResponse.setReferralCompanyCount(Long.valueOf(getJobInfoCount(referralCompanyCountReq)));
+        return countResponse;
     }
 
     /**

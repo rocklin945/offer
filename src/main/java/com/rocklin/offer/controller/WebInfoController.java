@@ -4,8 +4,10 @@ import com.rocklin.offer.common.annotation.AuthCheck;
 import com.rocklin.offer.common.annotation.SlidingWindowRateLimit;
 import com.rocklin.offer.common.enums.UserRoleEnum;
 import com.rocklin.offer.common.response.BaseResponse;
+import com.rocklin.offer.model.dto.response.CountResponse;
 import com.rocklin.offer.model.dto.response.WebInfoResponse;
 import com.rocklin.offer.model.dto.response.WebPriceResponse;
+import com.rocklin.offer.service.JobInfoService;
 import com.rocklin.offer.service.WebInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class WebInfoController {
 
     private final WebInfoService webInfoService;
+    private final JobInfoService jobInfoService;
 
     /**
      * 获取网站信息
@@ -72,5 +75,16 @@ public class WebInfoController {
     public BaseResponse<String> getCommissionRate() {
         String price = webInfoService.getCommissionRate();
         return BaseResponse.success(price);
+    }
+
+    /**
+     * 获取倒计时和网站信息
+     */
+    @Operation(summary = "获取倒计时和网站信息", description = "获取倒计时和网站信息，无需管理员权限")
+    @GetMapping("/countdown")
+    @SlidingWindowRateLimit(windowInSeconds = 5, maxCount = 10)
+    public BaseResponse<CountResponse> getCountdown() {
+        CountResponse countResponse =jobInfoService.getCountdown();
+        return BaseResponse.success(countResponse);
     }
 }
