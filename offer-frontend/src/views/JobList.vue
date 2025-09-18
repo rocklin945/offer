@@ -89,28 +89,29 @@
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">&nbsp;</label>
-          <button @click="toggleInnerCompany" type="button"
-            class="inline-flex items-center px-4 py-2 rounded-lg transition-all duration-200 ease-in-out"
-            :class="showInnerCompany ? 'bg-green-300 hover:bg-green-400 text-green-800' : 'bg-gray-200 hover:bg-gray-300 text-gray-700'">
-            <span class="mr-2">内推企业</span>
-            <div class="relative inline-block w-10 h-5">
-              <div class="w-10 h-5 rounded-full" :class="showInnerCompany ? 'bg-green-500' : 'bg-gray-400'"></div>
-              <span
-                class="absolute bg-white rounded-full shadow-md transform transition-transform duration-200 ease-in-out w-4 h-4 top-0.5 left-0.5"
-                :class="showInnerCompany ? 'translate-x-5' : 'translate-x-0'">
-              </span>
-            </div>
-          </button>
+          <div class="flex items-center justify-between w-full">
+            <!-- 内推企业在最左边 -->
+            <button @click="toggleInnerCompany" type="button"
+              class="inline-flex items-center px-4 py-2 rounded-lg transition-all duration-200 ease-in-out"
+              :class="showInnerCompany ? 'bg-green-300 hover:bg-green-400 text-green-800' : 'bg-gray-200 hover:bg-gray-300 text-gray-700'">
+              <span class="mr-2">内推企业</span>
+              <div class="relative inline-block w-10 h-5">
+                <div class="w-10 h-5 rounded-full" :class="showInnerCompany ? 'bg-green-500' : 'bg-gray-400'"></div>
+                <span
+                  class="absolute bg-white rounded-full shadow-md transform transition-transform duration-200 ease-in-out w-4 h-4 top-0.5 left-0.5"
+                  :class="showInnerCompany ? 'translate-x-5' : 'translate-x-0'">
+                </span>
+              </div>
+            </button>
+            
+            <!-- 重置按钮靠近搜索按钮 -->
+            <button @click="resetSearch" class="btn-secondary ml-10">重置</button>
+            
+            <!-- 搜索按钮在最右边 -->
+            <button @click="handleSearch" class="btn-primary">搜索</button>
+          </div>
         </div>
 
-
-      </div>
-
-      <div class="flex justify-end items-center mb-4">
-        <div class="flex space-x-2">
-          <button @click="resetSearch" class="btn-secondary">重置</button>
-          <button @click="handleSearch" class="btn-primary">搜索</button>
-        </div>
       </div>
     </div>
 
