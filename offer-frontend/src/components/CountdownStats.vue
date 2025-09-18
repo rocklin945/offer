@@ -1,35 +1,37 @@
 <template>
   <div class="relative w-full max-w-7xl mx-auto px-4 min-h-[120px]">
     <!-- 左侧倒计时部分 (绝对定位) -->
-    <div class="absolute left-0 top-1/2 transform -translate-y-1/2 text-center countdown-container">
-      <div class="text-base font-bold text-red-500 mb-2 countdown-title">26届校招结束倒计时</div>
-      <div class="flex items-center justify-center gap-1">
-        <div class="flex flex-col items-center">
-          <div class="bg-red-500 text-white font-bold text-lg rounded-md px-2 py-1 min-w-[45px]">{{ timeLeft.months }}</div>
-          <div class="text-xs text-red-500 font-medium mt-1">月</div>
-        </div>
-        <div class="text-red-500 font-bold text-lg">:</div>
-        <div class="flex flex-col items-center">
-          <div class="bg-red-500 text-white font-bold text-lg rounded-md px-2 py-1 min-w-[45px]">{{ timeLeft.days }}</div>
-          <div class="text-xs text-red-500 font-medium mt-1">天</div>
-        </div>
-        <div class="text-red-500 font-bold text-lg">:</div>
-        <div class="flex flex-col items-center">
-          <div class="bg-red-500 text-white font-bold text-lg rounded-md px-2 py-1 min-w-[45px]">{{ timeLeft.hours }}</div>
-          <div class="text-xs text-red-500 font-medium mt-1">时</div>
-        </div>
-        <div class="text-red-500 font-bold text-lg">:</div>
-        <div class="flex flex-col items-center">
-          <div class="bg-red-500 text-white font-bold text-lg rounded-md px-2 py-1 min-w-[45px]">{{ timeLeft.minutes }}</div>
-          <div class="text-xs text-red-500 font-medium mt-1">分</div>
-        </div>
-        <div class="text-red-500 font-bold text-lg">:</div>
-        <div class="flex flex-col items-center">
-          <div class="bg-red-500 text-white font-bold text-lg rounded-md px-2 py-1 min-w-[45px]">{{ timeLeft.seconds }}</div>
-          <div class="text-xs text-red-500 font-medium mt-1">秒</div>
-        </div>
-      </div>
+   <div class="absolute left-0 top-1/2 transform -translate-y-1/2 text-center countdown-container">
+  <div class="text-lg font-bold text-red-500 mb-3 countdown-title">26届校招结束倒计时</div>
+  <div class="flex items-center justify-center gap-2">
+    <div class="flex flex-col items-center">
+      <div class="bg-red-500 text-white font-bold text-xl rounded-md px-3 py-2 min-w-[55px]">{{ timeLeft.months }}</div>
+      <div class="text-sm text-red-500 font-medium mt-1">月</div>
     </div>
+    <div class="text-red-500 font-bold text-xl">:</div>
+    <div class="flex flex-col items-center">
+      <div class="bg-red-500 text-white font-bold text-xl rounded-md px-3 py-2 min-w-[55px]">{{ timeLeft.days }}</div>
+      <div class="text-sm text-red-500 font-medium mt-1">天</div>
+    </div>
+    <div class="text-red-500 font-bold text-xl">:</div>
+    <div class="flex flex-col items-center">
+      <div class="bg-red-500 text-white font-bold text-xl rounded-md px-3 py-2 min-w-[55px]">{{ timeLeft.hours }}</div>
+      <div class="text-sm text-red-500 font-medium mt-1">时</div>
+    </div>
+    <div class="text-red-500 font-bold text-xl">:</div>
+    <div class="flex flex-col items-center">
+      <div class="bg-red-500 text-white font-bold text-xl rounded-md px-3 py-2 min-w-[55px]">{{ timeLeft.minutes }}</div>
+      <div class="text-sm text-red-500 font-medium mt-1">分</div>
+    </div>
+    <div class="text-red-500 font-bold text-xl">:</div>
+    <div class="flex flex-col items-center">
+      <div class="bg-red-500 text-white font-bold text-xl rounded-md px-3 py-2 min-w-[55px]">{{ timeLeft.seconds }}</div>
+      <div class="text-sm text-red-500 font-medium mt-1">秒</div>
+    </div>
+  </div>
+</div>
+
+
 
     <!-- 中间标题部分 (保持居中) -->
     <div class="text-center py-6">
@@ -38,7 +40,7 @@
     </div>
 
     <!-- 右侧统计信息部分 (绝对定位) -->
-    <div class="absolute right-0 top-1/2 transform -translate-y-1/2 stats-container">
+    <div class="absolute -right-20 top-1/2 transform -translate-y-1/2 mt-2 stats-container">
       <div class="flex gap-2">
         <div class="bg-white rounded-lg p-2 text-center shadow-sm min-w-[95px]">
           <div class="text-sm font-semibold text-blue-600 mb-1">26届校招累计新开</div>
@@ -168,7 +170,7 @@ onUnmounted(() => {
     left: -20px;
   }
   .stats-container {
-    right: -20px;
+    right: -60px; /* 进一步向右移动 */
   }
 }
 
