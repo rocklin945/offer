@@ -44,19 +44,19 @@
       <div class="flex gap-2">
         <div class="bg-white rounded-lg p-2 text-center shadow-sm min-w-[95px]">
           <div class="text-sm font-semibold text-blue-600 mb-1">26届累计新开校招</div>
-          <div class="text-2xl font-extrabold text-blue-600">{{ formatNumber(countdownData.totalOpenCount) }}</div>
+          <div class="text-2xl font-extrabold text-blue-600">{{ countdownData.totalOpenCount }}</div>
         </div>
         <div class="bg-white rounded-lg p-2 text-center shadow-sm min-w-[95px]">
           <div class="text-sm font-semibold text-purple-600 mb-1">本月新开校招</div>
-          <div class="text-2xl font-extrabold text-purple-600">{{ formatNumber(countdownData.monthOpenCount) }}</div>
+          <div class="text-2xl font-extrabold text-purple-600">{{ countdownData.monthOpenCount }}</div>
         </div>
         <div class="bg-white rounded-lg p-2 text-center shadow-sm min-w-[95px]">
           <div class="text-sm font-semibold text-orange-600 mb-1">近三天新开校招</div>
-          <div class="text-2xl font-extrabold text-orange-600">{{ formatNumber(countdownData.lastThreeDaysOpenCount) }}</div>
+          <div class="text-2xl font-extrabold text-orange-600">{{ countdownData.lastThreeDaysOpenCount }}</div>
         </div>
         <div class="bg-white rounded-lg p-2 text-center shadow-sm min-w-[95px]">
           <div class="text-sm font-semibold text-green-600 mb-1">内推企业总量</div>
-          <div class="text-2xl font-extrabold text-green-600">{{ formatNumber(countdownData.referralCompanyCount) }}</div>
+          <div class="text-2xl font-extrabold text-green-600">{{ countdownData.referralCompanyCount }}</div>
         </div>
       </div>
     </div>
@@ -86,11 +86,6 @@ const timeLeft = reactive({
 })
 
 let timer: NodeJS.Timeout | null = null
-
-const formatNumber = (num: number): string => {
-  if (num >= 1000) return (num / 1000).toFixed(1).replace('.0', '') + 'k'
-  return num.toString()
-}
 
 const calculateTimeLeft = () => {
   if (!countdownData.endTime || countdownData.endTime === 0) return;
