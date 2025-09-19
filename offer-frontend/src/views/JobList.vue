@@ -479,12 +479,61 @@ const searchForm = reactive<JobInfoQueryRequest>({
 const hasJobs = computed(() => jobList.value.length > 0)
 const totalPages = computed(() => Math.ceil(total.value / pageSize.value))
 
+// 保存搜索参数到 localStorage
+const saveSearchParamsToLocalStorage = () => {
+  const searchParams = {
+    searchForm: { ...searchForm },
+    currentPage: currentPage.value,
+    pageSize: pageSize.value
+  };
+  
+  try {
+    localStorage.setItem('jobListSearchParams', JSON.stringify(searchParams));
+  } catch (error) {
+    console.error('保存搜索参数到 localStorage 失败:', error);
+  }
+}
+
+// 从 localStorage 恢复搜索参数
+const restoreSearchParamsFromLocalStorage = () => {
+  try {
+    const savedParams = localStorage.getItem('jobListSearchParams');
+    if (savedParams) {
+      const params = JSON.parse(savedParams);
+      
+      // 恢复搜索表单
+      Object.keys(params.searchForm || {}).forEach(key => {
+        if (key in searchForm) {
+          searchForm[key as keyof JobInfoQueryRequest] = params.searchForm[key];
+        }
+      });
+      
+      // 恢复分页参数
+      if (params.currentPage) {
+        currentPage.value = params.currentPage;
+      }
+      
+      if (params.pageSize) {
+        pageSize.value = params.pageSize;
+      }
+      
+      // 设置内推企业开关状态
+      showInnerCompany.value = searchForm.onlyShowInnerCompany || false;
+    }
+  } catch (error) {
+    console.error('从 localStorage 恢复搜索参数失败:', error);
+  }
+}
+
 // 内推企业开关切换方法
 const toggleInnerCompany = async () => {
   console.log('切换内推企业状态，当前状态:', searchForm.onlyShowInnerCompany);
   searchForm.onlyShowInnerCompany = !searchForm.onlyShowInnerCompany;
   showInnerCompany.value = searchForm.onlyShowInnerCompany;
   console.log('切换后状态:', searchForm.onlyShowInnerCompany);
+
+  // 保存搜索参数到 localStorage
+  saveSearchParamsToLocalStorage();
 
   // 切换后自动调用搜索
   await handleSearch();
@@ -493,6 +542,8 @@ const toggleInnerCompany = async () => {
 // 方法
 const handleSearch = async () => {
   currentPage.value = 1
+  // 保存搜索参数到 localStorage
+  saveSearchParamsToLocalStorage();
   await fetchData()
 }
 
@@ -503,6 +554,11 @@ const resetSearch = () => {
       searchForm[key as keyof JobInfoQueryRequest] = ''
     }
   })
+  // 重置分页
+  currentPage.value = 1;
+  pageSize.value = 10;
+  // 保存搜索参数到 localStorage
+  saveSearchParamsToLocalStorage();
   handleSearch()
 }
 
@@ -510,6 +566,9 @@ const handlePageChange = async (page: number) => {
   if (page >= 1 && page <= totalPages.value && !isChangingPage.value) {
     isChangingPage.value = true
     currentPage.value = page
+
+    // 保存搜索参数到 localStorage
+    saveSearchParamsToLocalStorage();
 
     // 添加动画延迟
     await new Promise(resolve => setTimeout(resolve, 300))
@@ -535,6 +594,9 @@ const handleJumpPage = async () => {
     currentPage.value = page
     jumpPage.value = undefined
 
+    // 保存搜索参数到 localStorage
+    saveSearchParamsToLocalStorage();
+
     // 添加动画延迟
     await new Promise(resolve => setTimeout(resolve, 300))
 
@@ -547,6 +609,8 @@ const handlePageSizeChange = async () => {
   if (!isChangingPage.value) {
     isChangingPage.value = true
     currentPage.value = 1
+    // 保存搜索参数到 localStorage
+    saveSearchParamsToLocalStorage();
     await fetchData()
     isChangingPage.value = false
   }
@@ -884,6 +948,9 @@ const getStatusClass = (status?: string) => {
 
 // 生命周期
 onMounted(async () => {
+  // 从 localStorage 恢复搜索参数
+  restoreSearchParamsFromLocalStorage();
+  
   // 初始化用户信息
   await userStore.initUserInfo()
   // 验证并调整pageSize

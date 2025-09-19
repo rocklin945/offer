@@ -453,6 +453,49 @@ const editNoteForm = reactive({
 const hasData = computed(() => tableData.value.length > 0)
 const totalPages = computed(() => Math.ceil(total.value / pageSize.value))
 
+// 保存搜索参数到 localStorage
+const saveSearchParamsToLocalStorage = () => {
+  const searchParams = {
+    searchForm: { ...searchForm },
+    currentPage: currentPage.value,
+    pageSize: pageSize.value
+  };
+  
+  try {
+    localStorage.setItem('myJobApplySearchParams', JSON.stringify(searchParams));
+  } catch (error) {
+    console.error('保存搜索参数到 localStorage 失败:', error);
+  }
+}
+
+// 从 localStorage 恢复搜索参数
+const restoreSearchParamsFromLocalStorage = () => {
+  try {
+    const savedParams = localStorage.getItem('myJobApplySearchParams');
+    if (savedParams) {
+      const params = JSON.parse(savedParams);
+      
+      // 恢复搜索表单
+      Object.keys(params.searchForm || {}).forEach(key => {
+        if (key in searchForm) {
+          searchForm[key as keyof UserJobApplyQueryRequest] = params.searchForm[key];
+        }
+      });
+      
+      // 恢复分页参数
+      if (params.currentPage) {
+        currentPage.value = params.currentPage;
+      }
+      
+      if (params.pageSize) {
+        pageSize.value = params.pageSize;
+      }
+    }
+  } catch (error) {
+    console.error('从 localStorage 恢复搜索参数失败:', error);
+  }
+}
+
 // 获取数据
 const fetchData = async () => {
   // 如果用户未登录，直接返回
@@ -498,6 +541,8 @@ const handleSearch = async () => {
     return
   }
   currentPage.value = 1
+  // 保存搜索参数到 localStorage
+  saveSearchParamsToLocalStorage();
   await fetchData()
 }
 
@@ -518,6 +563,11 @@ const resetSearch = () => {
     sortField: '',
     sortOrder: 'desc'
   })
+  // 重置分页
+  currentPage.value = 1;
+  pageSize.value = 10;
+  // 保存搜索参数到 localStorage
+  saveSearchParamsToLocalStorage();
   handleSearch()
 }
 
@@ -667,6 +717,9 @@ const handlePageChange = async (page: number) => {
     isChangingPage.value = true
     currentPage.value = page
 
+    // 保存搜索参数到 localStorage
+    saveSearchParamsToLocalStorage();
+
     // 添加动画延迟
     await new Promise(resolve => setTimeout(resolve, 300))
 
@@ -681,6 +734,9 @@ const handleJumpPage = async () => {
     isChangingPage.value = true
     currentPage.value = page
     jumpPage.value = ''
+
+    // 保存搜索参数到 localStorage
+    saveSearchParamsToLocalStorage();
 
     // 添加动画延迟
     await new Promise(resolve => setTimeout(resolve, 300))
@@ -857,6 +913,9 @@ const handleLoginSuccess = () => {
 
 // 页面加载时获取数据（仅在已登录时）
 onMounted(() => {
+  // 从 localStorage 恢复搜索参数
+  restoreSearchParamsFromLocalStorage();
+  
   if (userStore.currentUser) {
     fetchData()
   }
