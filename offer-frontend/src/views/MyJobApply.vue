@@ -59,9 +59,9 @@
             class="input-field" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">投递状态</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">投递进度</label>
           <select v-model="searchForm.applicationStatus" @change="handleSearch" class="input-field">
-            <option value="">全部状态</option>
+            <option value="">全部进度</option>
             <option value="未投递">未投递</option>
             <option value="已投递">已投递</option>
             <option value="笔试">笔试</option>
@@ -83,7 +83,7 @@
             <option value="workLocation">工作地点</option>
             <option value="recruitTarget">招聘对象</option>
             <option value="positionName">岗位名称</option>
-            <option value="applicationStatus">投递状态</option>
+            <option value="applicationStatus">投递进度</option>
             <option value="createTime">投递时间</option>
           </select>
         </div>
@@ -154,7 +154,11 @@
                   </th>
                   <th
                     class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
-                    投递状态
+                    投递进度
+                  </th>
+                  <th
+                    class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
+                    更新进度
                   </th>
                   <th
                     class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-36 whitespace-nowrap">
@@ -245,6 +249,40 @@
                       {{ item.applicationStatus }}
                     </span>
                   </td>
+                  <td class="px-2 py-2 whitespace-nowrap text-center">
+                    <div class="relative inline-block">
+                      <button @click="toggleStatusDropdown(item.id)"
+                        class="btn-secondary flex items-center text-xs py-1 px-2">
+                        更新进度
+                        <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                          </path>
+                        </svg>
+                      </button>
+                      <!-- 下拉列表 -->
+                      <div v-if="showStatusDropdown[item.id]"
+                        class="absolute z-10 mt-1 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        <div class="py-1">
+                          <button @click="updateStatus(item.id, '未投递')"
+                            class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">未投递</button>
+                          <button @click="updateStatus(item.id, '已投递')"
+                            class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">已投递</button>
+                          <button @click="updateStatus(item.id, '笔试')"
+                            class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">笔试</button>
+                          <button @click="updateStatus(item.id, '一面')"
+                            class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">一面</button>
+                          <button @click="updateStatus(item.id, '二面')"
+                            class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">二面</button>
+                          <button @click="updateStatus(item.id, 'HR面')"
+                            class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">HR面</button>
+                          <button @click="updateStatus(item.id, '已通过')"
+                            class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">已通过</button>
+                          <button @click="updateStatus(item.id, '已拒绝')"
+                            class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">已拒绝</button>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
                   <td class="px-2 py-2 whitespace-nowrap text-center text-sm text-gray-500">
                     {{ formatDate(item.createTime) }}
                   </td>
@@ -255,8 +293,8 @@
                   </td>
                   <td class="px-2 py-2 whitespace-nowrap text-center">
                     <div class="flex justify-center space-x-2">
-                      <button @click="handleUpdateStatus(item)" class="text-blue-600 hover:text-blue-900 text-sm">
-                        更新状态
+                      <button @click="handleEditNote(item)" class="text-blue-600 hover:text-blue-900 text-sm">
+                        修改备注
                       </button>
                       <button @click="handleDelete(item)" class="text-red-600 hover:text-red-900 text-sm">
                         删除
@@ -324,42 +362,29 @@
       </div>
     </div>
 
-    <!-- 更新状态弹窗 -->
+    <!-- 修改备注弹窗 -->
     <teleport to="body">
-      <div v-if="showUpdateModal">
+      <div v-if="showEditNoteModal">
         <div class="modal-backdrop fixed inset-0 bg-black bg-opacity-50" style="z-index: 99999;"></div>
         <div class="modal-container fixed inset-0 flex items-center justify-center" style="z-index: 100000;"
-          @click.self="showUpdateModal = false">
+          @click.self="showEditNoteModal = false">
           <div class="bg-white rounded-lg p-6 w-96 max-h-[90vh] overflow-y-auto">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">更新投递状态</h3>
-            <div class="mb-4">
-              <label class="block text-sm font-medium text-gray-700 mb-2">选择状态</label>
-              <select v-model="updateForm.applicationStatus" class="input-field">
-                <option value="未投递">未投递</option>
-                <option value="已投递">已投递</option>
-                <option value="笔试">笔试</option>
-                <option value="一面">一面</option>
-                <option value="二面">二面</option>
-                <option value="HR面">HR面</option>
-                <option value="已通过">已通过</option>
-                <option value="已拒绝">已拒绝</option>
-              </select>
-            </div>
+            <h3 class="text-lg font-medium text-gray-900 mb-4">修改个人备注</h3>
             <div class="mb-4">
               <label class="block text-sm font-medium text-gray-700 mb-2">个人备注</label>
               <div class="relative">
-                <textarea v-model="updateForm.personalNote" class="input-field h-24 resize-none"
+                <textarea v-model="editNoteForm.personalNote" class="input-field h-24 resize-none"
                   placeholder="添加个人备注，如投递进度链接等（最多500字）" maxlength="500"></textarea>
                 <div class="absolute bottom-2 right-2 text-xs text-gray-500">
-                  {{ updateForm.personalNote?.length || 0 }}/500
+                  {{ editNoteForm.personalNote?.length || 0 }}/500
                 </div>
               </div>
             </div>
             <div class="flex justify-end space-x-2">
-              <button @click="showUpdateModal = false" class="btn-secondary">
+              <button @click="showEditNoteModal = false" class="btn-secondary">
                 取消
               </button>
-              <button @click="confirmUpdate" class="btn-primary">
+              <button @click="confirmEditNote" class="btn-primary">
                 确认
               </button>
             </div>
@@ -392,7 +417,7 @@ const jumpPage = ref<number | string>('')
 const isChangingPage = ref(false)
 const showLoginModal = ref(false)
 
-// 添加展开状态管理
+// 添加展开进度管理
 const expandedItems = ref<{ [key: string]: { workLocation: boolean, positionName: boolean } }>({})
 
 // 搜索表单
@@ -409,11 +434,18 @@ const searchForm = reactive<UserJobApplyQueryRequest>({
   sortOrder: 'desc'
 })
 
-// 更新状态相关
+// 更新进度相关
 const showUpdateModal = ref(false)
+const showEditNoteModal = ref(false)
+const showStatusDropdown = ref<{ [key: number]: boolean }>({})
 const updateForm = reactive({
   id: 0,
   applicationStatus: '',
+  personalNote: ''
+})
+
+const editNoteForm = reactive({
+  id: 0,
   personalNote: ''
 })
 
@@ -525,13 +557,53 @@ const getDisplayTags = (text?: string, isExpanded?: boolean) => {
   }
 }
 
-// 切换展开状态
+// 切换展开进度
 const toggleExpanded = (itemId: number, field: 'workLocation' | 'positionName') => {
   const key = itemId.toString()
   if (!expandedItems.value[key]) {
     expandedItems.value[key] = { workLocation: false, positionName: false }
   }
   expandedItems.value[key][field] = !expandedItems.value[key][field]
+}
+
+// 切换下拉列表显示
+const toggleStatusDropdown = (itemId: number) => {
+  // 首先关闭所有其他下拉列表
+  Object.keys(showStatusDropdown.value).forEach(key => {
+    if (parseInt(key) !== itemId) {
+      showStatusDropdown.value[parseInt(key)] = false
+    }
+  })
+
+  // 切换当前项的下拉列表
+  showStatusDropdown.value[itemId] = !showStatusDropdown.value[itemId]
+}
+
+// 更新进度
+const updateStatus = async (itemId: number, status: string) => {
+  try {
+    const requestData = {
+      id: itemId,
+      applicationStatus: status
+    }
+
+    const response = await userJobApplyApi.update(requestData)
+    if (response.data.statusCode === 200) {
+      // 更新本地数据
+      const index = tableData.value.findIndex(item => item.id === itemId)
+      if (index !== -1) {
+        tableData.value[index].applicationStatus = status
+      }
+
+      Message.success('进度更新成功')
+      // 关闭下拉列表
+      showStatusDropdown.value[itemId] = false
+    } else {
+      Message.error(response.data.message || '更新失败')
+    }
+  } catch (error: any) {
+    console.error('更新进度失败:', error)
+  }
 }
 
 const truncateText = (text: string, maxLength: number) => {
@@ -659,34 +731,37 @@ const getPageNumbers = () => {
   return pages
 }
 
-// 更新状态
-const handleUpdateStatus = (item: UserJobApplyDTO) => {
-  updateForm.id = item.id
-  updateForm.applicationStatus = item.applicationStatus
-  updateForm.personalNote = item.personalNote || ''
-  showUpdateModal.value = true
+// 修改备注
+const handleEditNote = (item: UserJobApplyDTO) => {
+  editNoteForm.id = item.id
+  editNoteForm.personalNote = item.personalNote || ''
+  showEditNoteModal.value = true
 }
 
-// 确认更新
-const confirmUpdate = async () => {
+// 确认修改备注
+const confirmEditNote = async () => {
   try {
-    const response = await userJobApplyApi.update(updateForm)
-    // axios拦截器返回response对象，实际数据在response.data中
+    const requestData = {
+      id: editNoteForm.id,
+      personalNote: editNoteForm.personalNote
+    }
+
+    const response = await userJobApplyApi.update(requestData)
     if (response.data.statusCode === 200) {
       // 更新本地数据
-      const index = tableData.value.findIndex(item => item.id === updateForm.id)
+      const index = tableData.value.findIndex(item => item.id === editNoteForm.id)
       if (index !== -1) {
-        tableData.value[index].applicationStatus = updateForm.applicationStatus
-        tableData.value[index].personalNote = updateForm.personalNote
+        tableData.value[index].personalNote = editNoteForm.personalNote
       }
 
-      Message.success('状态更新成功')
-      showUpdateModal.value = false
+      Message.success('备注更新成功')
+      showEditNoteModal.value = false
     } else {
       Message.error(response.data.message || '更新失败')
     }
   } catch (error: any) {
-    console.error('更新状态失败:', error)
+    console.error('更新备注失败:', error)
+    Message.error('更新备注失败')
   }
 }
 
@@ -716,7 +791,7 @@ const handleDelete = async (item: UserJobApplyDTO) => {
   }
 }
 
-// 获取状态样式
+// 获取进度样式
 const getStatusClass = (status: string) => {
   switch (status) {
     case '已投递':
