@@ -176,7 +176,7 @@
                 AND industry LIKE CONCAT('%', #{query.industry}, '%')
             </if>
             <if test="query.recruitType != null and query.recruitType != ''">
-                AND recruit_type = #{query.recruitType}
+                AND recruit_type LIKE CONCAT('%', #{query.recruitType}, '%')
             </if>
             <if test="query.workLocation != null and query.workLocation != ''">
                 AND work_location LIKE CONCAT('%', #{query.workLocation}, '%')
