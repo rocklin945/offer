@@ -109,7 +109,7 @@
                 AND company_name LIKE CONCAT('%', #{query.companyName}, '%')
             </if>
             <if test="query.companyType != null and query.companyType != ''">
-                AND company_type = #{query.companyType}
+                AND company_type LIKE CONCAT('%', #{query.companyType}, '%')
             </if>
             <if test="query.industry != null and query.industry != ''">
                 AND industry LIKE CONCAT('%', #{query.industry}, '%')
@@ -170,7 +170,7 @@
                 AND company_name LIKE CONCAT('%', #{query.companyName}, '%')
             </if>
             <if test="query.companyType != null and query.companyType != ''">
-                AND company_type = #{query.companyType}
+                AND company_type LIKE CONCAT('%', #{query.companyType}, '%')
             </if>
             <if test="query.industry != null and query.industry != ''">
                 AND industry LIKE CONCAT('%', #{query.industry}, '%')
