@@ -453,8 +453,8 @@ const editNoteForm = reactive({
 const hasData = computed(() => tableData.value.length > 0)
 const totalPages = computed(() => Math.ceil(total.value / pageSize.value))
 
-// 保存搜索参数到 localStorage
-const saveSearchParamsToLocalStorage = () => {
+// 保存搜索参数到 sessionStorage，并清理之前的 localStorage
+const saveSearchParamsToStorage = () => {
   const searchParams = {
     searchForm: { ...searchForm },
     currentPage: currentPage.value,
@@ -462,16 +462,30 @@ const saveSearchParamsToLocalStorage = () => {
   };
   
   try {
-    localStorage.setItem('myJobApplySearchParams', JSON.stringify(searchParams));
+    // 清理旧的 localStorage 数据
+    localStorage.removeItem('myJobApplySearchParams');
+    // 使用 sessionStorage 保存数据
+    sessionStorage.setItem('myJobApplySearchParams', JSON.stringify(searchParams));
   } catch (error) {
-    console.error('保存搜索参数到 localStorage 失败:', error);
+    console.error('保存搜索参数失败:', error);
   }
 }
 
-// 从 localStorage 恢复搜索参数
-const restoreSearchParamsFromLocalStorage = () => {
+// 从 sessionStorage 恢复搜索参数，并清理之前的 localStorage
+const restoreSearchParamsFromStorage = () => {
   try {
-    const savedParams = localStorage.getItem('myJobApplySearchParams');
+    // 先尝试从 sessionStorage 获取数据
+    let savedParams = sessionStorage.getItem('myJobApplySearchParams');
+    
+    // 如果 session 中没有，则尝试从 localStorage 获取（兼容旧版本）
+    if (!savedParams) {
+      savedParams = localStorage.getItem('myJobApplySearchParams');
+      // 如果从 localStorage 获取到了数据，需要清理它
+      if (savedParams) {
+        localStorage.removeItem('myJobApplySearchParams');
+      }
+    }
+    
     if (savedParams) {
       const params = JSON.parse(savedParams);
       
@@ -492,7 +506,7 @@ const restoreSearchParamsFromLocalStorage = () => {
       }
     }
   } catch (error) {
-    console.error('从 localStorage 恢复搜索参数失败:', error);
+    console.error('恢复搜索参数失败:', error);
   }
 }
 
@@ -541,8 +555,8 @@ const handleSearch = async () => {
     return
   }
   currentPage.value = 1
-  // 保存搜索参数到 localStorage
-  saveSearchParamsToLocalStorage();
+  // 保存搜索参数
+  saveSearchParamsToStorage();
   await fetchData()
 }
 
@@ -566,8 +580,8 @@ const resetSearch = () => {
   // 重置分页
   currentPage.value = 1;
   pageSize.value = 10;
-  // 保存搜索参数到 localStorage
-  saveSearchParamsToLocalStorage();
+  // 保存搜索参数
+  saveSearchParamsToStorage();
   handleSearch()
 }
 
@@ -717,8 +731,8 @@ const handlePageChange = async (page: number) => {
     isChangingPage.value = true
     currentPage.value = page
 
-    // 保存搜索参数到 localStorage
-    saveSearchParamsToLocalStorage();
+    // 保存搜索参数
+    saveSearchParamsToStorage();
 
     // 添加动画延迟
     await new Promise(resolve => setTimeout(resolve, 300))
@@ -735,8 +749,8 @@ const handleJumpPage = async () => {
     currentPage.value = page
     jumpPage.value = ''
 
-    // 保存搜索参数到 localStorage
-    saveSearchParamsToLocalStorage();
+    // 保存搜索参数
+    saveSearchParamsToStorage();
 
     // 添加动画延迟
     await new Promise(resolve => setTimeout(resolve, 300))
@@ -913,8 +927,8 @@ const handleLoginSuccess = () => {
 
 // 页面加载时获取数据（仅在已登录时）
 onMounted(() => {
-  // 从 localStorage 恢复搜索参数
-  restoreSearchParamsFromLocalStorage();
+  // 恢复搜索参数
+  restoreSearchParamsFromStorage();
   
   if (userStore.currentUser) {
     fetchData()
