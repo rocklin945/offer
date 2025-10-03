@@ -8,7 +8,12 @@
                 :class="isVisible ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 -translate-y-4'">
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-xl font-bold text-gray-900">微信支付</h3>
+                        <h3 class="text-xl font-bold text-gray-900">
+                            微信支付
+                            <span class="ml-2 text-sm font-normal text-gray-500">
+                                （推荐使用支付宝支付，立即开通）
+                            </span>
+                        </h3>
                         <button @click="close" class="text-gray-400 hover:text-gray-500">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
