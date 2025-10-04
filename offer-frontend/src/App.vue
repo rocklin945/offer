@@ -72,7 +72,7 @@
                 class="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-40"
                 @click.stop>
                 <div class="px-4 py-3 border-b">
-                  <div class="flex items-center space-x-2">
+                  <div class="flex items-center space-x-2" @click.stop="showUserProfileModal = true" style="cursor: pointer;">
                     <img :src="userStore.currentUser.userAvatar" alt="用户头像" class="w-6 h-6 rounded-full" />
                     <span class="text-sm font-medium text-gray-700">{{ userStore.currentUser.userName }}</span>
                     <span v-if="userStore.currentUser.userRole === 2"
