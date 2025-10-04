@@ -110,7 +110,7 @@
             </div>
             <!-- 已登录状态 -->
             <div v-if="userStore.currentUser" class="hidden sm:flex items-center space-x-4">
-              <div class="flex items-center space-x-2" @click="showUserProfileModal = true" style="cursor: pointer;">
+              <div class="flex items-center space-x-2" @click.stop="showUserProfileModal = true" style="cursor: pointer;">
                 <!-- 用户身份标识 -->
                 <span v-if="userStore.currentUser.userRole === 0"
                   class="text-xs px-2 py-1 bg-red-100 text-red-700 rounded-full font-medium">
@@ -213,6 +213,7 @@ const showMobileMenu = ref(false)
 const showHomeModal = ref(false)
 const showUpdateNoticeModal = ref(false)
 const showEditUserModal = ref(false)
+const showUserProfileModal = ref(false)
 
 // 判断是否为管理页面路由
 const isAdminRoute = computed(() => {
