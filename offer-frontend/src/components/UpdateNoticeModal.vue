@@ -9,7 +9,7 @@
             :class="isVisible ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-4'">
             <!-- 关闭按钮 -->
             <button @click="handleClose"
-                class="absolute top-3 right-3 sm:top-4 sm:right-4 w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
+                class="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
                 aria-label="关闭弹窗">
                 <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
@@ -19,10 +19,26 @@
 
             <!-- 弹窗内容 -->
             <div class="text-center">
+                <!-- 新用户注册赠送三天会员提示 -->
+                <div v-if="showRegisterPromotion" class="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl p-4 mb-4 text-white">
+                    <div class="flex items-center justify-center">
+                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span class="font-bold text-lg">新用户注册即赠3天会员体验</span>
+                        <svg class="w-6 h-6 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <p class="mt-2 text-sm">立即注册享受尊贵会员特权</p>
+                </div>
+
                 <!-- 标题 -->
-                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4 flex items-center justify-center">
+                <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4 flex items-center justify-center">
                     <!-- 更新图标 -->
-                    <svg class="w-6 h-6 sm:w-7 sm:h-7 mr-2 text-green-500" fill="none" stroke="currentColor"
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-green-500" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
@@ -77,6 +93,15 @@
 
 <script setup lang="ts">
 import { ref, onMounted, nextTick } from 'vue'
+
+// 定义props
+interface Props {
+  showRegisterPromotion?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  showRegisterPromotion: true
+})
 
 // 定义事件
 const emit = defineEmits<{

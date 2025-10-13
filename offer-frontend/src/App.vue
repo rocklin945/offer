@@ -168,13 +168,13 @@
       </main>
 
       <!-- 登录/注册模态框 -->
-      <LoginModal v-if="showLoginModal" @close="showLoginModal = false" @login-success="showLoginModal = false" />
+      <LoginModal v-if="showLoginModal" @close="showLoginModal = false" @login-success="handleLoginSuccess" />
 
       <!-- 首页弹窗 -->
       <HomeModal v-if="showHomeModal" @close="closeHomeModal" />
 
       <!-- 更新通知弹窗 -->
-      <UpdateNoticeModal v-if="showUpdateNoticeModal" @close="closeUpdateNoticeModal" />
+      <UpdateNoticeModal v-if="showUpdateNoticeModal" :show-register-promotion="!userStore.currentUser" @close="closeUpdateNoticeModal" />
 
       <!-- 用户信息弹窗 -->
       <UserProfileModal v-if="showUserProfileModal" @close="showUserProfileModal = false"
@@ -237,6 +237,8 @@ const memberDaysLeft = computed(() => {
 // 处理登出
 const handleLogout = () => {
   userStore.userLogout()
+  // 用户登出后重新检查是否需要显示更新通知弹窗
+  checkShowUpdateNoticeModal()
 }
 
 // 获取导航样式（使用内联样式强制覆盖）
@@ -267,6 +269,8 @@ onMounted(async () => {
 
   if (userStore.token) {
     await userStore.initUserInfo()
+    // 用户信息初始化完成后重新检查是否需要显示更新通知弹窗
+    checkShowUpdateNoticeModal()
   }
   // 检查是否需要显示首页弹窗
   checkShowHomeModal()
@@ -276,6 +280,12 @@ onMounted(async () => {
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
+})
+
+// 监听用户状态变化
+watch(() => userStore.currentUser, (newUser, oldUser) => {
+  // 当用户状态发生变化时，重新检查是否需要显示更新通知弹窗
+  checkShowUpdateNoticeModal()
 })
 
 // 检查是否显示首页弹窗
@@ -310,10 +320,8 @@ const checkShowHomeModal = () => {
 
 // 检查是否显示更新通知弹窗
 const checkShowUpdateNoticeModal = () => {
-  // 检查是否已经显示过更新通知弹窗
-  const hasShownUpdateNotice = localStorage.getItem('hasShownUpdateNotice_v1.1')
-
-  if (!hasShownUpdateNotice) {
+  // 如果用户未登录，则显示弹窗
+  if (!userStore.currentUser) {
     // 延迟1.5秒显示更新通知弹窗，让页面加载完成
     setTimeout(() => {
       showUpdateNoticeModal.value = true
@@ -321,20 +329,15 @@ const checkShowUpdateNoticeModal = () => {
   }
 }
 
-// 关闭弹窗的处理函数
-const closeHomeModal = () => {
-  showHomeModal.value = false
-}
-
 // 关闭更新通知弹窗的处理函数
 const closeUpdateNoticeModal = () => {
   showUpdateNoticeModal.value = false
-  // 标记已经显示过更新通知
-  localStorage.setItem('hasShownUpdateNotice_v1.1', 'true')
-  // 显示首页弹窗
-  setTimeout(() => {
-    checkShowHomeModal()
-  }, 300)
+  // 用户已登录时显示首页弹窗
+  if (userStore.currentUser) {
+    setTimeout(() => {
+      checkShowHomeModal()
+    }, 300)
+  }
 }
 
 // 打开编辑用户信息弹窗
@@ -347,6 +350,13 @@ const handleUserUpdateSuccess = () => {
   showEditUserModal.value = false
   // 重新获取用户信息
   userStore.initUserInfo()
+}
+
+// 处理登录成功
+const handleLoginSuccess = () => {
+  showLoginModal.value = false
+  // 重新检查是否需要显示更新通知弹窗
+  checkShowUpdateNoticeModal()
 }
 
 // 监听路由变化并强制刷新
