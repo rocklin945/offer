@@ -5,8 +5,8 @@
             :class="isVisible ? 'bg-opacity-50' : 'bg-opacity-0'" @click="handleClose"></div>
 
         <!-- 弹窗主体 -->
-        <div class="relative bg-white rounded-2xl shadow-2xl p-6 sm:p-8 max-w-sm sm:max-w-md mx-auto transform transition-all duration-500 ease-out"
-            :class="isVisible ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-4'">
+        <div ref="modalRef" class="relative bg-white rounded-2xl shadow-2xl p-6 sm:p-8 max-w-sm sm:max-w-md mx-auto transform"
+            :class="modalClasses">
             <!-- 关闭按钮 -->
             <button @click="handleClose"
                 class="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
@@ -92,7 +92,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted, nextTick, computed } from 'vue'
 
 // 定义props
 interface Props {
@@ -109,6 +109,22 @@ const emit = defineEmits<{
 }>()
 
 const isVisible = ref(false)
+const modalRef = ref<HTMLElement | null>(null)
+
+// 计算属性，用于动态设置弹窗类
+const modalClasses = computed(() => {
+  return {
+    'transition-all': true,
+    'duration-500': true,
+    'ease-out': true,
+    'scale-100': isVisible.value,
+    'opacity-100': isVisible.value,
+    'translate-y-0': isVisible.value,
+    'scale-95': !isVisible.value,
+    'opacity-0': !isVisible.value,
+    'translate-y-4': !isVisible.value
+  }
+})
 
 // 处理关闭弹窗
 const handleClose = () => {
@@ -123,7 +139,10 @@ const handleClose = () => {
 onMounted(async () => {
     // 使用nextTick确保DOM渲染完成后再显示动画
     await nextTick()
-    isVisible.value = true
+    // 延迟一小段时间确保初始状态正确设置
+    setTimeout(() => {
+        isVisible.value = true
+    }, 10)
 })
 </script>
 
