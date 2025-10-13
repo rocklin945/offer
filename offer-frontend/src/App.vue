@@ -72,7 +72,8 @@
                 class="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-40"
                 @click.stop>
                 <div class="px-4 py-3 border-b">
-                  <div class="flex items-center space-x-2" @click.stop="showUserProfileModal = true" style="cursor: pointer;">
+                  <div class="flex items-center space-x-2" @click.stop="showUserProfileModal = true"
+                    style="cursor: pointer;">
                     <img :src="userStore.currentUser.userAvatar" alt="用户头像" class="w-6 h-6 rounded-full" />
                     <span class="text-sm font-medium text-gray-700">{{ userStore.currentUser.userName }}</span>
                     <span v-if="userStore.currentUser.userRole === 2"
@@ -110,7 +111,8 @@
             </div>
             <!-- 已登录状态 -->
             <div v-if="userStore.currentUser" class="hidden sm:flex items-center space-x-4">
-              <div class="flex items-center space-x-2" @click.stop="showUserProfileModal = true" style="cursor: pointer;">
+              <div class="flex items-center space-x-2" @click.stop="showUserProfileModal = true"
+                style="cursor: pointer;">
                 <!-- 用户身份标识 -->
                 <span v-if="userStore.currentUser.userRole === 0"
                   class="text-xs px-2 py-1 bg-red-100 text-red-700 rounded-full font-medium">
@@ -174,7 +176,8 @@
       <HomeModal v-if="showHomeModal" @close="closeHomeModal" />
 
       <!-- 更新通知弹窗 -->
-      <UpdateNoticeModal v-if="showUpdateNoticeModal" :show-register-promotion="!userStore.currentUser" @close="closeUpdateNoticeModal" />
+      <UpdateNoticeModal v-if="showUpdateNoticeModal" :show-register-promotion="!userStore.currentUser"
+        @close="closeUpdateNoticeModal" />
 
       <!-- 用户信息弹窗 -->
       <UserProfileModal v-if="showUserProfileModal" @close="showUserProfileModal = false"
@@ -305,15 +308,15 @@ const checkShowHomeModal = () => {
     // 检查是否已经显示过弹窗（本次会话内）
     const sessionShown = sessionStorage.getItem('homeModalShown')
     // 检查是否已经显示过更新通知弹窗
-    const hasShownUpdateNotice = localStorage.getItem('hasShownUpdateNotice_v1.1')
+    //const hasShownUpdateNotice = localStorage.getItem('hasShownUpdateNotice_v1.1')
 
     // 只有在显示过更新通知弹窗后才显示首页弹窗
-    if (!sessionShown && hasShownUpdateNotice) {
+    if (!sessionShown) {
       // 延迟1秒显示弹窗，让页面加载完成
       setTimeout(() => {
         showHomeModal.value = true
         sessionStorage.setItem('homeModalShown', 'true')
-      }, 500)
+      }, 1500)
     }
   }
 }
