@@ -9,9 +9,9 @@
             :class="modalClasses">
             <!-- 关闭按钮 -->
             <button @click="handleClose"
-                class="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
+                class="absolute top-1 right-2 sm:top-2 sm:right-3 w-6 h-6 sm:w-7 sm:h-7 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
                 aria-label="关闭弹窗">
-                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-3 h-3 sm:w-4 sm:h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
                     </path>
                 </svg>
@@ -20,7 +20,8 @@
             <!-- 弹窗内容 -->
             <div class="text-center">
                 <!-- 新用户注册赠送三天会员提示 -->
-                <div v-if="showRegisterPromotion" class="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl p-4 mb-4 text-white">
+                <div v-if="showRegisterPromotion"
+                    class="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl p-4 mb-4 text-white">
                     <div class="flex items-center justify-center">
                         <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -96,11 +97,11 @@ import { ref, onMounted, nextTick, computed } from 'vue'
 
 // 定义props
 interface Props {
-  showRegisterPromotion?: boolean
+    showRegisterPromotion?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  showRegisterPromotion: true
+    showRegisterPromotion: true
 })
 
 // 定义事件
@@ -113,17 +114,17 @@ const modalRef = ref<HTMLElement | null>(null)
 
 // 计算属性，用于动态设置弹窗类
 const modalClasses = computed(() => {
-  return {
-    'transition-all': true,
-    'duration-500': true,
-    'ease-out': true,
-    'scale-100': isVisible.value,
-    'opacity-100': isVisible.value,
-    'translate-y-0': isVisible.value,
-    'scale-95': !isVisible.value,
-    'opacity-0': !isVisible.value,
-    'translate-y-4': !isVisible.value
-  }
+    return {
+        'transition-all': true,
+        'duration-500': true,
+        'ease-out': true,
+        'scale-100': isVisible.value,
+        'opacity-100': isVisible.value,
+        'translate-y-0': isVisible.value,
+        'scale-95': !isVisible.value,
+        'opacity-0': !isVisible.value,
+        'translate-y-4': !isVisible.value
+    }
 })
 
 // 处理关闭弹窗
