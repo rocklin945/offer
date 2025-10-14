@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="min-h-screen" :style="{ width: '100%', overflowX: isAdminRoute ? 'auto' : 'hidden' }">
+  <div id="app" class="min-h-screen" :style="{ width: '100%' }">
     <!-- 管理页面布局 -->
     <div v-if="isAdminRoute">
       <router-view />
@@ -319,6 +319,11 @@ const checkShowHomeModal = () => {
       }, 1500)
     }
   }
+}
+
+// 关闭首页弹窗的处理函数
+const closeHomeModal = () => {
+  showHomeModal.value = false
 }
 
 // 检查是否显示更新通知弹窗
