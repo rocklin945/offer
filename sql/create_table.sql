@@ -286,7 +286,6 @@ WHERE user_role = 2
 -- 查询预操作结果，确认修改是否正确
 SELECT id, user_account, user_role, member_expire_time
 FROM user
-WHERE user_role = 1 AND member_expire_time < NOW();
 
 -- 如果一切确认无误，则提交
 COMMIT;
