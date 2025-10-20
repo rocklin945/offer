@@ -274,3 +274,13 @@ CREATE TABLE IF NOT EXISTS code (
                                 UNIQUE KEY uk_code (code),
                                 INDEX idx_product_id (merchant_id)
 ) COMMENT='卡密表';
+
+START TRANSACTION;
+-- 更新过期会员为普通用户
+UPDATE user
+SET user_role = 1
+WHERE user_role = 2
+  AND member_expire_time IS NOT NULL
+  AND member_expire_time < NOW();
+
+COMMIT;
