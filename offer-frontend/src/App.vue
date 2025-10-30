@@ -158,6 +158,9 @@
         </div>
       </header>
 
+      <!-- 滚动提示条幅 -->
+      <ScrollingNoticeBar />
+
       <!-- 内容主体部分 -->
       <main class="flex-1 bg-gray-50">
         <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 stable-layout">
@@ -208,6 +211,7 @@ import HomeModal from './components/HomeModal.vue'
 import UpdateNoticeModal from './components/UpdateNoticeModal.vue'
 import UserProfileModal from './components/UserProfileModal.vue'
 import EditUserModal from './components/EditUserModal.vue'
+import ScrollingNoticeBar from './components/ScrollingNoticeBar.vue'
 
 const route = useRoute()
 const userStore = useUserStore()
