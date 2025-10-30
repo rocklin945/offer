@@ -4,9 +4,9 @@
         <div class="animate-scroll whitespace-nowrap">
             <span class="mx-4">📣 紧急通知：</span>
             <span class="mx-4 font-bold">网站将于3天后进行价格调整！</span>
-            <span class="mx-4">现在购买会员可享受限时优惠价格！</span>
-            <span class="mx-4">立即行动，节省更多！</span>
-            <span class="mx-4">⭐ 会员专享特权：无限制查看所有资料、优先客服支持、专属资源下载等</span>
+            <span class="mx-4 font-bold">现在购买会员可享受限时优惠价格！</span>
+            <span class="mx-4 font-bold">立即行动，节省更多！</span>
+            <span class="mx-4">⭐ 会员专享特权：无限制浏览所有职位、享受投递记录功能、笔试面试资料无限看、优先内推机会、简历优化建议、专属客服支持等</span>
         </div>
         <button @click="closeNotice"
             class="absolute right-5 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-200 focus:outline-none">
