@@ -159,7 +159,7 @@
       </header>
 
       <!-- 滚动提示条幅 -->
-      <ScrollingNoticeBar />
+      <ScrollingNoticeBar ref="noticeBarRef" v-if="noticeBarEnabled" />
 
       <!-- 内容主体部分 -->
       <main class="flex-1 bg-gray-50">
@@ -221,6 +221,10 @@ const showHomeModal = ref(false)
 const showUpdateNoticeModal = ref(false)
 const showEditUserModal = ref(false)
 const showUserProfileModal = ref(false)
+const noticeBarRef = ref<InstanceType<typeof ScrollingNoticeBar> | null>(null)
+
+// 滚动提示条幅控制状态
+const noticeBarEnabled = ref(true)
 
 // 判断是否为管理页面路由
 const isAdminRoute = computed(() => {
@@ -270,9 +274,16 @@ const handleClickOutside = (event: Event) => {
   }
 }
 
+// 监听滚动提示条幅切换事件
+const handleNoticeBarToggled = (event: CustomEvent) => {
+  noticeBarEnabled.value = event.detail.enabled
+}
+
 // 监听点击事件
 onMounted(async () => {
   document.addEventListener('click', handleClickOutside)
+  // 监听滚动提示条幅切换事件
+  window.addEventListener('noticeBarToggled', handleNoticeBarToggled as EventListener)
 
   if (userStore.token) {
     await userStore.initUserInfo()
@@ -283,11 +294,21 @@ onMounted(async () => {
   checkShowHomeModal()
   // 检查是否需要显示更新通知弹窗
   checkShowUpdateNoticeModal()
+  // 初始化滚动提示条幅状态
+  initNoticeBarStatus()
 })
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
+  // 移除滚动提示条幅切换事件监听
+  window.removeEventListener('noticeBarToggled', handleNoticeBarToggled as EventListener)
 })
+
+// 初始化滚动提示条幅控制状态
+const initNoticeBarStatus = () => {
+  const status = localStorage.getItem('adminNoticeBarEnabled')
+  noticeBarEnabled.value = status !== 'false' // 默认为true，只有明确设置为false才关闭
+}
 
 // 监听用户状态变化
 watch(() => userStore.currentUser, (newUser, oldUser) => {
@@ -384,6 +405,23 @@ watch(() => route.path, () => {
     })
   })
 }, { immediate: true })
+
+// 控制滚动提示条幅显示/隐藏的方法
+const toggleNoticeBar = () => {
+  if (noticeBarRef.value) {
+    const isVisible = noticeBarRef.value.isVisible
+    if (isVisible) {
+      noticeBarRef.value.hideNotice()
+    } else {
+      noticeBarRef.value.showNotice()
+    }
+  }
+}
+
+// 暴露方法给子组件使用
+defineExpose({
+  toggleNoticeBar
+})
 </script>
 
 <style scoped>

@@ -95,6 +95,20 @@
 
           <!-- 右上角按钮组 -->
           <div class="flex items-center gap-3">
+            <!-- 滚动提示条幅控制开关 -->
+            <button @click="toggleNoticeBar" :class="[
+              'inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors shadow-sm',
+              noticeBarEnabled
+                ? 'bg-green-600 text-white hover:bg-green-700'
+                : 'bg-gray-600 text-white hover:bg-gray-700'
+            ]">
+              <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                <path v-if="noticeBarEnabled" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <path v-else d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              {{ noticeBarEnabled ? '条幅：开' : '条幅：关' }}
+            </button>
+
             <!-- 首页弹窗控制开关 -->
             <button @click="toggleHomeModal" :class="[
               'inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors shadow-sm',
@@ -147,6 +161,9 @@ const sidebarCollapsed = ref(false)
 // 首页弹窗控制状态
 const homeModalEnabled = ref(true)
 
+// 滚动提示条幅控制状态
+const noticeBarEnabled = ref(true)
+
 const toggleSidebar = () => {
   sidebarCollapsed.value = !sidebarCollapsed.value
 }
@@ -174,6 +191,25 @@ const toggleHomeModal = () => {
     // 关闭弹窗时，设置一个永久标记
     localStorage.setItem('adminDisabledHomeModal', 'true')
   }
+}
+
+// 初始化滚动提示条幅控制状态
+const initNoticeBarStatus = () => {
+  const status = localStorage.getItem('adminNoticeBarEnabled')
+  noticeBarEnabled.value = status !== 'false' // 默认为true，只有明确设置为false才关闭
+}
+
+// 切换滚动提示条幅显示状态
+const toggleNoticeBar = () => {
+  noticeBarEnabled.value = !noticeBarEnabled.value
+
+  // 保存设置到localStorage
+  localStorage.setItem('adminNoticeBarEnabled', noticeBarEnabled.value.toString())
+
+  // 通过事件总线通知前台页面更新状态
+  window.dispatchEvent(new CustomEvent('noticeBarToggled', {
+    detail: { enabled: noticeBarEnabled.value }
+  }))
 }
 
 const getCurrentPageTitle = () => {
@@ -226,6 +262,7 @@ const menuItems = [
 // 初始化组件
 onMounted(() => {
   initHomeModalStatus()
+  initNoticeBarStatus()
 })
 </script>
 
