@@ -63,8 +63,8 @@ public class UserServiceImpl implements UserService {
         user.setUserName(USER_PREFIX + RandomUtil.randomString(6));
 
         //赠送3天会员
-        user.setUserRole(UserRoleEnum.VIP.getValue());
-        user.setMemberExpireTime(LocalDateTime.now().plusDays(THREE));
+//        user.setUserRole(UserRoleEnum.VIP.getValue());
+//        user.setMemberExpireTime(LocalDateTime.now().plusDays(THREE));
 
         user.setUserAvatar(AvatarUtil.generateRandomAvatarUrl(req.getUserAccount()));
         user.setUserProfile("这个人很懒，什么都没有留下。");

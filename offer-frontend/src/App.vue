@@ -306,8 +306,9 @@ onUnmounted(() => {
 
 // 初始化滚动提示条幅控制状态
 const initNoticeBarStatus = () => {
-  const status = localStorage.getItem('adminNoticeBarEnabled')
-  noticeBarEnabled.value = status !== 'false' // 默认为true，只有明确设置为false才关闭
+  // const status = localStorage.getItem('adminNoticeBarEnabled')
+  // noticeBarEnabled.value = status !== 'false' // 默认为true，只有明确设置为false才关闭
+  noticeBarEnabled.value = false // 默认关闭滚动提示条幅
 }
 
 // 监听用户状态变化
