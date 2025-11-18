@@ -179,8 +179,8 @@
       <HomeModal v-if="showHomeModal" @close="closeHomeModal" />
 
       <!-- 更新通知弹窗 -->
-      <UpdateNoticeModal v-if="showUpdateNoticeModal" :show-register-promotion="!userStore.currentUser"
-        @close="closeUpdateNoticeModal" />
+<!--      <UpdateNoticeModal v-if="showUpdateNoticeModal" :show-register-promotion="!userStore.currentUser"-->
+<!--        @close="closeUpdateNoticeModal" />-->
 
       <!-- 用户信息弹窗 -->
       <UserProfileModal v-if="showUserProfileModal" @close="showUserProfileModal = false"
