@@ -271,251 +271,48 @@
             <div
               class="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
               <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13l4 4L19 7"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
               </svg>
             </div>
-            <h3 class="text-xl font-bold text-gray-900 mb-4">海量优质职位</h3>
+            <h3 class="text-xl font-bold text-gray-900 mb-4">无限职位浏览</h3>
             <p class="text-gray-600 leading-relaxed">
-              与500+知名企业合作，提供2000+优质职位，覆盖各行各业
+              无限制浏览所有职位，不再受页面限制，轻松掌握所有求职机会
             </p>
           </div>
 
           <div class="text-center">
             <div
-              class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
               <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2V6">
+                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
                 </path>
               </svg>
             </div>
-            <h3 class="text-xl font-bold text-gray-900 mb-4">智能匹配推荐</h3>
+            <h3 class="text-xl font-bold text-gray-900 mb-4">专属客服支持</h3>
             <p class="text-gray-600 leading-relaxed">
-              基于AI算法，根据您的技能和偏好，精准推荐最适合的职位
+              专业校招团队提供一对一支持，解答求职过程中的任何疑问
             </p>
           </div>
 
           <div class="text-center">
             <div
-              class="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
               <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                  d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z">
                 </path>
               </svg>
             </div>
-            <h3 class="text-xl font-bold text-gray-900 mb-4">数据分析洞察</h3>
+            <h3 class="text-xl font-bold text-gray-900 mb-4">丰富学习资源</h3>
             <p class="text-gray-600 leading-relaxed">
-              详细的投递数据分析，帮助您了解求职进展，优化求职策略
+              笔试面试资料无限观看，优先内推机会，助您全面提升求职竞争力
             </p>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- 用户评价 Section -->
-    <div class="py-16 sm:py-24">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
-          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            看看他们都是如何评价MyOffer的
-          </h2>
-          <p class="text-xl text-gray-600">来自真实用户的反馈</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <!-- 评价卡片 1 - 校招 -->
-          <div
-            class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
-            <div class="flex items-center mb-4">
-              <div
-                class="w-12 h-12 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                张
-              </div>
-              <div class="ml-4">
-                <h4 class="font-semibold text-gray-900">张同学</h4>
-                <p class="text-sm text-gray-500">武汉大学 · 现就职于字节跳动</p>
-              </div>
-            </div>
-            <div class="flex mb-3">
-              <span class="text-yellow-400">★★★★★</span>
-            </div>
-            <p class="text-gray-700 leading-relaxed">
-              "通过MyOffer会员功能，我能够查看到字节跳动的内推职位，投递记录管理很方便。最终顺利拿到了抖音前端开发的offer！"
-            </p>
-          </div>
-
-          <!-- 评价卡片 2 - 社招跳槽 -->
-          <div
-            class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
-            <div class="flex items-center mb-4">
-              <div
-                class="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                李
-              </div>
-              <div class="ml-4">
-                <h4 class="font-semibold text-gray-900">李女士</h4>
-                <p class="text-sm text-gray-500">3年经验 · 从阿里跳槽至腾讯</p>
-              </div>
-            </div>
-            <div class="flex mb-3">
-              <span class="text-yellow-400">★★★★★</span>
-            </div>
-            <p class="text-gray-700 leading-relaxed">
-              "工作3年想跳槽涨薪，MyOffer会员功能让我看到了腾讯高级产品经理的内推机会。薪资涨了40%，非常满意！"
-            </p>
-          </div>
-
-          <!-- 评价卡片 3 - 技术转管理 -->
-          <div
-            class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
-            <div class="flex items-center mb-4">
-              <div
-                class="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                王
-              </div>
-              <div class="ml-4">
-                <h4 class="font-semibold text-gray-900">王先生</h4>
-                <p class="text-sm text-gray-500">5年经验 · 现任美团技术总监</p>
-              </div>
-            </div>
-            <div class="flex mb-3">
-              <span class="text-yellow-400">★★★★★</span>
-            </div>
-            <p class="text-gray-700 leading-relaxed">
-              "从Java开发转技术管理，MyOffer帮我找到了美团技术总监岗位。平台的高端职位资源很丰富，投递流程专业！"
-            </p>
-          </div>
-
-          <!-- 评价卡片 4 - 校招 -->
-          <div
-            class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
-            <div class="flex items-center mb-4">
-              <div
-                class="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                陈
-              </div>
-              <div class="ml-4">
-                <h4 class="font-semibold text-gray-900">陈同学</h4>
-                <p class="text-sm text-gray-500">上海交通大学 · 现就职于小红书</p>
-              </div>
-            </div>
-            <div class="flex mb-3">
-              <span class="text-yellow-400">★★★★★</span>
-            </div>
-            <p class="text-gray-700 leading-relaxed">
-              "应届毕业找工作很迷茫，MyOffer的投递记录管理和数据分析功能帮了大忙。现在已经成功入职小红书算法工程师！"
-            </p>
-          </div>
-
-          <!-- 评价卡片 5 - 转行 -->
-          <div
-            class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
-            <div class="flex items-center mb-4">
-              <div
-                class="w-12 h-12 bg-gradient-to-r from-indigo-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                刘
-              </div>
-              <div class="ml-4">
-                <h4 class="font-semibold text-gray-900">刘女士</h4>
-                <p class="text-sm text-gray-500">转行成功 · 从传统行业到网易</p>
-              </div>
-            </div>
-            <div class="flex mb-3">
-              <span class="text-yellow-400">★★★★★</span>
-            </div>
-            <p class="text-gray-700 leading-relaxed">
-              "从传统制造业转行互联网，MyOffer会员功能让我看到了网易的UI设计师岗位。转行成功，薪资翻倍！"
-            </p>
-          </div>
-
-          <!-- 评价卡片 6 - 职业发展 -->
-          <div
-            class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
-            <div class="flex items-center mb-4">
-              <div
-                class="w-12 h-12 bg-gradient-to-r from-teal-500 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                赵
-              </div>
-              <div class="ml-4">
-                <h4 class="font-semibold text-gray-900">赵先生</h4>
-                <p class="text-sm text-gray-500">7年经验 · 现任滴滴运营总监</p>
-              </div>
-            </div>
-            <div class="flex mb-3">
-              <span class="text-yellow-400">★★★★★</span>
-            </div>
-            <p class="text-gray-700 leading-relaxed">
-              "从运营专员到运营总监，MyOffer陪伴了我的职业成长。现在在滴滴负责用户增长，平台的职位信息准确及时！"
-            </p>
-          </div>
-
-          <!-- 评价卡片 7 - 海归求职 -->
-          <div
-            class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
-            <div class="flex items-center mb-4">
-              <div
-                class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                周
-              </div>
-              <div class="ml-4">
-                <h4 class="font-semibold text-gray-900">周女士</h4>
-                <p class="text-sm text-gray-500">海归硕士 · 现就职于蚂蚁金服</p>
-              </div>
-            </div>
-            <div class="flex mb-3">
-              <span class="text-yellow-400">★★★★★</span>
-            </div>
-            <p class="text-gray-700 leading-relaxed">
-              "英国留学回国求职，MyOffer帮我快速了解国内互联网行情。成功拿到蚂蚁金服风控算法工程师offer，待遇很满意！"
-            </p>
-          </div>
-
-          <!-- 评价卡片 8 - 中年跳槽 -->
-          <div
-            class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
-            <div class="flex items-center mb-4">
-              <div
-                class="w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                吴
-              </div>
-              <div class="ml-4">
-                <h4 class="font-semibold text-gray-900">吴先生</h4>
-                <p class="text-sm text-gray-500">10年经验 · 现任京东架构师</p>
-              </div>
-            </div>
-            <div class="flex mb-3">
-              <span class="text-yellow-400">★★★★★</span>
-            </div>
-            <p class="text-gray-700 leading-relaxed">
-              "35岁跳槽压力很大，MyOffer的高级会员功能让我看到了京东架构师岗位。年龄不是问题，技术实力才是王道！"
-            </p>
-          </div>
-
-          <!-- 评价卡片 9 - 创业回归 -->
-          <div
-            class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
-            <div class="flex items-center mb-4">
-              <div
-                class="w-12 h-12 bg-gradient-to-r from-red-500 to-pink-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                孙
-              </div>
-              <div class="ml-4">
-                <h4 class="font-semibold text-gray-900">孙女士</h4>
-                <p class="text-sm text-gray-500">前创业者 · 现任拼多多产品总监</p>
-              </div>
-            </div>
-            <div class="flex mb-3">
-              <span class="text-yellow-400">★★★★★</span>
-            </div>
-            <p class="text-gray-700 leading-relaxed">
-              "创业失败后重新求职，MyOffer帮我重新规划职业方向。现在在拼多多做产品总监，创业经历反而成了加分项！"
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- FAQ Section -->
     <div class="bg-gray-50 py-16 sm:py-24">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -534,7 +331,7 @@
               <svg :class="['w-5 h-5 text-gray-500 transition-transform duration-200', faq.open ? 'rotate-180' : '']"
                 fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd"
-                  d="M5.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
                   clip-rule="evenodd" />
               </svg>
             </button>
