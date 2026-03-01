@@ -22,11 +22,7 @@ public class JobDataFetchTask {
     @Autowired
     private JobDataFetchService jobDataFetchService;
 
-    /**
-     *每天晚上9点执行数据获取和导入任务
-     * cron表达式: 0 0 21 * * ? (每天21:00:00执行)
-     */
-    @Scheduled(cron = "0 0 21 * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void executeDataFetchTask() {
         logger.info("开始执行招聘数据自动获取任务");
         
