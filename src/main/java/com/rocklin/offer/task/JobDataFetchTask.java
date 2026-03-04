@@ -24,13 +24,15 @@ public class JobDataFetchTask {
 
     @Scheduled(cron = "0 0 * * * ?")
     public void executeDataFetchTask() {
-        logger.info("开始执行招聘数据自动获取任务");
-        
+        logger.info("========== 开始执行招聘数据自动获取任务 (时间：{}) ==========", new java.util.Date());
+
         try {
             String result = jobDataFetchService.fetchDataAndImport();
-            logger.info("招聘数据自动获取任务执行完成: {}", result);
-        } catch (Exception e) {
-            logger.error("招聘数据自动获取任务执行失败: {}", e.getMessage(), e);
+            logger.info("招聘数据自动获取任务执行完成：{}", result);
+        } catch (Throwable e) { // 捕获所有 Throwable，包括 Error
+            logger.error("❌ 招聘数据自动获取任务执行失败：{}", e.getMessage(), e);
+        } finally {
+            logger.info("========== 招聘数据获取任务结束 (时间：{}) ==========", new java.util.Date());
         }
     }
 }
