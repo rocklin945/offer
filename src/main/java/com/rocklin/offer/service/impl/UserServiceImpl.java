@@ -63,10 +63,10 @@ public class UserServiceImpl implements UserService {
         user.setUserName(USER_PREFIX + RandomUtil.randomString(6));
 
         //赠送会员
-        WebInfo webInfo = webInfoMapper.selectWebInfo();
-        if(ISGIFTMEMBER.equals(webInfo.getIsGiftMember())){
+        WebInfo memberInfo = webInfoMapper.selectWebInfo();
+        if(ISGIFTMEMBER.equals(memberInfo.getIsGiftMember())){
             user.setUserRole(UserRoleEnum.VIP.getValue());
-            user.setMemberExpireTime(LocalDateTime.now().plusDays(webInfo.getGiftMemberDays()));
+            user.setMemberExpireTime(LocalDateTime.now().plusDays(memberInfo.getGiftMemberDays()));
         }else {
             user.setUserRole(UserRoleEnum.USER.getValue());
         }
