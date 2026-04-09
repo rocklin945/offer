@@ -52,7 +52,7 @@ public final class Constants {
     /**
      * 数量
      */
-    public static final Integer ISGIFTMEMBER = 0;
+    public static final Integer ISGIFTMEMBER = 1;
     public static final int ONE = 1;
     public static final int TWO =2;
     public static final int THREE =3;

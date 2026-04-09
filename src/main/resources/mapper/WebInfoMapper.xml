@@ -14,8 +14,8 @@
         <result property="originalPrice" column="original_price"/>
         <result property="currentPrice" column="current_price"/>
         <result property="commissionRate" column="commission_rate"/>
-        <result property="isGiftMember" column="is_gift_member "/>
-        <result property="giftMemberDays" column="gift_member_days "/>
+        <result property="isGiftMember" column="is_gift_member"/>
+        <result property="giftMemberDays" column="gift_member_days"/>
         <result property="activity1" column="activity1"/>
         <result property="activity1Time" column="activity1_time"/>
         <result property="activity2" column="activity2"/>
