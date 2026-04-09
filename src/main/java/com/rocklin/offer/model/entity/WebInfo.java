@@ -63,6 +63,16 @@ public class WebInfo implements Serializable {
     private BigDecimal commissionRate;
 
     /**
+     * 是否赠送会员
+     */
+    private Integer isGiftMember;
+
+    /**
+     * 赠送会员天数
+     */
+    private Integer giftMemberDays;
+
+    /**
      * 最近活动1
      */
     private String activity1;

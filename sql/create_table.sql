@@ -77,6 +77,8 @@ CREATE TABLE web_info (
                           original_price decimal(10, 2) default 0.00     null comment '原价',
                           current_price  decimal(10, 2) default 0.00     null comment '现价',
                           commission_rate decimal(5, 2)  default 0.00    null comment '佣金比例(%)',
+                          is_gift_member TINYINT(1) DEFAULT 0 COMMENT '是否赠送会员(0-否 1-是)',
+                          gift_member_days INT DEFAULT 0 COMMENT '赠送会员天数',
 
                           activity1 VARCHAR(255) COMMENT '最近活动1',
                           activity1_time DATETIME COMMENT '活动1时间',
